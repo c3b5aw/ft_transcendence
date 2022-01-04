@@ -1,0 +1,24 @@
+.Home {
+	background-color: #1d3033;
+	min-height: 100vh;
+	color: white;
+  }
+
+body {
+	margin: 0;
+}
+
+.title {
+	color: white;
+	font-weight: bold;
+	font-style: italic;
+}
+
+.Home-header {
+	/* background-color: #1d3033;
+	min-height: 100vh;*/
+}
+  
+.Home-link {
+	color: #61dafb;
+}
