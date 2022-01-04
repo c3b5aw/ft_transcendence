@@ -1,0 +1,48 @@
+version: '3'
+
+networks:
+  net-backend:
+  net-proxy:
+
+services:
+  reverse_proxy:
+    container_name: transcendence_reverse_proxy
+    build:
+      context: ./reverse_proxy/
+    image: transcendence/reverse_proxy
+    restart: unless-stopped
+    networks:
+      - net-proxy
+    depends_on:
+      # - backend
+      - frontend
+    ports:
+      - "80:80"
+
+  frontend:
+    container_name: transcendence_frontend
+    build:
+      context: ./frontend/
+    image: transcendence/frontend:latest
+    restart: unless-stopped
+    networks:
+      - net-proxy
+
+  # backend:
+    # container_name: transcendence_backend
+    # depends_on:
+      # - db
+    # build:
+      # context: ./backend/
+    # image: transcendence/backend:latest
+    # networks:
+      # - net-backend
+      # - net-proxy
+    # restart: unless-stopped
+
+  # db:
+  #   container_name: transcendence_db
+  #   image: bitnami/postgresql:latest
+  #   networks:
+  #     - net-backend
+  #   restart: unless-stopped
