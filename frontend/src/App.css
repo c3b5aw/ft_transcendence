@@ -1,0 +1,20 @@
+.App {
+	background-color: #1d3033;
+	min-height: 100vh;
+	color: white;
+  }
+
+.title {
+	color: white;
+	font-weight: bold;
+	font-style: italic;
+}
+
+.App-header {
+	/* background-color: #1d3033;
+	min-height: 100vh;*/
+}
+  
+.App-link {
+	color: #61dafb;
+}
