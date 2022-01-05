@@ -1,16 +1,21 @@
 import * as React from 'react'
-import { styled } from '@mui/material/styles';
-import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
 import { StyleH1 } from '../styles/Styles';
 import Button from '../components/MyButton';
 import Avatar from '@mui/material/Avatar';
+import { useNavigate } from 'react-router-dom';
+
+function GoAccueil() {
+	return (
+		<h1>Accueil</h1>
+	);
+}
 
 function ConnectionPage()
 {
+	const navigate = useNavigate();
 	const styleH1 = StyleH1();
 	return (
 		<Stack>
@@ -37,7 +42,10 @@ function ConnectionPage()
 			borderRadius={20}
 			color="white"
 			height = "100px"
-			onClick={() => console.log("You clicked on the button")}
+			onClick={() => {
+				// console.log("You clicked on the button");
+				navigate('/connection');
+			}}
 			width = "350px"
 			children = "OAuth 42"
 		/>

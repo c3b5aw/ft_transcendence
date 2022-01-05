@@ -20,7 +20,7 @@ const Button: React.FC<Props> = ({
     width
   }) => { 
   return (
-    <button 
+    <button
       onClick={onClick}
       style={{
          backgroundColor: color,

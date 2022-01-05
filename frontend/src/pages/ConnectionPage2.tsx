@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider, styled, Theme } from '@mui/material/styles';
-import { orange, green, red } from '@mui/material/colors';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { orange, red } from '@mui/material/colors';
 import Checkbox from '@mui/material/Checkbox';
 import ConnectionPage from './ConnectionPage';
 
