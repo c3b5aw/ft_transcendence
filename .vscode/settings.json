@@ -10,5 +10,12 @@
 		"**/.gitkeep": true,
 		"**/node_modules": true,
 		"**/package-lock.json": true,
+		"**/.prettierrc": true,
+		"**/.eslint*.*": true,
+		"**/.style*": true,
+		"**/.flowconfig": true,
+		"**/.env": true,
+		"**/.git*": true,
+		"**/dist": true,
 	},
 }

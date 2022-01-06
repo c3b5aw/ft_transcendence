@@ -14,7 +14,7 @@ services:
     networks:
       - net-proxy
     depends_on:
-      # - backend
+      - backend
       - frontend
     ports:
       - "${APP_PORT}:${APP_PORT}"
@@ -28,17 +28,17 @@ services:
     networks:
       - net-proxy
 
-  # backend:
-    # container_name: transcendence_backend
-    # depends_on:
-      # - db
-    # build:
-      # context: ./backend/
-    # image: transcendence/backend:latest
-    # networks:
-      # - net-db
-      # - net-proxy
-    # restart: unless-stopped
+  backend:
+    container_name: transcendence_backend
+    depends_on:
+      - db
+    build:
+      context: ./backend/
+    image: transcendence/backend:latest
+    networks:
+      - net-db
+      - net-proxy
+    restart: unless-stopped
 
   db:
     container_name: transcendence_db
