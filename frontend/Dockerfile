@@ -2,22 +2,24 @@
 #	NODE BUILDER
 #
 
-FROM	node:16.13.1 as builder
+FROM	node:16.13.1-alpine as builder
 
 WORKDIR /app
+ENV		NODE_ENV build
 ENV		PATH /app/nodes_modules/.bin:$PATH
 
 COPY	package.json package-lock.json ./
 RUN		npm install --silent
 
-COPY	. ./
+COPY	. .
 RUN		npm run build
+RUN		npm prune --production
 
 #
-#	NGINX CONTAINER
+#	NGINX WORKER CONTAINER
 #
 
-FROM	alpine:3.13
+FROM	alpine:3.13 as worker
 
 RUN		apk update
 
