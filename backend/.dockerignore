@@ -1,0 +1,6 @@
+nodes_modules
+build/
+.git*
+Dockerfile
+test/
+dist/
