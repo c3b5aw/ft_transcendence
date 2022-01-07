@@ -25,3 +25,7 @@ clean:
 .PHONY: state
 state:
 	@	docker-compose ps --all
+
+.PHONY: env
+env:
+	@	export $$(grep -v '^#' .env | xargs)
