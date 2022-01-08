@@ -19,6 +19,7 @@ async function bootstrap() {
 	if (process.env.NODE_ENV !== 'production') {
 		const config = new DocumentBuilder()
 			.setTitle('ft_transcendence API')
+			.setBasePath('/api')
 			.setDescription('')
 			.setVersion('1.0')
 			.addTag('')
