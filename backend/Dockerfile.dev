@@ -6,9 +6,6 @@ RUN		apk add --update nodejs --no-cache --quiet
 RUN		apk add --update npm --no-cache --quiet
 RUN		apk add --update bash --no-cache --quiet
 
-COPY	package*.json ./
 RUN		npm install --silent
-
-COPY	. .
 
 CMD		[ "tail", "-f" ]
