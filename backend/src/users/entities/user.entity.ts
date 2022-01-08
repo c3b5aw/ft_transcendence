@@ -4,7 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 @Entity('users')
 export class User {
 	@PrimaryGeneratedColumn({ type: 'int' })
-	@ApiProperty({ description: "user id (incremental)", example: 1 })
+	@ApiProperty({ description: "user id (incremental - from 42API)", example: 1 })
 	id: number;
 
 	/*
@@ -15,8 +15,8 @@ export class User {
 	login: string;
 
 	@Column({ type: 'varchar', length: 64, unique: true, nullable: false })
-	@ApiProperty({ description: "user nickname", example: "c3b5aw" })
-	nickname: string;
+	@ApiProperty({ description: "user displayed name", example: "c3b5aw c3b5aw" })
+	displayName: string;
 
 	@Column({ type: 'varchar', length: 64, unique: true, update: false })
 	@ApiProperty({ description: "user email", example: "user@student.42.fr" })

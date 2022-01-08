@@ -4,9 +4,9 @@ import { HttpModule} from '@nestjs/axios';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
-import { UsersModule } from '../users/users.module';
-
 import { Intra42Strategy  } from './strategy/intra42.strategy';
+
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
 	imports: [
