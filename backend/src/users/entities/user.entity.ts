@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 
 @Entity('users')
 export class User {
-	@PrimaryGeneratedColumn({ type: 'int' })
+	@PrimaryColumn({ type: 'int', unique: true, update: false, nullable: false })
 	@ApiProperty({ description: "user id (incremental - from 42API)", example: 1 })
 	id: number;
 
