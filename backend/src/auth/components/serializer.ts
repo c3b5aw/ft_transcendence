@@ -4,6 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
+/*
+	https://stackoverflow.com/questions/19948816/passport-js-error-failed-to-serialize-user-into-session
+
+	Why .id: https://stackoverflow.com/questions/27637609/understanding-passport-serialize-deserialize
+
+	https://www.passportjs.org/docs/configure/ - view session part
+*/
+
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
 	constructor(private readonly usersService: UsersService) {
@@ -11,13 +19,13 @@ export class SessionSerializer extends PassportSerializer {
 	}
 
 	serializeUser(user: User, done: Function) {
-		done(null, user)
+		done(null, user.id)
 	}
 
-	async deserializeUser(payload: User, done: Function) {
-		const user = await this.usersService.findOneByLogin(payload.login);
+	async deserializeUser(id: number, done: Function) {
+		const user: User = await this.usersService.findOneByID(id);
 		if (!user) {
-			return done(new UnauthorizedException(), false);
+			return done(null, null);
 		}
 		return done(null, user);
 	}

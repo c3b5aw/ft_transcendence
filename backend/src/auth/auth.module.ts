@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
+
 import { HttpModule} from '@nestjs/axios';
+import { UsersModule } from 'src/users/users.module';
+
+import { AuthService } from './auth.service';
+import { Intra42Strategy  } from './strategy/intra42.strategy';
+import { SessionSerializer } from './components/serializer';
 
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-
-import { Intra42Strategy  } from './strategy/intra42.strategy';
-
-import { UsersModule } from 'src/users/users.module';
 
 @Module({
 	imports: [
@@ -16,6 +17,7 @@ import { UsersModule } from 'src/users/users.module';
 	providers: [
 		AuthService,
 		Intra42Strategy,
+		SessionSerializer,
 	],
 	controllers: [
 		AuthController,
