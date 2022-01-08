@@ -25,3 +25,7 @@ clean:
 .PHONY: state
 state:
 	@	docker-compose ps --all
+
+.PHONY: dev
+dev:
+	@	docker-compose -f docker-compose.dev.yml up -d --build

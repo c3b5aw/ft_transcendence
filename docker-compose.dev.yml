@@ -34,7 +34,7 @@ services:
       - db
     build:
       context: ./backend/
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     image: transcendence/backend:latest
     networks:
       - net-db
