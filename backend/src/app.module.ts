@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 
 import { AuthModule } from './auth/auth.module'
 
+import { User } from './users/entities/user.entity';
+
 @Module({
 	imports: [
 		TypeOrmModule.forRoot({
@@ -15,11 +17,7 @@ import { AuthModule } from './auth/auth.module'
 			password: process.env.POSTGRES_PASSWORD,
 			database: process.env.POSTGRES_DB,
 
-			/*
-				Entites auto solve: 
-				https://docs.nestjs.com/techniques/database#async-configuration
-			*/
-			entities: [ __dirname + '/*/entities/*.entity.ts' ],
+			entities: [ User ],
 			
 			synchronize: true,
 		}),
