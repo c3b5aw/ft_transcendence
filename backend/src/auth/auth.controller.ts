@@ -11,7 +11,16 @@ export class AuthController {
 	@Get('login')
 	@UseGuards(Intra42Guard)
 	async login(@Req() req: any) {
-		console.log('auth login', req);
+	}
+
+	@Get('redirect')
+	@UseGuards(Intra42Guard)
+	redirect(@Req() req: any): string {
+		if (req.user) {
+			return "Logged as " + req.user.displayName;
+		} else {
+			return "Not logged";
+		}
 	}
 
 	@Get('logout')
