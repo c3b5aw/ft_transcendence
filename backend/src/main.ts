@@ -19,13 +19,12 @@ async function bootstrap() {
 	if (process.env.NODE_ENV !== 'production') {
 		const config = new DocumentBuilder()
 			.setTitle('ft_transcendence API')
-			.setBasePath('/api')
 			.setDescription('')
 			.setVersion('1.0')
 			.addTag('')
 			.build();
 		const document = SwaggerModule.createDocument(app, config);
-		SwaggerModule.setup('docs', app, document);
+		SwaggerModule.setup('api/docs', app, document);
 	}
 
 	await app.listen(3000);
