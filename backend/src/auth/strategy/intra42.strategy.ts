@@ -25,7 +25,7 @@ export class Intra42Strategy extends PassportStrategy(Strategy, 'Intra42') {
 			avatar: profile.photos[0].value,
 		}
 
-		const user = await this.authService.findUser(userIface.login);
+		const user = await this.authService.validateUser(userIface);
 		if (!user) {
 			return new UnauthorizedException();
 		}

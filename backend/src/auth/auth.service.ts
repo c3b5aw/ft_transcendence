@@ -1,17 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { User } from 'src/users/entities/user.entity';
+import { UserInterface } from 'src/users/interfaces/user.interface';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
 	constructor(private readonly usersService: UsersService) {}
 
-	async validateUser(details: User) : Promise<User> {
-		const user: User = await this.usersService.findOneByLogin(details.login);
+	async validateUser(userDetails: UserInterface) : Promise<User> {
+		const user: User = await this.usersService.findOneByID(userDetails.id);
 		if (!user) {
-			const newUser = await this.usersService.createUser(details);
-			return this.usersService.createUser(details);
+			return this.usersService.createUser(userDetails);
 		}
 		return user;
 	}
