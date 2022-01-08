@@ -1,29 +1,15 @@
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import MyMissing from './components/MyMissing';
 
-import Home from './pages/Home';
 import HomePage from './pages/HomePage';
-
-
-function HomeConnection() {
-	return (
-		<nav>
-      	<Link to="/">Accueil</Link>
-      	<Link to="/Home">Home</Link>
-    </nav>
-	);
-}
-
-function Error() {
-    return (
-        <div>
-            <h1>Oups 🙈 Cette page n'existe pas</h1>
-        </div>
-    )
-}
+import StatsPage from './pages/StatsPage';
+import { usersApi } from './utils/Api';
+import { UserProps } from './utils/Interface';
 
 const useStyles = makeStyles({
 	theme: {
@@ -35,14 +21,31 @@ const useStyles = makeStyles({
 
 function ManageRouter() {
 	const classes = useStyles();
+	const [users, setUsers] = useState<UserProps[]>([]);
+
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const reponse = await axios.get(`${usersApi}`);
+				setUsers(reponse.data);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		fetchUsers();
+	}, [])
+
 	return (
 		<div className={classes.theme}>
 			<Router>
 				<Routes>
-					<Route path='*' element={<Error />} />
-					<Route path='/' element={ <Home /> }/>
-					<Route path='/Home' element={ <HomePage /> }/>
-					<Route path='/connection' element={ <HomeConnection /> }/>
+					<Route path='*' element={MyMissing(users)} />
+					<Route path='/' element={ <HomePage /> }/>
+					{/* <Route path='/settings' element={ <Settings /> }/> */}
+					{/* <Route path='/stats' element={ <StatsPage /> }/> */}
+					{/* <Route path='/classement' element={ <Classement /> }/> */}
+
+					<Route path='/api/users/:login'element={ <StatsPage items={users}/> }/>
 				</Routes>
 			</Router>
 		</div>

@@ -1,4 +1,3 @@
-import * as React from 'react'
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
@@ -6,12 +5,6 @@ import { StyleH1 } from '../styles/Styles';
 import Button from '../components/MyButton';
 import Avatar from '@mui/material/Avatar';
 import { useNavigate } from 'react-router-dom';
-
-function GoAccueil() {
-	return (
-		<h1>Accueil</h1>
-	);
-}
 
 function ConnectionPage()
 {
@@ -69,25 +62,3 @@ function ConnectionPage()
 }
 
 export default ConnectionPage;
-
-/*
-	display: "flex",
-    alignItems: 'center',
-	justifyContent: 'center',
-
-	fontSize: "4rem",
-	color: "#ffffff",
-	fontFamily: "Myriad Pro",
-	textAlign: "center",
-	padding: '60',
-
-
-	sx={{
-		width: 1,
-		height: 300,
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		backgroundColor: "#000000"
-	}}
-*/
