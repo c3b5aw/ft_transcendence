@@ -73,8 +73,10 @@ services:
     container_name: pgadmin4_container
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_EMAIL: root@42.fr
       PGADMIN_DEFAULT_PASSWORD: root
+    networks:
+      - net-db
     ports:
       - "5000:80"
     restart: unless-stopped
