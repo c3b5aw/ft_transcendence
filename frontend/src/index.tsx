@@ -10,11 +10,13 @@ import HomePage from './pages/HomePage';
 import StatsPage from './pages/StatsPage';
 import { usersApi } from './utils/Api';
 import { UserProps } from './utils/Interface';
+import "./pages/App.css";
 
 const useStyles = makeStyles({
 	theme: {
 		backgroundColor: "#1d3033",
-		minHeight: "100vh",
+		minHeight: 1,
+		minWidth: 1,
 		color: "white",
 	},
 });
