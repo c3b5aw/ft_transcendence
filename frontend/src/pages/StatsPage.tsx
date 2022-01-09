@@ -1,19 +1,21 @@
-import { Avatar, Button, Divider, List, ListItem, Paper, Stack, TextField } from '@mui/material';
+import { Avatar, Divider, List, ListItem, Paper, Stack, TextField } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { avatarStyle } from '../styles/Styles';
 import SendIcon from '@mui/icons-material/Send';
-import { MatchPropsTmp, MessageProps, UserListProps } from '../utils/Interface';
+import { MatchsPropsTest, MessageProps, UserListProps, AchievementsPropsTmp } from '../utils/Interface';
 import CircleIcon from '@mui/icons-material/Circle';
+import MyHistory from '../components/MyHistory';
 
 const StatsPage = (props: UserListProps) => {
 	const { login } = useParams();
 	const user = (props.items).find(e => e.login === login);
 	const connected = true;
-	const [value, setValue] = useState();
 
-	const [matchs, setMatchs] = useState<MatchPropsTmp[]>([]);
+	const [matchs, setMatchs] = useState<MatchsPropsTest[]>([]);
+	const [achievements, setAchievements] = useState<AchievementsPropsTmp[]>([]);
+
 	console.log(user);
 
 	const testMessageList: MessageProps[] = [
@@ -44,6 +46,24 @@ const StatsPage = (props: UserListProps) => {
 	const [messages, setMessages] = useState<MessageProps[]>(testMessageList);
 
 	useEffect(() => {
+		const fetchAchievements = async () => {
+			try {
+				if (user)
+				{
+					const len = user.login.length + 39;
+					const following_url = user.following_url.substring(0, len);
+					console.log(following_url);
+					const reponse = await axios.get(`${following_url}`);
+					setAchievements(reponse.data);
+				}
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		fetchAchievements();
+	}, [user])
+
+	useEffect(() => {
 		const fetchMatchs = async () => {
 			try {
 				if (user)
@@ -61,12 +81,11 @@ const StatsPage = (props: UserListProps) => {
 		fetchMatchs();
 	}, [user])
 
-	const test = 0;
 	return (
 	   <Stack sx={{width: 1, height: 1}} direction="row">
-		   <Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
-		   		<Stack sx={{ width: 1, height: 1/4 }} direction="column" alignItems="center" justifyContent="center" spacing={3}>
-				   <Avatar
+			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
+				<Stack sx={{ width: 1, height: 1/4 }} direction="column" alignItems="center" justifyContent="center" spacing={3}>
+					<Avatar
 						src={user?.avatar_url}
 						sx={{ width: "126px", height: "126px" }}>
 					</Avatar>
@@ -75,7 +94,7 @@ const StatsPage = (props: UserListProps) => {
 				</Stack>
 				<Stack sx={{ width: 1, height: 1/4, marginLeft: "30%" }} direction="column" justifyContent="center" spacing={4}>
 					<h2>Matchs joués : {matchs[0]?.id}</h2>
-					<h2>Classement {matchs[1]?.id}</h2>
+					<h2>Classement : {matchs[1]?.id}</h2>
 					<h2 style={{color: '#079200'}}>Victoires : {matchs[2]?.id}</h2>
 					<h2 style={{color: '#C70039'}}>Défaites : {matchs[3]?.id}</h2>
 				</Stack>
@@ -86,10 +105,10 @@ const StatsPage = (props: UserListProps) => {
 					</Stack>
 					<Divider />
 					<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto'}}>
-						{ matchs.length > 0 ?
+						{ achievements.length > 0 ?
 							<List>
-								{matchs.map(match => (
-									<div key={match.id}>
+								{achievements.map(achievement => (
+									<div key={achievement.id}>
 										<ListItem component="div" disablePadding>
 											<Stack direction="row">
 												<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row">
@@ -98,7 +117,7 @@ const StatsPage = (props: UserListProps) => {
 														spacing={2}
 														direction="row">
 														<Avatar sx={avatarStyle} src=""></Avatar>
-														<h2>{match.login}</h2>
+														<h2>{achievement.login}</h2>
 													</Stack>
 												</Stack>
 											</Stack>
@@ -110,11 +129,11 @@ const StatsPage = (props: UserListProps) => {
 						}
 					</Paper>
 				</Stack>
-		   </Stack>
-		   <Stack sx={{width: 0.6, height: "100vh"}} direction="column">
-		   		<Button>Hello 2</Button>
-		   </Stack>
-		   <Stack sx={{width: 0.2, height: "100vh"}} direction="column">
+			</Stack>
+			<Stack sx={{width: 0.6, height: "100vh"}} direction="column">
+					{MyHistory(matchs)}
+			</Stack>
+			<Stack sx={{width: 0.2, height: "100vh"}} direction="column">
 				<Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
 					<Stack direction="row" sx={{width: 1, height: 1/12}} alignItems="center" justifyContent="space-between">
 						<Stack direction="row" sx={{width: 1, height: 3/4}} alignItems="center">
@@ -170,13 +189,12 @@ const StatsPage = (props: UserListProps) => {
 							label="Message"
 							multiline
 							maxRows={3}
-							value={value}
 							focused
 						/>
 						<SendIcon sx={{marginRight:"3%"}} color="primary"></SendIcon>
 					</Stack>
 				</Stack>
-		   </Stack>
+			</Stack>
 	   </Stack>
 	);
 }
