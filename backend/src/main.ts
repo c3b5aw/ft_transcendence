@@ -18,12 +18,6 @@ async function bootstrap() {
 		})
 	)
 
-	app.enableCors({
-		origin: true,
-		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-		credentials: true,
-	});
-
 	app.use(cookieParser());
 	app.use(passport.initialize());
 	app.use(passport.session());
