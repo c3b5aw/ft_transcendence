@@ -1,4 +1,4 @@
-import { Controller, Get, Header, Redirect, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Header, Redirect, Req, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Session } from 'express-session';
 
@@ -31,19 +31,14 @@ export class AuthController {
 
 	@Get('42/callback')
 	@UseGuards(Intra42Guard)
-	@Redirect('/api/auth/status', 301)
+	@Redirect('/', 301)
 	redirect() {}
 
 	@Get('logout')
-	@Header('Content-Type', 'application/json')
-	@UseGuards(Intra42Guard)
-	@ApiResponse({ status: 200, description: 'User session has been logged out.' })
-	logout(@Req() req: { session: Session }): string {
+	@Redirect('/', 301)
+	logout(@Req() req: { session: Session }) {
 		if (req.session) {
 			req.session.destroy(() => {});
 		}
-		return JSON.stringify({
-			status: "OK"
-		});
 	}
 }

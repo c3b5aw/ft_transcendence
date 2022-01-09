@@ -8,7 +8,7 @@ services:
   reverse_proxy:
     container_name: transcendence_reverse_proxy
     build:
-      context: ./reverse_proxy/
+      context: ./../reverse_proxy/
     image: transcendence/reverse_proxy
     restart: unless-stopped
     networks:
@@ -22,8 +22,11 @@ services:
   frontend:
     container_name: transcendence_frontend
     build:
-      context: ./frontend/
+      context: ./../frontend/
+      dockerfile: ./docker/Dockerfile.dev
     image: transcendence/frontend:latest
+    volumes:
+      - ./../frontend/:/app
     restart: unless-stopped
     networks:
       - net-proxy
@@ -33,14 +36,12 @@ services:
     depends_on:
       - db
     build:
-      context: ./backend/
-      dockerfile: Dockerfile.dev
+      context: ./../backend/
+      dockerfile: ./docker/Dockerfile
     image: transcendence/backend:latest
     networks:
       - net-db
       - net-proxy
-    volumes:
-      - ./backend/:/app
     environment:
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
