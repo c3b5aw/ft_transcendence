@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
+import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session'
 import * as passport from 'passport';
 
@@ -17,6 +18,7 @@ async function bootstrap() {
 		})
 	)
 
+	app.use(cookieParser());
 	app.use(passport.initialize());
 	app.use(passport.session());
 
