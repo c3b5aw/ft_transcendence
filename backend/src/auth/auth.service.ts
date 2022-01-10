@@ -13,24 +13,27 @@ export class AuthService {
 
 	async validateUser(userDetails: UserInterface) : Promise<User> {
 		const user: User = await this.usersService.findOneByID(userDetails.id);
-		if (!user) {
+		if (!user)
 			return this.usersService.createUser(userDetails);
-		}
+
 		return user;
 	}
 
 	/* https://docs.nestjs.com/security/authentication#jwt-functionality */
 	async login(user: User) : Promise<any> {
-		const payload = { username: user.login, sub: user.id };
+		const payload = { login: user.login, sub: user.id };
+
+		this.usersService.updateLastLogin(user);
 		return {
 			access_token: this.jwtService.sign(payload),
 		};
 	}
 
-	async findUser(login: string) : Promise<any> {
-		const user = this.usersService.findOneByLogin(login);
+	async findUser(login: string) : Promise<User> {
+		const user: Promise<User> = this.usersService.findOneByLogin(login);
 		if (!user)
 			throw new UnauthorizedException();
+
 		return user;
 	}
 }

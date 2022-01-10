@@ -27,7 +27,6 @@ export class SessionSerializer extends PassportSerializer {
 		if (!user) {
 			return done(null, null);
 		}
-		this.usersService.updateLastLogin(user);
 		return done(null, user);
 	}
 }
