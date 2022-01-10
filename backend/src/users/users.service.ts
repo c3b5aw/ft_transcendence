@@ -10,7 +10,7 @@ export class UsersService {
 	/*
 		view https://docs.nestjs.com/techniques/database#custom-repository
 	*/
-	constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
+	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
 	async createUser(userDetails: UserInterface) : Promise<User> {
 		const user = this.userRepository.create( userDetails );
@@ -25,4 +25,10 @@ export class UsersService {
 	async findOneByID(id: number) : Promise<User> {
 		return this.userRepository.findOne({ id });
 	}
+
+	async updateLastLogin(user: User) : Promise<User> {
+		user.lastLogin = new Date();
+		return this.userRepository.save(user);
+	}
+
 }
