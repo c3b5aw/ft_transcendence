@@ -20,7 +20,7 @@ export class Intra42Strategy extends PassportStrategy(Strategy, 'Intra42') {
 		const userIface: UserInterface = {
 			id: profile.id,
 			login: profile.username,
-			displayName: profile.displayName,
+			display_name: profile.displayName,
 			email: profile.emails[0].value,
 			avatar: profile.photos[0].value,
 		}

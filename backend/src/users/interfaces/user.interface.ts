@@ -1,7 +1,7 @@
 export class UserInterface {
 	id: number;
 	login: string;
-	displayName: string;
+	display_name: string;
 	email: string;
 	avatar: string;
 }

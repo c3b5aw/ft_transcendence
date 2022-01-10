@@ -30,4 +30,5 @@ export class UsersService {
 		user.lastLogin = new Date();
 		return this.userRepository.save(user);
 	}
+
 }

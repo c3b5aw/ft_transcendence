@@ -16,7 +16,7 @@ export class User {
 
 	@Column({ type: 'varchar', length: 64, unique: true, nullable: false })
 	@ApiProperty({ description: "user displayed name", example: "c3b5aw c3b5aw" })
-	displayName: string;
+	display_name: string;
 
 	@Column({ type: 'varchar', length: 64, unique: true, update: false })
 	@ApiProperty({ description: "user email", example: "user@student.42.fr" })
@@ -32,11 +32,11 @@ export class User {
 
 	@Column({ type: 'boolean', default: false })
 	@ApiProperty({ description: "2FA enabled", example: true })
-	twoFactorAuth: boolean;
+	two_factor_auth: boolean;
 
 	@Column({ type: 'varchar', length: 64, unique: true, nullable: true })
 	@ApiProperty({ description: "2FA secret", example: "--secret--" })
-	twoFactorAuthSecret: string;
+	two_factor_auth_secret: string;
 
 	/*
 		MATCH STATS
