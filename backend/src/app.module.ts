@@ -5,8 +5,11 @@ import { AppController } from './app.controller';
 
 import { AuthModule } from './auth/auth.module'
 import { LadderModule } from './ladder/ladder.module';
+import { MatchsModule } from './matchs/matchs.module';
+import { ProfileModule } from './profile/profile.module';
 
 import { User } from './users/entities/user.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
 	imports: [
@@ -24,7 +27,10 @@ import { User } from './users/entities/user.entity';
 			synchronize: true,
 		}),
 		AuthModule,
-		LadderModule
+		LadderModule,
+		MatchsModule,
+		ProfileModule,
+		UsersModule,
 	],
 	controllers: [AppController],
 	providers: [],
