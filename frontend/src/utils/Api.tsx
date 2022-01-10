@@ -1,3 +1,13 @@
+
+/*
+** API
+*/
+export const apiTest = "https://61dbd44b4593510017affa07.mockapi.io/api";
+export const apiUsersTest = "/users";
+export const apiFollowingTest = "/following";
+export const apiMatchTest = "/matchs";
+export const apiAchievementsTest = "/achievements";
+
 export const usersApi = 'https://api.github.com/users'
 
 /*
@@ -15,3 +25,4 @@ export const pageSettings = "/settings"
 export const pageStats = "/stats"
 export const pageClassement = "/classement"
 export const pageLogin = "/login"
+

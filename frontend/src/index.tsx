@@ -11,6 +11,7 @@ import StatsPage from './pages/StatsPage';
 import { usersApi } from './utils/Api';
 import { UserProps } from './utils/Interface';
 import "./pages/App.css";
+import ClassementPage from './pages/ClassementPage';
 
 const useStyles = makeStyles({
 	theme: {
@@ -36,7 +37,6 @@ function ManageRouter() {
 		}
 		fetchUsers();
 	}, [])
-
 	return (
 		<div className={classes.theme}>
 			<Router>
@@ -44,8 +44,8 @@ function ManageRouter() {
 					<Route path='*' element={MyMissing(users)} />
 					<Route path='/' element={ <HomePage /> }/>
 					{/* <Route path='/settings' element={ <Settings /> }/> */}
-					{/* <Route path='/stats' element={ <StatsPage /> }/> */}
-					{/* <Route path='/classement' element={ <Classement /> }/> */}
+					{/* <Route path='/stats' element={ <StatsPage items={users}/> }/> */}
+					<Route path='/classement' element={ <ClassementPage items={users} /> }/>
 
 					<Route path='/api/users/:login'element={ <StatsPage items={users}/> }/>
 				</Routes>

@@ -1,13 +1,14 @@
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { boxStyle, buttonStyle, useStyles } from "../styles/Styles";
+import { api, apiUsers } from "../utils/Api";
 
-export default function Footer() {
+export default function MyFooter() {
 	const navigate = useNavigate();
 	const classes = useStyles();
 
 	function handleLaunchStats() {
-		navigate('/stats');
+		navigate(`${api}${apiUsers}/mojombo`);
 	}
 
 	function handleLaunchClassement() {

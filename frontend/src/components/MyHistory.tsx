@@ -1,128 +1,137 @@
-import { Avatar, Button, Divider, List, ListItem, Paper, Stack } from "@mui/material"
+import { Avatar, Button, CircularProgress, Divider, List, ListItem, Paper, Stack } from "@mui/material"
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { MatchsPropsTest, MatchsProps, MatchProps } from "../utils/Interface";
+import { api, apiUsers } from "../utils/Api";
 
 const MyHistory = (matchs: MatchsPropsTest[]) => {
+	// eslint-disable-next-line eqeqeq
+	if (matchs == undefined) {
+		return (
+			<Stack sx={{width: 1, height: "100vh"}} direction="column" alignItems="center" justifyContent="center">
+				<CircularProgress sx={{color: "white"}} />
+			</Stack>
+		);
+	}
 
 	const testMatchHistory: MatchProps[] = [
-		// {
-		// 	id: 1,
-		// 	login_adversaire_one: "eoliveir",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 65,
-		// 	score_two: 44
-		// },
-		// {
-		// 	id: 2,
-		// 	login_adversaire_one: "eoliveir",
-		// 	login_adversaire_two: "nbascaul",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 56,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 3,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 4,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 5,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 6,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 7,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 8,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 9,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 10,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 11,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 32
-		// },
-		// {
-		// 	id: 12,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// },
-		// {
-		// 	id: 13,
-		// 	login_adversaire_one: "nbascaul",
-		// 	login_adversaire_two: "sbeaujar",
-		// 	avatar_url_one: "",
-		// 	avatar_url_two: "",
-		// 	score_one: 32,
-		// 	score_two: 48
-		// }
+		{
+			id: 1,
+			login_adversaire_one: "eoliveir",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 65,
+			score_two: 44
+		},
+		{
+			id: 2,
+			login_adversaire_one: "eoliveir",
+			login_adversaire_two: "nbascaul",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 56,
+			score_two: 48
+		},
+		{
+			id: 3,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		},
+		{
+			id: 4,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		},
+		{
+			id: 5,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		},
+		{
+			id: 6,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		},
+		{
+			id: 7,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		},
+		{
+			id: 8,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		},
+		{
+			id: 9,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		},
+		{
+			id: 10,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		},
+		{
+			id: 11,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 32
+		},
+		{
+			id: 12,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		},
+		{
+			id: 13,
+			login_adversaire_one: "nbascaul",
+			login_adversaire_two: "sbeaujar",
+			avatar_url_one: "",
+			avatar_url_two: "",
+			score_one: 32,
+			score_two: 48
+		}
 	];
 
 	const testMessageList: MatchsProps =
@@ -179,7 +188,7 @@ const MyHistory = (matchs: MatchsPropsTest[]) => {
 													}
 												</Stack>
 												<Stack direction="row" sx={{width: 1/2}} alignItems="center" justifyContent="flex-end" spacing={2}>
-													<div style={{fontSize: "24px", fontFamily: "Myriad Pro",}}>{match.login_adversaire_two}</div>
+													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.login_adversaire_two}</div>
 													<Avatar sx={{width: "64px", height: "64px"}}></Avatar>
 												</Stack>
 											</Stack>

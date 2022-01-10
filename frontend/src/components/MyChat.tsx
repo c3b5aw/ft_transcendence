@@ -1,87 +1,81 @@
-import { Avatar, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
+import { Avatar, CircularProgress, Divider, List, ListItem, Paper, Stack, TextField } from "@mui/material";
 import CircleIcon from '@mui/icons-material/Circle';
-import Divider from '@mui/material/Divider';
-import { UserProps } from '../utils/Interface';
-import { avatarStyle } from '../styles/Styles';
-import { api, apiUsers } from '../utils/Api';
-import { useNavigate } from 'react-router-dom';
+import SendIcon from '@mui/icons-material/Send';
+import { MessageProps, UserProps } from "../utils/Interface";
 
-const Chat = (props: UserProps[]) => {
-	const navigate = useNavigate();
-	const me: UserProps = {
-		id: 1,
-		login: "eoliveir",
-		avatar_url: "https://avatars.githubusercontent.com/u/2?v=4",
-		following_url: "elie",
-		subscriptions_url: "elie2"
-	}
-	const connected = true
-
-	const handleClick = (login: string) => {
-		navigate(`${api}${apiUsers}/${login}`)
+const MyChat = (user: UserProps | undefined, connected: boolean, messages: MessageProps[]) => {
+	// eslint-disable-next-line eqeqeq
+	if (user == undefined || messages == undefined) {
+		return (
+			<Stack sx={{width: 0.2, height: "100vh"}} direction="column" alignItems="center" justifyContent="center">
+				<CircularProgress sx={{color: "white"}} />
+			</Stack>
+		);
 	}
 	return (
-        <Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
-			<Stack direction="row" sx={{width: 1, height: 1/12}} alignItems="center" justifyContent="space-between">
-				<Stack direction="row" sx={{width: 1, height: 3/4}} alignItems="center" spacing={2}>
-					<Avatar src={me.avatar_url} sx={{marginLeft: "3%", width: "64px", height: "64px"}}></Avatar>
-					<h1>{me.login}</h1>
-				</Stack>
-				{connected ? 
-					<CircleIcon sx={{fontSize: "28px", color: "green", marginRight: "3%"}}></CircleIcon> :
-					<CircleIcon sx=
-					{{fontSize: "28px", color: "red", marginRight: "3%"}}></CircleIcon>}
-			</Stack>
-			<Divider />
-			<Stack sx={{width: 1, height: 0.9}} direction="column">
-				<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{backgroundColor: "white", borderTopLeftRadius: 11, borderTopRightRadius: 11}}>
-					<h2 style={{ marginLeft: '11px', fontFamily: "Myriad Pro", color:'black' }}>List friends</h2>
-					<h2 style={{ marginRight: '11px', fontFamily: "Myriad Pro", color:'black' }}>{props.length} / 12</h2>
+		<Stack sx={{width: 0.2, height: "100vh"}} direction="column">
+			<Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
+				<Stack direction="row" sx={{width: 1, height: 1/12}} alignItems="center" justifyContent="space-between">
+					<Stack direction="row" sx={{width: 1, height: 3/4}} alignItems="center">
+						<Avatar src={user?.avatar_url} sx={{margin: "3%", width: "64px", height: "64px"}}></Avatar>
+						<h3>{user?.login}</h3>
+					</Stack>
+					{connected ? 
+						<CircleIcon sx={{fontSize: "28px", color: "green", marginRight: "3%"}}></CircleIcon> :
+						<CircleIcon sx=
+						{{fontSize: "28px", color: "red", marginRight: "3%"}}></CircleIcon>}
 				</Stack>
 				<Divider />
-				{props.length > 0 ?
+				<Stack sx={{width: 1, height: 0.85, backgroundColor: "white"}} direction="column">
 					<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto'}}>
-						<List>
-							{props.map(user => (
-								<div key={user.id}>
-									<ListItem component="div" disablePadding>
-										<ListItemButton onClick={() => handleClick(user.login)}>
-											<Stack direction="row" alignItems="center" sx={{width: 1}}>
-												<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row">
-													<Stack sx={{ width: "85%", height: 1}} alignItems="center" spacing={2} direction="row">
-														<Avatar sx={avatarStyle} src=""></Avatar>
-														<h2>{user.login}</h2>
+						{ messages.length > 0 ?
+							<List>
+								{messages.map(message => (
+									<div key={message.message}>
+										<ListItem component="div">
+											<Stack sx={{ width:1, height: 1}} direction="row">
+												{message.to === "tom" ?
+													<Stack sx={{ width: "100%", height: 1}}
+														justifyContent="space-between"
+														direction="column">
+														<div style={{textAlign: "start" }}>
+															<Stack direction="column" sx={{borderRadius: 3, marginRight: "30%", bgcolor: 'green' }}>
+																<p style={{color: 'white', fontStyle: "normal", textAlign: "start", marginLeft: "5%", marginRight: "5%"}}>{message.message}</p>
+															</Stack>
+														</div>
+													</Stack> :
+													<Stack sx={{ width: "100%", height: 1}}
+														justifyContent="flex-end"
+														direction="column">
+														<div style={{textAlign: "end"}}>
+															<Stack direction="column" sx={{borderRadius: 3, marginLeft: "30%", bgcolor: 'orange' }}>
+																<p style={{color: 'white', textAlign: "start", marginLeft: "5%", marginRight: "5%"}}>{message.message}</p>
+															</Stack>
+														</div>
 													</Stack>
-												</Stack>
-												{user.id !== 2 ? 
-												<CircleIcon sx={{fontSize: "28px", color: "green", marginRight: "3%"}}></CircleIcon> :
-												<CircleIcon sx=
-												{{fontSize: "28px", color: "red", marginRight: "3%"}}></CircleIcon>}
+												}
 											</Stack>
-										</ListItemButton>
-									</ListItem>
-									<Divider sx={{marginBottom: "5px", marginTop: "5px"}}/>
-								</div>
-							))}
-						</List>
-					</Paper> : null
-				}
+										</ListItem>
+									</div>
+								))}
+							</List> : null
+						}
+					</Paper>
+				</Stack>
+				<Stack sx={{backgroundColor: "white", width: 1, height: 0.15}} direction="row" justifyContent="space-between" alignItems="center">
+					<TextField
+						sx={{width: 0.9}}
+						id="outlined-multiline-flexible"
+						label="Message"
+						multiline
+						maxRows={3}
+						focused
+					/>
+					<SendIcon sx={{marginRight:"3%"}} color="primary"></SendIcon>
+				</Stack>
 			</Stack>
 		</Stack>
-    );
+	);
 }
 
-export default Chat;
-
-// const User = (fetchUser: UserProps) => {
-// 	axios.get<UserProps>(`${usersApi}/${fetchUser.login}`)
-// 	.then((response) => {
-// 		console.log(response.data);
-// 	})
-// 	.catch(function (error) {
-// 		console.log(error.message);
-// 	})
-// 	return (
-//         <h1>OK !</h1>
-//     );
-// }
+export default MyChat;

@@ -60,3 +60,56 @@ export interface MessageProps {
 	message: string
 	to: string
 }
+
+
+//http://localhost:3000/api/users/:login/messages/:to
+export interface MessageProps {
+	message: string
+	to: string
+}
+
+
+
+
+
+export interface MessageTest {
+	message: string
+	to: string
+}
+
+export interface UserListTest {
+	items: UserTest[]
+};
+
+export interface UserTest {
+	id: number
+	login: string
+	displayName: string
+	email: string
+	avatarUrl: string
+	elo: number
+	played: number
+	victories: number
+	defeats: number
+	connected: boolean
+	createdAt?: Date
+	lastLogin?: Date
+}
+
+export interface MatchsTest {
+	id: number
+	createdAt: Date
+	scoreOne: number
+	scoreTwo: number
+	loginAdversaireOne: string
+	loginAdversaireTwo: string
+	avatarUrlOne: string
+	avatarUrlTwo: string
+}
+
+export interface AchievementsTest {
+	id: number
+	createdAt: Date
+	avatarUrl: string
+	description: string
+}

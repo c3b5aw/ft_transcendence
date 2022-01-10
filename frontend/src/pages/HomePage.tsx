@@ -11,33 +11,33 @@ import { useNavigate } from 'react-router-dom';
 import { boxStyle, StyleH1, useStyles } from '../styles/Styles';
 import { Box } from '@mui/system';
 import Button from '@mui/material/Button';
-import Chat from '../components/MyChat';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { Fade } from '@mui/material';
-import Footer from '../components/MyFooter';
+import { CircularProgress, Fade } from '@mui/material';
+import MyFooter from '../components/MyFooter';
 import axios from 'axios';
 import { api, apiUsers, usersApi } from '../utils/Api';
 import { UserProps } from '../utils/Interface';
+import MyListFriends from '../components/MyListFriends';
 
-export function ManageChat(checked: boolean, users: UserProps[]) {
-	//marginRight: "20px", marginTop: "20px", marginBottom: "20px"
-	if (checked)
-	{
-		return (
-			<Box sx={{ minWidth: "20%", minHeight: "100%"}}>
-				<Fade in={checked}>{Chat(users)}</Fade>
-			</Box>
-		);
-	}
-}
+// export function ManageChat(checked: boolean, users: UserProps[]) {
+// 	//marginRight: "20px", marginTop: "20px", marginBottom: "20px"
+// 	if (checked)
+// 	{
+// 		return (
+// 			<Box sx={{ minWidth: "20%", minHeight: "100%"}}>
+// 				<Fade in={checked}>{MyListFriends(users)}</Fade>
+// 			</Box>
+// 		);
+// 	}
+// }
 
 export default function HomePage() {
-	// const [rows, setRows] = useState<user2[]>([]);
 	const [rows, setRows] = useState<UserProps[]>([]);
 	const [searched, setSearched] = useState<string>("");
 	const [checked, setChecked] = useState(false);
 	const [users, setUsers] = useState<UserProps[]>([]);
+	const [test, setTest] = useState<boolean>(false);
 
 	const classes = useStyles();
 	const styleH1 = StyleH1();
@@ -48,6 +48,7 @@ export default function HomePage() {
 			try {
 				const reponse = await axios.get(`${usersApi}`);
 				setUsers(reponse.data);
+				// setTest(true);
 			} catch (err) {
 				console.log(err);
 			}
@@ -83,8 +84,16 @@ export default function HomePage() {
 		navigate('/game');
 	}
 
+	// eslint-disable-next-line eqeqeq
+	if (users == undefined) {
+		return (
+			<Stack sx={{width: 1, height: "100vh"}} direction="row" alignItems="center" justifyContent="center">
+				<CircularProgress sx={{color: "white"}} />
+			</Stack>
+		);
+	}
 	return (
-		<Stack direction="row" sx={{width: 1}}>
+		<Stack direction="row" sx={{width: 1, minHeight: "100vh"}}>
 			<Stack direction="column" sx={{width: 1}}>
 				<FormControlLabel
 					sx={{marginLeft: "10px", marginTop: "5px"}}
@@ -140,13 +149,18 @@ export default function HomePage() {
 						</Button>
 				</Box>
 				<Box component="footer" sx={{ mt: 'auto', height: '25vh'}}>
-					<Footer />
+					<MyFooter />
 				</Box>
 				</Stack>
 				{/* {ManageChat(checked, users)} */}
-				<Box sx={{ minWidth: "20%", minHeight: "100%"}}>
-					<Fade in={checked}>{Chat(users)}</Fade>
-				</Box>
+				{/* <Box sx={{ minWidth: "20%", minHeight: "100%"}}>
+					<Fade in={checked}>{MyListFriends(users)}</Fade>
+				</Box> */}
+				{checked ?
+					<Box sx={{ minWidth: "20%", minHeight: "100%"}}>
+						<MyListFriends items={users}/>
+					</Box>
+				: null}
 		 </Stack>
 	);
 }
