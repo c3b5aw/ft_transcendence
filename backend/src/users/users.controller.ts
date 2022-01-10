@@ -37,7 +37,14 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/png')
 	getUserAvatar(@Param('id') id: string, @Res() resp: Response) {
-		resp.sendFile(id, { root: './uploads' });
+		resp.sendFile(id, { root: './uploads' }, (err) => {
+			if (err) {
+				resp.header('Content-Type', 'application/json');
+				resp.status(404).send(JSON.stringify({
+					error: 'File not found',
+				}));
+			}
+		});
 	}
 
 	@Get('/:id/achievements')
