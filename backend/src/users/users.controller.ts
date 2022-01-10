@@ -1,11 +1,13 @@
-import { Controller, Get, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Put, Delete, UseGuards, Param, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
+import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
 @ApiTags('users')
 @Controller('users')
-export class UserController {
+export class UsersController {
 	
 	@Get('/')
 	@UseGuards(JwtGuard)
@@ -29,11 +31,13 @@ export class UserController {
 
 	@Get('/:id/friends')
 	@UseGuards(JwtGuard)
-	getUserFriens() {}
+	getUserFriends() {}
 
 	@Get('/:id/avatar')
 	@UseGuards(JwtGuard)
-	getUserAvatar() {}
+	getUserAvatar(@Param('id') id: string, @Res() resp: Response) {
+		resp.sendFile(id + '.jpg', { root: './uploads' });
+	}
 
 	@Get('/:id/achievements')
 	@UseGuards(JwtGuard)
