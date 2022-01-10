@@ -64,14 +64,20 @@ export class UsersController {
 	// @UseGuards(JwtGuard)
 	// getUserAchievements() {}
 
+	// Get all friends
 	// @Get('/:id/friends')
 	// @UseGuards(JwtGuard)
 	// getFriend() {}
 
-	// @Put('/:id/friend')
+	// Accept friend request
+	// @Put('/:id/friends/')
+
+	// Add a friend (send a friend request)
+	// @Post('/:id/friend')
 	// @UseGuards(JwtGuard)
 	// addFriend() {}
 
+	// Delete a friend or a friend request
 	// @Delete('/:id/friend')
 	// @UseGuards(JwtGuard)
 	// removeFriend() {}
