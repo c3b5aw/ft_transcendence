@@ -66,6 +66,14 @@ export class User {
 	// @ApiProperty({ description: "user friends ids", example: [1, 2, 3] })
 	// friends: number[];
 
+	/*
+		USER INFOS
+	*/
+
+	// @Column({ })
+	// @ApiProperty({ description: "achivements", example: [1, 2, 3] })
+	// achivements: number[];
+
 	@Column({ type: 'boolean', default: false })
 	@ApiProperty({ description: "is online", example: true })
 	connected: boolean;

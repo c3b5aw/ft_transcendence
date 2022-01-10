@@ -27,6 +27,10 @@ export class UsersService {
 		return this.userRepository.save(user);
 	}
 
+	async findUsers() : Promise<User[]> {
+		return this.userRepository.find();
+	}
+
 	async getLadder() : Promise<User[]> {
 		return this.userRepository.find({
 			select: [

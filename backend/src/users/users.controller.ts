@@ -1,37 +1,49 @@
-import { Controller, Get, Put, Delete, UseGuards, Param, Res, Header } from '@nestjs/common';
+import { Controller, Get, Put, Delete,
+		UseGuards, Param, Res, Header } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
+import { User } from './entities/user.entity';
+import { UsersService } from './users.service';
+
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
 	
+	constructor(private readonly userService: UsersService) {}
+
+	// Todo: admin only
 	@Get('/')
 	@UseGuards(JwtGuard)
-	getUsers() {}
+	async getUsers() : Promise<User[]> {
+		const users: User[] = await this.userService.findUsers();
+		return users;
+	}
 
 	@Get('/:id')
 	@UseGuards(JwtGuard)
-	getUser() {}
+	async getUser(@Param('id') id: number) {
+		const user: User = await this.userService.findOneByID( id );
+		return user;
+	}
 
 	@Get('/:id/stats')
 	@UseGuards(JwtGuard)
-	getUserStats() {}
+	getUserStats() {
+		// return stats interface?
+	}
 
 	@Get('/:id/rank')
 	@UseGuards(JwtGuard)
 	getUserRank() {}
 
-	@Get('/:id/matchs')
-	@UseGuards(JwtGuard)
-	getUserMatchs() {}
-
-	@Get('/:id/friends')
-	@UseGuards(JwtGuard)
-	getUserFriends() {}
+	// @Get('/:id/matchs')
+	// @UseGuards(JwtGuard)
+	// async getUserMatchs(@Param('id') id: number) {
+	// }
 
 	@Get('/:id/avatar')
 	@UseGuards(JwtGuard)
@@ -47,19 +59,20 @@ export class UsersController {
 		});
 	}
 
-	@Get('/:id/achievements')
-	@UseGuards(JwtGuard)
-	getUserAchievements() {}
+	// return list of achivements, must be fetched later on?
+	// @Get('/:id/achievements')
+	// @UseGuards(JwtGuard)
+	// getUserAchievements() {}
 
-	@Get('/:id/friends')
-	@UseGuards(JwtGuard)
-	getFriend() {}
+	// @Get('/:id/friends')
+	// @UseGuards(JwtGuard)
+	// getFriend() {}
 
-	@Put('/:id/friend')
-	@UseGuards(JwtGuard)
-	addFriend() {}
+	// @Put('/:id/friend')
+	// @UseGuards(JwtGuard)
+	// addFriend() {}
 
-	@Delete('/:id/friend')
-	@UseGuards(JwtGuard)
-	removeFriend() {}
+	// @Delete('/:id/friend')
+	// @UseGuards(JwtGuard)
+	// removeFriend() {}
 }
