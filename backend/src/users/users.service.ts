@@ -27,4 +27,19 @@ export class UsersService {
 		return this.userRepository.save(user);
 	}
 
+	async getLadder() : Promise<User[]> {
+		return this.userRepository.find({
+			select: [
+				'id',
+				'display_name',
+				'elo',
+				'played',
+				'victories',
+				'defeats'
+			],
+			order: {
+				elo: 'DESC',
+			},
+		});
+	}
 }

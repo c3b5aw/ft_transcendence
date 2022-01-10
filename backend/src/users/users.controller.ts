@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Delete, UseGuards, Param, Res } from '@nestjs/common';
+import { Controller, Get, Put, Delete, UseGuards, Param, Res, Header } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
@@ -35,8 +35,9 @@ export class UsersController {
 
 	@Get('/:id/avatar')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'image/png')
 	getUserAvatar(@Param('id') id: string, @Res() resp: Response) {
-		resp.sendFile(id + '.jpg', { root: './uploads' });
+		resp.sendFile(id, { root: './uploads' });
 	}
 
 	@Get('/:id/achievements')
