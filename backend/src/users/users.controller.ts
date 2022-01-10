@@ -36,10 +36,6 @@ export class UsersController {
 		// return stats interface?
 	}
 
-	@Get('/:id/rank')
-	@UseGuards(JwtGuard)
-	getUserRank() {}
-
 	// @Get('/:id/matchs')
 	// @UseGuards(JwtGuard)
 	// async getUserMatchs(@Param('id') id: number) {
