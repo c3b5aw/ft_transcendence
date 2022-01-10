@@ -25,4 +25,9 @@ export class UsersService {
 	async findOneByID(id: number) : Promise<User> {
 		return this.userRepository.findOne({ id });
 	}
+
+	async updateLastLogin(user: User) : Promise<User> {
+		user.lastLogin = new Date();
+		return this.userRepository.save(user);
+	}
 }
