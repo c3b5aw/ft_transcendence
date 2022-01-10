@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Put, Delete, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
@@ -38,4 +38,16 @@ export class UserController {
 	@Get('/:id/achievements')
 	@UseGuards(JwtGuard)
 	getUserAchievements() {}
+
+	@Get('/:id/friends')
+	@UseGuards(JwtGuard)
+	getFriend() {}
+
+	@Put('/:id/friend')
+	@UseGuards(JwtGuard)
+	addFriend() {}
+
+	@Delete('/:id/friend')
+	@UseGuards(JwtGuard)
+	removeFriend() {}
 }
