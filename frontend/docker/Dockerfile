@@ -8,6 +8,8 @@ WORKDIR /app
 ENV		NODE_ENV build
 ENV		PATH /app/nodes_modules/.bin:$PATH
 
+RUN		npm install -g npm@8.3.0 --silent
+
 COPY	package.json package-lock.json ./
 RUN		npm install --silent
 
@@ -30,7 +32,7 @@ RUN		mkdir -p /var/run/nginx
 
 COPY	--from=builder /app/build /usr/share/nginx/html
 
-COPY	nginx.conf /etc/nginx/conf.d/default.conf
+COPY	docker/config/nginx.conf /etc/nginx/conf.d/default.conf
 
 RUN		ln -sf /dev/stdout /var/log/nginx/access.log && \
 		ln -sf /dev/stderr /var/log/nginx/error.log

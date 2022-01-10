@@ -4,3 +4,6 @@ build/
 Dockerfile
 test/
 dist/
+.dockerignore
+.gitignore
+docker/Dockerfile*

@@ -1,3 +1,5 @@
+package-lock.json
+
 # compiled output
 /dist
 /node_modules
@@ -5,6 +7,7 @@
 # Logs
 logs
 *.log
+log.*
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*

@@ -25,3 +25,17 @@ clean:
 .PHONY: state
 state:
 	@	docker-compose ps --all
+
+.PHONY: dev-back
+dev-back:
+	@	printf "Rebuilding containers...\n"
+	@	docker-compose -f .docker-compose.dev.back.yml up -d --build
+	@	printf	"Shell into backend_container:"
+	@	docker exec -it transcendence_backend bash
+
+.PHONY: dev-front
+dev-front:
+	@	printf "Rebuilding containers...\n"
+	@	docker-compose -f .docker-compose.dev.front.yml up -d --build
+	@	printf	"Shell into frontend_container:"
+	@	docker exec -it transcendence_frontend bash
