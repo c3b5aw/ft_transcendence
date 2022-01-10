@@ -1,7 +1,7 @@
 import { Controller, Get, Header, Inject, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { Intra42Guard } from 'src/auth/guards/intra42.guard';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { LadderService } from './ladder.service';
 
 @ApiTags('ladder')
@@ -10,7 +10,7 @@ export class LadderController {
 	constructor(@Inject(LadderService) private readonly ladderService: LadderService) {}
 
 	@Get('/')
-	@UseGuards(Intra42Guard)
+	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getLadder(): Promise<string> {
 		const ladder = await this.ladderService.getLadder();
