@@ -35,11 +35,13 @@ services:
       - db
     build:
       context: ./backend/
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./docker/Dockerfile.dev
     image: transcendence/backend:latest
     networks:
       - net-db
       - net-proxy
+    volumes:
+      - ./backend/:/app
     environment:
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
@@ -65,4 +67,16 @@ services:
       - POSTGRESQL_TIMEZONE=${POSTGRES_TZ}
       - POSTGRESQL_LOG_TIMEZONE=${POSTGRES_TZ}
       - TZ=${POSTGRES_TZ}
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@42.fr
+      PGADMIN_DEFAULT_PASSWORD: root
+    networks:
+      - net-db
+    ports:
+      - "4500:80"
     restart: unless-stopped
