@@ -9,6 +9,7 @@ import { Intra42Strategy  } from './strategy/intra42.strategy';
 import { SessionSerializer } from './components/serializer';
 
 import { AuthController } from './auth.controller';
+import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
 	imports: [
@@ -24,6 +25,7 @@ import { AuthController } from './auth.controller';
 	providers: [
 		AuthService,
 		Intra42Strategy,
+		JwtStrategy,
 		SessionSerializer,
 	],
 	controllers: [
