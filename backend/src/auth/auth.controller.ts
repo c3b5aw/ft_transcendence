@@ -12,11 +12,11 @@ export class AuthController {
 
 	constructor(private readonly authService: AuthService) {}
 
-	@Get('login')
+	@Get('/login')
 	@UseGuards(Intra42Guard)
 	async login() {}
 
-	@Get('status')
+	@Get('/status')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	status(@Req() req: any): string {
@@ -26,12 +26,12 @@ export class AuthController {
 		})
 	}
 
-	@Get('redirect')
+	@Get('/redirect')
 	async redirect(@Res() resp: Response) {
 		return resp.status(302).redirect('/');
 	}
 
-	@Get('42/callback')
+	@Get('/42/callback')
 	@UseGuards(Intra42Guard)
 	async callback_42(@Req() req: any, @Res({ passthrough: true }) resp: Response) {
 		if (req.user) {
@@ -44,7 +44,7 @@ export class AuthController {
 		resp.status(302).redirect('/api/auth/redirect');
 	}
 
-	@Get('logout')
+	@Get('/logout')
 	logout(@Req() req: Request, @Res({ passthrough: true }) resp: Response) {
 		if (req.session)
 			req.session.destroy(() => {});
