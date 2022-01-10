@@ -10,7 +10,7 @@ export class UsersService {
 	/*
 		view https://docs.nestjs.com/techniques/database#custom-repository
 	*/
-	constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
+	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
 	async createUser(userDetails: UserInterface) : Promise<User> {
 		const user = this.userRepository.create( userDetails );

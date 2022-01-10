@@ -8,7 +8,7 @@ import { UserInterface } from 'src/users/interfaces/user.interface';
 
 @Injectable()
 export class Intra42Strategy extends PassportStrategy(Strategy, 'Intra42') {
-	constructor(private authService: AuthService) {
+	constructor(private readonly authService: AuthService) {
 		super({
 			clientID: process.env.INTRA42_UID,
 			clientSecret: process.env.INTRA42_SECRET,
