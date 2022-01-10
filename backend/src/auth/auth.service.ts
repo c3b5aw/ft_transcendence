@@ -28,12 +28,4 @@ export class AuthService {
 			access_token: this.jwtService.sign(payload),
 		};
 	}
-
-	async findUser(login: string) : Promise<User> {
-		const user: Promise<User> = this.usersService.findOneByLogin(login);
-		if (!user)
-			throw new UnauthorizedException();
-
-		return user;
-	}
 }
