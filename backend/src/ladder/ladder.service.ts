@@ -1,27 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+
+import { UsersService } from 'src/users/users.service';
 
 import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class LadderService {
 
-	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
+	constructor(private readonly usersService: UsersService) {}
 
 	async getLadder() : Promise<User[]> {
-		return this.userRepository.find({
-			select: [
-				'id',
-				'display_name',
-				'elo',
-				'played',
-				'victories',
-				'defeats'
-			],
-			order: {
-				elo: 'DESC',
-			},
-		});
+		return this.usersService.getLadder();
 	}
 }
