@@ -89,9 +89,18 @@ export class UsersService {
 
 	async getUserStats(uid: number) : Promise<UserStats> {
 		const user: User = await this.findOneByID(uid);
-		if (user) {
-			return 
+		if (!user) {
+			return undefined;
 		}
+
+		const stats: UserStats = {
+			id: user.id,
+			elo: user.elo,
+			played: user.played,
+			victories: user.victories,
+			defeats: user.defeats,
+		}
+		return stats
 	}
 
 	async getLadder() : Promise<User[]> {

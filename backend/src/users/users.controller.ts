@@ -7,6 +7,7 @@ import { Response } from 'express';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
 import { User } from './entities/user.entity';
+import { UserStats } from './dto/stats.dto';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -37,8 +38,13 @@ export class UsersController {
 
 	@Get('/:id/stats')
 	@UseGuards(JwtGuard)
-	getUserStats() {
-		// return stats interface?
+	async getUserStats(@Param('id') id: number, @Res() resp: Response) {
+		const userStats: UserStats = await this.userService.getUserStats( id );
+		
+		if (!userStats)
+			resp.status(404).json({ error: 'User not found' });
+		
+		resp.send(userStats);
 	}
 
 	// @Get('/:id/matchs')

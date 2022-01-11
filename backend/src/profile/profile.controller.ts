@@ -41,7 +41,7 @@ export class ProfileController {
 	@Header('Content-Type', 'application/json')
 	@UseInterceptors(FileInterceptor('file', {
 		limits: {
-			fileSize: 1024 * 1024 * 24,
+			fileSize: 1024 * 1024 * 24, // ~24MB
 		},
 		storage: diskStorage({
 			destination: './src/public/uploads',
