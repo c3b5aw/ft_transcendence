@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserStats } from './dto/stats.dto';
 import { UserInterface } from './interfaces/user.interface';
+import { createHash } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -16,15 +17,22 @@ export class UsersService {
 	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
 	async createUser(userDetails: UserInterface) : Promise<User> {
-		const writer = createWriteStream( `./public/avatar/${userDetails.id}.jpg` );
+		const writer = createWriteStream( `./public/avatars/${userDetails.id}.jpg` )
+			.on('error', (err) => {
+				if (err)
+					console.log(err);
+			})
 
-		axios.get(userDetails.avatar, { responseType: 'stream' })
-        .then(response => {
-            response.data.pipe(writer);
-            writer.on('error', () => {
+		const hash = createHash('md5').update(userDetails.email).digest('hex');
+
+		axios.get('https://www.gravatar.com/avatar/' + hash + '?s=200&d=retro', 
+			{ responseType: 'stream' })
+		.then(response => {
+				response.data.pipe(writer);
+				writer.on('error', () => {
 				throw new InternalServerErrorException();
 			});
-        })
+		})
         .catch(() => {
 			throw new InternalServerErrorException();
         })

@@ -58,7 +58,7 @@ export class ProfileController {
 			});
 
 		if (file.mimetype !== 'image/jpeg') {
-			unlink('./src/public/uploads/' + req.user.id + '.jpg', (err) => {
+			unlink('./public/uploads/' + req.user.id + '.jpg', (err) => {
 				if (err)
 					console.log(err);
 			});
@@ -67,10 +67,10 @@ export class ProfileController {
 			});
 		}
 
-		rename('./src/public/uploads/' + req.user.id + '.jpg', 
-				'./src/public/avatars/' + req.user.id + '.jpg', (err) => {
+		rename('./public/uploads/' + req.user.id + '.jpg', 
+				'./public/avatars/' + req.user.id + '.jpg', (err) => {
 			if (err) {
-				unlink('./src/public/uploads/' + req.user.id + '.jpg', (err) => {
+				unlink('./public/uploads/' + req.user.id + '.jpg', (err) => {
 					if (err)
 						console.log(err);
 				});
