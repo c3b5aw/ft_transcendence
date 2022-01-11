@@ -10,11 +10,15 @@ import { User } from './entities/user.entity';
 import { UserStats } from './dto/stats.dto';
 import { UsersService } from './users.service';
 
+import { Match } from 'src/matchs/entities/match.entity';
+import { MatchsService } from 'src/matchs/matchs.service';
+
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
 
-	constructor(private readonly userService: UsersService) {}
+	constructor(private readonly userService: UsersService,
+		private readonly matchService: MatchsService) {}
 
 	@Get()
 	@UseGuards(JwtGuard)
@@ -43,10 +47,12 @@ export class UsersController {
 		resp.send(userStats);
 	}
 
-	// @Get('/:id/matchs')
-	// @UseGuards(JwtGuard)
-	// async getUserMatchs(@Param('id') id: number) {
-	// }
+	@Get('/:id/matchs')
+	@UseGuards(JwtGuard)
+	async getUserMatchs(@Param('id') id: number) {
+		const matchs: Match[] = await this.matchService.findAllByID( id );
+		return matchs;
+	}
 
 	@Get('/:id/avatar')
 	@UseGuards(JwtGuard)

@@ -25,6 +25,10 @@ export class MatchsService {
 		return this.matchRepository.findOne({ id });
 	}
 
+	async findAllByID(id: number) : Promise<Match[]> {
+		return this.matchRepository.find({ id });
+	}
+
 	/*
 		DELETER
 
