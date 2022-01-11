@@ -1,4 +1,5 @@
-import { Body, Controller, Header, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Header, Post, Req,
+		UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { response } from 'express';
 
@@ -6,6 +7,7 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PostDisplayNameDto } from './dto/postDisplayName.dto';
 
 import { UsersService } from 'src/users/users.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('profile')
 @Controller('profile')
@@ -29,10 +31,13 @@ export class ProfileController {
 		});
 	}
 
+	// https://docs.nestjs.com/techniques/file-upload
 	@Post('/avatar')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
-	setAvatar() {
+	@UseInterceptors(FileInterceptor('picture'))
+	setAvatar(@UploadedFile() file: Express.Multer.File) {
+		console.log(file);
 		// excepted image in body
 		// download image into public folder
 	}
