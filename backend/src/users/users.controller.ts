@@ -29,10 +29,8 @@ export class UsersController {
 	@Header('Content-Type', 'application/json')
 	async getUser(@Param('id') id: number, @Res() resp: Response) {
 		const user: User = await this.userService.findOneByID( id );
-
 		if (!user)
 			resp.status(404).json({ error: 'User not found' });
-
 		resp.send(user);
 	}
 
@@ -40,10 +38,8 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	async getUserStats(@Param('id') id: number, @Res() resp: Response) {
 		const userStats: UserStats = await this.userService.getUserStats( id );
-		
 		if (!userStats)
 			resp.status(404).json({ error: 'User not found' });
-		
 		resp.send(userStats);
 	}
 

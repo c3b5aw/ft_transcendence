@@ -17,7 +17,7 @@ export class User {
 	login: string;
 
 	@Column({ type: 'varchar', length: 64, unique: true, nullable: false })
-	@ApiProperty({ description: "user displayed name", example: "c3b5aw c3b5aw" })
+	@ApiProperty({ description: "user displayed name", example: "John doe" })
 	display_name: string;
 
 	@Column({ type: 'varchar', length: 64, unique: true, update: false })

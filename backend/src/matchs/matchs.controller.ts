@@ -9,8 +9,13 @@ export class MatchsController {
 	
 	@Get('/:id')
 	@UseGuards(JwtGuard)
-	getMatch() {}
+	getMatch() {
+		
+	}
 
 	// admin only
 	// @Get('/') // return all matchs
+
+	// admin only
+	// @Delete('/:id') // delete match by id
 }
