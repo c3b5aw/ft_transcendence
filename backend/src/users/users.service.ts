@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ApiResponseProperty } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
+import axios from 'axios';
+import { createWriteStream, fstat, writeFile } from 'fs';
 import { Repository } from 'typeorm';
 
 import { User } from './entities/user.entity';
@@ -13,12 +16,34 @@ export class UsersService {
 	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
 	async createUser(userDetails: UserInterface) : Promise<User> {
-		const user = this.userRepository.create( userDetails );
+		const writer = createWriteStream(`./uploads/${userDetails.id}.jpg`);
 
-		return this.userRepository.save(user);
+		axios.get(userDetails.avatar, { responseType: 'stream' })
+        .then(response => {
+            response.data.pipe(writer);
+            writer.on('error', () => {
+				throw new InternalServerErrorException();
+			});
+        })
+        .catch(() => {
+			throw new InternalServerErrorException();
+        })
+	
+		return this.userRepository.save(userDetails);
 	}
 
 	async findOneByID(id: number) : Promise<User> {
+		const user: User = await this.userRepository.findOne({ id });
+		if (user) {
+			delete user.login;
+			delete user.email;
+			delete user.two_factor_auth;
+			delete user.two_factor_auth_secret;
+		}
+		return user;
+	}
+
+	async findMe(id: number) : Promise<User> {
 		return this.userRepository.findOne({ id });
 	}
 
@@ -28,7 +53,18 @@ export class UsersService {
 	}
 
 	async findUsers() : Promise<User[]> {
-		return this.userRepository.find();
+		return this.userRepository.find({
+			select: [
+				'id',
+				'display_name',
+			]
+		});
+	}
+
+	async getStatsByID(id: number) : Promise<User> {
+		const user: User = await this.findOneByID(id);
+		if (user)
+			return 
 	}
 
 	async getLadder() : Promise<User[]> {
