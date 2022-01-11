@@ -20,7 +20,7 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUsers() : Promise<User[]> {
-		const users: User[] = await this.userService.findUsers();
+		const users: User[] = await this.userService.findAll();
 		return users;
 	}
 
@@ -37,7 +37,7 @@ export class UsersController {
 	@Get('/:id/stats')
 	@UseGuards(JwtGuard)
 	async getUserStats(@Param('id') id: number, @Res() resp: Response) {
-		const userStats: UserStats = await this.userService.getUserStats( id );
+		const userStats: UserStats = await this.userService.getStatsByID( id );
 		if (!userStats)
 			resp.status(404).json({ error: 'User not found' });
 		resp.send(userStats);

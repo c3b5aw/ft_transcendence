@@ -63,7 +63,7 @@ export class UsersService {
 		return this.userRepository.findOne({ id });
 	}
 
-	async findUsers() : Promise<User[]> {
+	async findAll() : Promise<User[]> {
 		return this.userRepository.find({
 			select: [
 				'id',
@@ -95,7 +95,7 @@ export class UsersService {
 		- getLadder
 	*/
 
-	async getUserStats(uid: number) : Promise<UserStats> {
+	async getStatsByID(uid: number) : Promise<UserStats> {
 		const user: User = await this.findOneByID(uid);
 		if (!user) {
 			return undefined;
