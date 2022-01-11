@@ -28,7 +28,7 @@ export class ProfileController {
 				error: 'Display name must be at least 3 characters long.',
 			});
 		
-		await this.usersService.setDisplayName(req.user.id, data.display_name);
+		await this.usersService.updateDisplayName(req.user.id, data.display_name);
 
 		return JSON.stringify({
 			message: 'Display name successfully updated.',
