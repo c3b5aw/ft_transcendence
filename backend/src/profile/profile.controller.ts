@@ -80,8 +80,6 @@ export class ProfileController {
 			}
 		});
 	
-		resp.json({
-			message: 'Avatar successfully updated.',
-		})
+		resp.json({ message: 'Avatar successfully updated.' })
 	}
 }
