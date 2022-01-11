@@ -32,6 +32,10 @@ export class UsersService {
 		return this.userRepository.save(userDetails);
 	}
 
+	async setDisplayName(uid: number, displayName: string): Promise<any> {
+		return this.userRepository.update({ id: uid }, { display_name: displayName });
+	}
+
 	async findOneByID(id: number) : Promise<User> {
 		const user: User = await this.userRepository.findOne({ id });
 		if (user) {

@@ -29,11 +29,9 @@ export class UsersController {
 	async getUser(@Param('id') id: number, @Res() resp: Response) {
 		const user: User = await this.userService.findOneByID( id );
 
-		if (!user) {
-			resp.status(404).send(JSON.stringify({
-				error: 'User not found',
-			}));
-		}
+		if (!user)
+			resp.status(404).json({ error: 'User not found' });
+
 		resp.send(user);
 	}
 
@@ -58,9 +56,9 @@ export class UsersController {
 					if (err_fallback) {
 						console.log(err_fallback);
 						resp.header('Content-Type', 'application/json');
-						resp.status(404).send(JSON.stringify({
+						resp.status(404).json({
 							error: 'File not found',
-						}));
+						});
 					}
 				})
 			}
