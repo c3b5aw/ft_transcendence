@@ -22,10 +22,6 @@ export class User {
 	@ApiProperty({ description: "user email", example: "user@student.42.fr" })
 	email: string;
 
-	@Column({ type: 'varchar', length: 64, unique: true })
-	@ApiProperty({ description: "user avatar filename", example: "avatar.png" })
-	avatar: string;
-
 	/*
 		2FA
 	*/
