@@ -12,12 +12,12 @@ import { UsersService } from './users.service';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-	
+
 	constructor(private readonly userService: UsersService) {}
 
-	// Todo: admin only
-	@Get('/')
+	@Get()
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async getUsers() : Promise<User[]> {
 		const users: User[] = await this.userService.findUsers();
 		return users;
@@ -25,9 +25,16 @@ export class UsersController {
 
 	@Get('/:id')
 	@UseGuards(JwtGuard)
-	async getUser(@Param('id') id: number) {
+	@Header('Content-Type', 'application/json')
+	async getUser(@Param('id') id: number, @Res() resp: Response) {
 		const user: User = await this.userService.findOneByID( id );
-		return user;
+
+		if (!user) {
+			resp.status(404).send(JSON.stringify({
+				error: 'User not found',
+			}));
+		}
+		resp.send(user);
 	}
 
 	@Get('/:id/stats')
@@ -43,14 +50,19 @@ export class UsersController {
 
 	@Get('/:id/avatar')
 	@UseGuards(JwtGuard)
-	@Header('Content-Type', 'image/png')
-	getUserAvatar(@Param('id') id: string, @Res() resp: Response) {
-		resp.sendFile(id, { root: './uploads' }, (err) => {
+	@Header('Content-Type', 'image/jpg')
+	async getUserAvatar(@Param('id') id: number, @Res() resp: Response) {
+		resp.sendFile( `${id}.jpg`, { root: './uploads' }, (err) => {
 			if (err) {
-				resp.header('Content-Type', 'application/json');
-				resp.status(404).send(JSON.stringify({
-					error: 'File not found',
-				}));
+				resp.sendFile( `default.jpg`, { root: './uploads'}, (err_fallback) => {
+					if (err_fallback) {
+						console.log(err_fallback);
+						resp.header('Content-Type', 'application/json');
+						resp.status(404).send(JSON.stringify({
+							error: 'File not found',
+						}));
+					}
+				})
 			}
 		});
 	}
