@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
-import { LadderService } from './ladder.service'
 import { LadderController } from './ladder.controller';
+
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
@@ -11,9 +11,7 @@ import { UsersModule } from 'src/users/users.module';
 	controllers: [
 		LadderController
 	],
-	providers: [
-		LadderService,
-	],
+	providers: [],
 	exports: [],
 })
 
