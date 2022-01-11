@@ -1,5 +1,6 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserRole } from './roles.enum';
 
 @Entity('users')
 export class User {
@@ -10,6 +11,7 @@ export class User {
 	/*
 		USER DATA
 	*/
+
 	@Column({ type: 'varchar', length: 64, unique: true, update: false, nullable: false })
 	@ApiProperty({ description: "user login from 42 intra", example: "intra42" })
 	login: string;
@@ -22,6 +24,10 @@ export class User {
 	@ApiProperty({ description: "user email", example: "user@student.42.fr" })
 	email: string;
 
+
+	@Column({ type: 'enum', enum: UserRole, default: UserRole.MEMBER, nullable: false })
+	@ApiProperty({ description: "user role", example: "MEMBER" })
+	role: UserRole;
 	/*
 		2FA
 	*/
