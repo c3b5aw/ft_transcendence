@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 
-import { HttpModule} from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 
@@ -19,7 +18,6 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 				expiresIn: Number(process.env.JWT_EXPIRATION) 
 			},
 		}),
-		HttpModule,
 		UsersModule,
 	],
 	providers: [

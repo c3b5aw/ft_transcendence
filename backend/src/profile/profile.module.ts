@@ -1,18 +1,17 @@
 import { Module } from '@nestjs/common';
 
-import { LadderController } from './ladder.controller';
-
+import { ProfileController } from './profile.controller';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
 	imports: [
-		UsersModule,
+		UsersModule
 	],
 	controllers: [
-		LadderController
+		ProfileController,
 	],
 	providers: [],
 	exports: [],
 })
 
-export class LadderModule {}
+export class ProfileModule {}
