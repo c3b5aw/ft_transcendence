@@ -7,19 +7,24 @@ import { Response } from 'express';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
 import { User } from './entities/user.entity';
+import { UserStats } from './dto/stats.dto';
 import { UsersService } from './users.service';
+
+import { Match } from 'src/matchs/entities/match.entity';
+import { MatchsService } from 'src/matchs/matchs.service';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
 
-	constructor(private readonly userService: UsersService) {}
+	constructor(private readonly userService: UsersService,
+		private readonly matchService: MatchsService) {}
 
 	@Get()
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUsers() : Promise<User[]> {
-		const users: User[] = await this.userService.findUsers();
+		const users: User[] = await this.userService.findAll();
 		return users;
 	}
 
@@ -28,31 +33,34 @@ export class UsersController {
 	@Header('Content-Type', 'application/json')
 	async getUser(@Param('id') id: number, @Res() resp: Response) {
 		const user: User = await this.userService.findOneByID( id );
-
 		if (!user)
 			resp.status(404).json({ error: 'User not found' });
-
 		resp.send(user);
 	}
 
 	@Get('/:id/stats')
 	@UseGuards(JwtGuard)
-	getUserStats() {
-		// return stats interface?
+	async getUserStats(@Param('id') id: number, @Res() resp: Response) {
+		const userStats: UserStats = await this.userService.getStatsByID( id );
+		if (!userStats)
+			resp.status(404).json({ error: 'User not found' });
+		resp.send(userStats);
 	}
 
-	// @Get('/:id/matchs')
-	// @UseGuards(JwtGuard)
-	// async getUserMatchs(@Param('id') id: number) {
-	// }
+	@Get('/:id/matchs')
+	@UseGuards(JwtGuard)
+	async getUserMatchs(@Param('id') id: number) {
+		const matchs: Match[] = await this.matchService.findAllByID( id );
+		return matchs;
+	}
 
 	@Get('/:id/avatar')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/jpg')
 	async getUserAvatar(@Param('id') id: number, @Res() resp: Response) {
-		resp.sendFile( `${id}.jpg`, { root: './uploads' }, (err) => {
+		resp.sendFile( `${id}.jpg`, { root: './public/avatars' }, (err) => {
 			if (err) {
-				resp.sendFile( `default.jpg`, { root: './uploads'}, (err_fallback) => {
+				resp.sendFile( `default.jpg`, { root: './public/avatars'}, (err_fallback) => {
 					if (err_fallback) {
 						console.log(err_fallback);
 						resp.header('Content-Type', 'application/json');

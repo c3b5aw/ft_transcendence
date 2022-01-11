@@ -1,12 +1,13 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ApiResponseProperty } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { createWriteStream, fstat, writeFile } from 'fs';
+import { createWriteStream } from 'fs';
 import { Repository } from 'typeorm';
 
 import { User } from './entities/user.entity';
+import { UserStats } from './dto/stats.dto';
 import { UserInterface } from './interfaces/user.interface';
+import { createHash } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -16,15 +17,22 @@ export class UsersService {
 	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
 	async createUser(userDetails: UserInterface) : Promise<User> {
-		const writer = createWriteStream(`./uploads/${userDetails.id}.jpg`);
+		const writer = createWriteStream( `./public/avatars/${userDetails.id}.jpg` )
+			.on('error', (err) => {
+				if (err)
+					console.log(err);
+			})
 
-		axios.get(userDetails.avatar, { responseType: 'stream' })
-        .then(response => {
-            response.data.pipe(writer);
-            writer.on('error', () => {
+		const hash = createHash('md5').update(userDetails.email).digest('hex');
+
+		axios.get('https://www.gravatar.com/avatar/' + hash + '?s=200&d=retro', 
+			{ responseType: 'stream' })
+		.then(response => {
+				response.data.pipe(writer);
+				writer.on('error', () => {
 				throw new InternalServerErrorException();
 			});
-        })
+		})
         .catch(() => {
 			throw new InternalServerErrorException();
         })
@@ -32,9 +40,13 @@ export class UsersService {
 		return this.userRepository.save(userDetails);
 	}
 
-	async setDisplayName(uid: number, displayName: string): Promise<any> {
-		return this.userRepository.update({ id: uid }, { display_name: displayName });
-	}
+	/*
+		FINDER
+	
+		- findOneByID
+		- findMe
+		- findUsers
+	*/
 
 	async findOneByID(id: number) : Promise<User> {
 		const user: User = await this.userRepository.findOne({ id });
@@ -51,12 +63,7 @@ export class UsersService {
 		return this.userRepository.findOne({ id });
 	}
 
-	async updateLastLogin(user: User) : Promise<User> {
-		user.lastLogin = new Date();
-		return this.userRepository.save(user);
-	}
-
-	async findUsers() : Promise<User[]> {
+	async findAll() : Promise<User[]> {
 		return this.userRepository.find({
 			select: [
 				'id',
@@ -65,10 +72,43 @@ export class UsersService {
 		});
 	}
 
-	async getStatsByID(id: number) : Promise<User> {
-		const user: User = await this.findOneByID(id);
-		if (user)
-			return 
+	/*
+		UPDATER
+
+		- updateLastLogin
+		- updateDisplayName
+	*/
+
+	async updateLastLogin(user: User) : Promise<User> {
+		user.lastLogin = new Date();
+		return this.userRepository.save(user);
+	}
+
+	async updateDisplayName(uid: number, displayName: string): Promise<any> {
+		return this.userRepository.update({ id: uid }, { display_name: displayName });
+	}
+
+	/*
+		GETTER
+
+		- getStatsByID
+		- getLadder
+	*/
+
+	async getStatsByID(uid: number) : Promise<UserStats> {
+		const user: User = await this.findOneByID(uid);
+		if (!user) {
+			return undefined;
+		}
+
+		const stats: UserStats = {
+			id: user.id,
+			elo: user.elo,
+			played: user.played,
+			victories: user.victories,
+			defeats: user.defeats,
+		}
+		return stats
 	}
 
 	async getLadder() : Promise<User[]> {

@@ -7,9 +7,10 @@ import { AuthModule } from './auth/auth.module'
 import { LadderModule } from './ladder/ladder.module';
 import { MatchsModule } from './matchs/matchs.module';
 import { ProfileModule } from './profile/profile.module';
-
-import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
+
+import { Match } from './matchs/entities/match.entity';
+import { User } from './users/entities/user.entity';
 
 @Module({
 	imports: [
@@ -22,7 +23,7 @@ import { UsersModule } from './users/users.module';
 			password: process.env.POSTGRES_PASSWORD,
 			database: process.env.POSTGRES_DB,
 
-			entities: [ User ],
+			entities: [ User, Match ],
 			
 			synchronize: true,
 		}),
