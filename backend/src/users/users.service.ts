@@ -1,11 +1,11 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ApiResponseProperty } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { createWriteStream, fstat, writeFile } from 'fs';
+import { createWriteStream } from 'fs';
 import { Repository } from 'typeorm';
 
 import { User } from './entities/user.entity';
+import { UserStats } from './dto/stats.dto';
 import { UserInterface } from './interfaces/user.interface';
 
 @Injectable()
@@ -32,9 +32,13 @@ export class UsersService {
 		return this.userRepository.save(userDetails);
 	}
 
-	async setDisplayName(uid: number, displayName: string): Promise<any> {
-		return this.userRepository.update({ id: uid }, { display_name: displayName });
-	}
+	/*
+		FINDER
+	
+		- findOneByID
+		- findMe
+		- findUsers
+	*/
 
 	async findOneByID(id: number) : Promise<User> {
 		const user: User = await this.userRepository.findOne({ id });
@@ -51,11 +55,6 @@ export class UsersService {
 		return this.userRepository.findOne({ id });
 	}
 
-	async updateLastLogin(user: User) : Promise<User> {
-		user.lastLogin = new Date();
-		return this.userRepository.save(user);
-	}
-
 	async findUsers() : Promise<User[]> {
 		return this.userRepository.find({
 			select: [
@@ -65,10 +64,34 @@ export class UsersService {
 		});
 	}
 
-	async getStatsByID(id: number) : Promise<User> {
-		const user: User = await this.findOneByID(id);
-		if (user)
+	/*
+		UPDATER
+
+		- updateLastLogin
+		- updateDisplayName
+	*/
+
+	async updateLastLogin(user: User) : Promise<User> {
+		user.lastLogin = new Date();
+		return this.userRepository.save(user);
+	}
+
+	async updateDisplayName(uid: number, displayName: string): Promise<any> {
+		return this.userRepository.update({ id: uid }, { display_name: displayName });
+	}
+
+	/*
+		GETTER
+
+		- getStatsByID
+		- getLadder
+	*/
+
+	async getUserStats(uid: number) : Promise<UserStats> {
+		const user: User = await this.findOneByID(uid);
+		if (user) {
 			return 
+		}
 	}
 
 	async getLadder() : Promise<User[]> {
