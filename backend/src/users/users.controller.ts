@@ -50,9 +50,9 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/jpg')
 	async getUserAvatar(@Param('id') id: number, @Res() resp: Response) {
-		resp.sendFile( `${id}.jpg`, { root: './uploads' }, (err) => {
+		resp.sendFile( `${id}.jpg`, { root: './public/avatar' }, (err) => {
 			if (err) {
-				resp.sendFile( `default.jpg`, { root: './uploads'}, (err_fallback) => {
+				resp.sendFile( `default.jpg`, { root: '././public/avatar'}, (err_fallback) => {
 					if (err_fallback) {
 						console.log(err_fallback);
 						resp.header('Content-Type', 'application/json');

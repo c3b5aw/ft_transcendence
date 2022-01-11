@@ -16,7 +16,7 @@ export class UsersService {
 	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
 	async createUser(userDetails: UserInterface) : Promise<User> {
-		const writer = createWriteStream(`./uploads/${userDetails.id}.jpg`);
+		const writer = createWriteStream(`./public/avatar/${userDetails.id}.jpg`);
 
 		axios.get(userDetails.avatar, { responseType: 'stream' })
         .then(response => {
