@@ -26,7 +26,12 @@ export class MatchsService {
 	}
 
 	async findAllByID(id: number) : Promise<Match[]> {
-		return this.matchRepository.find({ id });
+		return this.matchRepository.find({ 
+			where: [
+				{ player_1: id },
+				{ player_2: id }
+			]
+		});
 	}
 
 	/*
