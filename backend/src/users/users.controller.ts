@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Delete,
+import { Controller, Get, Put, Post, Delete,
 		UseGuards, Param, Res, Header, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -44,6 +44,13 @@ export class UsersController {
 	@Header('Content-Type', 'application/json')
 	async getMyselfFriends(@Req() req: any) : Promise<Friend[]> {
 		return this.friendsService.findAllAcceptedById( req.user.id );
+	}
+
+	@Get('me/friends/pending')
+	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
+	async getMyselfPendingFriendsRequest(@Req() req: any) : Promise<Friend[]> {
+		return this.friendsService.findAllPendingById( req.user.id );
 	}
 
 	@Get('/:id')
@@ -105,12 +112,32 @@ export class UsersController {
 	}
 
 	// Accept friend request
-	// @Put('/:id/friends/')
+	// ToDo: test
+	@Put('/:id/friend')
+	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
+	async acceptFriend(@Req() req: any, 
+						@Param('id') id: number, @Res() resp: Response) {
+
+		const ok: string = await this.friendsService.findOneAcceptedByBothId(req.user.id, id)
+
+		if (ok == 'not_friend')
+			return resp.status(409).json({ error: 'Friendship not found' });
+		else if (ok == 'not_pending')
+			return resp.status(409).json({ error: 'Friendship is not pending' });
+		resp.json({ message: 'Friendship accepted' });
+	}
 
 	// Add a friend (send a friend request)
-	// @Post('/:id/friend')
-	// @UseGuards(JwtGuard)
-	// addFriend() {}
+	@Post('/:id/friend')
+	@UseGuards(JwtGuard)
+	async addFriend(@Req() req: any,
+					@Param('id') id: number, @Res() resp: Response) {
+		const state : string = await this.friendsService.addFriend(req.user.id, id);
+		if (!state || state == 'already_friend')
+			return resp.status(409).json({ error: 'Already friend' });
+		return resp.status(201).json({ message: 'Friendship request sent' });
+	}
 
 	// Delete a friend or a friend request
 	@Delete('/:id/friend')
@@ -118,15 +145,9 @@ export class UsersController {
 	@Header('Content-Type', 'application/json')
 	async removeFriend(@Req() req: any, @Param('id') id: number, 
 						@Res() resp: Response) {
-		const ok: boolean = await this.friendsService.removeFriend(
-			req.user.id, id
-		)
+		const ok: boolean = await this.friendsService.removeFriend(req.user.id, id);
 		if (!ok)
-			return resp.status(404).json({
-				error: 'Friendship not found',
-			});
-		resp.json({
-			message: 'Friendship deleted',
-		})
+			return resp.status(404).json({ error: 'Friendship not found' });
+		resp.json({ message: 'Friendship deleted' });
 	}
 }
