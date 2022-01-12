@@ -9,6 +9,7 @@ export const apiMe = "/me"
 export const apiUsers = `/users`
 export const apiLadder = "/ladder"
 export const apiMatch = "/matchs"
+export const apiMessages = "/messages"
 export const apiAchievements = "/achievements"
 export const apiConnection = "http://localhost/api/auth/login"
 

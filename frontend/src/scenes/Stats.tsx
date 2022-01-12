@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MyAchievements from '../components/MyAchievements';
+import MyChat from '../components/MyChat';
 import MyHistory from '../components/MyHistory';
 import { User } from '../services/Interface/Interface';
 
@@ -80,7 +81,7 @@ const Stats = () => {
 			<Stack sx={{width: 0.6, height: "100vh"}} direction="column">
 				<MyHistory />
 			</Stack>
-			{/* {MyChat(user, connected, messages)} */}
+			<MyChat user={user}/>
 		</Stack>
 	);
 }

@@ -2,8 +2,29 @@ import { Avatar, CircularProgress, Divider, List, ListItem, Paper, Stack, TextFi
 import CircleIcon from '@mui/icons-material/Circle';
 import SendIcon from '@mui/icons-material/Send';
 import { Message, User } from "../services/Interface/Interface";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { api, apiMe, apiMessages, apiUsers } from "../services/Api/Api";
 
-const MyChat = (user: User | undefined, connected: boolean, messages: Message[]) => {
+const MyChat = (props: {user: User | undefined}) => {
+	// eslint-disable-next-line eqeqeq
+	const { user } = props;
+	const [messages, setMessages] = useState<Message[]>([]);
+
+	useEffect(() => {
+		const fetchMe = async () => {
+			try {
+				const response = await axios.get(`${api}${apiUsers}${apiMe}${apiMessages}${user?.login}`)
+				setMessages(response.data);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		// eslint-disable-next-line eqeqeq
+		if (user?.login != undefined)
+			fetchMe();
+	}, [user])
+
 	// eslint-disable-next-line eqeqeq
 	if (user == undefined || messages == undefined) {
 		return (
@@ -20,7 +41,7 @@ const MyChat = (user: User | undefined, connected: boolean, messages: Message[])
 						<Avatar src={user?.avatar} sx={{margin: "3%", width: "64px", height: "64px"}}></Avatar>
 						<h3>{user?.login}</h3>
 					</Stack>
-					{connected ? 
+					{user.connected ? 
 						<CircleIcon sx={{fontSize: "28px", color: "green", marginRight: "3%"}}></CircleIcon> :
 						<CircleIcon sx={{fontSize: "28px", color: "red", marginRight: "3%"}}></CircleIcon>}
 				</Stack>
