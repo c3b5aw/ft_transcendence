@@ -20,7 +20,7 @@ import { FriendsService } from 'src/friends/friends.service';
 @Controller('users')
 export class UsersController {
 
-	constructor(private readonly userService: UsersService,
+	constructor(private readonly usersService: UsersService,
 		private readonly friendsService: FriendsService,
 		private readonly matchService: MatchsService) {}
 
@@ -28,36 +28,14 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUsers() : Promise<User[]> {
-		const users: User[] = await this.userService.findAll();
-		return users;
-	}
-
-	@Get('/me')
-	@UseGuards(JwtGuard)
-	@Header('Content-Type', 'application/json')
-	async getMyself(@Req() req: any) : Promise<User> {
-		return this.userService.findMe(req.user.id);
-	}
-
-	@Get('/me/friends')
-	@UseGuards(JwtGuard)
-	@Header('Content-Type', 'application/json')
-	async getMyselfFriends(@Req() req: any) : Promise<Friend[]> {
-		return this.friendsService.findAllAcceptedById( req.user.id );
-	}
-
-	@Get('me/friends/pending')
-	@UseGuards(JwtGuard)
-	@Header('Content-Type', 'application/json')
-	async getMyselfPendingFriendsRequest(@Req() req: any) : Promise<Friend[]> {
-		return this.friendsService.findAllPendingById( req.user.id );
+		return this.usersService.findAll();
 	}
 
 	@Get('/:id')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUser(@Param('id') id: number, @Res() resp: Response) {
-		const user: User = await this.userService.findOneByID( id );
+		const user: User = await this.usersService.findOneByID( id );
 		if (!user)
 			resp.status(404).json({ error: 'User not found' });
 		resp.send(user);
@@ -66,7 +44,7 @@ export class UsersController {
 	@Get('/:id/stats')
 	@UseGuards(JwtGuard)
 	async getUserStats(@Param('id') id: number, @Res() resp: Response) {
-		const userStats: UserStats = await this.userService.getStatsByID( id );
+		const userStats: UserStats = await this.usersService.getStatsByID( id );
 		if (!userStats)
 			resp.status(404).json({ error: 'User not found' });
 		resp.send(userStats);
@@ -98,10 +76,19 @@ export class UsersController {
 		});
 	}
 
-	// return list of achivements, must be fetched later on?
-	// @Get('/:id/achievements')
-	// @UseGuards(JwtGuard)
-	// getUserAchievements() {}
+	/*
+		ACHIEVEMENTS
+	*/
+
+	@Get('/:id/achievements')
+	@UseGuards(JwtGuard)
+	async getUserAchievements() {
+		// return this.
+	}
+
+	/*
+		FRIENDS
+	*/
 
 	// Get all ACCEPTED friends
 	@Get('/:id/friends')
@@ -132,7 +119,7 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	async addFriend(@Req() req: any,
 					@Param('id') id: number, @Res() resp: Response) {
-		const user = await this.userService.findOneByID( id );
+		const user = await this.usersService.findOneByID( id );
 		if (!user)
 			return resp.status(404).json({ error: 'User not found' });
 		
