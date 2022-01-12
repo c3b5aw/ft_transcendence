@@ -13,6 +13,7 @@ export class FriendsService {
 
 	async findAllAcceptedById(id: number) : Promise<Friend[]> {
 		return this.friendRepository.createQueryBuilder()
+			.select('user_id', 'friend_id')
 			.where('(user_id = :id OR friend_id = :id)', { id })
 			.andWhere('status = :status', { status: FriendStatus.STATUS_ACCEPTED })
 			.getMany();
@@ -20,6 +21,7 @@ export class FriendsService {
 
 	async findAllPendingById(id: number) : Promise<Friend[]> {
 		return this.friendRepository.createQueryBuilder()
+			.select('user_id', 'friend_id')
 			.where('(user_id = :id OR friend_id = :id)', { id })
 			.andWhere('status = :status', { status: FriendStatus.STATUS_PENDING })
 			.getMany();
