@@ -6,21 +6,25 @@ import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
-import { User } from './entities/user.entity';
-import { UserStats } from './dto/stats.dto';
-import { UsersService } from './users.service';
+import { AchievementsService } from 'src/achievements/achievements.service';
+
+import { Friend } from 'src/friends/entities/friend.entity';
+import { FriendsService } from 'src/friends/friends.service';
 
 import { Match } from 'src/matchs/entities/match.entity';
 import { MatchsService } from 'src/matchs/matchs.service';
 
-import { Friend } from 'src/friends/entities/friend.entity';
-import { FriendsService } from 'src/friends/friends.service';
+import { User } from './entities/user.entity';
+import { UserStats } from './dto/stats.dto';
+import { UsersService } from './users.service';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
 
-	constructor(private readonly usersService: UsersService,
+	constructor(
+		private readonly achievementsService: AchievementsService,
+		private readonly usersService: UsersService,
 		private readonly friendsService: FriendsService,
 		private readonly matchService: MatchsService) {}
 
@@ -82,8 +86,8 @@ export class UsersController {
 
 	@Get('/:id/achievements')
 	@UseGuards(JwtGuard)
-	async getUserAchievements() {
-		// return this.
+	async getUserAchievements(@Param('id') id: number) {
+		return this.achievementsService.findUserAchievementsById( id );
 	}
 
 	/*
