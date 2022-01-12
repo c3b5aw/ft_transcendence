@@ -23,7 +23,7 @@ function MyListFriends(props : {me: User | undefined}) {
 	useEffect(() => {
 		const fetchFriends = async () => {
 			try {
-				const reponse = await axios.get(`${apiUsers}`);
+				const reponse = await axios.get(`${api}${apiUsers}`);
 				setFriends(reponse.data);
 			} catch (err) {
 				console.log(err);
@@ -95,16 +95,3 @@ function MyListFriends(props : {me: User | undefined}) {
 }
 
 export default MyListFriends;
-
-// const User = (fetchUser: UserProps) => {
-// 	axios.get<UserProps>(`${usersApi}/${fetchUser.login}`)
-// 	.then((response) => {
-// 		console.log(response.data);
-// 	})
-// 	.catch(function (error) {
-// 		console.log(error.message);
-// 	})
-// 	return (
-//         <h1>OK !</h1>
-//     );
-// }

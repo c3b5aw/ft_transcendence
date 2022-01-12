@@ -7,11 +7,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { CircularProgress } from '@mui/material';
 import axios from 'axios';
-import { api, apiMe, apiUsers, usersApi } from '../services/Api/Api';
+import { api, apiMe, apiUsers } from '../services/Api/Api';
 import MyFooter from '../components/MyFooter';
 import { boxStyle, StyleH1, useStyles } from '../styles/Styles';
 import { User } from '../services/Interface/Interface';
 import MySearchBar from '../components/MySearchBar';
+import MyListFriends from '../components/MyListFriends';
 
 export default function Home() {
 	const [checked, setChecked] = useState(false);
@@ -38,7 +39,7 @@ export default function Home() {
 	useEffect(() => {
 		const fetchUsers = async () => {
 			try {
-				const reponse = await axios.get(`${usersApi}`);
+				const reponse = await axios.get(`${api}${apiUsers}`);
 				setUsers(reponse.data);
 			} catch (err) {
 				console.log(err);
@@ -106,7 +107,7 @@ export default function Home() {
 				</Box> */}
 				{checked ?
 					<Box sx={{ minWidth: "20%", minHeight: "100%"}}>
-						{/* <MyListFriends items={users}/> */}
+						<MyListFriends me={me}/>
 					</Box>
 				: null}
 		 </Stack>

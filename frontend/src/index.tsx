@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 
-import { ROLE } from './services/Api/Api';
+import { pageClassement, pageHome, pageSettings, pageStats, ROLE } from './services/Api/Api';
 import "./scenes/App.css";
 import PrivateRoute from './services/Routes/PrivateRoute';
 import Stats from './scenes/Stats';
@@ -32,16 +32,16 @@ function ManageRouter() {
 					<Routes>
 						<Route path='*' element={ <MyMissing />} />
 						<Route
-							path='/'
+							path={pageHome}
 							element={
 								<PrivateRoute roles={[ROLE.Admin]}>
 									<Home />
 								</PrivateRoute>
 							}
 						/>
-						<Route path='/parametres' element={ <Settings /> }/>
-						<Route path='/classement' element={ <Classement /> }/>
-						<Route path='/api/users/:login'element={ <Stats /> }/>
+						<Route path={pageSettings} element={ <Settings /> }/>
+						<Route path={pageClassement} element={ <Classement /> }/>
+						<Route path={pageStats} element={ <Stats /> }/>
 					</Routes>
 				</Router>
 			</div>
