@@ -1,10 +1,23 @@
 import { Avatar, Button, CircularProgress, Divider, List, ListItem, Paper, Stack } from "@mui/material"
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { MatchsPropsTest, MatchsProps, MatchProps } from "../utils/Interface";
-import { api, apiUsers } from "../utils/Api";
+import { useEffect, useState } from "react";
+import { apiMatch } from "../services/Api/Api";
+import axios from "axios";
+import { Match } from "../services/Interface/Interface";
 
-const MyHistory = (matchs: MatchsPropsTest[]) => {
+const MyHistory = () => {
+
+	const [matchs, setMatchs] = useState<Match[]>([]);
+
+	useEffect(() => {
+		const fetchMatchs = async () => {
+			const response = await axios.get(`${apiMatch}`);
+			setMatchs(response.data);
+		}
+		fetchMatchs();
+	}, []);
+
 	// eslint-disable-next-line eqeqeq
 	if (matchs == undefined) {
 		return (
@@ -12,135 +25,6 @@ const MyHistory = (matchs: MatchsPropsTest[]) => {
 				<CircularProgress sx={{color: "white"}} />
 			</Stack>
 		);
-	}
-
-	const testMatchHistory: MatchProps[] = [
-		{
-			id: 1,
-			login_adversaire_one: "eoliveir",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 65,
-			score_two: 44
-		},
-		{
-			id: 2,
-			login_adversaire_one: "eoliveir",
-			login_adversaire_two: "nbascaul",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 56,
-			score_two: 48
-		},
-		{
-			id: 3,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		},
-		{
-			id: 4,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		},
-		{
-			id: 5,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		},
-		{
-			id: 6,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		},
-		{
-			id: 7,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		},
-		{
-			id: 8,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		},
-		{
-			id: 9,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		},
-		{
-			id: 10,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		},
-		{
-			id: 11,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 32
-		},
-		{
-			id: 12,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		},
-		{
-			id: 13,
-			login_adversaire_one: "nbascaul",
-			login_adversaire_two: "sbeaujar",
-			avatar_url_one: "",
-			avatar_url_two: "",
-			score_one: 32,
-			score_two: 48
-		}
-	];
-
-	const testMessageList: MatchsProps =
-	{
-		id: 1,
-		played: 12,
-		victories: 8,
-		defeats: 4,
-		history: testMatchHistory
 	}
 
 	return (
@@ -154,24 +38,24 @@ const MyHistory = (matchs: MatchsPropsTest[]) => {
 				</Button>
 			</Stack>
 			<Stack direction="column" sx={{width: 0.85, height: 9/12}}>
-			{ testMessageList.history.length > 0 ?
+			{ matchs.length > 0 ?
 				<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', borderRadius: 40}}>
 						<List>
-							{testMessageList.history.map(match => (
+							{matchs.map(match => (
 								<div key={match.id}>
 									<ListItem component="div">
 										<Stack sx={{ width:1, height: 1}} direction="row">
 											<Stack direction="row" sx={{width: 5.95/12, padding: '20px'}} spacing={2} justifyContent="center" alignItems="center">
 												<Stack direction="row" sx={{width: 1/2}} alignItems="center" spacing={2}>
 													<Avatar sx={{width: "64px", height: "64px"}}></Avatar>
-													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.login_adversaire_one}</div>
+													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.loginAdversaireOne}</div>
 												</Stack>
 												<Stack direction="row" sx={{width: 1/2}} justifyContent="flex-end">
-													{match.score_one > match.score_two ?
-														<div style={{fontSize: "32px", color: "green", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.score_one}</div> :
-													match.score_one === match.score_two ?
-														<div style={{fontSize: "32px", color: "black", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.score_one}</div> :
-														<div style={{fontSize: "32px", color: "#C70039", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.score_one}</div>
+													{match.scoreOne > match.scoreTwo ?
+														<div style={{fontSize: "32px", color: "green", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.scoreOne}</div> :
+													match.scoreOne === match.scoreTwo ?
+														<div style={{fontSize: "32px", color: "black", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.scoreOne}</div> :
+														<div style={{fontSize: "32px", color: "#C70039", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.scoreOne}</div>
 													}
 												</Stack>
 											</Stack>
@@ -180,15 +64,15 @@ const MyHistory = (matchs: MatchsPropsTest[]) => {
 											</Stack>
 											<Stack direction="row" sx={{width: 5.95/12, padding: '20px'}} alignItems="center">
 												<Stack direction="row" sx={{width: 1/2}} justifyContent="flex-start">
-													{match.score_one > match.score_two ?
-														<div style={{fontSize: "32px", color: "#C70039", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.score_two}</div> :
-													match.score_one === match.score_two ?
-														<div style={{fontSize: "32px", color: "black", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.score_two}</div> :
-														<div style={{fontSize: "32px", color: "green", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.score_two}</div>
+													{match.scoreOne > match.scoreTwo ?
+														<div style={{fontSize: "32px", color: "#C70039", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.scoreTwo}</div> :
+													match.scoreOne === match.scoreTwo ?
+														<div style={{fontSize: "32px", color: "black", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.scoreTwo}</div> :
+														<div style={{fontSize: "32px", color: "green", fontStyle: "bold", fontFamily: "Myriad Pro" }}>{match.scoreTwo}</div>
 													}
 												</Stack>
 												<Stack direction="row" sx={{width: 1/2}} alignItems="center" justifyContent="flex-end" spacing={2}>
-													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.login_adversaire_two}</div>
+													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.loginAdversaireTwo}</div>
 													<Avatar sx={{width: "64px", height: "64px"}}></Avatar>
 												</Stack>
 											</Stack>

@@ -1,8 +1,26 @@
 import { Avatar, CircularProgress, Divider, List, ListItem, Paper, Stack } from "@mui/material";
 import { avatarStyle } from "../styles/Styles";
-import { AchievementsPropsTmp } from "../utils/Interface";
+import { useState } from "react";
+import { apiAchievements } from "../services/Api/Api";
+import axios from "axios";
+import { Achievements } from "../services/Interface/Interface";
 
-const MyAchievements = (achievements: AchievementsPropsTmp[]) => {
+const MyAchievements = () => {
+	const [achievements, setAchievements] = useState<Achievements[]>([]);
+
+	useEffects(() => {
+		const fetchAchievements = async () => {
+			try {
+				const response = await axios.get(`${apiAchievements}`);
+				setAchievements(response.data);
+			}
+			catch (err) {
+				console.log(err);
+			}
+		}
+		fetchAchievements();
+	}, []);
+
 	// eslint-disable-next-line eqeqeq
 	if (achievements == undefined) {
 		return (
@@ -30,8 +48,8 @@ const MyAchievements = (achievements: AchievementsPropsTmp[]) => {
 												alignItems="center"
 												spacing={2}
 												direction="row">
-												<Avatar sx={avatarStyle} src={achievement.avatar_url}></Avatar>
-												<h2>{achievement.login}</h2>
+												<Avatar sx={avatarStyle} src=""></Avatar>
+												<h2>{achievement.description}</h2>
 											</Stack>
 										</Stack>
 									</Stack>
@@ -47,3 +65,7 @@ const MyAchievements = (achievements: AchievementsPropsTmp[]) => {
 }
 
 export default MyAchievements;
+
+function useEffects(arg0: () => void, arg1: never[]) {
+	throw new Error("Function not implemented.");
+}

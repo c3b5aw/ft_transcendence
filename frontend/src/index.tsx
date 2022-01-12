@@ -1,17 +1,18 @@
 import { makeStyles } from '@material-ui/core/styles';
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
-import MyMissing from './components/MyMissing';
 
-import HomePage from './pages/HomePage';
-import StatsPage from './pages/StatsPage';
-import { usersApi } from './utils/Api';
-import { UserProps } from './utils/Interface';
-import "./pages/App.css";
-import ClassementPage from './pages/ClassementPage';
+import { ROLE } from './services/Api/Api';
+import "./scenes/App.css";
+import PrivateRoute from './services/Routes/PrivateRoute';
+import Stats from './scenes/Stats';
+import MeProvider from './MeProvider';
+import MyMissing from './components/MyMissing';
+import Home from './scenes/Home';
+import Settings from './scenes/Settings';
+import Classement from './scenes/Classement';
+import React from 'react';
 
 const useStyles = makeStyles({
 	theme: {
@@ -24,33 +25,27 @@ const useStyles = makeStyles({
 
 function ManageRouter() {
 	const classes = useStyles();
-	const [users, setUsers] = useState<UserProps[]>([]);
-
-	useEffect(() => {
-		const fetchUsers = async () => {
-			try {
-				const reponse = await axios.get(`${usersApi}`);
-				setUsers(reponse.data);
-			} catch (err) {
-				console.log(err);
-			}
-		}
-		fetchUsers();
-	}, [])
 	return (
-		<div className={classes.theme}>
-			<Router>
-				<Routes>
-					<Route path='*' element={MyMissing(users)} />
-					<Route path='/' element={ <HomePage /> }/>
-					{/* <Route path='/settings' element={ <Settings /> }/> */}
-					{/* <Route path='/stats' element={ <StatsPage items={users}/> }/> */}
-					<Route path='/classement' element={ <ClassementPage items={users} /> }/>
-
-					<Route path='/api/users/:login'element={ <StatsPage items={users}/> }/>
-				</Routes>
-			</Router>
-		</div>
+		<MeProvider>
+			<div className={classes.theme}>
+				<Router>
+					<Routes>
+						<Route path='*' element={ <MyMissing />} />
+						<Route
+							path='/'
+							element={
+								<PrivateRoute roles={[ROLE.Admin]}>
+									<Home />
+								</PrivateRoute>
+							}
+						/>
+						<Route path='/parametres' element={ <Settings /> }/>
+						<Route path='/classement' element={ <Classement /> }/>
+						<Route path='/api/users/:login'element={ <Stats /> }/>
+					</Routes>
+				</Router>
+			</div>
+		</MeProvider>
 	);
 }
 
