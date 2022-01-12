@@ -12,7 +12,7 @@ import { MatchsService } from './matchs.service';
 @Controller('matchs')
 export class MatchsController {
 	
-	constructor( private readonly matchsService: MatchsService) {}
+	constructor(private readonly matchsService: MatchsService) {}
 
 	@Get('/:id')
 	@UseGuards(JwtGuard)
