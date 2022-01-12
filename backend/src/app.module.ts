@@ -9,6 +9,7 @@ import { MatchsModule } from './matchs/matchs.module';
 import { ProfileModule } from './profile/profile.module';
 import { UsersModule } from './users/users.module';
 
+import { Achievement } from './achievements/entities/achievement.entity';
 import { Friend } from './friends/entities/friend.entity';
 import { Match } from './matchs/entities/match.entity';
 import { User } from './users/entities/user.entity';
@@ -24,7 +25,7 @@ import { User } from './users/entities/user.entity';
 			password: process.env.POSTGRES_PASSWORD,
 			database: process.env.POSTGRES_DB,
 
-			entities: [ Friend, Match, User ],
+			entities: [ Achievement, Friend, Match, User ],
 			
 			synchronize: true,
 		}),

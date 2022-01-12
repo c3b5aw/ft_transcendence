@@ -112,7 +112,6 @@ export class UsersController {
 	}
 
 	// Accept friend request
-	// ToDo: test
 	@Put('/:id/friend')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
@@ -122,7 +121,7 @@ export class UsersController {
 		const ok: string = await this.friendsService.findOneAcceptedByBothId(req.user.id, id)
 
 		if (ok == 'not_friend')
-			return resp.status(409).json({ error: 'Friendship not found' });
+			return resp.status(404).json({ error: 'Friendship not found' });
 		else if (ok == 'not_pending')
 			return resp.status(409).json({ error: 'Friendship is not pending' });
 		resp.json({ message: 'Friendship accepted' });
@@ -133,6 +132,10 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	async addFriend(@Req() req: any,
 					@Param('id') id: number, @Res() resp: Response) {
+		const user = await this.userService.findOneByID( id );
+		if (!user)
+			return resp.status(404).json({ error: 'User not found' });
+		
 		const state : string = await this.friendsService.addFriend(req.user.id, id);
 		if (!state || state == 'already_friend')
 			return resp.status(409).json({ error: 'Already friend' });
