@@ -18,7 +18,8 @@ export class Friend {
 	@ApiProperty({ description: "friend id", example: 83121 })
 	friend_id: number;
 
-	@Column({ type: 'enum', enum: FriendStatus, default: FriendStatus.PENDING, nullable: false })
+	@Column({ type: 'enum', enum: FriendStatus, 
+			default: FriendStatus.STATUS_PENDING, nullable: false })
 	@ApiProperty({ description: "friend status", example: "PENDING" })
 	status: FriendStatus;
 }

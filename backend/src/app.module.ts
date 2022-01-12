@@ -9,6 +9,7 @@ import { MatchsModule } from './matchs/matchs.module';
 import { ProfileModule } from './profile/profile.module';
 import { UsersModule } from './users/users.module';
 
+import { Friend } from './friends/entities/friend.entity';
 import { Match } from './matchs/entities/match.entity';
 import { User } from './users/entities/user.entity';
 
@@ -23,7 +24,7 @@ import { User } from './users/entities/user.entity';
 			password: process.env.POSTGRES_PASSWORD,
 			database: process.env.POSTGRES_DB,
 
-			entities: [ User, Match ],
+			entities: [ Friend, Match, User ],
 			
 			synchronize: true,
 		}),
