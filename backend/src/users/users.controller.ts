@@ -13,11 +13,15 @@ import { UsersService } from './users.service';
 import { Match } from 'src/matchs/entities/match.entity';
 import { MatchsService } from 'src/matchs/matchs.service';
 
+import { Friend } from 'src/friends/entities/friend.entity';
+import { FriendsService } from 'src/friends/friends.service';
+
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
 
 	constructor(private readonly userService: UsersService,
+		private readonly friendsService: FriendsService,
 		private readonly matchService: MatchsService) {}
 
 	@Get()
@@ -85,10 +89,13 @@ export class UsersController {
 	// @UseGuards(JwtGuard)
 	// getUserAchievements() {}
 
-	// Get all friends
-	// @Get('/:id/friends')
-	// @UseGuards(JwtGuard)
-	// getFriend() {}
+	// Get all ACCEPTED friends
+	@Get('/:id/friends')
+	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
+	async getFriend(@Param('id') id: number) : Promise<Friend[]> {
+		return this.friendsService.findAllAcceptedByID( id );
+	}
 
 	// Accept friend request
 	// @Put('/:id/friends/')
@@ -99,7 +106,20 @@ export class UsersController {
 	// addFriend() {}
 
 	// Delete a friend or a friend request
-	// @Delete('/:id/friend')
-	// @UseGuards(JwtGuard)
-	// removeFriend() {}
+	@Delete('/:id/friend')
+	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
+	async removeFriend(@Req() req: any, @Param('id') id: number, 
+						@Res() resp: Response) {
+		const ok: boolean = await this.friendsService.removeFriend(
+			req.user.id, id
+		)
+		if (!ok)
+			return resp.status(404).json({
+				error: 'Friendship not found',
+			});
+		resp.json({
+			message: 'Friendship deleted',
+		})
+	}
 }

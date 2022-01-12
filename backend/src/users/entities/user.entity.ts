@@ -28,6 +28,7 @@ export class User {
 	@Column({ type: 'enum', enum: UserRole, default: UserRole.MEMBER, nullable: false })
 	@ApiProperty({ description: "user role", example: "MEMBER" })
 	role: UserRole;
+
 	/*
 		2FA
 	*/

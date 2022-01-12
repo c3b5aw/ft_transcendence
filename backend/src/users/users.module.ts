@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FriendsModule } from 'src/friends/friends.module';
 import { MatchsModule } from 'src/matchs/matchs.module';
 
 import { User } from './entities/user.entity';
@@ -10,6 +11,7 @@ import { UsersService } from './users.service';
 	imports: [
 		TypeOrmModule.forFeature([User]),
 		MatchsModule,
+		FriendsModule,
 	],
 	controllers: [
 		UsersController,
