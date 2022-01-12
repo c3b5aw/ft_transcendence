@@ -9,6 +9,7 @@ import { rename, unlink } from 'fs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PostDisplayNameDto } from './dto/postDisplayName.dto';
 
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -28,6 +29,10 @@ export class ProfileController {
 				error: 'Display name must be at least 3 characters long.',
 			});
 		
+		const name: User = await this.usersService.findOneByDisplayName(data.display_name);
+		if (name)
+			return resp.status(409).json({	error: 'Display name already taken.' });
+
 		await this.usersService.updateDisplayName(req.user.id, data.display_name);
 
 		return JSON.stringify({
