@@ -13,16 +13,16 @@ async function bootstrap() {
 	app.use(passport.initialize());
 	app.use(passport.session());
 
-	if (process.env.NODE_ENV !== 'production') {
-		const config = new DocumentBuilder()
-			.setTitle('ft_transcendence API')
-			.setDescription('')
-			.setVersion('1.0')
-			.addTag('')
-			.build();
-		const document = SwaggerModule.createDocument(app, config);
-		SwaggerModule.setup('api/docs', app, document);
-	}
+	// if (process.env.NODE_ENV !== 'production') {
+	const config = new DocumentBuilder()
+		.setTitle('ft_transcendence API')
+		.setDescription('')
+		.setVersion('1.0')
+		.addTag('')
+		.build();
+	const document = SwaggerModule.createDocument(app, config);
+	SwaggerModule.setup('api/docs', app, document);
+	// }
 
 	await app.listen(3000);
 }

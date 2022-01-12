@@ -1,5 +1,5 @@
 import { Controller, Get, Put, Delete,
-		UseGuards, Param, Res, Header } from '@nestjs/common';
+		UseGuards, Param, Res, Header, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
@@ -26,6 +26,13 @@ export class UsersController {
 	async getUsers() : Promise<User[]> {
 		const users: User[] = await this.userService.findAll();
 		return users;
+	}
+
+	@Get('/me')
+	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
+	async getMyself(@Req() req: any) : Promise<User> {
+		return this.userService.findMe(req.user.id);
 	}
 
 	@Get('/:id')
