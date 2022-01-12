@@ -39,6 +39,13 @@ export class UsersController {
 		return this.userService.findMe(req.user.id);
 	}
 
+	@Get('/me/friends')
+	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
+	async getMyselfFriends(@Req() req: any) : Promise<Friend[]> {
+		return this.friendsService.findAllAcceptedById( req.user.id );
+	}
+
 	@Get('/:id')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
@@ -94,7 +101,7 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getFriend(@Param('id') id: number) : Promise<Friend[]> {
-		return this.friendsService.findAllAcceptedByID( id );
+		return this.friendsService.findAllAcceptedById( id );
 	}
 
 	// Accept friend request
