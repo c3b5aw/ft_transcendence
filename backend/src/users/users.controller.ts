@@ -35,69 +35,87 @@ export class UsersController {
 		return this.usersService.findAll();
 	}
 
-	@Get('/:id')
+	@Get('/:login')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
-	async getUser(@Param('id') id: number, @Res() resp: Response) {
-		const user: User = await this.usersService.findOneByID( id );
+	async getUser(@Param('login') login: string, @Res() resp: Response) {
+		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
 			resp.status(404).json({ error: 'User not found' });
 		resp.send(user);
 	}
 
-	@Get('/:id/stats')
+	@Get('/:login/stats')
 	@UseGuards(JwtGuard)
-	async getUserStats(@Param('id') id: number, @Res() resp: Response) {
-		const userStats: UserStats = await this.usersService.getStatsByID( id );
+	async getUserStats(@Param('login') login: string, @Res() resp: Response) {
+		const userStats: UserStats = await this.usersService.getStatsByLogin( login );
 		if (!userStats)
-			resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'User not found' });
 		resp.send(userStats);
 	}
 
-	@Get('/:id/matchs')
+	@Get('/:login/matchs')
 	@UseGuards(JwtGuard)
-	async getUserMatchs(@Param('id') id: number) {
-		const matchs: Match[] = await this.matchService.findAllByID( id );
+	async getUserMatchs(@Param('login') login: string, @Res() resp: Response) {
+		const user: User = await this.usersService.findOneByLogin( login );
+		if (!user)
+			return resp.status(404).json({ error: 'User not found' });
+
+		const matchs: Match[] = await this.matchService.findAllById( user.id );
 		return matchs;
 	}
 
-	@Get('/:id/avatar')
+	@Get('/:login/avatar')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/jpg')
-	async getUserAvatar(@Param('id') id: number, @Res() resp: Response) {
-		return await this.usersService.sendAvatar( id, resp );
+	async getUserAvatar(@Param('login') login: string, @Res() resp: Response) {
+		const user: User = await this.usersService.findOneByLogin( login );
+		if (!user)
+			return resp.status(404).json({ error: 'User not found' });
+
+		return await this.usersService.sendAvatar( user.id, resp );
 	}
 
 	/*
 		ACHIEVEMENTS
 	*/
 
-	@Get('/:id/achievements')
+	@Get('/:login/achievements')
 	@UseGuards(JwtGuard)
-	async getUserAchievements(@Param('id') id: number) {
-		return this.achievementsService.findUserAchievementsById( id );
+	async getUserAchievements(@Param('login') login: string, @Res() resp: Response) {
+		const user: User = await this.usersService.findOneByLogin( login );
+		if (!user)
+			return resp.status(404).json({ error: 'User not found' });
+
+		return this.achievementsService.findUserAchievementsById( user.id );
 	}
 
 	/*
 		FRIENDS
 	*/
 
-	// Get all ACCEPTED friends
-	@Get('/:id/friends')
+	@Get('/:login/friends')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
-	async getFriend(@Param('id') id: number) : Promise<Friend[]> {
-		return this.friendsService.findAllAcceptedById( id );
+	async getFriend(@Param('login') login: string, @Res() resp: Response) {
+		const user: User = await this.usersService.findOneByLogin( login );
+		if (!user)
+			return resp.status(404).json({ error: 'User not found' });
+
+		return this.friendsService.findAllAcceptedById( user.id );
 	}
 
-	// Accept friend request
-	@Put('/:id/friend')
+	@Put('/:login/friend')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async acceptFriend(@Req() req: any, 
-						@Param('id') id: number, @Res() resp: Response) {
+						@Param('login') login: string, @Res() resp: Response) {
 
-		const ok: string = await this.friendsService.findOneAcceptedByBothId(req.user.id, id)
+		const user: User = await this.usersService.findOneByLogin( login );
+		if (!user)
+			return resp.status(404).json({ error: 'User not found' });
+
+		const ok: string = await this.friendsService.findOneAcceptedByBothId(req.user.id, user.id)
 
 		if (ok == 'not_friend')
 			return resp.status(404).json({ error: 'Friendship not found' });
@@ -106,28 +124,30 @@ export class UsersController {
 		resp.json({ message: 'Friendship accepted' });
 	}
 
-	// Add a friend (send a friend request)
-	@Post('/:id/friend')
+	@Post('/:login/friend')
 	@UseGuards(JwtGuard)
 	async addFriend(@Req() req: any,
-					@Param('id') id: number, @Res() resp: Response) {
-		const user = await this.usersService.findOneByID( id );
+					@Param('login') login: string, @Res() resp: Response) {
+		const user = await this.usersService.findOneByLogin( login );
 		if (!user)
 			return resp.status(404).json({ error: 'User not found' });
 		
-		const state : string = await this.friendsService.addFriend(req.user.id, id);
+		const state : string = await this.friendsService.addFriend( req.user.id, user.id );
 		if (!state || state == 'already_friend')
 			return resp.status(409).json({ error: 'Already friend' });
 		return resp.status(201).json({ message: 'Friendship request sent' });
 	}
 
-	// Delete a friend or a friend request
-	@Delete('/:id/friend')
+	@Delete('/:login/friend')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
-	async removeFriend(@Req() req: any, @Param('id') id: number, 
+	async removeFriend(@Req() req: any, @Param('login') login: string, 
 						@Res() resp: Response) {
-		const ok: boolean = await this.friendsService.removeFriend(req.user.id, id);
+		const user = await this.usersService.findOneByLogin( login );
+		if (!user)
+			return resp.status(404).json({ error: 'User not found' });
+		
+		const ok: boolean = await this.friendsService.removeFriend( req.user.id, user.id );
 		if (!ok)
 			return resp.status(404).json({ error: 'Friendship not found' });
 		resp.json({ message: 'Friendship deleted' });

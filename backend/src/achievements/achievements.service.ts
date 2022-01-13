@@ -18,6 +18,7 @@ export class AchievementsService {
 	async findAll() : Promise<Achievement[]> {
 		return this.achievementRepository.find();
 	}
+
 	async findUserAchievementsById(id: number) : Promise<UserAchievement[]> {
 		return this.userAchievementRepository.find({ 
 			select: ['user_id', 'achievement_id', 'unlocked_at'],

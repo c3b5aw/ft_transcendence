@@ -21,15 +21,15 @@ export class MatchsService {
 	// 	return this.matchRepository.find();
 	// }
 
-	async findOneByID(id: number) : Promise<Match> {
+	async findOneById(id: number) : Promise<Match> {
 		return this.matchRepository.findOne({ id });
 	}
 
-	async findAllByID(id: number) : Promise<Match[]> {
+	async findAllById(id: number) : Promise<Match[]> {
 		return this.matchRepository.find({ 
 			where: [
-				{ player_1: id },
-				{ player_2: id }
+				{ player_1_id: id },
+				{ player_2_id: id }
 			],
 			order: {
 				date: "DESC",
