@@ -28,7 +28,7 @@ export class AchievementsController {
 	async getAchievement(@Param('id') id: number, @Res() resp: Response) {
 		const achievement: Achievement = await this.achievementsService.findOneByID( id );
 		if (!achievement)
-			return resp.status(404).json({ error: 'Achievement not found' });
+			return resp.status(404).json({ error: 'achievement not found' });
 		resp.send(achievement);
 	}
 

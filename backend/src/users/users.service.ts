@@ -66,9 +66,7 @@ export class UsersService {
 	}
 
 	async findAll() : Promise<User[]> {
-		return this.userRepository.find({
-			select: [ 'id', 'login' ]
-		});
+		return this.userRepository.find({ select: [ 'id', 'login' ] });
 	}
 
 	async findOneByLogin(login: string) : Promise<User> {
@@ -145,7 +143,7 @@ export class UsersService {
 					if (err_fallback) {
 						resp.header('Content-Type', 'application/json');
 						resp.status(404).json({
-							error: 'File not found',
+							error: 'file not found',
 						});
 					}
 				})

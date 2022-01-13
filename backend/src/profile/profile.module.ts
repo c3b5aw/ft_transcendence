@@ -13,9 +13,7 @@ import { FriendsModule } from 'src/friends/friends.module';
 		UsersModule,
 		FriendsModule,
 	],
-	controllers: [
-		ProfileController,
-	],
+	controllers: [ ProfileController ],
 	providers: [],
 	exports: [],
 })

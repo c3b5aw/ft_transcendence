@@ -33,7 +33,7 @@ export class AchievementsService {
 			if (err) {
 				resp.header('Content-Type', 'application/json');
 				resp.status(404).json({
-					error: 'File not found',
+					error: 'file not found',
 				});
 			}
 		});

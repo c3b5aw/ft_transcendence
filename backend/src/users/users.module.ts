@@ -15,15 +15,9 @@ import { UsersService } from './users.service';
 		MatchsModule,
 		FriendsModule,
 	],
-	controllers: [
-		UsersController,
-	],
-	providers: [
-		UsersService,
-	],
-	exports: [
-		UsersService,
-	]
+	controllers: [ UsersController ],
+	providers: [ UsersService ],
+	exports: [ UsersService ]
 })
 
 export class UsersModule {}
