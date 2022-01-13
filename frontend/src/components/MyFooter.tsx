@@ -20,7 +20,7 @@ export default function MyFooter(props : {me: User | undefined}) {
 	}
 
 	function handleLaunchParametres() {
-		navigate('/parametres');
+		navigate('/settings');
 	}
 	return (
 		<Box className={classes.box} sx={boxStyle}>

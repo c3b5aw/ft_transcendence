@@ -39,9 +39,30 @@ function ManageRouter() {
 								</PrivateRoute>
 							}
 						/>
-						<Route path={pageSettings} element={ <Settings /> }/>
-						<Route path={pageClassement} element={ <Classement /> }/>
-						<Route path={pageStats} element={ <Stats /> }/>
+						<Route
+							path={pageSettings}
+							element={
+								<PrivateRoute roles={[ROLE.Admin]}>
+									<Settings />
+								</PrivateRoute>
+							}
+						/>
+						<Route
+							path={pageClassement}
+							element={
+								<PrivateRoute roles={[ROLE.Admin]}>
+									<Classement />
+								</PrivateRoute>
+							}
+						/>
+						<Route
+							path={pageStats}
+							element={
+								<PrivateRoute roles={[ROLE.Admin]}>
+									<Stats />
+								</PrivateRoute>
+							}
+						/>
 					</Routes>
 				</Router>
 			</div>
