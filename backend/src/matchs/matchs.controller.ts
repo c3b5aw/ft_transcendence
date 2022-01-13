@@ -12,11 +12,7 @@ import { MatchsService } from './matchs.service';
 @Controller('matchs')
 export class MatchsController {
 	
-<<<<<<< HEAD
 	constructor( private readonly matchsService: MatchsService) {}
-=======
-	constructor(private readonly matchsService: MatchsService) {}
->>>>>>> origin/backend-login-rewrite
 
 	@Get('/:id')
 	@UseGuards(JwtGuard)

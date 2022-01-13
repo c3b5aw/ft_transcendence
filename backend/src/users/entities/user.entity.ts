@@ -65,7 +65,6 @@ export class User {
 		USER INFOS
 	*/
 
-<<<<<<< HEAD
 	// @Column({ type: 'int', default: 0 })
 	// @ApiProperty({ description: "user friends ids", example: [1, 2, 3] })
 	// friends: number[];
@@ -78,8 +77,6 @@ export class User {
 	// @ApiProperty({ description: "achivements", example: [1, 2, 3] })
 	// achivements: number[];
 
-=======
->>>>>>> origin/backend-login-rewrite
 	@Column({ type: 'boolean', default: false })
 	@ApiProperty({ description: "is online", example: true })
 	connected: boolean;

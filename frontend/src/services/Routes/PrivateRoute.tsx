@@ -9,14 +9,21 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 	useEffect(() => {
 		const fetchConnected = async () => {
 			const response = await fetch('/api/auth/status');
-			const body = await response.json();
-
-			if (body.isAuthenticated) {
-				setLogged(body.isAuthenticated);
-				// setRoles(body.user.roles);
+			if (!response.ok) {
+				throw new Error(`Erreur HTTP ! statut : ${response.status}`);
 			}
+			else {
+				const body = await response.json();
+				if (body.isAuthenticated) {
+					setLogged(body.isAuthenticated);
+					// setRoles(body.user.roles);
+				}
+			}		
 		}
-		fetchConnected();
+		fetchConnected()
+		.catch(e => {
+			console.log('Il y a eu un problème : ' + e.message);
+		});
 	}, [])
 	if (logged && roles.includes(ROLE.Admin))
 		return (children)

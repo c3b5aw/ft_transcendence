@@ -46,10 +46,6 @@ export class UsersService {
 		- findOneByID
 		- findMe
 		- findUsers
-<<<<<<< HEAD
-=======
-		- findOneByDisplayName
->>>>>>> origin/backend-login-rewrite
 	*/
 
 	async findOneByID(id: number) : Promise<User> {
@@ -69,7 +65,6 @@ export class UsersService {
 
 	async findAll() : Promise<User[]> {
 		return this.userRepository.find({
-<<<<<<< HEAD
 			select: [
 				'id',
 				'display_name',
@@ -77,16 +72,6 @@ export class UsersService {
 		});
 	}
 
-=======
-			select: [ 'id', 'display_name' ]
-		});
-	}
-
-	async findOneByDisplayName(displayName: string) : Promise<User> {
-		return this.userRepository.findOne({ display_name: displayName });
-	}
-
->>>>>>> origin/backend-login-rewrite
 	/*
 		UPDATER
 
@@ -129,7 +114,6 @@ export class UsersService {
 	async getLadder() : Promise<User[]> {
 		return this.userRepository.find({
 			select: [
-<<<<<<< HEAD
 				'id',
 				'display_name',
 				'elo',
@@ -140,12 +124,6 @@ export class UsersService {
 			order: {
 				elo: 'DESC',
 			},
-=======
-				'id', 'display_name',
-				'elo', 'played', 'victories', 'defeats'
-			],
-			order: { elo: 'DESC' },
->>>>>>> origin/backend-login-rewrite
 		});
 	}
 }
