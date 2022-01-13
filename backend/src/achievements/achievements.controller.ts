@@ -29,7 +29,7 @@ export class AchievementsController {
 		const achievement: Achievement = await this.achievementsService.findOneByID( id );
 		if (!achievement)
 			return resp.status(404).json({ error: 'Achievement not found' });
-		return achievement;
+		resp.send(achievement);
 	}
 
 	@Get('/:id/avatar')
