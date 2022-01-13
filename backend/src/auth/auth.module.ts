@@ -26,9 +26,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 		JwtStrategy,
 		SessionSerializer,
 	],
-	controllers: [
-		AuthController,
-	]
+	controllers: [ AuthController ]
 })
 
 export class AuthModule {} 

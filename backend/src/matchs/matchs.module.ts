@@ -8,18 +8,10 @@ import { MatchsService } from './matchs.service';
 import { MatchsController } from './matchs.controller';
 
 @Module({
-	imports: [
-		TypeOrmModule.forFeature([Match]),
-	],
-	controllers: [
-		MatchsController,
-	],
-	providers: [
-		MatchsService,
-	],
-	exports: [
-		MatchsService,
-	],
+	imports: [ TypeOrmModule.forFeature([Match]) ],
+	controllers: [ MatchsController ],
+	providers: [ MatchsService ],
+	exports: [ MatchsService ],
 })
 
 export class MatchsModule {}

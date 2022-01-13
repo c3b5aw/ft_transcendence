@@ -1,4 +1,4 @@
-import { Controller, Get, Header, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, Header, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';

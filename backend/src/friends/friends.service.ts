@@ -13,7 +13,6 @@ export class FriendsService {
 
 	async findAllAcceptedById(id: number) : Promise<Friend[]> {
 		return this.friendRepository.createQueryBuilder()
-			.select('user_id', 'friend_id')
 			.where('(user_id = :id OR friend_id = :id)', { id })
 			.andWhere('status = :status', { status: FriendStatus.STATUS_ACCEPTED })
 			.getMany();
@@ -21,7 +20,6 @@ export class FriendsService {
 
 	async findAllPendingById(id: number) : Promise<Friend[]> {
 		return this.friendRepository.createQueryBuilder()
-			.select('user_id', 'friend_id')
 			.where('(user_id = :id OR friend_id = :id)', { id })
 			.andWhere('status = :status', { status: FriendStatus.STATUS_PENDING })
 			.getMany();
@@ -34,19 +32,15 @@ export class FriendsService {
 			.getOne();
 	}
 
-	async findOneAcceptedByBothId(uid: number, fid: number) : Promise<string> {
-		const friendShip: Friend = await this.findOneByBothId(uid, fid);
-
-		if (!friendShip)
-			return 'not_friend';
-
-		if (friendShip.status !== FriendStatus.STATUS_ACCEPTED)
-			return 'not_accepted';
-
-		return 'friend';
+	async findOnePendingByBothId(uid: number, fid: number) : Promise<Friend> {
+		return this.friendRepository.createQueryBuilder()
+			.where('(user_id = :uid OR friend_id = :uid)', { uid })
+			.andWhere('(user_id = :fid OR friend_id = :fid)', { fid })
+			.andWhere('status = :status', { status: FriendStatus.STATUS_PENDING })
+			.getOne();
 	}
 
-	async addFriend(uid: number, fid: number) : Promise<string> {
+	async addFriend(uid: number, ulogin: string, fid: number, flogin: string) : Promise<string> {
 		const friendShip: Friend = await this.findOneByBothId(uid, fid);
 
 		if (friendShip)
@@ -54,11 +48,24 @@ export class FriendsService {
 
 		const newFriend: Friend = new Friend();
 		newFriend.user_id = uid;
+		newFriend.user_login = ulogin;
 		newFriend.friend_id = fid;
+		newFriend.friend_login = flogin;
 		newFriend.status = FriendStatus.STATUS_PENDING;
 
 		await this.friendRepository.save(newFriend);
 		return 'friend_added';
+	}
+
+	async acceptFriend(id: number) : Promise<boolean> {
+		const friendShip: Friend = await this.friendRepository.findOne(id);
+
+		if (!friendShip)
+			return false;
+
+		friendShip.status = FriendStatus.STATUS_ACCEPTED;
+		await this.friendRepository.save(friendShip);
+		return true;
 	}
 
 	async removeFriend(uid: number, fid: number) : Promise<boolean> {

@@ -18,10 +18,10 @@ export class MatchsController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getMatch(@Param('id') id: number, @Res() resp: Response) {
-		const match: Match = await this.matchsService.findOneByID( id );
+		const match: Match = await this.matchsService.findOneById( id );
 		if (!match)
-			return resp.status(404).json({ error: 'Match not found' });
-		return match;
+			return resp.status(404).json({ error: 'match not found' });
+		resp.send(match);
 	}
 
 	// @Get('/')
