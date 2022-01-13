@@ -30,7 +30,14 @@ export class MatchsService {
 			where: [
 				{ player_1: id },
 				{ player_2: id }
+<<<<<<< HEAD
 			]
+=======
+			],
+			order: {
+				date: "DESC",
+			}
+>>>>>>> origin/backend-login-rewrite
 		});
 	}
 

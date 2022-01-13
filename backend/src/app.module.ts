@@ -3,7 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 
+import { AchievementsModule } from './achievements/achievements.module';
 import { AuthModule } from './auth/auth.module'
+import { FriendsModule } from './friends/friends.module';
 import { LadderModule } from './ladder/ladder.module';
 import { MatchsModule } from './matchs/matchs.module';
 import { ProfileModule } from './profile/profile.module';
@@ -12,6 +14,7 @@ import { UsersModule } from './users/users.module';
 import { Friend } from './friends/entities/friend.entity';
 import { Match } from './matchs/entities/match.entity';
 import { User } from './users/entities/user.entity';
+import { UserAchievement } from './achievements/entities/user_achievements.entity';
 
 @Module({
 	imports: [
@@ -28,6 +31,7 @@ import { User } from './users/entities/user.entity';
 			
 			synchronize: true,
 		}),
+		AchievementsModule,
 		AuthModule,
 		LadderModule,
 		MatchsModule,

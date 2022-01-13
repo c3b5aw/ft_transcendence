@@ -62,9 +62,10 @@ export class User {
 	defeats: number;
 
 	/*
-		FRIENDS
+		USER INFOS
 	*/
 
+<<<<<<< HEAD
 	// @Column({ type: 'int', default: 0 })
 	// @ApiProperty({ description: "user friends ids", example: [1, 2, 3] })
 	// friends: number[];
@@ -77,15 +78,17 @@ export class User {
 	// @ApiProperty({ description: "achivements", example: [1, 2, 3] })
 	// achivements: number[];
 
+=======
+>>>>>>> origin/backend-login-rewrite
 	@Column({ type: 'boolean', default: false })
 	@ApiProperty({ description: "is online", example: true })
 	connected: boolean;
 
-	@CreateDateColumn({ update: false })
+	@CreateDateColumn({ update: false, default: () => 'CURRENT_TIMESTAMP', nullable: false  })
 	@ApiProperty({ description: "user register date", example: "2020-01-01T00:00:00.000Z" })
 	created: Date;
 
-	@CreateDateColumn({ update: true })
+	@CreateDateColumn({ update: true, default: () => 'CURRENT_TIMESTAMP', nullable: false  })
 	@ApiProperty({ description: "user last login date", example: "2020-01-01T00:00:00.000Z" })
 	lastLogin: Date;
 }
