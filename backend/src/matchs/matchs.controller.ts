@@ -21,7 +21,7 @@ export class MatchsController {
 		const match: Match = await this.matchsService.findOneById( id );
 		if (!match)
 			return resp.status(404).json({ error: 'Match not found' });
-		return match;
+		resp.send(match);
 	}
 
 	// @Get('/')
