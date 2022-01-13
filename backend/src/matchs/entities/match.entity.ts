@@ -31,7 +31,7 @@ export class Match {
 	@ApiProperty({ description: "player 1 ID", example: 12 })
 	player_1_id: number;
 
-	@Column({ type: 'int', default: 0, nullable: false })
+	@Column({ type: 'varchar', length: 64, nullable: false })
 	@ApiProperty({ description: "player 1 login", example: "intra42" })
 	player_1_login: string;
 
@@ -47,7 +47,7 @@ export class Match {
 	@ApiProperty({ description: "player 2 ID", example: 13 })
 	player_2_id: number;
 
-	@Column({ type: 'int', default: 0, nullable: false })
+	@Column({ type: 'varchar', length: 64, nullable: false })
 	@ApiProperty({ description: "player 2 login", example: "intra42" })
 	player_2_login: string;
 

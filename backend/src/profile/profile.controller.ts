@@ -67,6 +67,11 @@ export class ProfileController {
 			return resp.status(400).json({
 				error: 'Display name must be at least 3 characters long.',
 			});
+
+		if (data.display_name.length >= 64)
+			return resp.status(400).json({
+				error: 'Display name must be less than 64 characters long.',
+			})
 		
 		const name: User = await this.usersService.findOneByDisplayName(data.display_name);
 		if (name)
