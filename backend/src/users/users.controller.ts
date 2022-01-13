@@ -67,7 +67,7 @@ export class UsersController {
 			return resp.status(404).json({ error: 'User not found' });
 
 		const matchs: Match[] = await this.matchService.findAllById( user.id );
-		return matchs;
+		resp.send(matchs);
 	}
 
 	@Get('/:login/avatar')
@@ -92,7 +92,8 @@ export class UsersController {
 		if (!user)
 			return resp.status(404).json({ error: 'User not found' });
 
-		return this.achievementsService.findUserAchievementsById( user.id );
+		const achievements = await this.achievementsService.findUserAchievementsById( user.id );
+		resp.send(achievements);
 	}
 
 	/*
@@ -107,7 +108,8 @@ export class UsersController {
 		if (!user)
 			return resp.status(404).json({ error: 'User not found' });
 
-		return this.friendsService.findAllAcceptedById( user.id );
+		const friends : Friend[] = await this.friendsService.findAllAcceptedById( user.id );
+		resp.send(friends);
 	}
 
 	@Put('/:login/friend')
@@ -120,12 +122,15 @@ export class UsersController {
 		if (!user)
 			return resp.status(404).json({ error: 'User not found' });
 
-		const ok: string = await this.friendsService.findOneAcceptedByBothId(req.user.id, user.id)
+		const friend: Friend = await this.friendsService.findOnePendingByBothId(req.user.id, user.id)
+		if (!friend)
+			return resp.status(404).json({ error: 'Pending friendship not found' });
+		
+		if (friend.friend_id !== req.user.id) {
+			return resp.status(403).json({ error: 'You cannot accepted a request you sent' });
+		}
 
-		if (ok == 'not_friend')
-			return resp.status(404).json({ error: 'Friendship not found' });
-		else if (ok == 'not_pending')
-			return resp.status(409).json({ error: 'Friendship is not pending' });
+		await this.friendsService.acceptFriend( friend.id );
 		resp.json({ message: 'Friendship accepted' });
 	}
 
@@ -136,11 +141,14 @@ export class UsersController {
 		const user = await this.usersService.findOneByLogin( login );
 		if (!user)
 			return resp.status(404).json({ error: 'User not found' });
+		if (user.id == req.user.id)
+			return resp.status(409).json({ error: 'You can\'t add yourself' });
 		
-		const state : string = await this.friendsService.addFriend( req.user.id, user.id );
+		const state : string = await this.friendsService.addFriend( 
+					req.user.id, req.user.login, user.id, user.login );
 		if (!state || state == 'already_friend')
 			return resp.status(409).json({ error: 'Already friend' });
-		return resp.status(201).json({ message: 'Friendship request sent' });
+		resp.status(201).json({ message: 'Friendship request sent' });
 	}
 
 	@Delete('/:login/friend')
