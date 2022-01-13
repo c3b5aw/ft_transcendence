@@ -63,15 +63,11 @@ export class ProfileController {
 	@Header('Content-Type', 'application/json')
 	async setDisplayName(@Req() req: any, @Body() data: PostDisplayNameDto,
 						@Res() resp: Response) {
-		if (data.display_name.length < 3)
-			return resp.status(400).json({
-				error: 'Display name must be at least 3 characters long.',
-			});
 
+		if (data.display_name.length < 3)
+			return resp.status(400).json({ error: 'Display name must be at least 3 characters long.' });
 		if (data.display_name.length >= 64)
-			return resp.status(400).json({
-				error: 'Display name must be less than 64 characters long.',
-			})
+			return resp.status(400).json({ error: 'Display name must be less than 64 characters long.' })
 		
 		const name: User = await this.usersService.findOneByDisplayName(data.display_name);
 		if (name)
@@ -89,9 +85,7 @@ export class ProfileController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	@UseInterceptors(FileInterceptor('file', {
-		limits: {
-			fileSize: 1024 * 1024 * 24, // ~24MB
-		},
+		limits: { fileSize: 1024 * 1024 * 24 },  // ~24MB
 		storage: diskStorage({
 			destination: './src/public/uploads',
 			filename: (req: any, file, cb) => {
@@ -102,18 +96,14 @@ export class ProfileController {
 	async setAvatar(@Req() req: any, @UploadedFile() file: Express.Multer.File,
 					@Res() resp: Response) {
 		if (!file)
-			return resp.status(400).json({
-				error: 'No file was uploaded.',
-			});
+			return resp.status(400).json({ error: 'No file was uploaded.' });
 
 		if (file.mimetype !== 'image/jpeg') {
 			unlink('./public/uploads/' + req.user.id + '.jpg', (err) => {
 				if (err)
 					console.log(err);
 			});
-			return resp.status(400).json({
-				error: 'Only jpeg images are accepted.',
-			});
+			return resp.status(400).json({ error: 'Only jpeg images are accepted.' });
 		}
 
 		rename('./public/uploads/' + req.user.id + '.jpg', 
@@ -123,9 +113,7 @@ export class ProfileController {
 					if (err)
 						console.log(err);
 				});
-				return resp.status(500).json({
-					error: 'Failed while processing the file',
-				});
+				return resp.status(500).json({ error: 'Failed while processing the file' });
 			}
 		});
 	

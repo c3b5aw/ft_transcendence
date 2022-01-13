@@ -31,9 +31,7 @@ export class MatchsService {
 				{ player_1_id: id },
 				{ player_2_id: id }
 			],
-			order: {
-				date: "DESC",
-			}
+			order: { date: "DESC" }
 		});
 	}
 
