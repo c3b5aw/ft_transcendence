@@ -25,10 +25,10 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 			console.log('Il y a eu un problème : ' + e.message);
 		});
 	}, [])
-	// if (logged && roles.includes(ROLE.Admin))
+	if (logged && roles.includes(ROLE.Admin))
 		return (children)
-	// else
-		// return (<Connection />);
+	else
+		return (<Connection />);
 };
 
 export default PrivateRoute;

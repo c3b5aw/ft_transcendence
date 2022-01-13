@@ -4,7 +4,7 @@ import Divider from '@mui/material/Divider';
 import { useNavigate } from 'react-router';
 import { api, apiFriends, apiUsers } from '../services/Api/Api';
 import { avatarStyle } from '../styles/Styles';
-import { User } from '../services/Interface/Interface';
+import { Friends, User } from '../services/Interface/Interface';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -13,7 +13,7 @@ import axios from 'axios';
 
 function MyListFriends(props : {me: User | undefined}) {
 	const { me } = props;
-	const [friends, setFriends] = useState<User[]>([]);
+	const [friends, setFriends] = useState<Friends[]>([]);
 	
 	const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ function MyListFriends(props : {me: User | undefined}) {
 	useEffect(() => {
 		const fetchFriends = async () => {
 			try {
-				const reponse = await axios.get(`${api}${apiUsers}/${me?.id}${apiFriends}`);
+				const reponse = await axios.get(`${api}${apiUsers}/${me?.login}${apiFriends}`);
 				setFriends(reponse.data);
 			} catch (err) {
 				console.log(err);
@@ -48,7 +48,7 @@ function MyListFriends(props : {me: User | undefined}) {
 			<Stack direction="row" sx={{width: 1, height: 1/12}} alignItems="center" justifyContent="space-between">
 				<Stack direction="row" sx={{width: 1, height: 3/4}} alignItems="center" spacing={2}>
 					<Avatar
-						src={`http:///localhost/api/profile/avatar`}
+						src={`http://127.0.0.1/api/profile/avatar`}
 						sx={{marginLeft: "3%", width: "64px", height: "64px"}}>
 					</Avatar>
 					<h1>{me?.login}</h1>
@@ -71,15 +71,15 @@ function MyListFriends(props : {me: User | undefined}) {
 							{friends.map(friend => (
 								<div key={friend.id}>
 									<ListItem component="div" disablePadding>
-										<ListItemButton onClick={() => handleClick(friend.login)}>
+										<ListItemButton onClick={() => handleClick(friend.user_login)}>
 											<Stack direction="row" alignItems="center" sx={{width: 1}}>
 												<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row">
 													<Stack sx={{ width: "85%", height: 1}} alignItems="center" spacing={2} direction="row">
 														<Avatar
 															sx={avatarStyle}
-															src={`http:///localhost/api/users/${friend.login}/avatar`}>
+															src={`http://127.0.0.1/api/users/${friend.user_login}/avatar`}>
 														</Avatar>
-														<h2>{friend.login}</h2>
+														<h2>{friend.user_login}</h2>
 													</Stack>
 												</Stack>
 												{friend.id !== 2 ? 

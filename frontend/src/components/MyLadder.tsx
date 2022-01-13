@@ -13,36 +13,38 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { api, apiLadder, apiUsers } from "../services/Api/Api";
+import { api, apiLadder, apiMatch, apiUsers } from "../services/Api/Api";
 import { useEffect, useState } from 'react';
 import { Match, User } from '../services/Interface/Interface';
 import { Stack } from '@mui/material';
 
-function Row(props: { row: User }) {
+function Row(props: { user: User, me: User | undefined }) {
   	const [open, setOpen] = React.useState(false);
   	const [matchs, setMatchs] = React.useState<Match[]>([]);
-	const { row } = props;
+	const { user } = props;
+	const { me } = props;
 	const navigate = useNavigate();
 	
 	useEffect(() => {
 		const fetchMatchs = async () => {
 			try {
-				if (row)
+				if (user)
 				{
-					const reponse = await axios.get(`${api}${apiLadder}`);
+					const reponse = await axios.get(`${api}${apiUsers}/${user.login}${apiMatch}`);
 					setMatchs(reponse.data);
 				}
 			} catch (err) {
 				console.log(err);
 			}
 		}
-		if (open)
+		// eslint-disable-next-line eqeqeq
+		if (open && me != undefined)
 			fetchMatchs();
-	}, [row, open])
+	}, [user, open, me])
 
   return (
 	<React.Fragment>
-	  <TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: row.display_name === 'Elie Oliveira' ? 'orange' : 'white' }}>
+	  <TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: user.login === me?.login ? 'orange' : 'white' }}>
 		<TableCell>
 		  <IconButton
 			aria-label="expand row"
@@ -52,11 +54,11 @@ function Row(props: { row: User }) {
 			{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
 		  </IconButton>
 		</TableCell>
-		<TableCell onClick={() => navigate(`${api}${apiUsers}/${row.id}`)} component="th" scope="row">{row.display_name}</TableCell>
-		<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{row.elo}</TableCell>
-		<TableCell align="center">{row.victories}</TableCell>
-		<TableCell align="center">{row.defeats}</TableCell>
-		<TableCell align="center">{row.victories + row.defeats}</TableCell>
+		<TableCell onClick={() => navigate(`${api}${apiUsers}/${user.id}`)} component="th" scope="row">{user.display_name}</TableCell>
+		<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{user.elo}</TableCell>
+		<TableCell align="center">{user.victories}</TableCell>
+		<TableCell align="center">{user.defeats}</TableCell>
+		<TableCell align="center">{user.victories + user.defeats}</TableCell>
 	  </TableRow>
 	  <TableRow>
 		<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -78,11 +80,11 @@ function Row(props: { row: User }) {
 				<TableBody>
 				  {matchs.map((match) => (
 					<TableRow key={match.id}>
-					  <TableCell component="th" scope="row" align="center">{match.loginAdversaireOne}</TableCell>
-					  <TableCell align="center" sx={{color: match.scoreOne > match.scoreTwo ? "green" : match.scoreOne < match.scoreTwo ? "#C70039" : "black"}}>{match.scoreOne}</TableCell>
+					  <TableCell component="th" scope="row" align="center">{match.player_1_login}</TableCell>
+					  <TableCell align="center" sx={{color: match.player_1_score > match.player_2_score ? "green" : match.player_1_score < match.player_2_score ? "#C70039" : "black"}}>{match.player_1_score}</TableCell>
 					  <TableCell align="center" sx={{fontFamily: 'Myriad Pro', fontSize: "27px", alignContent: "center"}}>-</TableCell>
-					  <TableCell align="center" sx={{color: match.scoreTwo > match.scoreOne ? "green" : match.scoreTwo < match.scoreOne ? "#C70039" : "black"}}>{match.scoreTwo}</TableCell>
-					  <TableCell align="center">{match.loginAdversaireTwo}</TableCell>
+					  <TableCell align="center" sx={{color: match.player_2_score > match.player_1_score ? "green" : match.player_2_score < match.player_1_score ? "#C70039" : "black"}}>{match.player_2_score}</TableCell>
+					  <TableCell align="center">{match.player_2_login}</TableCell>
 					</TableRow>
 				  ))}
 				</TableBody>
@@ -95,9 +97,10 @@ function Row(props: { row: User }) {
   );
 }
 
-export default function MyLadder() {
+export default function MyLadder(props: {me: User | undefined}) {
 
 	const [users, setUsers] = useState<User[]>([]);
+	const { me } = props;
 
 	useEffect(() => {
 		const fetchUsers = async () => {
@@ -115,7 +118,7 @@ export default function MyLadder() {
 						<TableRow>
 							<TableCell />
 							<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Classement</p></TableCell>
-							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Place</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Elo</TableCell>
 							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Victoires</TableCell>
 							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Défaites</TableCell>
 							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Total</TableCell>
@@ -124,7 +127,7 @@ export default function MyLadder() {
 					</TableHead>
 					<TableBody>
 						{users.map((user) => (
-						<Row key={user.id} row={user} />
+						<Row key={user.id} user={user} me={me}/>
 						))}
 					</TableBody>
 				</Table>

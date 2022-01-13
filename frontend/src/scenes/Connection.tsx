@@ -3,11 +3,11 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Button from '../components/MyButton';
 import { StyleH1 } from '../styles/Styles';
+import { apiConnection } from '../services/Api/Api';
 
 function Connection()
 {
 	const styleH1 = StyleH1();
-
 	return (
 		<Stack>
 			<Box sx={{
@@ -34,7 +34,7 @@ function Connection()
 				color="white"
 				height = "100px"
 				onClick={() => {
-					window.location.href = "http://localhost/api/auth/login";
+					window.location.href = `${apiConnection}`
 				}}
 				width = "350px"
 				children = "OAuth 42"
@@ -49,16 +49,16 @@ function Connection()
 			}}>
 				<Stack direction="row" spacing={3}>
 					<Avatar
-						src={`http:///localhost/api/users/eoliveir/avatar`}
+						src="./avatars/77460.jpg"
 						sx={{ width: 64, height: 64, bgcolor: "green" }}/>
 					<Avatar
-						src={`http:///localhost/api/users/nbascaul/avatar`}
+						src="./avatars/73316.jpg"
 						sx={{ width: 64, height: 64, bgcolor: "green" }}/>
 					<Avatar
-						src={`http:///localhost/api/users/sbeaujar/avatar`}
+						src="./avatars/77558.jpg"
 						sx={{ width: 64, height: 64, bgcolor: "green" }}/>
 					<Avatar
-						src={`http:///localhost/api/users/jtrauque/avatar`}
+						src="./avatars/83781.jpg"
 						sx={{ width: 64, height: 64, bgcolor: "green" }}/>
 				</Stack>
 			</Box>

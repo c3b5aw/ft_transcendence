@@ -38,7 +38,7 @@ const MyChat = (props: {user: User | undefined}) => {
 			<Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
 				<Stack direction="row" sx={{width: 1, height: 1/12}} alignItems="center" justifyContent="space-between">
 					<Stack direction="row" sx={{width: 1, height: 3/4}} alignItems="center">
-						<Avatar src="http://localhost/api/profile/avatar" sx={{margin: "3%", width: "64px", height: "64px"}}></Avatar>
+						<Avatar src={`http://127.0.0.1/api/users/${user.login}/avatar`} sx={{margin: "3%", width: "64px", height: "64px"}}></Avatar>
 						<h3>{user?.login}</h3>
 					</Stack>
 					{user.connected ? 

@@ -1,16 +1,21 @@
-import { Avatar, CircularProgress, Stack } from '@mui/material';
+import { Avatar, Button, CircularProgress, Stack } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MyAchievements from '../components/MyAchievements';
 import MyChat from '../components/MyChat';
 import MyHistory from '../components/MyHistory';
+import { api, apiMe } from '../services/Api/Api';
 import { User } from '../services/Interface/Interface';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Box } from '@mui/system';
 
 const Stats = () => {
 	const { login } = useParams();
 
 	const [user, setUser] = useState<User>();
+	const [me, setMe] = useState<User>();
 
 	// const testMessageList: MessageProps[] = [
 	// 	{ message: "Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout casBonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout casBonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas", to:"tom" },
@@ -40,6 +45,18 @@ const Stats = () => {
 	// const [messages] = useState<MessageProps[]>(testMessageList);
 
 	useEffect(() => {
+		const fetchMe = async () => {
+			try {
+				const reponse = await axios.get(`${api}${apiMe}`);
+				setMe(reponse.data);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		fetchMe();
+	}, [login])
+
+	useEffect(() => {
 		const fetchUser = async () => {
 			try {
 				const reponse = await axios.get(`${login}`);
@@ -49,7 +66,7 @@ const Stats = () => {
 			}
 		}
 		fetchUser();
-	}, [login])
+	}, [login, me])
 
 	// eslint-disable-next-line eqeqeq
 	if (user == undefined) {
@@ -60,30 +77,44 @@ const Stats = () => {
 		);
 	}
 	return (
-		<Stack sx={{width: 1, height: 1}} direction="row">
+		<Stack sx={{width: 1, height: 1}} direction="row" spacing={3}>
 			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
 				<Stack sx={{ width: 1, height: 1/4 }} direction="column" alignItems="center" justifyContent="center" spacing={3}>
 					<Avatar
-						src={`http:///localhost/api/users/${user.login}/avatar`}
+						src={`http://127.0.0.1/api/users/${user.login}/avatar`}
 						sx={{ width: "126px", height: "126px" }}>
 					</Avatar>
 					<h2>{user.login}</h2>
 					<h3 style={{ color: 'grey' }}>Join le 03/01/2022</h3>
 				</Stack>
 				<Stack sx={{ width: 1, height: 1/4, marginLeft: "30%" }} direction="column" justifyContent="center" spacing={4}>
-					<h2>Matchs joués : {user.login}</h2>
-					<h2>Classement : {user.login}</h2>
-					<h2 style={{color: '#079200'}}>Victoires : {user.login}</h2>
-					<h2 style={{color: '#C70039'}}>Défaites : {user.login}</h2>
+					<h2>Matchs joués : {user.played}</h2>
+					<h2>Classement : {user.elo}</h2>
+					<h2 style={{color: '#079200'}}>Victoires : {user.victories}</h2>
+					<h2 style={{color: '#C70039'}}>Défaites : {user.defeats}</h2>
 				</Stack>
-				<MyAchievements />
+				<MyAchievements user={user}/>
 			</Stack>
-			<Stack sx={{width: 0.6, height: "100vh"}} direction="column">
-				<MyHistory />
+			<Stack sx={{width: 0.775, height: "100vh"}} direction="column" justifyContent="center" alignItems="center">
+				<Stack sx={{width: 1, height: 2/12}} direction="row" alignItems="flex-end" justifyContent="space-between" spacing={4}>
+					<h1 style={{fontFamily: 'Myriad Pro'}}>Historique</h1>
+					{user?.login !== me?.login ?
+					<Box>
+						<Button sx={{borderRadius: 2, marginRight: "30px"}} variant="contained" startIcon={<PersonAddIcon />}>
+							<div style={{margin: "5px", padding: "3px", fontFamily: "Myriad Pro", fontSize: "16px"}}>Add friend</div>
+						</Button>
+						<Button sx={{borderRadius: 2, marginRight: "30px"}} variant="contained" startIcon={<DeleteIcon />}>
+							<div style={{margin: "5px", padding: "3px", fontFamily: "Myriad Pro", fontSize: "16px"}}>Delete friend</div>
+						</Button>
+					</Box> : null
+					}
+				</Stack>
+				<MyHistory user={user}/>
 			</Stack>
-			<MyChat user={user}/>
+			{user?.login !== me?.login ? <MyChat user={user}/> : null}
 		</Stack>
 	);
 }
 
 export default Stats;
+// : <Stack sx={{width: 1, height: 2/12}} />

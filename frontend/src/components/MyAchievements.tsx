@@ -1,17 +1,18 @@
 import { Avatar, CircularProgress, Divider, List, ListItem, Paper, Stack } from "@mui/material";
 import { avatarStyle } from "../styles/Styles";
 import { useEffect, useState } from 'react';
-import { apiAchievements } from "../services/Api/Api";
+import { api, apiAchievements, apiUsers } from "../services/Api/Api";
 import axios from "axios";
-import { Achievements } from "../services/Interface/Interface";
+import { Achievements, User } from "../services/Interface/Interface";
 
-const MyAchievements = () => {
+const MyAchievements = (props: {user: User}) => {
+	const { user } = props;
 	const [achievements, setAchievements] = useState<Achievements[]>([]);
 
 	useEffect(() => {
 		const fetchAchievements = async () => {
 			try {
-				const response = await axios.get(`${apiAchievements}`);
+				const response = await axios.get(`${api}${apiUsers}/${user.login}${apiAchievements}`);
 				setAchievements(response.data);
 			}
 			catch (err) {
@@ -19,7 +20,7 @@ const MyAchievements = () => {
 			}
 		}
 		fetchAchievements();
-	}, []);
+	}, [user.login]);
 
 	// eslint-disable-next-line eqeqeq
 	if (achievements == undefined) {
@@ -40,8 +41,8 @@ const MyAchievements = () => {
 				{ achievements.length > 0 ?
 					<List>
 						{achievements.map(achievement => (
-							<div key={achievement.id}>
-								<ListItem component="div" disablePadding>
+							<div key={achievement.achievement_id}>
+								<ListItem component="div" disablePadding sx={{marginBottom: "10px", marginTop: "10px"}}>
 									<Stack direction="row">
 										<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row">
 											<Stack sx={{ width: "85%", height: 1}}
@@ -49,14 +50,14 @@ const MyAchievements = () => {
 												spacing={2}
 												direction="row">
 												<Avatar
-													src={achievement.avatar}
+													// src={achievement.avatar}
 													sx={avatarStyle}></Avatar>
-												<h2>{achievement.description}</h2>
+												<h3>Top 10f rfjirji jeiji erjfijif jirj firji</h3>
 											</Stack>
 										</Stack>
 									</Stack>
 								</ListItem>
-								<Divider sx={{marginBottom: "5px", marginTop: "5px"}}/>
+								<Divider />
 							</div>
 						))}
 					</List> : null

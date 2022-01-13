@@ -46,8 +46,8 @@ const Settings = () => {
 				<Stack sx={{ width: 1, height: 1/6, marginLeft: 10}} direction="row" alignItems="center" spacing={3}>
 					<Stack>
 						<Avatar
-							sx={{ width: "126px", height: "126px" }}>
-							src={`http:///localhost/api/profile`}
+							sx={{ width: "126px", height: "126px" }}
+							src={`http://127.0.0.1/api/profile`}>
 						</Avatar>
 						<h3 style={{ color: 'grey' }}>Join le 03/01/2022</h3>
 					</Stack>

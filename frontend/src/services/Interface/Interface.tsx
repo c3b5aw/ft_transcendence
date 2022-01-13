@@ -18,23 +18,34 @@ export interface User {
 
 export interface Match {
 	id: number
-	createdAt: Date
-	scoreOne: number
-	scoreTwo: number
-	loginAdversaireOne: string
-	loginAdversaireTwo: string
-	avatarUrlOne: string
-	avatarUrlTwo: string
+	date: string
+	finished: boolean
+	duration: number
+	player_1_id: number
+	player_1_login: string
+	player_1_score: number
+	player_2_id: number
+	player_2_login: string
+	player_2_score: number
 }
 
 export interface Achievements {
-	id: number
-	description: string
-	avatar: string
+	achievement_id: number
+	unlocked_at: string
+	user_id: number
 }
 
 export interface Message {
 	id: number
 	description: string
 	to: string
+}
+
+export interface Friends {
+	id: number
+	user_id: number
+	user_login: string
+	friend_id: number
+	friend_login: string
+	status: number
 }
