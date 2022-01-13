@@ -9,7 +9,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import axios from 'axios';
@@ -17,6 +16,7 @@ import { useNavigate } from 'react-router';
 import { api, apiLadder, apiUsers } from "../services/Api/Api";
 import { useEffect, useState } from 'react';
 import { Match, User } from '../services/Interface/Interface';
+import { Stack } from '@mui/material';
 
 function Row(props: { row: User }) {
   	const [open, setOpen] = React.useState(false);
@@ -108,25 +108,27 @@ export default function MyLadder() {
 	}, []);
 
 	return (
-	<TableContainer component={Paper}>
-		<Table aria-label="collapsible table">
-		<TableHead>
-			<TableRow>
-			<TableCell />
-			<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Classement</p></TableCell>
-			<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Place</TableCell>
-			<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Victoires</TableCell>
-			<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Défaites</TableCell>
-			<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Total</TableCell>
-			<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}></TableCell>
-			</TableRow>
-		</TableHead>
-		<TableBody>
-			{users.map((user) => (
-			<Row key={user.id} row={user} />
-			))}
-		</TableBody>
-		</Table>
-	</TableContainer>
+		<Stack sx={{backgroundColor: "white", width: 1, height: 0.82, borderRadius: 5}} direction="column">
+			<TableContainer>
+				<Table aria-label="collapsible table">
+					<TableHead>
+						<TableRow>
+							<TableCell />
+							<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Classement</p></TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Place</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Victoires</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Défaites</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Total</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}></TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{users.map((user) => (
+						<Row key={user.id} row={user} />
+						))}
+					</TableBody>
+				</Table>
+			</TableContainer>
+		</Stack>
 	);
 }

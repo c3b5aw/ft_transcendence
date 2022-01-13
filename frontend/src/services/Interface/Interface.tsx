@@ -29,9 +29,8 @@ export interface Match {
 
 export interface Achievements {
 	id: number
-	nom: string
 	description: string
-	points: number
+	avatar: string
 }
 
 export interface Message {
@@ -39,8 +38,3 @@ export interface Message {
 	description: string
 	to: string
 }
-
-// export interface Friends {
-// 	id: number,
-// 	ava
-// }

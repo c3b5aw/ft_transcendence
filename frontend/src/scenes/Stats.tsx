@@ -64,7 +64,7 @@ const Stats = () => {
 			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
 				<Stack sx={{ width: 1, height: 1/4 }} direction="column" alignItems="center" justifyContent="center" spacing={3}>
 					<Avatar
-						src={user.login}
+						src={`http:///localhost/api/users/${user.login}/avatar`}
 						sx={{ width: "126px", height: "126px" }}>
 					</Avatar>
 					<h2>{user.login}</h2>

@@ -1,6 +1,6 @@
 import { Avatar, CircularProgress, Divider, List, ListItem, Paper, Stack } from "@mui/material";
 import { avatarStyle } from "../styles/Styles";
-import { useState } from "react";
+import { useEffect, useState } from 'react';
 import { apiAchievements } from "../services/Api/Api";
 import axios from "axios";
 import { Achievements } from "../services/Interface/Interface";
@@ -8,7 +8,7 @@ import { Achievements } from "../services/Interface/Interface";
 const MyAchievements = () => {
 	const [achievements, setAchievements] = useState<Achievements[]>([]);
 
-	useEffects(() => {
+	useEffect(() => {
 		const fetchAchievements = async () => {
 			try {
 				const response = await axios.get(`${apiAchievements}`);
@@ -48,7 +48,9 @@ const MyAchievements = () => {
 												alignItems="center"
 												spacing={2}
 												direction="row">
-												<Avatar sx={avatarStyle} src=""></Avatar>
+												<Avatar
+													src={achievement.avatar}
+													sx={avatarStyle}></Avatar>
 												<h2>{achievement.description}</h2>
 											</Stack>
 										</Stack>
@@ -65,7 +67,3 @@ const MyAchievements = () => {
 }
 
 export default MyAchievements;
-
-function useEffects(arg0: () => void, arg1: never[]) {
-	throw new Error("Function not implemented.");
-}

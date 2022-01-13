@@ -4,7 +4,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { Message, User } from "../services/Interface/Interface";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { api, apiMe, apiMessages, apiUsers } from "../services/Api/Api";
+import { api, apiMe, apiMessages } from "../services/Api/Api";
 
 const MyChat = (props: {user: User | undefined}) => {
 	// eslint-disable-next-line eqeqeq
@@ -14,7 +14,7 @@ const MyChat = (props: {user: User | undefined}) => {
 	useEffect(() => {
 		const fetchMe = async () => {
 			try {
-				const response = await axios.get(`${api}${apiUsers}${apiMe}${apiMessages}${user?.login}`)
+				const response = await axios.get(`${api}${apiMe}${apiMessages}${user?.login}`)
 				setMessages(response.data);
 			} catch (err) {
 				console.log(err);
@@ -38,7 +38,7 @@ const MyChat = (props: {user: User | undefined}) => {
 			<Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
 				<Stack direction="row" sx={{width: 1, height: 1/12}} alignItems="center" justifyContent="space-between">
 					<Stack direction="row" sx={{width: 1, height: 3/4}} alignItems="center">
-						<Avatar src={user?.avatar} sx={{margin: "3%", width: "64px", height: "64px"}}></Avatar>
+						<Avatar src="http://localhost/api/profile/avatar" sx={{margin: "3%", width: "64px", height: "64px"}}></Avatar>
 						<h3>{user?.login}</h3>
 					</Stack>
 					{user.connected ? 

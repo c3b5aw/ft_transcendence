@@ -5,10 +5,11 @@ import { User } from "../Interface/Interface";
 ** API
 */
 export const api = "/api"
-export const apiMe = "/me"
+export const apiMe = "/profile"
 export const apiUsers = `/users`
 export const apiLadder = "/ladder"
 export const apiMatch = "/matchs"
+export const apiFriends = "/friends"
 export const apiMessages = "/messages"
 export const apiAchievements = "/achievements"
 export const apiConnection = "http://localhost/api/auth/login"

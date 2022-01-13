@@ -1,8 +1,8 @@
-import { Avatar, Box, Button, Icon, Stack } from "@mui/material";
+import { Avatar, Box, Button, Stack } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import MyListFriends from "../components/MyListFriends";
-import { api, apiMe, apiUsers } from "../services/Api/Api";
+import { api, apiMe } from "../services/Api/Api";
 import { User } from "../services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
@@ -31,7 +31,7 @@ const Settings = () => {
 	useEffect(() => {
 		const fetchMe = async () => {
 			try {
-				const reponse = await axios.get(`${api}${apiUsers}${apiMe}`);
+				const reponse = await axios.get(`${api}${apiMe}`);
 				setMe(reponse.data);
 			}
 			catch (err) {
@@ -47,10 +47,11 @@ const Settings = () => {
 					<Stack>
 						<Avatar
 							sx={{ width: "126px", height: "126px" }}>
+							src={`http:///localhost/api/profile`}
 						</Avatar>
 						<h3 style={{ color: 'grey' }}>Join le 03/01/2022</h3>
 					</Stack>
-					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>eoliveir{me?.login}</h1>
+					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>{me?.login}</h1>
 				</Stack>
 				<Stack sx={{ width: 1, height: 1/5}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
 					<AddPhotoAlternateIcon sx={{ fontSize: 55 }} />

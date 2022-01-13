@@ -47,7 +47,10 @@ const MyHistory = () => {
 										<Stack sx={{ width:1, height: 1}} direction="row">
 											<Stack direction="row" sx={{width: 5.95/12, padding: '20px'}} spacing={2} justifyContent="center" alignItems="center">
 												<Stack direction="row" sx={{width: 1/2}} alignItems="center" spacing={2}>
-													<Avatar sx={{width: "64px", height: "64px"}}></Avatar>
+													<Avatar
+														sx={{width: "64px", height: "64px"}}>
+														src={`http:///localhost/api/users/${match.loginAdversaireOne}/avatar`}
+													</Avatar>
 													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.loginAdversaireOne}</div>
 												</Stack>
 												<Stack direction="row" sx={{width: 1/2}} justifyContent="flex-end">
@@ -73,7 +76,10 @@ const MyHistory = () => {
 												</Stack>
 												<Stack direction="row" sx={{width: 1/2}} alignItems="center" justifyContent="flex-end" spacing={2}>
 													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.loginAdversaireTwo}</div>
-													<Avatar sx={{width: "64px", height: "64px"}}></Avatar>
+													<Avatar
+														sx={{width: "64px", height: "64px"}}>
+														src={`http:///localhost/api/users/${match.loginAdversaireTwo}/avatar`}
+													</Avatar>
 												</Stack>
 											</Stack>
 										</Stack>

@@ -48,10 +48,18 @@ function Connection()
 				justifyContent: "center",
 			}}>
 				<Stack direction="row" spacing={3}>
-					<Avatar sx={{ width: 64, height: 64, bgcolor: "green" }}>EO</Avatar>
-					<Avatar sx={{ width: 64, height: 64, bgcolor: "green" }}>SB</Avatar>
-					<Avatar sx={{ width: 64, height: 64, bgcolor: "green" }}>NB</Avatar>
-					<Avatar sx={{ width: 64, height: 64, bgcolor: "green" }}>EB</Avatar>
+					<Avatar
+						src={`http:///localhost/api/users/eoliveir/avatar`}
+						sx={{ width: 64, height: 64, bgcolor: "green" }}/>
+					<Avatar
+						src={`http:///localhost/api/users/nbascaul/avatar`}
+						sx={{ width: 64, height: 64, bgcolor: "green" }}/>
+					<Avatar
+						src={`http:///localhost/api/users/sbeaujar/avatar`}
+						sx={{ width: 64, height: 64, bgcolor: "green" }}/>
+					<Avatar
+						src={`http:///localhost/api/users/jtrauque/avatar`}
+						sx={{ width: 64, height: 64, bgcolor: "green" }}/>
 				</Stack>
 			</Box>
 		</Stack>

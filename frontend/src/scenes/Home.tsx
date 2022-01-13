@@ -26,7 +26,7 @@ export default function Home() {
 	useEffect(() => {
 		const fetchMe = async () => {
 			try {
-				const reponse = await axios.get(`${api}${apiUsers}${apiMe}`);
+				const reponse = await axios.get(`${api}${apiMe}`);
 				console.log(reponse.data);
 				setMe(reponse.data);
 			} catch (err) {
