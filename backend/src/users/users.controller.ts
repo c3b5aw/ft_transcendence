@@ -65,19 +65,7 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/jpg')
 	async getUserAvatar(@Param('id') id: number, @Res() resp: Response) {
-		resp.sendFile( `${id}.jpg`, { root: './public/avatars' }, (err) => {
-			if (err) {
-				resp.sendFile( `default.jpg`, { root: './public/avatars'}, (err_fallback) => {
-					if (err_fallback) {
-						console.log(err_fallback);
-						resp.header('Content-Type', 'application/json');
-						resp.status(404).json({
-							error: 'File not found',
-						});
-					}
-				})
-			}
-		});
+		return await this.usersService.sendAvatar( id, resp );
 	}
 
 	/*

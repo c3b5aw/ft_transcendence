@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
+import { Response } from 'express';
 import { createWriteStream } from 'fs';
 import { Repository } from 'typeorm';
 
@@ -120,6 +121,26 @@ export class UsersService {
 				'elo', 'played', 'victories', 'defeats'
 			],
 			order: { elo: 'DESC' },
+		});
+	}
+
+	/*
+		SENDER
+	*/
+
+	async sendAvatar(id: number, resp: Response) {
+		resp.sendFile( `${id}.jpg`, { root: './public/avatars' }, (err) => {
+			if (err) {
+				resp.sendFile( `default.jpg`, { root: './public/avatars'}, (err_fallback) => {
+					if (err_fallback) {
+						console.log(err_fallback);
+						resp.header('Content-Type', 'application/json');
+						resp.status(404).json({
+							error: 'File not found',
+						});
+					}
+				})
+			}
 		});
 	}
 }

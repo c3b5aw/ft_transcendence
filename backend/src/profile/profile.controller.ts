@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Post, Req, Res,
+import { Body, Controller, Get, Header, Param, Post, Req, Res,
 		UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -30,28 +30,36 @@ export class ProfileController {
 		return this.usersService.findMe(req.user.id);
 	}
 
-	@Get('/stats')
+	@Get('avatar')
+	@UseGuards(JwtGuard)
+	async getAvatar(@Req() req: any, 
+					@Param('id') id: number, @Res() resp: Response) {
+		return await this.usersService.sendAvatar( req.user.id, resp );
+	}
+
+
+	@Get('stats')
 	@UseGuards(JwtGuard)
 	async getStats(@Req() req: any, @Res() resp: Response) {
 		const stats = await this.usersService.getStatsByID(req.user.id);
 		return resp.json(stats);
 	}
 
-	@Get('/friends')
+	@Get('friends')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getMyselfFriends(@Req() req: any) : Promise<Friend[]> {
 		return this.friendsService.findAllAcceptedById( req.user.id );
 	}
 
-	@Get('/friends/pending')
+	@Get('friends/pending')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getMyselfPendingFriendsRequest(@Req() req: any) : Promise<Friend[]> {
 		return this.friendsService.findAllPendingById( req.user.id );
 	}
 
-	@Post('/display_name')
+	@Post('display_name')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async setDisplayName(@Req() req: any, @Body() data: PostDisplayNameDto,
@@ -73,7 +81,7 @@ export class ProfileController {
 	}
   
 	// https://docs.nestjs.com/techniques/file-upload
-	@Post('/avatar')
+	@Post('avatar')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	@UseInterceptors(FileInterceptor('file', {
