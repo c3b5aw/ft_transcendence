@@ -67,7 +67,7 @@ export class UsersService {
 
 	async findAll() : Promise<User[]> {
 		return this.userRepository.find({
-			select: [ 'id', 'display_name' ]
+			select: [ 'id', 'login' ]
 		});
 	}
 
@@ -127,7 +127,7 @@ export class UsersService {
 	async getLadder() : Promise<User[]> {
 		return this.userRepository.find({
 			select: [
-				'id', 'display_name',
+				'id', 'login', 'display_name',
 				'elo', 'played', 'victories', 'defeats'
 			],
 			order: { elo: 'DESC' },
