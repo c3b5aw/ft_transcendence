@@ -33,7 +33,7 @@ export class Match {
 
 	@Column({ type: 'int', default: 0, nullable: false })
 	@ApiProperty({ description: "player 1 login", example: "intra42" })
-	player_1_login: number;
+	player_1_login: string;
 
 	@Column({ type: 'int', default: 0, nullable: false })
 	@ApiProperty({ description: "player 1 score", example: 64 })
@@ -49,7 +49,7 @@ export class Match {
 
 	@Column({ type: 'int', default: 0, nullable: false })
 	@ApiProperty({ description: "player 2 login", example: "intra42" })
-	player_2_login: number;
+	player_2_login: string;
 
 	@Column({ type: 'int', default: 0, nullable: false })
 	@ApiProperty({ description: "player 2 score", example: 48 })
