@@ -14,7 +14,7 @@ const MyHistory = (props: {user: User}) => {
 			setMatchs(response.data);
 		}
 		fetchMatchs();
-	}, []);
+	}, [user.login]);
 
 	// eslint-disable-next-line eqeqeq
 	if (matchs == undefined) {
