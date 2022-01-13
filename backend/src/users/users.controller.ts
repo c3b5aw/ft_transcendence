@@ -41,7 +41,7 @@ export class UsersController {
 	async getUser(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 
 		resp.send(user);
 	}
@@ -51,11 +51,11 @@ export class UsersController {
 	async getUserStats(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 
 		const userStats: UserStats = await this.usersService.getStatsById( user.id );
 		if (!userStats)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 		resp.send(userStats);
 	}
 
@@ -64,7 +64,7 @@ export class UsersController {
 	async getUserMatchs(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 
 		const matchs: Match[] = await this.matchService.findAllById( user.id );
 		resp.send(matchs);
@@ -76,7 +76,7 @@ export class UsersController {
 	async getUserAvatar(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 
 		return await this.usersService.sendAvatar( user.id, resp );
 	}
@@ -90,7 +90,7 @@ export class UsersController {
 	async getUserAchievements(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 
 		const achievements = await this.achievementsService.findUserAchievementsById( user.id );
 		resp.send(achievements);
@@ -106,7 +106,7 @@ export class UsersController {
 	async getFriend(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 
 		const friends : Friend[] = await this.friendsService.findAllAcceptedById( user.id );
 		resp.send(friends);
@@ -120,18 +120,18 @@ export class UsersController {
 
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 
 		const friend: Friend = await this.friendsService.findOnePendingByBothId(req.user.id, user.id)
 		if (!friend)
-			return resp.status(404).json({ error: 'Pending friendship not found' });
+			return resp.status(404).json({ error: 'pending friendship not found' });
 		
 		if (friend.friend_id !== req.user.id) {
-			return resp.status(403).json({ error: 'You cannot accepted a request you sent' });
+			return resp.status(403).json({ error: 'you cannot accepted a request you sent' });
 		}
 
 		await this.friendsService.acceptFriend( friend.id );
-		resp.json({ message: 'Friendship accepted' });
+		resp.json({ message: 'friendship accepted' });
 	}
 
 	@Post('/:login/friend')
@@ -140,15 +140,15 @@ export class UsersController {
 					@Param('login') login: string, @Res() resp: Response) {
 		const user = await this.usersService.findOneByLogin( login );
 		if (!user)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 		if (user.id == req.user.id)
-			return resp.status(409).json({ error: 'You can\'t add yourself' });
+			return resp.status(409).json({ error: 'you cant add yourself' });
 		
 		const state : string = await this.friendsService.addFriend( 
 					req.user.id, req.user.login, user.id, user.login );
 		if (!state || state == 'already_friend')
-			return resp.status(409).json({ error: 'Already friend' });
-		resp.status(201).json({ message: 'Friendship request sent' });
+			return resp.status(409).json({ error: 'already friend' });
+		resp.status(201).json({ message: 'friendship request sent' });
 	}
 
 	@Delete('/:login/friend')
@@ -158,11 +158,11 @@ export class UsersController {
 						@Res() resp: Response) {
 		const user = await this.usersService.findOneByLogin( login );
 		if (!user)
-			return resp.status(404).json({ error: 'User not found' });
+			return resp.status(404).json({ error: 'user not found' });
 		
 		const ok: boolean = await this.friendsService.removeFriend( req.user.id, user.id );
 		if (!ok)
-			return resp.status(404).json({ error: 'Friendship not found' });
-		resp.json({ message: 'Friendship deleted' });
+			return resp.status(404).json({ error: 'friendship not found' });
+		resp.json({ message: 'friendship deleted' });
 	}
 }

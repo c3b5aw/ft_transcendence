@@ -32,6 +32,7 @@ export class ProfileController {
 
 	@Get('avatar')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'image/jpg')
 	async getAvatar(@Req() req: any, 
 					@Param('id') id: number, @Res() resp: Response) {
 		return await this.usersService.sendAvatar( req.user.id, resp );
@@ -40,8 +41,10 @@ export class ProfileController {
 
 	@Get('stats')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async getStats(@Req() req: any, @Res() resp: Response) {
-		return this.usersService.getStatsById( req.user.id );
+		const userStats = await this.usersService.getStatsById( req.user.id );
+		resp.send(userStats);
 	}
 
 	@Get('friends')
@@ -65,19 +68,20 @@ export class ProfileController {
 						@Res() resp: Response) {
 
 		if (data.display_name.length < 3)
-			return resp.status(400).json({ error: 'Display name must be at least 3 characters long.' });
+			return resp.status(400).json({ error: 'display name must be at least 3 characters long' });
 		if (data.display_name.length >= 64)
-			return resp.status(400).json({ error: 'Display name must be less than 64 characters long.' })
+			return resp.status(400).json({ error: 'display name must be less than 64 characters long' })
 		
 		const name: User = await this.usersService.findOneByDisplayName(data.display_name);
-		if (name)
-			return resp.status(409).json({	error: 'Display name already taken.' });
+		if (name) {
+			if (name.id !== req.user.id)
+				return resp.status(409).json({	error: 'display name already taken' });
+			return resp.status(409).json({	error: 'you own this display name already' });
+		}
 
 		await this.usersService.updateDisplayName(req.user.id, data.display_name);
 
-		return JSON.stringify({
-			message: 'Display name successfully updated.',
-		});
+		resp.json({ message: 'display name successfully updated' });
 	}
   
 	// https://docs.nestjs.com/techniques/file-upload
@@ -96,14 +100,14 @@ export class ProfileController {
 	async setAvatar(@Req() req: any, @UploadedFile() file: Express.Multer.File,
 					@Res() resp: Response) {
 		if (!file)
-			return resp.status(400).json({ error: 'No file was uploaded.' });
+			return resp.status(400).json({ error: 'no file was uploaded.' });
 
 		if (file.mimetype !== 'image/jpeg') {
 			unlink('./public/uploads/' + req.user.id + '.jpg', (err) => {
 				if (err)
 					console.log(err);
 			});
-			return resp.status(400).json({ error: 'Only jpeg images are accepted.' });
+			return resp.status(400).json({ error: 'only jpeg images are accepted' });
 		}
 
 		rename('./public/uploads/' + req.user.id + '.jpg', 
@@ -113,10 +117,10 @@ export class ProfileController {
 					if (err)
 						console.log(err);
 				});
-				return resp.status(500).json({ error: 'Failed while processing the file' });
+				return resp.status(500).json({ error: 'failed while processing the file' });
 			}
 		});
 	
-		resp.json({ message: 'Avatar successfully updated.' })
+		resp.json({ message: 'avatar successfully updated' })
 	}
 }
