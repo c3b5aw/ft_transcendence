@@ -31,4 +31,11 @@ export class AchievementsController {
 			return resp.status(404).json({ error: 'Achievement not found' });
 		return achievement;
 	}
+
+	@Get('/:id/avatar')
+	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'image/png')
+	async getAchievementAvatar(@Param('id') id: number, @Res() resp: Response) {
+		return this.achievementsService.sendAvatar( id, resp );
+	}
 }

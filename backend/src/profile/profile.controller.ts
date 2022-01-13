@@ -41,8 +41,7 @@ export class ProfileController {
 	@Get('stats')
 	@UseGuards(JwtGuard)
 	async getStats(@Req() req: any, @Res() resp: Response) {
-		const stats = await this.usersService.getStatsByID(req.user.id);
-		return resp.json(stats);
+		return this.usersService.getStatsById( req.user.id );
 	}
 
 	@Get('friends')

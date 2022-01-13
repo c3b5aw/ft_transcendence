@@ -48,12 +48,12 @@ export class UsersService {
 		- findMe
 		- findUsers
 		- findOneByDisplayName
+		- findOneByLogin
 	*/
 
 	async findOneByID(id: number) : Promise<User> {
 		const user: User = await this.userRepository.findOne({ id });
 		if (user) {
-			delete user.login;
 			delete user.email;
 			delete user.two_factor_auth;
 			delete user.two_factor_auth_secret;
@@ -69,6 +69,16 @@ export class UsersService {
 		return this.userRepository.find({
 			select: [ 'id', 'display_name' ]
 		});
+	}
+
+	async findOneByLogin(login: string) : Promise<User> {
+		const user: User = await this.userRepository.findOne({ login });
+		if (user) {
+			delete user.email;
+			delete user.two_factor_auth;
+			delete user.two_factor_auth_secret;
+		}
+		return user;
 	}
 
 	async findOneByDisplayName(displayName: string) : Promise<User> {
@@ -98,8 +108,8 @@ export class UsersService {
 		- getLadder
 	*/
 
-	async getStatsByID(uid: number) : Promise<UserStats> {
-		const user: User = await this.findOneByID(uid);
+	async getStatsById(id: number) : Promise<UserStats> {
+		const user: User = await this.userRepository.findOne({ id });
 		if (!user) {
 			return undefined;
 		}
@@ -133,7 +143,6 @@ export class UsersService {
 			if (err) {
 				resp.sendFile( `default.jpg`, { root: './public/avatars'}, (err_fallback) => {
 					if (err_fallback) {
-						console.log(err_fallback);
 						resp.header('Content-Type', 'application/json');
 						resp.status(404).json({
 							error: 'File not found',
