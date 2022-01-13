@@ -1,4 +1,4 @@
-import { Avatar, Button, Icon, Stack } from "@mui/material";
+import { Avatar, Box, Button, Icon, Stack } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import MyListFriends from "../components/MyListFriends";
@@ -7,6 +7,23 @@ import { User } from "../services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
 import KeyIcon from '@mui/icons-material/Key';
+import MyFooter from "../components/MyFooter";
+
+const buttonStyle = {
+	backgroundColor: "white",
+	borderRadius: 4,
+	border: 5,
+	width: "12%",
+	height: "24%",
+	color: "black",
+	fontStyle: "bold",
+	fontFamily: "Myriad Pro",
+	fontSize: "18px",
+	':hover': {
+		bgcolor: '#D3D3D3', // theme.palette.primary.main
+		color: 'black',
+	  },
+};
 
 const Settings = () => {
 	const [me, setMe] = useState<User>();
@@ -24,10 +41,10 @@ const Settings = () => {
 		fetchMe();
 	}, [])
 	return (
-		<Stack direction="row" sx={{width: 1, height: "100vh", backgroundColor: "orange"}}>
-			<Stack direction="column" sx={{width: 0.8, height: 1, backgroundColor: "green"}} justifyContent="center" alignItems="center">
-				<Stack sx={{ width: 1, height: 1/4, marginLeft: 10, backgroundColor: "magenta"}} direction="row" alignItems="center" spacing={3}>
-					<Stack sx={{backgroundColor: 'red'}}>
+		<Stack direction="row" sx={{width: 1, height: "100vh"}}>
+			<Stack direction="column" sx={{width: 0.8, height: 1}} justifyContent="center" alignItems="center">
+				<Stack sx={{ width: 1, height: 1/6, marginLeft: 10}} direction="row" alignItems="center" spacing={3}>
+					<Stack>
 						<Avatar
 							sx={{ width: "126px", height: "126px" }}>
 						</Avatar>
@@ -35,18 +52,21 @@ const Settings = () => {
 					</Stack>
 					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>eoliveir{me?.login}</h1>
 				</Stack>
-				<Stack sx={{ width: 1, height: 1/5, backgroundColor: "red"}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
+				<Stack sx={{ width: 1, height: 1/5}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
 					<AddPhotoAlternateIcon sx={{ fontSize: 55 }} />
-					<Button><h3 style={{fontFamily: "Myriad Pro", color: "black", fontSize: "23px"}}>Edit avatar</h3></Button>
+					<Button sx={buttonStyle}>Edit avatar</Button>
 				</Stack>
-				<Stack sx={{ width: 1, height: 1/5, backgroundColor: "orange"}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
+				<Stack sx={{ width: 1, height: 1/5}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
 					<EditIcon sx={{ fontSize: 55 }} />
-					<Button><h3 style={{fontFamily: "Myriad Pro", color: "black", fontSize: "23px"}}>Edit username</h3></Button>
+					<Button sx={buttonStyle}>Edit username</Button>
 				</Stack>
-				<Stack sx={{ width: 1, height: 1/5, backgroundColor: "blue"}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
+				<Stack sx={{ width: 1, height: 1/5}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
 					<KeyIcon sx={{ fontSize: 55 }} />
-					<Button><h3 style={{fontFamily: "Myriad Pro", color: "black", fontSize: "23px"}}>Remove or setup key auth</h3></Button>
+					<Button sx={buttonStyle}>Remove / Setup</Button>
 				</Stack>
+				<Box component="footer" sx={{ width: 1, height: '25vh'}}>
+					<MyFooter me={me}/>
+				</Box>
 			</Stack>
 			<Stack sx={{ width: 0.2, height: 1, backgroundColor: "red"}} direction="column">
 				<MyListFriends me={me}/>
