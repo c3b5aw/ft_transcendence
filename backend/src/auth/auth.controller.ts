@@ -40,7 +40,6 @@ export class AuthController {
 				httpOnly: false,
 			});
 		}
-
 		resp.status(302).redirect('/api/auth/redirect');
 	}
 

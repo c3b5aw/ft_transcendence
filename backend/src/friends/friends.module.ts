@@ -6,16 +6,10 @@ import { Friend } from './entities/friend.entity';
 import { FriendsService } from './friends.service';
 
 @Module({
-	imports: [
-		TypeOrmModule.forFeature([Friend]),
-	],
+	imports: [ TypeOrmModule.forFeature([Friend]) ],
 	controllers: [],
-	providers: [
-		FriendsService,
-	],
-	exports: [
-		FriendsService,
-	],
+	providers: [ FriendsService ],
+	exports: [ FriendsService ]
 })
 
 export class FriendsModule {}

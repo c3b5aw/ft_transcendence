@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
+import { Response } from 'express';
 import { createWriteStream } from 'fs';
 import { Repository } from 'typeorm';
 
@@ -47,12 +48,12 @@ export class UsersService {
 		- findMe
 		- findUsers
 		- findOneByDisplayName
+		- findOneByLogin
 	*/
 
 	async findOneByID(id: number) : Promise<User> {
 		const user: User = await this.userRepository.findOne({ id });
 		if (user) {
-			delete user.login;
 			delete user.email;
 			delete user.two_factor_auth;
 			delete user.two_factor_auth_secret;
@@ -65,9 +66,17 @@ export class UsersService {
 	}
 
 	async findAll() : Promise<User[]> {
-		return this.userRepository.find({
-			select: [ 'id', 'display_name' ]
-		});
+		return this.userRepository.find({ select: [ 'id', 'login' ] });
+	}
+
+	async findOneByLogin(login: string) : Promise<User> {
+		const user: User = await this.userRepository.findOne({ login });
+		if (user) {
+			delete user.email;
+			delete user.two_factor_auth;
+			delete user.two_factor_auth_secret;
+		}
+		return user;
 	}
 
 	async findOneByDisplayName(displayName: string) : Promise<User> {
@@ -97,8 +106,8 @@ export class UsersService {
 		- getLadder
 	*/
 
-	async getStatsByID(uid: number) : Promise<UserStats> {
-		const user: User = await this.findOneByID(uid);
+	async getStatsById(id: number) : Promise<UserStats> {
+		const user: User = await this.userRepository.findOne({ id });
 		if (!user) {
 			return undefined;
 		}
@@ -116,10 +125,29 @@ export class UsersService {
 	async getLadder() : Promise<User[]> {
 		return this.userRepository.find({
 			select: [
-				'id', 'display_name',
+				'id', 'login', 'display_name',
 				'elo', 'played', 'victories', 'defeats'
 			],
 			order: { elo: 'DESC' },
+		});
+	}
+
+	/*
+		SENDER
+	*/
+
+	async sendAvatar(id: number, resp: Response) {
+		resp.sendFile( `${id}.jpg`, { root: './public/avatars' }, (err) => {
+			if (err) {
+				resp.sendFile( `default.jpg`, { root: './public/avatars'}, (err_fallback) => {
+					if (err_fallback) {
+						resp.header('Content-Type', 'application/json');
+						resp.status(404).json({
+							error: 'file not found',
+						});
+					}
+				})
+			}
 		});
 	}
 }
