@@ -20,7 +20,7 @@ export class MatchsController {
 	async getMatch(@Param('id') id: number, @Res() resp: Response) {
 		const match: Match = await this.matchsService.findOneById( id );
 		if (!match)
-			return resp.status(404).json({ error: 'Match not found' });
+			return resp.status(404).json({ error: 'match not found' });
 		resp.send(match);
 	}
 
