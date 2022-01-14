@@ -117,9 +117,9 @@ export class UsersService {
 		}
 
 		return this.userRepository.manager.query(
-			`select id, login, rank::INTEGER, elo, played, victories, defeats from (`
-			+ `select *, ROW_NUMBER() OVER (ORDER BY elo DESC) as rank from users`
-			+ `) u where u.id = ${id}`
+			`SELECT id, login, rank::INTEGER, elo, played, victories, defeats FROM (`
+			+ `SELECT *, ROW_NUMBER() OVER (ORDER BY elo DESC) AS rank FROM users`
+			+ `) u WHERE u.id = ${id}`
 		);
 	}
 
