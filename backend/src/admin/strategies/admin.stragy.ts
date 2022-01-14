@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { User } from 'src/users/entities/user.entity';
 import { UserRole } from 'src/users/entities/roles.enum';
 import { UsersService } from 'src/users/users.service';
+import { AuthBannedException } from 'src/auth/strategies/jwt.strategy';
 
 export class InsufficientPermissionsException extends UnauthorizedException {
 	constructor() {
@@ -29,8 +30,11 @@ export class AdminStrategy extends PassportStrategy(Strategy, 'admin') {
 	async validate(payload: any) : Promise<boolean> {
 		const user: User = await this.usersService.findOneByID( payload.sub );
 		
-		if (!user || user.banned)
+		if (!user)
 			throw new UnauthorizedException();
+		
+		if (user.banned)
+			throw new AuthBannedException();
 
 		if (user.role != UserRole.ADMIN)
 			throw new InsufficientPermissionsException();
