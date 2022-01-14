@@ -5,6 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { AdminGuard } from 'src/admin/guards/admin.guard';
 
 import { AchievementsService } from 'src/achievements/achievements.service';
 
@@ -36,7 +37,7 @@ export class UsersController {
 	}
 
 	@Get('/count')
-	@UseGuards(JwtGuard)
+	@UseGuards(AdminGuard, JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUserCount(@Res() resp: Response) {
 		const total = await this.usersService.countAll();

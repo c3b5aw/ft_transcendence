@@ -4,11 +4,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 
 import { AuthService } from './auth.service';
-import { Intra42Strategy  } from './strategy/intra42.strategy';
+import { Intra42Strategy  } from './strategies/intra42.strategy';
 import { SessionSerializer } from './components/serializer';
 
 import { AuthController } from './auth.controller';
-import { JwtStrategy } from './strategy/jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
 	imports: [

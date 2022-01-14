@@ -4,6 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { AdminGuard } from 'src/admin/guards/admin.guard';
 
 import { Match } from './entities/match.entity';
 import { MatchsService } from './matchs.service';
@@ -15,7 +16,7 @@ export class MatchsController {
 	constructor(private readonly matchsService: MatchsService) {}
 
 	@Get('/count')
-	@UseGuards(JwtGuard)
+	@UseGuards(AdminGuard, JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async countAll(@Res() resp: Response) {
 		const total = await this.matchsService.countAll();

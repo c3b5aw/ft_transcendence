@@ -21,7 +21,7 @@ export class AuthService {
 
 	/* https://docs.nestjs.com/security/authentication#jwt-functionality */
 	async login(user: User) : Promise<any> {
-		const payload = { login: user.login, sub: user.id };
+		const payload = { login: user.login, sub: user.id, role: user.role };
 
 		this.usersService.updateLastLogin(user);
 		return { access_token: this.jwtService.sign(payload) };

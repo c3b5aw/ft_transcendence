@@ -4,8 +4,6 @@ import { Strategy } from 'passport-jwt';
 
 import { Request } from 'express';
 
-import { HttpException } from '@nestjs/common';
-
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
@@ -13,9 +11,9 @@ import { UsersService } from 'src/users/users.service';
 	https://docs.nestjs.com/security/authentication#implementing-passport-jwt
 */
 
-export class AuthBannedException extends HttpException {
+export class AuthBannedException extends UnauthorizedException {
 	constructor() {
-		super('User is Banned', 403);
+		super('user is banned');
 	}
 }
 
