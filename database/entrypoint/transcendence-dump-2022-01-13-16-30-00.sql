@@ -319,7 +319,7 @@ COPY public.matchs (id, date, finished, duration, player_1_id, player_1_score, p
 7	2022-01-13 16:28:50.313128	t	1	77558	1	73316	2	eoliveir	jtrauque
 8	2022-01-13 16:28:50.313128	t	1	83781	3	77460	0	sbeaujar	nbascaul
 9	2022-01-13 16:28:50.313128	t	1	77460	0	77558	3	nbascaul	eoliveir
-10	2022-01-13 16:28:50.313128	f	1	77460	1	73316	2	nbascaul	jtrauque
+10	2022-01-13 16:28:50.313128	t	1	77460	1	73316	2	nbascaul	jtrauque
 \.
 
 
