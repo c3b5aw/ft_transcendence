@@ -90,6 +90,10 @@ export class UsersService {
 		- updateDisplayName
 	*/
 
+	async updateUserBan(id: number, banned: boolean) : Promise<any> {
+		return this.userRepository.update({ id: id }, { banned: banned });
+	}
+
 	async updateLastLogin(user: User) : Promise<User> {
 		user.lastLogin = new Date();
 		return this.userRepository.save(user);

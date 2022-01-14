@@ -15,7 +15,7 @@ export class InsufficientPermissionsException extends UnauthorizedException {
 
 @Injectable()
 export class AdminStrategy extends PassportStrategy(Strategy, 'admin') {
-	constructor(private readonly userService: UsersService) {
+	constructor(private readonly usersService: UsersService) {
 		super({
 			secretOrKey: process.env.JWT_SECRET,
 			ignoreExpiration: false,
@@ -28,6 +28,10 @@ export class AdminStrategy extends PassportStrategy(Strategy, 'admin') {
 
 	async validate(payload: any) : Promise<boolean> {
 		const user: User = await this.usersService.findOneByID( payload.sub );
+		
+		if (!user || user.banned)
+			throw new UnauthorizedException();
+
 		if (user.role != UserRole.ADMIN)
 			throw new InsufficientPermissionsException();
 

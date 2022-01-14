@@ -16,7 +16,7 @@ export class MatchsController {
 	constructor(private readonly matchsService: MatchsService) {}
 
 	@Get('/count')
-	@UseGuards(AdminGuard, JwtGuard)
+	@UseGuards(AdminGuard)
 	@Header('Content-Type', 'application/json')
 	async countAll(@Res() resp: Response) {
 		const total = await this.matchsService.countAll();

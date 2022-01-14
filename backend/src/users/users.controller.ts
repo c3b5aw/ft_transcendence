@@ -37,7 +37,7 @@ export class UsersController {
 	}
 
 	@Get('/count')
-	@UseGuards(AdminGuard, JwtGuard)
+	@UseGuards(AdminGuard)
 	@Header('Content-Type', 'application/json')
 	async getUserCount(@Res() resp: Response) {
 		const total = await this.usersService.countAll();
@@ -57,6 +57,7 @@ export class UsersController {
 
 	@Get('/:login/stats')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async getUserStats(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -70,6 +71,7 @@ export class UsersController {
 
 	@Get('/:login/matchs')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async getUserMatchs(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -82,6 +84,7 @@ export class UsersController {
 	@Get('/:login/avatar')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/jpg')
+	@Header('Content-Type', 'application/json')
 	async getUserAvatar(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -96,6 +99,7 @@ export class UsersController {
 
 	@Get('/:login/achievements')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async getUserAchievements(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -145,6 +149,7 @@ export class UsersController {
 
 	@Post('/:login/friend')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async addFriend(@Req() req: any,
 					@Param('login') login: string, @Res() resp: Response) {
 		const user = await this.usersService.findOneByLogin( login );
