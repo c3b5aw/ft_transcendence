@@ -1,5 +1,3 @@
-import { ROLE } from "./Api";
-
 export interface IMe {
 	id: number
 	login: string

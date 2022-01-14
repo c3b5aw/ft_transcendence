@@ -41,7 +41,7 @@ const MyAchievements = (props: {user: User}) => {
 				{ achievements.length > 0 ?
 					<List>
 						{achievements.map(achievement => (
-							<div key={achievement.id}>
+							<div key={achievement.achievement_id}>
 								<ListItem component="div" disablePadding sx={{marginBottom: "10px", marginTop: "10px"}}>
 									<Stack direction="row">
 										<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row">
@@ -52,7 +52,8 @@ const MyAchievements = (props: {user: User}) => {
 												<Avatar
 													// src={achievement.avatar}
 													sx={avatarStyle}></Avatar>
-												<h3>{achievement.description}</h3>
+												{/* <h3>{achievement.description}</h3> */}
+												<h3>Description</h3>
 											</Stack>
 										</Stack>
 									</Stack>

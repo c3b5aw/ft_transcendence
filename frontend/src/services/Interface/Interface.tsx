@@ -1,5 +1,3 @@
-import { ROLE } from "../Api/Api";
-
 export interface User {
 	id: number
 	login: string
@@ -30,10 +28,9 @@ export interface Match {
 }
 
 export interface Achievements {
-	id: number
-	name: string
-	description: number
-	points: number
+	achievement_id: number
+	unlocked_at: string
+	user_id: number
 }
 
 export interface Message {

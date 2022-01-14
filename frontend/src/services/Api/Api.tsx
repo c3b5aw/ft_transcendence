@@ -1,6 +1,3 @@
-import React from "react";
-import { User } from "../Interface/Interface";
-
 /*
 ** API
 */
