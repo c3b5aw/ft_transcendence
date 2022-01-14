@@ -14,6 +14,14 @@ export class MatchsController {
 	
 	constructor(private readonly matchsService: MatchsService) {}
 
+	@Get('/count')
+	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
+	async countAll(@Res() resp: Response) {
+		const total = await this.matchsService.countAll();
+		resp.send({ total });
+	}
+
 	@Get('/:id')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
@@ -23,21 +31,4 @@ export class MatchsController {
 			return resp.status(404).json({ error: 'match not found' });
 		resp.send(match);
 	}
-
-	// @Get('/')
-	// @UseGuards(JwtGuard)
-	// @Header('Content-Type', 'application/json')
-	// async getMatchs() : Promise<Match[]> {
-	// 	const matchs: Match[] = await this.matchsService.findAll();
-	// 	return matchs;
-	// }
-
-	// @Delete('/:id')
-	// @Header('Content-Type', 'application/json')
-	// async deleteMatch(@Param('id') id: number, @Res() resp: Response) {
-	// 	const match: Match = await this.matchsService.deleteOneByID( id );
-	// 	if (!match)
-	// 		return resp.status(404).json({ error: 'Match not found' });
-	// 	return resp.json({ message: 'Match deleted' });
-	// }
 }

@@ -66,7 +66,7 @@ export class UsersController {
 		if (!user)
 			return resp.status(404).json({ error: 'user not found' });
 
-		const matchs: Match[] = await this.matchService.findAllById( user.id );
+		const matchs: Match[] = await this.matchService.findAllByPlayerId( user.id );
 		resp.send(matchs);
 	}
 
