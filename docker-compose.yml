@@ -70,3 +70,15 @@ services:
       - POSTGRESQL_LOG_TIMEZONE=${POSTGRES_TZ}
       - TZ=${POSTGRES_TZ}
     restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    networks:
+      - net-db
+    ports:
+      - "4500:80"
+    restart: unless-stopped
