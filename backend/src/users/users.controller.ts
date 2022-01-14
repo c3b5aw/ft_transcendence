@@ -35,6 +35,14 @@ export class UsersController {
 		return this.usersService.findAll();
 	}
 
+	@Get('/count')
+	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
+	async getUserCount() : Promise<number> {
+		const total = await this.usersService.countAll();
+		return total;
+	}
+
 	@Get('/:login')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')

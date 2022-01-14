@@ -132,6 +132,10 @@ export class UsersService {
 		});
 	}
 
+	async countAll() : Promise<number> {
+		return this.userRepository.count();
+	}
+
 	/*
 		SENDER
 	*/
