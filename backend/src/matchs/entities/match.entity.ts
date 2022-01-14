@@ -1,5 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
+import { ApiProperty } from '@nestjs/swagger';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+
+import { MATCH_TYPE } from './types.enum';
 
 @Entity('matchs')
 export class Match {
@@ -22,6 +24,10 @@ export class Match {
 	@Column({ type: 'int', default: 0, nullable: false })
 	@ApiProperty({ description: "duration in seconds", example: 20000 })
 	duration: number;
+
+	@Column({ type: 'enum', enum: MATCH_TYPE, default: MATCH_TYPE.MATCH_BOT, nullable: false })
+	@ApiProperty({ description: "match type", example: MATCH_TYPE.MATCH_BOT })
+	type: MATCH_TYPE;
 
 	/*
 		PLAYER 1
