@@ -22,10 +22,28 @@ export class AchievementsService {
 	}
 
 	async findUserAchievementsById(id: number) : Promise<UserAchievement[]> {
-		return this.userAchievementRepository.find({ 
-			select: ['user_id', 'achievement_id', 'unlocked_at'],
-			where: { user_id: id }
-		});
+		// return this.userAchievementRepository.find({ 
+		// 	select: ['user_id', 'achievement_id', 'unlocked_at'],
+		// 	where: { user_id: id }
+		// });
+
+		// SELECT ua.achievement_id, ua.unlocked_at,
+		// a.name as achievement_name,
+		// a.description as achievement_description,
+		// CONCAT('/api/achievements/', a.id, '/avatar') as achievement_avatar
+		// FROM users_achievements AS ua
+		// INNER JOIN achievements AS a on ua.achievement_id = a.id
+		// WHERE ua.user_id = 83781
+
+		return this.userAchievementRepository.manager.query(
+			`SELECT ua.achievement_id, ua.unlocked_at,`
+			+ `a.name as achievement_name,`
+			+ `a.description as achievement_description,`
+			+ `CONCAT(\'/api/achievements/\', a.id, \'/avatar\') as achievement_avatar`
+			+ `FROM users_achievements AS ua`
+			+ `INNER JOIN achievements AS a on ua.achievement_id = a.id`
+			+ `WHERE ua.user_id = ${id}`
+		);
 	}
 
 	async sendAvatar(id: number, resp: Response) {
