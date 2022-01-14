@@ -116,11 +116,11 @@ export class UsersService {
 			return undefined;
 		}
 
-		return this.userRepository.manager.query(
-			`SELECT id, login, rank::INTEGER, elo, played, victories, defeats FROM (`
-			+ `SELECT *, ROW_NUMBER() OVER (ORDER BY elo DESC) AS rank FROM users`
-			+ `) u WHERE u.id = ${id}`
-		);
+		return this.userRepository.manager.query(`
+			SELECT id, login, rank::INTEGER, elo, played, victories, defeats FROM (
+			SELECT *, ROW_NUMBER() OVER (ORDER BY elo DESC) AS rank FROM users
+			) u WHERE u.id = ${id};
+		`);
 	}
 
 	async getLadder() : Promise<User[]> {
