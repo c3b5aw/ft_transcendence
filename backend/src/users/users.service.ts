@@ -116,14 +116,11 @@ export class UsersService {
 			return undefined;
 		}
 
-		const stats: UserStats = {
-			id: user.id,
-			elo: user.elo,
-			played: user.played,
-			victories: user.victories,
-			defeats: user.defeats,
-		}
-		return stats
+		return this.userRepository.manager.query(
+			`select * from (`
+			+ `select *, ROW_NUMBER() OVER (ORDER BY elo DESC) as rank from users`
+			+ `) u where u.id = ${id}`
+		);
 	}
 
 	async getLadder() : Promise<User[]> {

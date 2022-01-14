@@ -345,10 +345,10 @@ COPY public.matchs (id, date, finished, duration, player_1_id, player_1_score, p
 --
 
 COPY public.users (id, login, display_name, email, role, banned, two_factor_auth, two_factor_auth_secret, elo, played, victories, defeats, connected, created, "lastLogin") FROM stdin;
-77460	nbascaul	nbascaul	nbascaul@student.42.fr	2	f	f	\N	1200	5	1	4	f	2022-01-12 16:00:00	2022-01-12 16:00:00
-77558	eoliveir	eoliveir	eoliveir@student.42.fr	2	f	f	\N	1200	5	2	3	f	2022-01-12 16:00:00	2022-01-12 16:00:00
-83781	sbeaujar	Swan Beaujard	sbeaujar@student.42.fr	2	f	f	\N	1200	0	0	0	f	2022-01-14 16:20:18.032847	2022-01-14 16:12:25.767
-73316	jtrauque	jtrauque	jtrauque@student.42.fr	2	f	f	\N	1200	5	5	0	f	2022-01-12 16:00:00	2022-01-12 16:00:00
+77460	nbascaul	nbascaul	nbascaul@student.42.fr	2	f	f	\N	1205	5	1	4	f	2022-01-12 16:00:00	2022-01-12 16:00:00
+77558	eoliveir	eoliveir	eoliveir@student.42.fr	2	f	f	\N	1205	5	2	3	f	2022-01-12 16:00:00	2022-01-12 16:00:00
+83781	sbeaujar	Swan Beaujard	sbeaujar@student.42.fr	2	f	f	\N	1210	0	0	0	f	2022-01-14 16:20:18.032847	2022-01-14 16:12:25.767
+73316	jtrauque	jtrauque	jtrauque@student.42.fr	2	f	f	\N	1230	5	5	0	f	2022-01-12 16:00:00	2022-01-12 16:00:00
 \.
 
 
