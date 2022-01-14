@@ -5,15 +5,15 @@ export interface User {
 	login: string
 	display_name: string
 	email: string
-	avatar: string
+	role: number
+	banned: boolean
 	elo: number
 	played: number
 	victories: number
 	defeats: number
 	connected: boolean
-	created?: Date
-	lastLogin?: Date
-	roles: ROLE
+	created: string
+	lastLogin: string
 }
 
 export interface Match {
@@ -30,9 +30,10 @@ export interface Match {
 }
 
 export interface Achievements {
-	achievement_id: number
-	unlocked_at: string
-	user_id: number
+	id: number
+	name: string
+	description: number
+	points: number
 }
 
 export interface Message {

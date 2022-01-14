@@ -30,18 +30,17 @@ export enum ROLE {
 	User = 'User',
 }
 
-export const me: User = {
-    id: 100,
-	login: "sbeaujar",
-	display_name: "display_name_sbeaujar",
-	email: "sbeaujar@42.fr",
-	avatar: "",
-	elo: 123,
-	played: 12,
-	victories: 13,
-	defeats: 2,
-	connected: false,
-	roles: ROLE.User,
-}
+// export const me: User = {
+//     id: 100,
+// 	login: "sbeaujar",
+// 	display_name: "display_name_sbeaujar",
+// 	email: "sbeaujar@42.fr",
+// 	elo: 123,
+// 	played: 12,
+// 	victories: 13,
+// 	defeats: 2,
+// 	connected: false,
+// 	role: 1,
+// }
 
-export const MeContext = React.createContext({ me });
+// export const MeContext = React.createContext({ me });

@@ -7,7 +7,7 @@ import { pageClassement, pageHome, pageSettings, pageStats, ROLE } from './servi
 import "./scenes/App.css";
 import PrivateRoute from './services/Routes/PrivateRoute';
 import Stats from './scenes/Stats';
-import MeProvider from './MeProvider';
+// import MeProvider from './MeProvider';
 import MyMissing from './components/MyMissing';
 import Home from './scenes/Home';
 import Settings from './scenes/Settings';
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 function ManageRouter() {
 	const classes = useStyles();
 	return (
-		<MeProvider>
+		// <MeProvider>
 			<div className={classes.theme}>
 				<Router>
 					<Routes>
@@ -66,7 +66,7 @@ function ManageRouter() {
 					</Routes>
 				</Router>
 			</div>
-		</MeProvider>
+		// </MeProvider>
 	);
 }
 
