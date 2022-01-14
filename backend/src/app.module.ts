@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 
+import { AdminModule } from './admin/admin.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { AuthModule } from './auth/auth.module'
 import { FriendsModule } from './friends/friends.module';
@@ -33,6 +34,7 @@ import { UserAchievement } from './achievements/entities/user_achievements.entit
 			synchronize: true,
 		}),
 		AchievementsModule,
+		AdminModule,
 		AuthModule,
 		FriendsModule,
 		LadderModule,

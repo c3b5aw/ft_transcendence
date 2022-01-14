@@ -5,6 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { AdminGuard } from 'src/admin/guards/admin.guard';
 
 import { AchievementsService } from 'src/achievements/achievements.service';
 
@@ -35,6 +36,14 @@ export class UsersController {
 		return this.usersService.findAll();
 	}
 
+	@Get('/count')
+	@UseGuards(AdminGuard)
+	@Header('Content-Type', 'application/json')
+	async getUserCount(@Res() resp: Response) {
+		const total = await this.usersService.countAll();
+		resp.send({ total });
+	}
+
 	@Get('/:login')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
@@ -48,6 +57,7 @@ export class UsersController {
 
 	@Get('/:login/stats')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async getUserStats(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -61,18 +71,20 @@ export class UsersController {
 
 	@Get('/:login/matchs')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async getUserMatchs(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
 			return resp.status(404).json({ error: 'user not found' });
 
-		const matchs: Match[] = await this.matchService.findAllById( user.id );
+		const matchs: Match[] = await this.matchService.findAllByPlayerId( user.id );
 		resp.send(matchs);
 	}
 
 	@Get('/:login/avatar')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/jpg')
+	@Header('Content-Type', 'application/json')
 	async getUserAvatar(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -87,6 +99,7 @@ export class UsersController {
 
 	@Get('/:login/achievements')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async getUserAchievements(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -136,6 +149,7 @@ export class UsersController {
 
 	@Post('/:login/friend')
 	@UseGuards(JwtGuard)
+	@Header('Content-Type', 'application/json')
 	async addFriend(@Req() req: any,
 					@Param('login') login: string, @Res() resp: Response) {
 		const user = await this.usersService.findOneByLogin( login );
