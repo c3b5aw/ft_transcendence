@@ -4,12 +4,20 @@ import { Strategy } from 'passport-jwt';
 
 import { Request } from 'express';
 
+import { HttpException } from '@nestjs/common';
+
 import { User } from 'src/users/entities/user.entity';
-import { UsersService } from "src/users/users.service";
+import { UsersService } from 'src/users/users.service';
 
 /*
 	https://docs.nestjs.com/security/authentication#implementing-passport-jwt
 */
+
+export class AuthBannedException extends HttpException {
+	constructor() {
+		super('User is Banned', 403);
+	}
+}
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -29,6 +37,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
 		if (!user)
 			throw new UnauthorizedException();
+
+		if (user.banned)
+			throw new AuthBannedException();
+
 		return user;
 	}
 }
