@@ -13,6 +13,11 @@ async function bootstrap() {
 	app.use(passport.initialize());
 	app.use(passport.session());
 
+	app.enableCors({
+		origin: '*',
+		credentials: true
+	});	
+
 	const config = new DocumentBuilder()
 		.setTitle('ft_transcendence API')
 		.setDescription('')

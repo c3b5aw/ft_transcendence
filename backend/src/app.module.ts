@@ -17,6 +17,7 @@ import { Friend } from './friends/entities/friend.entity';
 import { Match } from './matchs/entities/match.entity';
 import { User } from './users/entities/user.entity';
 import { UserAchievement } from './achievements/entities/user_achievements.entity';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
 	imports: [
@@ -36,6 +37,7 @@ import { UserAchievement } from './achievements/entities/user_achievements.entit
 		AchievementsModule,
 		AdminModule,
 		AuthModule,
+		ChatModule,
 		FriendsModule,
 		LadderModule,
 		MatchsModule,
