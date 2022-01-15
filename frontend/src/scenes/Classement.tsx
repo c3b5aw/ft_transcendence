@@ -2,8 +2,8 @@ import { Avatar, Stack } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import MyLadder from '../components/MyLadder';
-import MyListFriends from '../components/MyListFriends';
-import { api, apiMe } from '../services/Api/Api';
+import MyList from '../components/MyList';
+import { api, apiFriends, apiMe, apiUsers } from '../services/Api/Api';
 import { User } from '../services/Interface/Interface';
 
 function Classement() {
@@ -33,14 +33,14 @@ function Classement() {
 					<h3 style={{ color: 'grey' }}>Join le 03/01/2022</h3>
 				</Stack>
 			</Stack>
-			<Stack sx={{ width: 0.6, height: "100vh" }} direction="column" alignItems="center" justifyContent="center">
+			<Stack sx={{ width: 0.8, height: "100vh" }} direction="column" alignItems="center" justifyContent="center">
 				<Stack sx={{ width: 0.9, height: "80vh" }} direction="column" alignItems="center" justifyContent="center">
 					<MyLadder me={me}/>
 				</Stack>
 			</Stack>
-			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
-				<MyListFriends me={me}/>
-			</Stack>
+			{/* <Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
+				<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/>
+			</Stack> */}
 		</Stack>
 	);
 }

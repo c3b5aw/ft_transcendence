@@ -2,12 +2,13 @@ import { Avatar, CircularProgress, Divider, List, ListItem, Paper, Stack } from 
 import { avatarStyle } from "../styles/Styles";
 import { useEffect, useState } from 'react';
 import { api, apiAchievements, apiUsers } from "../services/Api/Api";
-import axios from "axios";
 import { Achievements, User } from "../services/Interface/Interface";
+import axios from "axios";
 
 const MyAchievements = (props: {user: User}) => {
 	const { user } = props;
 	const [achievements, setAchievements] = useState<Achievements[]>([]);
+	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
 	useEffect(() => {
 		const fetchAchievements = async () => {
@@ -22,6 +23,14 @@ const MyAchievements = (props: {user: User}) => {
 		fetchAchievements();
 	}, [user.login]);
 
+	const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handlePopoverClose = () => {
+		setAnchorEl(null);
+	};
+
 	// eslint-disable-next-line eqeqeq
 	if (achievements == undefined) {
 		return (
@@ -30,6 +39,7 @@ const MyAchievements = (props: {user: User}) => {
 			</Stack>
 		);
 	}
+	const open = Boolean(anchorEl);
 	return (
 		<Stack sx={{ marginTop: "15%", width: 0.90, height: 0.4, backgroundColor: 'white', borderRadius: 7 }} direction="column">
 			<Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -44,16 +54,16 @@ const MyAchievements = (props: {user: User}) => {
 							<div key={achievement.achievement_id}>
 								<ListItem component="div" disablePadding sx={{marginBottom: "10px", marginTop: "10px"}}>
 									<Stack direction="row">
-										<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row">
-											<Stack sx={{ width: "85%", height: 1}}
+										<Stack sx={{ width: "100%", height: 1}} alignItems="center" direction="row">
+											<Stack sx={{ width: "100%", height: 1}}
 												alignItems="center"
 												spacing={2}
 												direction="row">
 												<Avatar
-													// src={achievement.avatar}
-													sx={avatarStyle}></Avatar>
-												{/* <h3>{achievement.description}</h3> */}
-												<h3>Description</h3>
+													src={achievement.achievement_avatar}
+													sx={avatarStyle}>
+												</Avatar>
+												<h3>{achievement.achievement_description}</h3>
 											</Stack>
 										</Stack>
 									</Stack>

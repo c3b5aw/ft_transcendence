@@ -29,8 +29,10 @@ export interface Match {
 
 export interface Achievements {
 	achievement_id: number
+	achievement_avatar: string
+	achievement_description: string
+	achievement_name: string
 	unlocked_at: string
-	user_id: number
 }
 
 export interface Message {

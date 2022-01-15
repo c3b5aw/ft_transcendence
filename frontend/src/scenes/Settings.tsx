@@ -1,8 +1,8 @@
 import { Avatar, Box, Button, Stack } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import MyListFriends from "../components/MyListFriends";
-import { api, apiMe } from "../services/Api/Api";
+import MyList from "../components/MyList";
+import { api, apiFriends, apiMe, apiUsers } from "../services/Api/Api";
 import { User } from "../services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
@@ -42,7 +42,7 @@ const Settings = () => {
 	}, [])
 	return (
 		<Stack direction="row" sx={{width: 1, height: "100vh"}}>
-			<Stack direction="column" sx={{width: 0.8, height: 1}} justifyContent="center" alignItems="center">
+			<Stack direction="column" sx={{width: 1, height: 1}} justifyContent="center" alignItems="center">
 				<Stack sx={{ width: 1, height: 1/6, marginLeft: 10}} direction="row" alignItems="center" spacing={3}>
 					<Stack>
 						<Avatar
@@ -69,9 +69,9 @@ const Settings = () => {
 					<MyFooter me={me}/>
 				</Box>
 			</Stack>
-			<Stack sx={{ width: 0.2, height: 1, backgroundColor: "red"}} direction="column">
-				<MyListFriends me={me}/>
-			</Stack>
+			{/* <Stack sx={{ width: 0.2, height: 1, backgroundColor: "red"}} direction="column">
+				<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/>
+			</Stack> */}
 		</Stack>
 	);
 }

@@ -11,8 +11,9 @@ import axios from 'axios';
 // function Row(props: { row: UserProps }) {
 
 
-function MyListFriends(props : {me: User | undefined}) {
+function MyList(props : {me: User | undefined, url: string}) {
 	const { me } = props;
+	const { url } = props
 	const [friends, setFriends] = useState<Friends[]>([]);
 	
 	const navigate = useNavigate();
@@ -23,7 +24,7 @@ function MyListFriends(props : {me: User | undefined}) {
 	useEffect(() => {
 		const fetchFriends = async () => {
 			try {
-				const reponse = await axios.get(`${api}${apiUsers}/${me?.login}${apiFriends}`);
+				const reponse = await axios.get(`${url}`);
 				setFriends(reponse.data);
 			} catch (err) {
 				console.log(err);
@@ -45,27 +46,9 @@ function MyListFriends(props : {me: User | undefined}) {
 	}
 	return (
         <Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
-			<Stack direction="row" sx={{width: 1, height: 1/12}} alignItems="center" justifyContent="space-between">
-				<Stack direction="row" sx={{width: 1, height: 3/4}} alignItems="center" spacing={2}>
-					<Avatar
-						src={`http://127.0.0.1/api/profile/avatar`}
-						sx={{marginLeft: "3%", width: "64px", height: "64px"}}>
-					</Avatar>
-					<h1>{me?.login}</h1>
-				</Stack>
-				{me?.connected ? 
-					<CircleIcon sx={{fontSize: "28px", color: "green", marginRight: "3%"}}></CircleIcon> :
-					<CircleIcon sx=
-					{{fontSize: "28px", color: "red", marginRight: "3%"}}></CircleIcon>}
-			</Stack>
-			<Divider />
-			<Stack sx={{width: 1, height: 0.9}} direction="column">
-				<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{backgroundColor: "white", borderTopLeftRadius: 11, borderTopRightRadius: 11}}>
-					<h2 style={{ marginLeft: '11px', fontFamily: "Myriad Pro", color:'black' }}>List friends</h2>
-					<h2 style={{ marginRight: '11px', fontFamily: "Myriad Pro", color:'black' }}>0 / {friends.length}</h2>
-				</Stack>
-				<Stack sx={{backgroundColor: "white", width: 1, height: 1}} direction="column">
-					<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto'}}>
+			<Stack sx={{width: 1, height: 1}} direction="column">
+				<Stack sx={{backgroundColor: "#1d3033", width: 1, height: 1}} direction="column">
+					<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#1d3033"}}>
 						{friends.length > 0 ?
 						<List>
 							{friends.map(friend => (
@@ -76,20 +59,21 @@ function MyListFriends(props : {me: User | undefined}) {
 												<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row">
 													<Stack sx={{ width: "85%", height: 1}} alignItems="center" spacing={2} direction="row">
 														<Avatar
-															sx={avatarStyle}
+															sx={{marginLeft: "10px",
+																width: "40px",
+																height: "40px",}}
 															src={`http://127.0.0.1/api/users/${friend.user_login}/avatar`}>
 														</Avatar>
-														<h2>{friend.user_login}</h2>
+														<h3 style={{color: "white"}}>{friend.user_login}</h3>
 													</Stack>
 												</Stack>
 												{friend.id !== 2 ? 
-												<CircleIcon sx={{fontSize: "28px", color: "green", marginRight: "3%"}}></CircleIcon> :
+												<CircleIcon sx={{fontSize: "24px", color: "green", marginRight: "3%"}}></CircleIcon> :
 												<CircleIcon sx=
-												{{fontSize: "28px", color: "red", marginRight: "3%"}}></CircleIcon>}
+												{{fontSize: "24px", color: "red", marginRight: "3%"}}></CircleIcon>}
 											</Stack>
 										</ListItemButton>
 									</ListItem>
-									<Divider sx={{marginBottom: "5px", marginTop: "5px"}}/>
 								</div>
 							))}
 						</List> : null
@@ -101,4 +85,4 @@ function MyListFriends(props : {me: User | undefined}) {
     );
 }
 
-export default MyListFriends;
+export default MyList;

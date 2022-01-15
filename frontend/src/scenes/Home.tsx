@@ -7,12 +7,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { CircularProgress } from '@mui/material';
 import axios from 'axios';
-import { api, apiMe, apiUsers } from '../services/Api/Api';
+import { api, apiFriends, apiMe, apiUsers } from '../services/Api/Api';
 import MyFooter from '../components/MyFooter';
 import { boxStyle, StyleH1, useStyles } from '../styles/Styles';
 import { User } from '../services/Interface/Interface';
 import MySearchBar from '../components/MySearchBar';
-import MyListFriends from '../components/MyListFriends';
+import MyList from '../components/MyList';
 
 export default function Home() {
 	const [checked, setChecked] = useState(false);
@@ -103,13 +103,13 @@ export default function Home() {
 				</Stack>
 				{/* {ManageChat(checked, users)} */}
 				{/* <Box sx={{ minWidth: "20%", minHeight: "100%"}}>
-					<Fade in={checked}>{MyListFriends(users)}</Fade>
+					<Fade in={checked}>{MyList(users)}</Fade>
 				</Box> */}
-				{checked ?
+				{/* {checked ?
 					<Box sx={{ minWidth: "20%", minHeight: "100%"}}>
-						<MyListFriends me={me}/>
+						<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/>
 					</Box>
-				: null}
+				: null} */}
 		 </Stack>
 	);
 }

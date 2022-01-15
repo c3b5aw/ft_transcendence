@@ -13,6 +13,7 @@ import Home from './scenes/Home';
 import Settings from './scenes/Settings';
 import Classement from './scenes/Classement';
 import React from 'react';
+import Chat from './scenes/Chat';
 
 const useStyles = makeStyles({
 	theme: {
@@ -43,7 +44,8 @@ function ManageRouter() {
 							path={pageSettings}
 							element={
 								<PrivateRoute roles={[ROLE.Admin]}>
-									<Settings />
+									{/* <Settings /> */}
+									<Chat />
 								</PrivateRoute>
 							}
 						/>
