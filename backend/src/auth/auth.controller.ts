@@ -1,4 +1,4 @@
-import { Controller, Get, Header, Redirect, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Header, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
@@ -19,8 +19,8 @@ export class AuthController {
 	@Get('/status')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
-	status(@Req() req: any): string {
-		return JSON.stringify({
+	status(@Req() req: any, @Res() resp: Response) {
+		resp.send({
 			isAuthenticated: true,
 			user: req.user,
 		})
@@ -28,7 +28,7 @@ export class AuthController {
 
 	@Get('/redirect')
 	async redirect(@Res() resp: Response) {
-		return resp.status(302).redirect('/');
+		resp.status(302).redirect('/');
 	}
 
 	@Get('/42/callback')

@@ -91,7 +91,7 @@ export class ProfileController {
 	@UseInterceptors(FileInterceptor('file', {
 		limits: { fileSize: 1024 * 1024 * 24 },  // ~24MB
 		storage: diskStorage({
-			destination: './src/public/uploads',
+			destination: './public/uploads',
 			filename: (req: any, file, cb) => {
 				return cb(null, req.user.id + '.jpg');
 			}
@@ -113,9 +113,10 @@ export class ProfileController {
 		rename('./public/uploads/' + req.user.id + '.jpg', 
 				'./public/avatars/' + req.user.id + '.jpg', (err) => {
 			if (err) {
-				unlink('./public/uploads/' + req.user.id + '.jpg', (err) => {
-					if (err)
-						console.log(err);
+				console.log(err);
+				unlink('./public/uploads/' + req.user.id + '.jpg', (err_fallback) => {
+					if (err_fallback)
+						console.log(err_fallback);
 				});
 				return resp.status(500).json({ error: 'failed while processing the file' });
 			}

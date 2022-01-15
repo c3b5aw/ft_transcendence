@@ -7,9 +7,7 @@ import { FriendsModule } from 'src/friends/friends.module';
 
 @Module({
 	imports: [
-		MulterModule.register({
-			dest: './public',
-		}),
+		MulterModule.register(),
 		UsersModule,
 		FriendsModule,
 	],

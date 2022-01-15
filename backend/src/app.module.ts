@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 
+import { AdminModule } from './admin/admin.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { AuthModule } from './auth/auth.module'
 import { FriendsModule } from './friends/friends.module';
@@ -16,6 +17,9 @@ import { Friend } from './friends/entities/friend.entity';
 import { Match } from './matchs/entities/match.entity';
 import { User } from './users/entities/user.entity';
 import { UserAchievement } from './achievements/entities/user_achievements.entity';
+import { ChatModule } from './chat/chat.module';
+import { ChannelMessage, DirectMessage } from './chat/entities/message.entity';
+import { Channel } from './chat/entities/channel.entity';
 
 @Module({
 	imports: [
@@ -28,12 +32,17 @@ import { UserAchievement } from './achievements/entities/user_achievements.entit
 			password: process.env.POSTGRES_PASSWORD,
 			database: process.env.POSTGRES_DB,
 
-			entities: [ Achievement, Friend, Match, User, UserAchievement ],
+			entities: [ Achievement, Channel, 
+						ChannelMessage, DirectMessage,
+						Friend, Match, User, 
+						UserAchievement ],
 			
 			synchronize: true,
 		}),
 		AchievementsModule,
+		AdminModule,
 		AuthModule,
+		ChatModule,
 		FriendsModule,
 		LadderModule,
 		MatchsModule,

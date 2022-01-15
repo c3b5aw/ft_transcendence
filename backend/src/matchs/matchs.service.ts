@@ -13,19 +13,15 @@ export class MatchsService {
 	/*
 		FINDER
 
-		- findAll
 		- findOneByID
+		- findAllByPlayerId
 	*/
-
-	// async findAll() : Promise<Match[]> {
-	// 	return this.matchRepository.find();
-	// }
 
 	async findOneById(id: number) : Promise<Match> {
 		return this.matchRepository.findOne({ id });
 	}
 
-	async findAllById(id: number) : Promise<Match[]> {
+	async findAllByPlayerId(id: number) : Promise<Match[]> {
 		return this.matchRepository.find({ 
 			where: [
 				{ player_1_id: id },
@@ -35,16 +31,14 @@ export class MatchsService {
 		});
 	}
 
-	/*
-		DELETER
 
-		- deleteOneByID
+	/*
+		COUNT
+
+		- countAll
 	*/
 
-	// async deleteOneByID(id: number) : Promise<Match> {
-	// 	const match: Match = await this.matchRepository.findOne({ id });
-	// 	if (!match)
-	// 		return null;
-	// 	return this.matchRepository.remove(match);
-	// }
+	async countAll() : Promise<number> {
+		return this.matchRepository.count();
+	}
 }

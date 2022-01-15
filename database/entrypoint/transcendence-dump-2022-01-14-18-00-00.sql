@@ -5,7 +5,7 @@
 -- Dumped from database version 11.14
 -- Dumped by pg_dump version 11.14
 
--- Started on 2022-01-13 15:29:57 UTC
+-- Started on 2022-01-14 17:00:45 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -31,6 +31,20 @@ CREATE TYPE public.friends_status_enum AS ENUM (
 
 
 ALTER TYPE public.friends_status_enum OWNER TO ft_root;
+
+--
+-- TOC entry 623 (class 1247 OID 16494)
+-- Name: matchs_type_enum; Type: TYPE; Schema: public; Owner: ft_root
+--
+
+CREATE TYPE public.matchs_type_enum AS ENUM (
+    '0',
+    '1',
+    '2'
+);
+
+
+ALTER TYPE public.matchs_type_enum OWNER TO ft_root;
 
 --
 -- TOC entry 613 (class 1247 OID 16442)
@@ -82,7 +96,7 @@ CREATE SEQUENCE public.achievements_id_seq
 ALTER TABLE public.achievements_id_seq OWNER TO ft_root;
 
 --
--- TOC entry 2984 (class 0 OID 0)
+-- TOC entry 2988 (class 0 OID 0)
 -- Dependencies: 196
 -- Name: achievements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ft_root
 --
@@ -124,7 +138,7 @@ CREATE SEQUENCE public.friends_id_seq
 ALTER TABLE public.friends_id_seq OWNER TO ft_root;
 
 --
--- TOC entry 2985 (class 0 OID 0)
+-- TOC entry 2989 (class 0 OID 0)
 -- Dependencies: 200
 -- Name: friends_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ft_root
 --
@@ -147,7 +161,8 @@ CREATE TABLE public.matchs (
     player_2_id integer DEFAULT 0 NOT NULL,
     player_2_score integer DEFAULT 0 NOT NULL,
     player_1_login character varying(64) NOT NULL,
-    player_2_login character varying(64) NOT NULL
+    player_2_login character varying(64) NOT NULL,
+    type public.matchs_type_enum DEFAULT '0'::public.matchs_type_enum NOT NULL
 );
 
 
@@ -170,7 +185,7 @@ CREATE SEQUENCE public.matchs_id_seq
 ALTER TABLE public.matchs_id_seq OWNER TO ft_root;
 
 --
--- TOC entry 2986 (class 0 OID 0)
+-- TOC entry 2990 (class 0 OID 0)
 -- Dependencies: 203
 -- Name: matchs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ft_root
 --
@@ -237,7 +252,7 @@ CREATE SEQUENCE public.users_achievements_id_seq
 ALTER TABLE public.users_achievements_id_seq OWNER TO ft_root;
 
 --
--- TOC entry 2987 (class 0 OID 0)
+-- TOC entry 2991 (class 0 OID 0)
 -- Dependencies: 198
 -- Name: users_achievements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ft_root
 --
@@ -246,7 +261,7 @@ ALTER SEQUENCE public.users_achievements_id_seq OWNED BY public.users_achievemen
 
 
 --
--- TOC entry 2806 (class 2604 OID 16391)
+-- TOC entry 2810 (class 2604 OID 16489)
 -- Name: achievements id; Type: DEFAULT; Schema: public; Owner: ft_root
 --
 
@@ -254,7 +269,7 @@ ALTER TABLE ONLY public.achievements ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- TOC entry 2810 (class 2604 OID 16420)
+-- TOC entry 2814 (class 2604 OID 16490)
 -- Name: friends id; Type: DEFAULT; Schema: public; Owner: ft_root
 --
 
@@ -262,7 +277,7 @@ ALTER TABLE ONLY public.friends ALTER COLUMN id SET DEFAULT nextval('public.frie
 
 
 --
--- TOC entry 2822 (class 2604 OID 16477)
+-- TOC entry 2832 (class 2604 OID 16491)
 -- Name: matchs id; Type: DEFAULT; Schema: public; Owner: ft_root
 --
 
@@ -270,7 +285,7 @@ ALTER TABLE ONLY public.matchs ALTER COLUMN id SET DEFAULT nextval('public.match
 
 
 --
--- TOC entry 2808 (class 2604 OID 16403)
+-- TOC entry 2812 (class 2604 OID 16492)
 -- Name: users_achievements id; Type: DEFAULT; Schema: public; Owner: ft_root
 --
 
@@ -278,7 +293,7 @@ ALTER TABLE ONLY public.users_achievements ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 2970 (class 0 OID 16388)
+-- TOC entry 2974 (class 0 OID 16388)
 -- Dependencies: 197
 -- Data for Name: achievements; Type: TABLE DATA; Schema: public; Owner: ft_root
 --
@@ -291,7 +306,7 @@ COPY public.achievements (id, name, description, points) FROM stdin;
 
 
 --
--- TOC entry 2974 (class 0 OID 16417)
+-- TOC entry 2978 (class 0 OID 16417)
 -- Dependencies: 201
 -- Data for Name: friends; Type: TABLE DATA; Schema: public; Owner: ft_root
 --
@@ -304,41 +319,41 @@ COPY public.friends (id, user_id, user_login, friend_id, friend_login, status) F
 
 
 --
--- TOC entry 2977 (class 0 OID 16474)
+-- TOC entry 2981 (class 0 OID 16474)
 -- Dependencies: 204
 -- Data for Name: matchs; Type: TABLE DATA; Schema: public; Owner: ft_root
 --
 
-COPY public.matchs (id, date, finished, duration, player_1_id, player_1_score, player_2_id, player_2_score, player_1_login, player_2_login) FROM stdin;
-1	2022-01-13 16:28:50.313128	t	1	83781	3	77558	0	sbeaujar	eoliveir
-2	2022-01-13 16:28:50.313128	t	1	77460	2	83781	1	nbascaul	sbeaujar
-3	2022-01-13 16:28:50.313128	t	1	77558	1	73316	2	eoliveir	jtrauque
-4	2022-01-13 16:28:50.313128	t	1	83781	1	73316	2	sbeaujar	jtrauque
-5	2022-01-13 16:28:50.313128	t	1	73316	2	77558	1	jtrauque	eoliveir
-6	2022-01-13 16:28:50.313128	t	1	77460	0	83781	3	nbascaul	sbeaujar
-7	2022-01-13 16:28:50.313128	t	1	77558	1	73316	2	eoliveir	jtrauque
-8	2022-01-13 16:28:50.313128	t	1	83781	3	77460	0	sbeaujar	nbascaul
-9	2022-01-13 16:28:50.313128	t	1	77460	0	77558	3	nbascaul	eoliveir
-10	2022-01-13 16:28:50.313128	f	1	77460	1	73316	2	nbascaul	jtrauque
+COPY public.matchs (id, date, finished, duration, player_1_id, player_1_score, player_2_id, player_2_score, player_1_login, player_2_login, type) FROM stdin;
+1	2022-01-13 16:28:50.313128	t	1	83781	3	77558	0	sbeaujar	eoliveir	2
+2	2022-01-13 16:28:50.313128	t	1	77460	2	83781	1	nbascaul	sbeaujar	2
+3	2022-01-13 16:28:50.313128	t	1	77558	1	73316	2	eoliveir	jtrauque	2
+4	2022-01-13 16:28:50.313128	t	1	83781	1	73316	2	sbeaujar	jtrauque	2
+5	2022-01-13 16:28:50.313128	t	1	73316	2	77558	1	jtrauque	eoliveir	2
+6	2022-01-13 16:28:50.313128	t	1	77460	0	83781	3	nbascaul	sbeaujar	2
+7	2022-01-13 16:28:50.313128	t	1	77558	1	73316	2	eoliveir	jtrauque	2
+8	2022-01-13 16:28:50.313128	t	1	83781	3	77460	0	sbeaujar	nbascaul	2
+9	2022-01-13 16:28:50.313128	t	1	77460	0	77558	3	nbascaul	eoliveir	2
+10	2022-01-13 16:28:50.313128	t	1	77460	1	73316	2	nbascaul	jtrauque	2
 \.
 
 
 --
--- TOC entry 2975 (class 0 OID 16449)
+-- TOC entry 2979 (class 0 OID 16449)
 -- Dependencies: 202
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: ft_root
 --
 
 COPY public.users (id, login, display_name, email, role, banned, two_factor_auth, two_factor_auth_secret, elo, played, victories, defeats, connected, created, "lastLogin") FROM stdin;
-73316	jtrauque	jtrauque	jtrauque@student.42.fr	2	f	f	\N	1220	5	5	0	f	2022-01-12 16:00:00	2022-01-12 16:00:00
-77460	nbascaul	nbascaul	nbascaul@student.42.fr	2	f	f	\N	1200	5	1	4	f	2022-01-12 16:00:00	2022-01-12 16:00:00
+77460	nbascaul	nbascaul	nbascaul@student.42.fr	2	f	f	\N	1205	5	1	4	f	2022-01-12 16:00:00	2022-01-12 16:00:00
 77558	eoliveir	eoliveir	eoliveir@student.42.fr	2	f	f	\N	1205	5	2	3	f	2022-01-12 16:00:00	2022-01-12 16:00:00
-83781	sbeaujar	sbeaujar	sbeaujar@student.42.fr	2	f	f	\N	1204	5	2	3	f	2022-01-12 16:00:00	2022-01-12 16:00:00
+83781	sbeaujar	Swan Beaujard	sbeaujar@student.42.fr	2	f	f	\N	1210	5	2	3	f	2022-01-14 16:20:18.032847	2022-01-14 16:12:25.767
+73316	jtrauque	jtrauque	jtrauque@student.42.fr	2	f	f	\N	1230	5	5	0	f	2022-01-12 16:00:00	2022-01-12 16:00:00
 \.
 
 
 --
--- TOC entry 2972 (class 0 OID 16400)
+-- TOC entry 2976 (class 0 OID 16400)
 -- Dependencies: 199
 -- Data for Name: users_achievements; Type: TABLE DATA; Schema: public; Owner: ft_root
 --
@@ -354,7 +369,7 @@ COPY public.users_achievements (id, user_id, user_login, achievement_id, unlocke
 
 
 --
--- TOC entry 2988 (class 0 OID 0)
+-- TOC entry 2992 (class 0 OID 0)
 -- Dependencies: 196
 -- Name: achievements_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ft_root
 --
@@ -363,7 +378,7 @@ SELECT pg_catalog.setval('public.achievements_id_seq', 1, false);
 
 
 --
--- TOC entry 2989 (class 0 OID 0)
+-- TOC entry 2993 (class 0 OID 0)
 -- Dependencies: 200
 -- Name: friends_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ft_root
 --
@@ -372,7 +387,7 @@ SELECT pg_catalog.setval('public.friends_id_seq', 3, true);
 
 
 --
--- TOC entry 2990 (class 0 OID 0)
+-- TOC entry 2994 (class 0 OID 0)
 -- Dependencies: 203
 -- Name: matchs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ft_root
 --
@@ -381,7 +396,7 @@ SELECT pg_catalog.setval('public.matchs_id_seq', 10, true);
 
 
 --
--- TOC entry 2991 (class 0 OID 0)
+-- TOC entry 2995 (class 0 OID 0)
 -- Dependencies: 198
 -- Name: users_achievements_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ft_root
 --
@@ -390,7 +405,7 @@ SELECT pg_catalog.setval('public.users_achievements_id_seq', 6, true);
 
 
 --
--- TOC entry 2847 (class 2606 OID 16488)
+-- TOC entry 2851 (class 2606 OID 16488)
 -- Name: matchs PK_0fdbc8e05ccfb9533008b132189; Type: CONSTRAINT; Schema: public; Owner: ft_root
 --
 
@@ -399,7 +414,7 @@ ALTER TABLE ONLY public.matchs
 
 
 --
--- TOC entry 2831 (class 2606 OID 16397)
+-- TOC entry 2835 (class 2606 OID 16397)
 -- Name: achievements PK_1bc19c37c6249f70186f318d71d; Type: CONSTRAINT; Schema: public; Owner: ft_root
 --
 
@@ -408,7 +423,7 @@ ALTER TABLE ONLY public.achievements
 
 
 --
--- TOC entry 2835 (class 2606 OID 16423)
+-- TOC entry 2839 (class 2606 OID 16423)
 -- Name: friends PK_65e1b06a9f379ee5255054021e1; Type: CONSTRAINT; Schema: public; Owner: ft_root
 --
 
@@ -417,7 +432,7 @@ ALTER TABLE ONLY public.friends
 
 
 --
--- TOC entry 2833 (class 2606 OID 16406)
+-- TOC entry 2837 (class 2606 OID 16406)
 -- Name: users_achievements PK_914031cefc0461aedc7e259739d; Type: CONSTRAINT; Schema: public; Owner: ft_root
 --
 
@@ -426,7 +441,7 @@ ALTER TABLE ONLY public.users_achievements
 
 
 --
--- TOC entry 2837 (class 2606 OID 16463)
+-- TOC entry 2841 (class 2606 OID 16463)
 -- Name: users PK_a3ffb1c0c8416b9fc6f907b7433; Type: CONSTRAINT; Schema: public; Owner: ft_root
 --
 
@@ -435,7 +450,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 2839 (class 2606 OID 16465)
+-- TOC entry 2843 (class 2606 OID 16465)
 -- Name: users UQ_2d443082eccd5198f95f2a36e2c; Type: CONSTRAINT; Schema: public; Owner: ft_root
 --
 
@@ -444,7 +459,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 2841 (class 2606 OID 16471)
+-- TOC entry 2845 (class 2606 OID 16471)
 -- Name: users UQ_666af67eb78f845f1ed7932f509; Type: CONSTRAINT; Schema: public; Owner: ft_root
 --
 
@@ -453,7 +468,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 2843 (class 2606 OID 16469)
+-- TOC entry 2847 (class 2606 OID 16469)
 -- Name: users UQ_97672ac88f789774dd47f7c8be3; Type: CONSTRAINT; Schema: public; Owner: ft_root
 --
 
@@ -462,7 +477,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 2845 (class 2606 OID 16467)
+-- TOC entry 2849 (class 2606 OID 16467)
 -- Name: users UQ_a72fa0bb46a03bedcd1745efb41; Type: CONSTRAINT; Schema: public; Owner: ft_root
 --
 
@@ -471,7 +486,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 2983 (class 0 OID 0)
+-- TOC entry 2987 (class 0 OID 0)
 -- Dependencies: 3
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: ft_root
 --
@@ -482,7 +497,7 @@ GRANT ALL ON SCHEMA public TO ft_root;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2022-01-13 15:29:57 UTC
+-- Completed on 2022-01-14 17:00:45 UTC
 
 --
 -- PostgreSQL database dump complete

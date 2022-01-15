@@ -90,6 +90,10 @@ export class UsersService {
 		- updateDisplayName
 	*/
 
+	async updateUserBan(id: number, banned: boolean) : Promise<any> {
+		return this.userRepository.update({ id: id }, { banned: banned });
+	}
+
 	async updateLastLogin(user: User) : Promise<User> {
 		user.lastLogin = new Date();
 		return this.userRepository.save(user);
@@ -112,14 +116,11 @@ export class UsersService {
 			return undefined;
 		}
 
-		const stats: UserStats = {
-			id: user.id,
-			elo: user.elo,
-			played: user.played,
-			victories: user.victories,
-			defeats: user.defeats,
-		}
-		return stats
+		return this.userRepository.manager.query(`
+			SELECT id, login, rank::INTEGER, elo, played, victories, defeats FROM (
+			SELECT *, ROW_NUMBER() OVER (ORDER BY elo DESC) AS rank FROM users
+			) u WHERE u.id = ${id};
+		`);
 	}
 
 	async getLadder() : Promise<User[]> {
@@ -130,6 +131,10 @@ export class UsersService {
 			],
 			order: { elo: 'DESC' },
 		});
+	}
+
+	async countAll() : Promise<number> {
+		return this.userRepository.count();
 	}
 
 	/*
