@@ -56,4 +56,35 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.logger.log(`Client ${client.id} disconnected`);
 	}
 
+	// @Get('/channels) -- Return all channels
+	// @Post('/channel') -- Create channel
+	// -- db + will send EVENT.{name}.newChannel
+	// @Delete('/channel/:{name}') -- Delete channel
+	// -- db + will send EVENT.{name}.channelUpdated + disconnect all users from channel
+	// @Post('/channel/:{name}/password) -- Update channel password
+	// -- db + will send EVENT.{name}.channelUpdated + disconnect all from channel forcing to rejoin
+	// @Delete('/channel/:{name}/password) -- Delete channel password
+	// -- db + will send EVENT.{name}.channelUpdated
+	// @Post('/channel/:{name}/mute/:{userID}') -- Mute user -- includes time
+	// -- db + will send EVENT.{name}.userID.you_have_been_muted
+	// @Delete('/channel/:{name}/mute/:{userID}') -- Unmute user
+	// -- db + will send EVENT.{name}.userID.you_have_been_unmuted
+	// @Post('/channel/:{name}/ban/:{userID}') -- Ban user
+	// -- db + will send EVENT.{name}.userID.you_have_been_banned
+	// @Delete('/channel/:{name}/ban/:{userID}') -- Unban user
+	// -- db + will send EVENT.{name}.userID.you_have_been_unbanned
+	// @Post('/channel/:{name}/admin/:{userID}') -- Add user to admin list
+	// -- db + will send EVENT.{name}.userID.you_have_been_added_to_admin_list
+	// @Delete('/channel/:{name}/admin/:{userID}') -- Remove user from admin list
+	// -- db + will send EVENT.{name}.userID.you_have_been_removed_from_admin_list
+
+	// @SubscribeMessage('joinChannel') -- May Include password
+	//		-> Return success or fail + old messages
+	//		-> save in db + send back to everyone in channel
+	// @SubscribeMessage('leaveChannel')
+	//		-> save in db + send back to everyone in channel
+
+	// @SubscribeMessage('sendMessageToUser')
+	//		-> save in db + send back to user who sent message
+	// @SubscribeMessage('sendMessageToChannel')
 }
