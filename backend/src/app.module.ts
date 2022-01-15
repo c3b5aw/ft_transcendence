@@ -18,6 +18,8 @@ import { Match } from './matchs/entities/match.entity';
 import { User } from './users/entities/user.entity';
 import { UserAchievement } from './achievements/entities/user_achievements.entity';
 import { ChatModule } from './chat/chat.module';
+import { ChannelMessage, DirectMessage } from './chat/entities/message.entity';
+import { Channel } from './chat/entities/channel.entity';
 
 @Module({
 	imports: [
@@ -30,7 +32,10 @@ import { ChatModule } from './chat/chat.module';
 			password: process.env.POSTGRES_PASSWORD,
 			database: process.env.POSTGRES_DB,
 
-			entities: [ Achievement, Friend, Match, User, UserAchievement ],
+			entities: [ Achievement, Channel, 
+						ChannelMessage, DirectMessage,
+						Friend, Match, User, 
+						UserAchievement ],
 			
 			synchronize: true,
 		}),
