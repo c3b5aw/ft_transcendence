@@ -1,6 +1,5 @@
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { api, apiUsers } from "../services/Api/Api";
 import { User } from "../services/Interface/Interface";
 import { boxStyle, buttonStyle, useStyles } from "../styles/Styles";
 
@@ -12,7 +11,7 @@ export default function MyFooter(props : {me: User | undefined}) {
 	function handleLaunchStats() {
 		// eslint-disable-next-line eqeqeq
 		if (me?.login != undefined)
-			navigate(`${api}${apiUsers}/${me?.login}`);
+			navigate(`/stats/${me?.login}`);
 	}
 
 	function handleLaunchClassement() {

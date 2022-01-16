@@ -59,7 +59,8 @@ const Stats = () => {
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				const reponse = await axios.get(`${login}`);
+				const url = `http://127.0.0.1/api/users/${login}`;
+				const reponse = await axios.get(url);
 				setUser(reponse.data);
 			} catch (err) {
 				console.log(err);

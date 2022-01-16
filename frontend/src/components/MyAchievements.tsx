@@ -8,7 +8,6 @@ import axios from "axios";
 const MyAchievements = (props: {user: User}) => {
 	const { user } = props;
 	const [achievements, setAchievements] = useState<Achievements[]>([]);
-	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
 	useEffect(() => {
 		const fetchAchievements = async () => {
@@ -23,14 +22,6 @@ const MyAchievements = (props: {user: User}) => {
 		fetchAchievements();
 	}, [user.login]);
 
-	const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget);
-	};
-
-	const handlePopoverClose = () => {
-		setAnchorEl(null);
-	};
-
 	// eslint-disable-next-line eqeqeq
 	if (achievements == undefined) {
 		return (
@@ -39,7 +30,6 @@ const MyAchievements = (props: {user: User}) => {
 			</Stack>
 		);
 	}
-	const open = Boolean(anchorEl);
 	return (
 		<Stack sx={{ marginTop: "15%", width: 0.90, height: 0.4, backgroundColor: 'white', borderRadius: 7 }} direction="column">
 			<Stack direction="row" alignItems="center" justifyContent="space-between">

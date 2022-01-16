@@ -16,7 +16,7 @@ export const apiConnection = "http://localhost/api/auth/login"
 */
 export const pageHome = "/"
 export const pageSettings = "/settings"
-export const pageStats = "/api/users/:login"
+export const pageStats = "/stats/:login"
 export const pageClassement = "/classement"
 export const pageLogin = "/login"
 export const apiGame = "/game";
