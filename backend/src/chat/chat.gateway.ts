@@ -59,6 +59,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	// @Get('/channels) -- Return all channels
 	// @Post('/channel') -- Create channel
 	// -- db + will send EVENT.{name}.newChannel
+	// @Get('/channel/:{name}') -- Return channel informations
+	// @Get('/channel/:{name}/messages') -- Return channel messages
 	// @Delete('/channel/:{name}') -- Delete channel
 	// -- db + will send EVENT.{name}.channelUpdated + disconnect all users from channel
 	// @Post('/channel/:{name}/password) -- Update channel password
@@ -77,6 +79,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	// -- db + will send EVENT.{name}.userID.you_have_been_added_to_admin_list
 	// @Delete('/channel/:{name}/admin/:{userID}') -- Remove user from admin list
 	// -- db + will send EVENT.{name}.userID.you_have_been_removed_from_admin_list
+
+	// @Get('/chat/users/:login/messages') -- Return chat with user
 
 	// @SubscribeMessage('joinChannel') -- May Include password
 	//		-> Return success or fail + old messages

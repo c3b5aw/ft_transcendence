@@ -65,8 +65,10 @@ export class UsersService {
 		return this.userRepository.findOne({ id });
 	}
 
-	async findAll() : Promise<User[]> {
-		return this.userRepository.find({ select: [ 'id', 'login' ] });
+	async findAll(adminRights: boolean) : Promise<User[]> {
+		if (!adminRights)
+			return this.userRepository.find({ select: [ 'id', 'login' ] });
+		return this.userRepository.find();
 	}
 
 	async findOneByLogin(login: string) : Promise<User> {

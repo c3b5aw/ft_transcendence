@@ -6,12 +6,15 @@ import { ChatController } from './chat.controller';
 
 import { ChatGateway } from './chat.gateway';
 import { ChatService } from './chat.service';
-import { Channel } from './entities/channel.entity';
+import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChannelMessage, DirectMessage } from './entities/message.entity';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([ DirectMessage, ChannelMessage, Channel ]),
+		TypeOrmModule.forFeature([ 
+			DirectMessage, ChannelMessage,
+			Channel, ChannelUser 
+		]),
 		JwtModule.register({
 			secret: process.env.JWT_SECRET,
 			signOptions: {
