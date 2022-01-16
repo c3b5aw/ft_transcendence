@@ -1,14 +1,11 @@
-import { Avatar, Box, Card, CardContent, FormControl, FormHelperText, IconButton, InputAdornment, List, ListItem, OutlinedInput, Paper, Stack, TextareaAutosize, TextField, Typography } from '@mui/material';
+import { Avatar, FormControl, IconButton, List, ListItem, Paper, Stack, TextField } from '@mui/material';
 import axios from 'axios';
-import * as React from 'react'
 import { useEffect, useState } from 'react';
 import MyList from '../components/MyList';
 import { api, apiFriends, apiMe, apiUsers } from '../services/Api/Api';
 import { User } from '../services/Interface/Interface';
 import SendIcon from '@mui/icons-material/Send';
 import { makeStyles } from '@material-ui/core/styles';
-import { useStyles } from '../styles/Styles';
-import { style } from '@material-ui/system';
 
 function Chat() {
 	const [me, setMe] = useState<User>();

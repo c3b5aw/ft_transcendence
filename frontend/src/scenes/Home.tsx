@@ -101,10 +101,6 @@ export default function Home() {
 					<MyFooter me={me}/>
 				</Box>
 				</Stack>
-				{/* {ManageChat(checked, users)} */}
-				{/* <Box sx={{ minWidth: "20%", minHeight: "100%"}}>
-					<Fade in={checked}>{MyList(users)}</Fade>
-				</Box> */}
 				{/* {checked ?
 					<Box sx={{ minWidth: "20%", minHeight: "100%"}}>
 						<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/>

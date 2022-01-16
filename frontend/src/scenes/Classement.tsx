@@ -2,8 +2,7 @@ import { Avatar, Stack } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import MyLadder from '../components/MyLadder';
-import MyList from '../components/MyList';
-import { api, apiFriends, apiMe, apiUsers } from '../services/Api/Api';
+import { api, apiMe } from '../services/Api/Api';
 import { User } from '../services/Interface/Interface';
 
 function Classement() {
