@@ -25,7 +25,7 @@ export class AdminController {
 			return resp.status(404).json({ error: 'user not found' });
 
 		if (user.banned)
-			return resp.status(409).json({ error: 'user already banned' });
+			return resp.status(200).json({ error: 'user is banned' });
 
 		if (user.role === UserRole.ADMIN)
 			return resp.status(409).json({ error: 'admin cannot be banned' });
@@ -43,7 +43,7 @@ export class AdminController {
 			return resp.status(404).json({ error: 'user not found' });
 
 		if (!user.banned)
-			return resp.status(409).json({ error: 'user is not banned' });
+			return resp.status(200).json({ error: 'user is not banned' });
 
 		await this.usersService.updateUserBan( user.id, false );
 		resp.json({ message: 'user has been unbanned' });
