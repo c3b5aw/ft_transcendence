@@ -25,7 +25,6 @@ export default function Home() {
 		const fetchMe = async () => {
 			try {
 				const reponse = await axios.get(`${api}${apiMe}`);
-				console.log(reponse.data);
 				setMe(reponse.data);
 			} catch (err) {
 				setError(err);
