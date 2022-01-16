@@ -1,4 +1,3 @@
-import { CircularProgress, Stack } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Connection from '../../scenes/Connection';
@@ -33,7 +32,6 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 		const fetchMe = async () => {
 			try {
 				const reponse = await axios.get(`${api}${apiMe}`);
-				console.log(reponse.data);
 				setMe(reponse.data);
 			} catch (err) {
 				console.log(err);
@@ -44,7 +42,6 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 	}, [logged])
 
 	// eslint-disable-next-line eqeqeq
-	// if (logged && roles.includes(ROLE.ADMIN))
 	if (logged && me != undefined && roles.includes(me.role))
 	{
 		return (children)
