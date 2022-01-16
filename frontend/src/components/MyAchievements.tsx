@@ -1,13 +1,17 @@
-import { Avatar, CircularProgress, Divider, List, ListItem, Paper, Stack } from "@mui/material";
+import { Avatar, Divider, List, ListItem, Paper, Stack } from "@mui/material";
 import { avatarStyle } from "../styles/Styles";
 import { useEffect, useState } from 'react';
 import { api, apiAchievements, apiUsers } from "../services/Api/Api";
 import { Achievements, User } from "../services/Interface/Interface";
 import axios from "axios";
+import MyChargingDataAlert from "./MyChargingDataAlert";
+import MyError from "./MyError";
+import MySnackBar from "./MySnackbar";
 
 const MyAchievements = (props: {user: User}) => {
 	const { user } = props;
 	const [achievements, setAchievements] = useState<Achievements[]>([]);
+	const [error, setError] = useState<unknown>("");
 
 	useEffect(() => {
 		const fetchAchievements = async () => {
@@ -16,20 +20,18 @@ const MyAchievements = (props: {user: User}) => {
 				setAchievements(response.data);
 			}
 			catch (err) {
-				console.log(err);
+				setError(err);
 			}
 		}
 		fetchAchievements();
 	}, [user.login]);
 
 	// eslint-disable-next-line eqeqeq
-	if (achievements == undefined) {
-		return (
-			<Stack sx={{ marginTop: "15%", width: 0.90, height: 0.4}} direction="column" alignItems="center" justifyContent="center">
-				<CircularProgress sx={{color: "white"}} />
-			</Stack>
-		);
-	}
+	if (achievements == undefined && error === "")
+		return (<MyChargingDataAlert />);
+	// eslint-disable-next-line eqeqeq
+	else if (error !== "" || achievements == undefined)
+		return (<MyError error={error}/>);
 	return (
 		<Stack sx={{ marginTop: "15%", width: 0.90, height: 0.4, backgroundColor: 'white', borderRadius: 7 }} direction="column">
 			<Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -64,6 +66,7 @@ const MyAchievements = (props: {user: User}) => {
 					</List> : null
 				}
 			</Paper>
+			<MySnackBar message="Données achievements chargées" severity="success" time={4000}/>
 		</Stack>
 	);
 }

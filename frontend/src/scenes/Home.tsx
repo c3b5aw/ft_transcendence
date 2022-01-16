@@ -3,21 +3,19 @@ import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/system';
 import Button from '@mui/material/Button';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import { CircularProgress } from '@mui/material';
 import axios from 'axios';
-import { api, apiFriends, apiMe, apiUsers } from '../services/Api/Api';
+import { api, apiMe, apiUsers } from '../services/Api/Api';
 import MyFooter from '../components/MyFooter';
 import { boxStyle, StyleH1, useStyles } from '../styles/Styles';
 import { User } from '../services/Interface/Interface';
 import MySearchBar from '../components/MySearchBar';
-import MyList from '../components/MyList';
+import MyChargingDataAlert from '../components/MyChargingDataAlert';
+import MyError from '../components/MyError';
 
 export default function Home() {
-	const [checked, setChecked] = useState(false);
 	const [users, setUsers] = useState<User[]>([]);
 	const [me, setMe] = useState<User>();
+	const [error, setError] = useState<unknown>("");
 
 	const classes = useStyles();
 	const styleH1 = StyleH1();
@@ -30,7 +28,7 @@ export default function Home() {
 				console.log(reponse.data);
 				setMe(reponse.data);
 			} catch (err) {
-				console.log(err);
+				setError(err);
 			}
 		}
 		fetchMe();
@@ -42,39 +40,26 @@ export default function Home() {
 				const reponse = await axios.get(`${api}${apiUsers}`);
 				setUsers(reponse.data);
 			} catch (err) {
-				console.log(err);
+				setError(err);
 			}
 		}
 		fetchUsers();
 	}, [])
-
-	const handleChange = () => {
-		setChecked(!checked);
-	};
 
 	function handleLaunchGame() {
 		navigate('/game');
 	}
 
 	// eslint-disable-next-line eqeqeq
-	if (users == undefined) {
-		return (
-			<Stack sx={{width: 1, height: "100vh"}} direction="row" alignItems="center" justifyContent="center">
-				<CircularProgress sx={{color: "white"}} />
-			</Stack>
-		);
-	}
+	if ((me == undefined || users == undefined) && error === "")
+		return (<MyChargingDataAlert />);
+	// eslint-disable-next-line eqeqeq
+	else if (error !== "" || me == undefined)
+		return (<MyError error={error}/>);
 	return (
 		<Stack direction="row" sx={{width: 1, minHeight: "100vh"}}>
 			<Stack direction="column" sx={{width: 1}}>
 				<Stack direction="column" sx={{width: 1, height: 0.85}}>
-					<FormControlLabel
-						sx={{marginLeft: "10px", marginTop: "5px"}}
-						control={<Switch checked={checked}
-						onChange={handleChange}
-						/>}
-						label="Show Chat"
-					/>
 					<Box className={classes.box} sx={boxStyle}>
 						<MySearchBar users={users}/>
 					</Box>
@@ -103,11 +88,6 @@ export default function Home() {
 					<MyFooter me={me}/>
 				</Stack>
 				</Stack>
-				{/* {checked ?
-					<Box sx={{ minWidth: "20%", minHeight: "100%"}}>
-						<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/>
-					</Box>
-				: null} */}
 		 </Stack>
 	);
 }

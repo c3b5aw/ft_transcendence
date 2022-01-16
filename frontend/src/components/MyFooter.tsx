@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ROLE } from "../services/Api/Api";
 import { User } from "../services/Interface/Interface";
 
-export default function MyFooter(props : {me: User | undefined}) {
+export default function MyFooter(props : {me: User}) {
 	const { me } = props;
 	const navigate = useNavigate();
 
@@ -61,7 +61,7 @@ export default function MyFooter(props : {me: User | undefined}) {
 				onClick={() => handleLaunchChat()}>
 				<h2>Chat</h2>
 			</Button>
-			{me?.role === ROLE.MODERATOR ?
+			{me?.role === ROLE.ADMIN ?
 				<Button sx={buttonStyle}
 					onClick={() => handleLaunchAdminView()}>
 					<h2>Admin View</h2>

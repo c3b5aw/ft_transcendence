@@ -1,9 +1,8 @@
-import { Avatar, Button, CircularProgress, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MyAchievements from '../components/MyAchievements';
-import MyChat from '../components/MyChat';
 import MyHistory from '../components/MyHistory';
 import { api, apiMe, apiStats } from '../services/Api/Api';
 import { User } from '../services/Interface/Interface';
@@ -11,13 +10,15 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
 import MyAvatar from '../components/MyAvatar';
+import MyChargingDataAlert from '../components/MyChargingDataAlert';
+import MyError from '../components/MyError';
 
 const Stats = () => {
 	const { login } = useParams();
 
 	const [user, setUser] = useState<User>();
 	const [me, setMe] = useState<User>();
-	const [event, setEvent] = useState<Date>();
+	const [error, setError] = useState<unknown>("");
 
 	useEffect(() => {
 		const fetchMe = async () => {
@@ -25,7 +26,7 @@ const Stats = () => {
 				const reponse = await axios.get(`${api}${apiMe}`);
 				setMe(reponse.data);
 			} catch (err) {
-				console.log(err);
+				setError(err);
 			}
 		}
 		fetchMe();
@@ -37,32 +38,22 @@ const Stats = () => {
 				const url = `http://127.0.0.1/api/users/${login}${apiStats}`;
 				const reponse = await axios.get(url);
 				setUser(reponse.data);
-				return reponse;
 			} catch (err) {
-				console.log(err);
+				setError(err);
 			}
 		}
-		async function fetchCreated() {
-			const result = await fetchUser();
-			setEvent(new Date(result?.data.created))
-		}
-		fetchCreated();
+		fetchUser();
 	}, [login, me])
 
 	// eslint-disable-next-line eqeqeq
-	if (user == undefined) {
-		return (
-			<Stack sx={{width: 1, height: "100vh"}} direction="row" alignItems="center" justifyContent="center">
-				<CircularProgress sx={{color: "white"}} />
-			</Stack>
-		);
-	}
-	console.log("heeloo");
-	console.log(user);
+	if ((me == undefined || user == undefined) && error === "")
+		return (<MyChargingDataAlert />);
+	else if (error !== "" || user == undefined)
+		return (<MyError error={error}/>);
 	return (
 		<Stack sx={{width: 1, height: 1}} direction="row" spacing={3}>
 			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
-				<MyAvatar login={user.login} role={me?.role}/>
+				<MyAvatar user={user}/>
 				<Stack sx={{ width: 1, height: 1/4, marginLeft: "30%" }} direction="column" justifyContent="center" spacing={4}>
 					<h2>Matchs joués : {user.played}</h2>
 					<h2>Classement : {user.rank}</h2>
@@ -87,10 +78,8 @@ const Stats = () => {
 				</Stack>
 				<MyHistory user={user}/>
 			</Stack>
-			{/* {user?.login !== me?.login ? <MyChat user={user}/> : null} */}
 		</Stack>
 	);
 }
 
 export default Stats;
-// : <Stack sx={{width: 1, height: 2/12}} />

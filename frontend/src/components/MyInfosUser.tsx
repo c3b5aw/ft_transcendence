@@ -7,57 +7,72 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { api, apiAdmin, apiBan, apiStats, apiUsers } from "../services/Api/Api";
+import { api, apiAdmin, apiBan, apiStats, apiUsers, ROLE, rolesArray } from "../services/Api/Api";
 import { useEffect, useState } from 'react';
 import { User } from '../services/Interface/Interface';
-import { Avatar, Divider, Stack, Switch } from '@mui/material';
+import { Avatar, Divider, FormControlLabel, Stack, Switch } from '@mui/material';
+import MySnackBar from './MySnackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 export default function MyInfosUser(props: {me: User | undefined, users: User[]}) {
 
 	const { me } = props;
 	const { users } = props;
-	
+
+	const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+		props,
+		ref,
+	  ) {
+		return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+	  });
 
 	function Row(props: { user: User, me: User | undefined }) {
 		const { user } = props;
 		const { me } = props;
 		const navigate = useNavigate();
-		const [banned, setBanned] = useState<boolean>(false);
+		const [banned, setBanned] = useState<boolean>(user.banned);
 
-		useEffect(() => {
-		}, [banned]);
-
-		const UnBanned = async () => {
-			await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
-			setBanned(!banned);
+		const handleBanned = async () => {
+			if (banned) {
+				try {
+					await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
+					setBanned(!banned);
+				}
+				catch (err) {
+					console.log(err);
+				}
+			}
+			else {
+				try {
+					await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
+					setBanned(!banned);
+				}
+				catch (err) {
+					console.log(err);
+				}
+			}
 		}
-
-		const Banned = async () => {
-			await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
-			setBanned(!banned);
-		}
-
-	  return (
+		return (
 		<React.Fragment>
-		  <TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: user.login === me?.login ? 'cyan' : 'white' }}>
+			<TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: user.login === me?.login ? 'cyan' : 'white' }}>
 			<TableCell>
-			  <Avatar
+				<Avatar
 				src={`http://127.0.0.1/api/users/${user.login}/avatar`}
 				sx={{ width: "48px", height: "48px" }}>
-			  </Avatar>
+				</Avatar>
 			</TableCell>
 			<TableCell onClick={() => navigate(`${apiStats}/${user.login}`)} component="th" scope="row">{user.id}</TableCell>
-			<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{user.login}</TableCell>
+			<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{user.login} ({rolesArray[user.role]})</TableCell>
 			<TableCell align="center">{user.victories}</TableCell>
 			<TableCell align="center">
-				{user.banned ?
-					<Switch defaultChecked onChange={() => UnBanned()}></Switch> :
-					<Switch onChange={() => Banned()}></Switch>
+				{user.role !== ROLE.ADMIN ?
+					<Switch checked={banned} onChange={() => handleBanned()}/> :
+					<Switch disabled/>
 				}
 			</TableCell>
-		  </TableRow>
+			</TableRow>
 		</React.Fragment>
-	  );
+		);
 	}
 	return (
 		<Stack sx={{backgroundColor: "white", width: 1, height: 0.82, borderRadius: 5}} direction="column">

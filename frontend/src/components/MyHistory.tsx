@@ -1,30 +1,36 @@
-import { Avatar, CircularProgress, Divider, List, ListItem, Paper, Stack } from "@mui/material"
+import { Avatar, Divider, List, ListItem, Paper, Stack } from "@mui/material"
 import { useEffect, useState } from "react";
 import { api, apiMatch, apiUsers } from "../services/Api/Api";
 import axios from "axios";
 import { Match, User } from "../services/Interface/Interface";
+import MyChargingDataAlert from "./MyChargingDataAlert";
+import MyError from "./MyError";
+import MySnackBar from "./MySnackbar";
 
 const MyHistory = (props: {user: User}) => {
 	const { user } = props;
-	const [matchs, setMatchs] = useState<Match[]>([]);
+	const [matchs, setMatchs] = useState<Match[]>();
+	const [error, setError] = useState<unknown>("");
 
 	useEffect(() => {
 		const fetchMatchs = async () => {
-			const response = await axios.get(`${api}${apiUsers}/${user.login}${apiMatch}`);
-			setMatchs(response.data);
+			try {
+				const response = await axios.get(`${api}${apiUsers}/${user.login}${apiMatch}`);
+				setMatchs(response.data);
+			}
+			catch (err) {
+				setError(err);
+			}
 		}
 		fetchMatchs();
 	}, [user.login]);
 
 	// eslint-disable-next-line eqeqeq
-	if (matchs == undefined) {
-		return (
-			<Stack sx={{width: 1, height: "100vh"}} direction="column" alignItems="center" justifyContent="center">
-				<CircularProgress sx={{color: "white"}} />
-			</Stack>
-		);
-	}
-
+	if (matchs == undefined && error === "")
+		return (<MyChargingDataAlert />);
+	// eslint-disable-next-line eqeqeq
+	else if (error !== "" || matchs == undefined)
+		return (<MyError error={error}/>);
 	return (
 		<Stack sx={{width: 1, height: "100vh"}} direction="column" alignItems="center" justifyContent="center" spacing={5}>
 			<Stack direction="column" sx={{width: 1, height: 9/12}}>
@@ -81,6 +87,7 @@ const MyHistory = (props: {user: User}) => {
 				</Paper> : <div style={{fontSize: "48px", color: "#A3A3A3", fontFamily: "Myriad Pro", textAlign: "center"}}>No matchs</div>
 				}
 			</Stack>
+			<MySnackBar message="Données historique chargées" severity="success" time={2000}/>
 		</Stack>
 	);
 }

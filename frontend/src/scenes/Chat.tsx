@@ -2,14 +2,17 @@ import { Avatar, FormControl, IconButton, List, ListItem, Paper, Stack, TextFiel
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import MyList from '../components/MyList';
-import { api, apiChannels, apiChat, apiFriends, apiMe, apiUsers } from '../services/Api/Api';
-import { Channel, User } from '../services/Interface/Interface';
+import { api, apiFriends, apiMe, apiUsers } from '../services/Api/Api';
+import { User } from '../services/Interface/Interface';
 import SendIcon from '@mui/icons-material/Send';
 import { styleTextField } from '../styles/Styles';
+import MyChargingDataAlert from '../components/MyChargingDataAlert';
+import MyError from '../components/MyError';
 
 function Chat() {
 	const [me, setMe] = useState<User>();
-	const [channels, setChannels] = useState<Channel[]>([]);
+	// const [channels, setChannels] = useState<Channel[]>([]);
+	const [error, setError] = useState<unknown>("");
 
 	const classes = styleTextField()
 
@@ -55,7 +58,7 @@ function Chat() {
 				const reponse = await axios.get(`${api}${apiMe}`);
 				setMe(reponse.data);
 			} catch (err) {
-				console.log(err);
+				setError(err);
 			}
 		}
 		fetchMe();
@@ -72,7 +75,11 @@ function Chat() {
 	// 	}
 	// 	fetchChannel();
 	// }, [])
-
+	// eslint-disable-next-line eqeqeq
+	if (me == undefined && error === "")
+		return (<MyChargingDataAlert />);
+	else if (error !== "")
+		return (<MyError error={error}/>);
 	return (
 		<Stack direction="column" sx={{width: 1, height: "100vh"}}>
 			<Paper elevation={3} sx={{width: 1, height: 0.05, backgroundColor: '#394E51'}}>
