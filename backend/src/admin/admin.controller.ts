@@ -1,5 +1,5 @@
 import { Controller, Put, UseGuards, 
-		Header, Patch, Param, Res } from '@nestjs/common';
+		Header, Delete, Param, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
@@ -34,7 +34,7 @@ export class AdminController {
 		resp.json({ message: 'user has been banned' });
 	}
 
-	@Patch('/ban/:login')
+	@Delete('/ban/:login')
 	@UseGuards(AdminGuard)
 	@Header('Content-Type', 'application/json')
 	async unbanUser(@Param('login') login: string, @Res() resp: Response) {
