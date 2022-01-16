@@ -125,7 +125,7 @@ export class UsersService {
 		`);
 			
 		if (stats.length === 0)
-			return {} as UserStats;
+			return undefined;
 		return stats[0];
 	}
 
