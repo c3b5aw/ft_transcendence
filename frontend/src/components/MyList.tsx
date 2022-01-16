@@ -1,9 +1,7 @@
 import { Avatar, CircularProgress, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
 import CircleIcon from '@mui/icons-material/Circle';
-import Divider from '@mui/material/Divider';
 import { useNavigate } from 'react-router';
-import { api, apiFriends, apiUsers } from '../services/Api/Api';
-import { avatarStyle } from '../styles/Styles';
+import { api, apiUsers } from '../services/Api/Api';
 import { Friends, User } from '../services/Interface/Interface';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -33,7 +31,7 @@ function MyList(props : {me: User | undefined, url: string}) {
 		// eslint-disable-next-line eqeqeq
 		if (me != undefined)
 			fetchFriends();
-	}, [me])
+	}, [me, url])
 
 	// eslint-disable-next-line eqeqeq
 	if (me == undefined)

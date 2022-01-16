@@ -76,7 +76,7 @@ function ManageRouter() {
 						<Route
 							path={pageAdmin}
 							element={
-								<PrivateRoute roles={[ROLE.ADMIN]}>
+								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
 									<Admin />
 								</PrivateRoute>
 							}

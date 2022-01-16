@@ -26,7 +26,7 @@ export default function MyFooter(props : {me: User | undefined}) {
 	}
 
 	function handleLaunchAdminView() {
-		navigate('/adminView');
+		navigate('/admin');
 	}
 
 	const buttonStyle = {
@@ -61,7 +61,7 @@ export default function MyFooter(props : {me: User | undefined}) {
 				onClick={() => handleLaunchChat()}>
 				<h2>Chat</h2>
 			</Button>
-			{me?.role === ROLE.ADMIN ?
+			{me?.role === ROLE.MODERATOR ?
 				<Button sx={buttonStyle}
 					onClick={() => handleLaunchAdminView()}>
 					<h2>Admin View</h2>

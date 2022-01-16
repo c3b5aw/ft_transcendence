@@ -20,7 +20,6 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 				const body = await response.json();
 				if (body.isAuthenticated) {
 					setLogged(body.isAuthenticated);
-					// setRoles(body.user.roles);
 				}
 			}		
 		}

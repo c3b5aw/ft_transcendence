@@ -5,44 +5,19 @@ import { useParams } from 'react-router-dom';
 import MyAchievements from '../components/MyAchievements';
 import MyChat from '../components/MyChat';
 import MyHistory from '../components/MyHistory';
-import { api, apiMe } from '../services/Api/Api';
+import { api, apiMe, apiStats } from '../services/Api/Api';
 import { User } from '../services/Interface/Interface';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
+import MyAvatar from '../components/MyAvatar';
 
 const Stats = () => {
 	const { login } = useParams();
 
 	const [user, setUser] = useState<User>();
 	const [me, setMe] = useState<User>();
-
-	// const testMessageList: MessageProps[] = [
-	// 	{ message: "Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout casBonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout casBonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas", to:"tom" },
-	// 	{ message: "12", to:"tom" },
-	// 	{ message: "elie1", to:"elie" },
-	// 	{ message: "14", to:"tom"},
-	// 	{ message: "15", to:"tom" },
-	// 	{ message: "elie2", to:"elie" },
-	// 	{ message: "elie3", to:"elie" },
-	// 	{ message: "elie4", to:"elie" },
-	// 	{ message: "1u", to:"tom" },
-	// 	{ message: "17u", to:"tom" },
-	// 	{ message: "elie", to:"elie" },
-	// 	{ message: "17grg", to:"tom" },
-	// 	{ message: "elie6", to:"elie" },
-	// 	{ message: "17qew", to:"tom" },
-	// 	{ message: "Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout casBonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout casBonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout casBonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas Bonjour tout le monde comment allez vous aujourdhui moi je vais tres bien en tout cas", to:"elie" },
-	// 	{ message: "18de", to:"tom" },
-	// 	{ message: "elie8", to:"elie" },
-	// 	{ message: "elie9", to:"elie" },
-	// 	{ message: "1rgffr", to:"tom" },
-	// 	{ message: "17hhgrg", to:"tom" },
-	// 	{ message: "elie10", to:"elie" },
-	// 	{ message: "elie11", to:"elie" },
-	// ];
-
-	// const [messages] = useState<MessageProps[]>(testMessageList);
+	const [event, setEvent] = useState<Date>();
 
 	useEffect(() => {
 		const fetchMe = async () => {
@@ -59,14 +34,19 @@ const Stats = () => {
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				const url = `http://127.0.0.1/api/users/${login}`;
+				const url = `http://127.0.0.1/api/users/${login}${apiStats}`;
 				const reponse = await axios.get(url);
 				setUser(reponse.data);
+				return reponse;
 			} catch (err) {
 				console.log(err);
 			}
 		}
-		fetchUser();
+		async function fetchCreated() {
+			const result = await fetchUser();
+			setEvent(new Date(result?.data.created))
+		}
+		fetchCreated();
 	}, [login, me])
 
 	// eslint-disable-next-line eqeqeq
@@ -77,20 +57,15 @@ const Stats = () => {
 			</Stack>
 		);
 	}
+	console.log("heeloo");
+	console.log(user);
 	return (
 		<Stack sx={{width: 1, height: 1}} direction="row" spacing={3}>
 			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
-				<Stack sx={{ width: 1, height: 1/4 }} direction="column" alignItems="center" justifyContent="center" spacing={3}>
-					<Avatar
-						src={`http://127.0.0.1/api/users/${user.login}/avatar`}
-						sx={{ width: "126px", height: "126px" }}>
-					</Avatar>
-					<h2>{user.login}</h2>
-					<h3 style={{ color: 'grey' }}>Join le 03/01/2022</h3>
-				</Stack>
+				<MyAvatar login={user.login} role={me?.role}/>
 				<Stack sx={{ width: 1, height: 1/4, marginLeft: "30%" }} direction="column" justifyContent="center" spacing={4}>
 					<h2>Matchs joués : {user.played}</h2>
-					<h2>Classement : {user.elo}</h2>
+					<h2>Classement : {user.rank}</h2>
 					<h2 style={{color: '#079200'}}>Victoires : {user.victories}</h2>
 					<h2 style={{color: '#C70039'}}>Défaites : {user.defeats}</h2>
 				</Stack>
@@ -112,7 +87,7 @@ const Stats = () => {
 				</Stack>
 				<MyHistory user={user}/>
 			</Stack>
-			{user?.login !== me?.login ? <MyChat user={user}/> : null}
+			{/* {user?.login !== me?.login ? <MyChat user={user}/> : null} */}
 		</Stack>
 	);
 }

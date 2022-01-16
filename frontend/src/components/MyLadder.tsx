@@ -13,7 +13,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { api, apiLadder, apiMatch, apiUsers } from "../services/Api/Api";
+import { api, apiLadder, apiMatch, apiStats, apiUsers } from "../services/Api/Api";
 import { useEffect, useState } from 'react';
 import { Match, User } from '../services/Interface/Interface';
 import { Stack } from '@mui/material';
@@ -54,7 +54,7 @@ function Row(props: { user: User, me: User | undefined }) {
 			{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
 		  </IconButton>
 		</TableCell>
-		<TableCell onClick={() => navigate(`${api}${apiUsers}/${user.id}`)} component="th" scope="row">{user.display_name}</TableCell>
+		<TableCell onClick={() => navigate(`${apiStats}/${user.login}`)} component="th" scope="row">{user.display_name}</TableCell>
 		<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{user.elo}</TableCell>
 		<TableCell align="center">{user.victories}</TableCell>
 		<TableCell align="center">{user.defeats}</TableCell>

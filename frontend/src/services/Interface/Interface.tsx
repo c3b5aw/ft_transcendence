@@ -1,17 +1,18 @@
 export interface User {
-	id: number
-	login: string
-	display_name: string
-	email: string
-	role: number
 	banned: boolean
-	elo: number
-	played: number
-	victories: number
-	defeats: number
 	connected: boolean
 	created: string
+	defeats: number
+	display_name: string
+	elo: number
+	email: string
+	id: number
 	lastLogin: string
+	login: string
+	played: number
+	role: number
+	rank: number
+	victories: number
 }
 
 export interface Match {

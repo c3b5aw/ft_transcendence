@@ -37,7 +37,7 @@ const MyAchievements = (props: {user: User}) => {
 				<h2 style={{ marginRight: '11px', fontFamily: "Myriad Pro", color:'black' }}>{achievements.length} / 12</h2>
 			</Stack>
 			<Divider />
-			<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto'}}>
+			<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto'}} elevation={0}>
 				{ achievements.length > 0 ?
 					<List>
 						{achievements.map(achievement => (
