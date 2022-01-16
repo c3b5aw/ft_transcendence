@@ -1,5 +1,6 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
 import { UserRole } from './roles.enum';
 
 @Entity('users')
