@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 
-import { pageClassement, pageHome, pageSettings, pageStats, ROLE } from './services/Api/Api';
+import { pageAdmin, pageChat, pageClassement, pageHome, pageSettings, pageStats, ROLE } from './services/Api/Api';
 import "./scenes/App.css";
 import PrivateRoute from './services/Routes/PrivateRoute';
 import Stats from './scenes/Stats';
@@ -14,6 +14,7 @@ import Settings from './scenes/Settings';
 import Classement from './scenes/Classement';
 import React from 'react';
 import Chat from './scenes/Chat';
+import Admin from './scenes/Admin';
 
 const useStyles = makeStyles({
 	theme: {
@@ -35,7 +36,7 @@ function ManageRouter() {
 						<Route
 							path={pageHome}
 							element={
-								<PrivateRoute roles={[ROLE.Admin]}>
+								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
 									<Home />
 								</PrivateRoute>
 							}
@@ -43,16 +44,15 @@ function ManageRouter() {
 						<Route
 							path={pageSettings}
 							element={
-								<PrivateRoute roles={[ROLE.Admin]}>
-									{/* <Settings /> */}
-									<Chat />
+								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+									<Settings />
 								</PrivateRoute>
 							}
 						/>
 						<Route
 							path={pageClassement}
 							element={
-								<PrivateRoute roles={[ROLE.Admin]}>
+								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
 									<Classement />
 								</PrivateRoute>
 							}
@@ -60,8 +60,24 @@ function ManageRouter() {
 						<Route
 							path={pageStats}
 							element={
-								<PrivateRoute roles={[ROLE.Admin]}>
+								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
 									<Stats />
+								</PrivateRoute>
+							}
+						/>
+						<Route
+							path={pageChat}
+							element={
+								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+									<Chat />
+								</PrivateRoute>
+							}
+						/>
+						<Route
+							path={pageAdmin}
+							element={
+								<PrivateRoute roles={[ROLE.ADMIN]}>
+									<Admin />
 								</PrivateRoute>
 							}
 						/>

@@ -10,6 +10,8 @@ export const apiFriends = "/friends"
 export const apiMessages = "/messages"
 export const apiAchievements = "/achievements"
 export const apiConnection = "http://localhost/api/auth/login"
+export const apiChat = "/chat"
+export const apiChannels = "/channels"
 
 /*
 ** Route Page
@@ -17,14 +19,16 @@ export const apiConnection = "http://localhost/api/auth/login"
 export const pageHome = "/"
 export const pageSettings = "/settings"
 export const pageStats = "/stats/:login"
+export const pageChat = "/chat"
+export const pageAdmin = "/admin"
 export const pageClassement = "/classement"
 export const pageLogin = "/login"
 export const apiGame = "/game";
 
 export enum ROLE {
-	Admin = 'Admin',
-	Moderator = 'Moderator',
-	User = 'User',
+	MEMBER = 1,
+	MODERATOR = 2,
+	ADMIN = 3,
 }
 
 // export const me: User = {

@@ -49,3 +49,8 @@ export interface Friends {
 	friend_login: string
 	status: number
 }
+
+export interface Channel {
+	id: number
+	name: string
+}

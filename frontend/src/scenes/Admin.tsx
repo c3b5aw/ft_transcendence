@@ -1,11 +1,11 @@
 import { Stack } from "@mui/material";
 
-function MyMissing(){
+function Admin(){
     return (
         <Stack sx={{width: 1, height: "100vh"}}>
-            <p>La page demandé n'existe pas</p>
+            <p>Admin</p>
         </Stack>
     );
 }
 
-export default MyMissing;
+export default Admin;

@@ -2,13 +2,17 @@ import { Avatar, FormControl, IconButton, List, ListItem, Paper, Stack, TextFiel
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import MyList from '../components/MyList';
-import { api, apiFriends, apiMe, apiUsers } from '../services/Api/Api';
-import { User } from '../services/Interface/Interface';
+import { api, apiChannels, apiChat, apiFriends, apiMe, apiUsers } from '../services/Api/Api';
+import { Channel, User } from '../services/Interface/Interface';
 import SendIcon from '@mui/icons-material/Send';
-import { makeStyles } from '@material-ui/core/styles';
+import { styleTextField } from '../styles/Styles';
 
 function Chat() {
 	const [me, setMe] = useState<User>();
+	const [channels, setChannels] = useState<Channel[]>([]);
+
+	const classes = styleTextField()
+
 	const test: string[] = [
 		"jfirjifjijrifjrijfr1",
 		"jfirjifjijrifjrijfr2",
@@ -45,27 +49,6 @@ function Chat() {
 		"9jfirjifjijrifjrijfr666",
 	]
 
-	const useStyles = makeStyles(theme => ({
-		searchBarStyle: {
-			width: "200px",
-			margin: "0 0 0 0",
-			float: "right",
-			'&:hover': {
-				backgroundColor: '#394E51',
-			},
-			"& .MuiOutlinedInput-root": {
-				"& fieldset": { 
-					borderRadius: "10px",
-					borderColor: "#969696"
-				},
-			"&.Mui-focused fieldset": {
-				borderColor: "#969696",
-				borderWidth: "2px"
-			}
-		}
-	}
-	}))
-	const classes = useStyles()
 	useEffect(() => {
 		const fetchMe = async () => {
 			try {
@@ -77,6 +60,19 @@ function Chat() {
 		}
 		fetchMe();
 	}, [])
+
+	// useEffect(() => {
+	// 	const fetchChannel = async () => {
+	// 		try {
+	// 			const reponse = await axios.get(`${api}${apiChat}${apiChannels}`);
+	// 			setChannels(reponse.data);
+	// 		} catch (err) {
+	// 			console.log(err);
+	// 		}
+	// 	}
+	// 	fetchChannel();
+	// }, [])
+
 	return (
 		<Stack direction="column" sx={{width: 1, height: "100vh"}}>
 			<Paper elevation={3} sx={{width: 1, height: 0.05, backgroundColor: '#394E51'}}>

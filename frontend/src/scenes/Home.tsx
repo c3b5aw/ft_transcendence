@@ -67,39 +67,41 @@ export default function Home() {
 	return (
 		<Stack direction="row" sx={{width: 1, minHeight: "100vh"}}>
 			<Stack direction="column" sx={{width: 1}}>
-				<FormControlLabel
-					sx={{marginLeft: "10px", marginTop: "5px"}}
-					control={<Switch checked={checked}
-					onChange={handleChange}
-					/>}
-					label="Show Chat"
-				/>
-				<Box className={classes.box} sx={boxStyle}>
-					<MySearchBar users={users}/>
-				</Box>
-				<Box className={classes.box} sx={boxStyle}>
-					<h1 className={styleH1.root}>ft_transcendance</h1>
-				</Box>
-				<Box className={classes.box} sx={boxStyle}>
-					<Button sx={{
-						background: 'white',
-						color: '#000000',
-						'&:hover': {
-							backgroundColor: '#D5D5D5',
+				<Stack direction="column" sx={{width: 1, height: 0.85}}>
+					<FormControlLabel
+						sx={{marginLeft: "10px", marginTop: "5px"}}
+						control={<Switch checked={checked}
+						onChange={handleChange}
+						/>}
+						label="Show Chat"
+					/>
+					<Box className={classes.box} sx={boxStyle}>
+						<MySearchBar users={users}/>
+					</Box>
+					<Box className={classes.box} sx={boxStyle}>
+						<h1 className={styleH1.root}>ft_transcendance</h1>
+					</Box>
+					<Box className={classes.box} sx={boxStyle}>
+						<Button sx={{
+							background: 'white',
 							color: '#000000',
-						},
-						width: '25%',
-						borderRadius: 5,
-						border: 5,
-						fontSize: '20px',
-					}}
-						onClick={() => handleLaunchGame()}>
-						<h1>Start Game</h1>
-						</Button>
-				</Box>
-				<Box component="footer" sx={{ mt: 'auto', height: '25vh'}}>
+							'&:hover': {
+								backgroundColor: '#D5D5D5',
+								color: '#000000',
+							},
+							width: '25%',
+							borderRadius: 5,
+							border: 5,
+							fontSize: '20px',
+						}}
+							onClick={() => handleLaunchGame()}>
+							<h1>Start Game</h1>
+							</Button>
+					</Box>
+				</Stack>
+				<Stack direction="row" sx={{width: 1, height: 0.08}}>
 					<MyFooter me={me}/>
-				</Box>
+				</Stack>
 				</Stack>
 				{/* {checked ?
 					<Box sx={{ minWidth: "20%", minHeight: "100%"}}>

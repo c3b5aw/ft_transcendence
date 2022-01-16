@@ -63,3 +63,24 @@ export const avatarStyleIconList = {
 	width: "32px",
 	height: "32px",
 };
+
+export const styleTextField = makeStyles(theme => ({
+	searchBarStyle: {
+		width: "200px",
+		margin: "0 0 0 0",
+		float: "right",
+		'&:hover': {
+			backgroundColor: '#394E51',
+		},
+		"& .MuiOutlinedInput-root": {
+			"& fieldset": { 
+				borderRadius: "10px",
+				borderColor: "#969696"
+			},
+		"&.Mui-focused fieldset": {
+			borderColor: "#969696",
+			borderWidth: "2px"
+		}
+	}
+}
+}))

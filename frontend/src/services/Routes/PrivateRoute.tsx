@@ -1,11 +1,15 @@
+import { CircularProgress, Stack } from '@mui/material';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Connection from '../../scenes/Connection';
-import { ROLE } from '../Api/Api';
+import { api, apiMe, ROLE } from '../Api/Api';
+import { User } from '../Interface/Interface';
 
 const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array<ROLE>}) => {
 	const [logged, setLogged] = useState(false);
+	const [me, setMe] = useState<User>();
 	// const [rolesUser, setRoles] = useState<Array<ROLE>>([]);
-	
+
 	useEffect(() => {
 		const fetchConnected = async () => {
 			const response = await fetch('/api/auth/status');
@@ -25,8 +29,27 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 			console.log('Il y a eu un problème : ' + e.message);
 		});
 	}, [])
-	if (logged && roles.includes(ROLE.Admin))
+
+	useEffect(() => {
+		const fetchMe = async () => {
+			try {
+				const reponse = await axios.get(`${api}${apiMe}`);
+				console.log(reponse.data);
+				setMe(reponse.data);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+		if (logged)
+			fetchMe();
+	}, [logged])
+
+	// eslint-disable-next-line eqeqeq
+	// if (logged && roles.includes(ROLE.ADMIN))
+	if (logged && me != undefined && roles.includes(me.role))
+	{
 		return (children)
+	}
 	else
 		return (<Connection />);
 };
