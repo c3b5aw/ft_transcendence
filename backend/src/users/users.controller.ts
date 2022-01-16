@@ -67,7 +67,7 @@ export class UsersController {
 			return resp.status(404).json({ error: 'user not found' });
 
 		const userStats: UserStats = await this.usersService.getStatsById( user.id );
-		if (!userStats)
+		if (!userStats || userStats === undefined)
 			return resp.status(404).json({ error: 'user not found' });
 		resp.send(userStats);
 	}
