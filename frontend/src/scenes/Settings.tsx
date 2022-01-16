@@ -74,7 +74,7 @@ const Settings = () => {
 							sx={{ width: "126px", height: "126px" }}
 							src={`http://127.0.0.1/api/profile`}>
 						</Avatar>
-						<h3 style={{ color: 'grey' }}>{event?.toDateString()}</h3>
+						<h3 style={{ color: 'white' }}>{event?.toDateString()}</h3>
 					</Stack>
 					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>{me?.display_name}</h1>
 				</Stack>
