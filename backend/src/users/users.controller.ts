@@ -18,6 +18,7 @@ import { MatchsService } from 'src/matchs/matchs.service';
 import { User } from './entities/user.entity';
 import { UserStats } from './dto/stats.dto';
 import { UsersService } from './users.service';
+import { UserRole } from './entities/roles.enum';
 
 @ApiTags('users')
 @Controller('users')
@@ -32,8 +33,10 @@ export class UsersController {
 	@Get()
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
-	async getUsers() : Promise<User[]> {
-		return this.usersService.findAll();
+	async getUsers(@Req() req: any) : Promise<User[]> {
+		const user: User = await this.usersService.findOneByID( req.user.id );
+		
+		return this.usersService.findAll(user.role === UserRole.ADMIN);
 	}
 
 	@Get('/count')
