@@ -62,12 +62,6 @@ export class ProfileController {
 	@Header('Content-Type', 'application/json')
 	async setDisplayName(@Req() req: any, @Body() data: PostDisplayNameDto,
 						@Res() resp: Response) {
-
-		if (data.display_name.length < 3)
-			return resp.status(400).json({ error: 'display name must be at least 3 characters long' });
-		if (data.display_name.length >= 64)
-			return resp.status(400).json({ error: 'display name must be less than 64 characters long' })
-		
 		const name: User = await this.usersService.findOneByDisplayName(data.display_name);
 		if (name) {
 			if (name.id !== req.user.id)
