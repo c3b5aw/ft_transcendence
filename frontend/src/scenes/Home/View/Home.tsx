@@ -1,60 +1,30 @@
-import { useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/system';
 import Button from '@mui/material/Button';
-import axios from 'axios';
-import { api, apiMe, apiUsers } from '../services/Api/Api';
-import MyFooter from '../components/MyFooter';
-import { boxStyle, StyleH1, useStyles } from '../styles/Styles';
-import { User } from '../services/Interface/Interface';
-import MySearchBar from '../components/MySearchBar';
-import MyChargingDataAlert from '../components/MyChargingDataAlert';
-import MyError from '../components/MyError';
+import MyFooter from '../../../components/MyFooter';
+import { boxStyle, StyleH1, useStyles } from '../../../styles/Styles';
+import MySearchBar from '../Components/MySearchBar';
+import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
+import useUsers from '../../../services/Hooks/useUsers';
+import useMe from '../../../services/Hooks/useMe';
 
 export default function Home() {
-	const [users, setUsers] = useState<User[]>([]);
-	const [me, setMe] = useState<User>();
-	const [error, setError] = useState<unknown>("");
+	const users = useUsers();
+	const me = useMe();
 
 	const classes = useStyles();
 	const styleH1 = StyleH1();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		const fetchMe = async () => {
-			try {
-				const reponse = await axios.get(`${api}${apiMe}`);
-				setMe(reponse.data);
-			} catch (err) {
-				setError(err);
-			}
-		}
-		fetchMe();
-	}, [])
-
-	useEffect(() => {
-		const fetchUsers = async () => {
-			try {
-				const reponse = await axios.get(`${api}${apiUsers}`);
-				setUsers(reponse.data);
-			} catch (err) {
-				setError(err);
-			}
-		}
-		fetchUsers();
-	}, [])
 
 	function handleLaunchGame() {
 		navigate('/game');
 	}
 
 	// eslint-disable-next-line eqeqeq
-	if ((me == undefined || users == undefined) && error === "")
+	if ((me == undefined || users == undefined))
 		return (<MyChargingDataAlert />);
-	// eslint-disable-next-line eqeqeq
-	else if (error !== "" || me == undefined)
-		return (<MyError error={error}/>);
 	return (
 		<Stack direction="row" sx={{width: 1, minHeight: "100vh"}}>
 			<Stack direction="column" sx={{width: 1}}>

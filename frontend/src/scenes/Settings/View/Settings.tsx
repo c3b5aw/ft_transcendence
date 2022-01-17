@@ -1,15 +1,16 @@
 import { Avatar, Box, Button, Stack, TextField } from "@mui/material";
 import axios from "axios";
 import { SetStateAction, useEffect, useState } from "react";
-import { api, apiMe, rolesArray } from "../services/Api/Api";
-import { User } from "../services/Interface/Interface";
+import { api, apiMe } from "../../../services/Api/Api";
+import { User } from "../../../services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
 import KeyIcon from '@mui/icons-material/Key';
-import MyFooter from "../components/MyFooter";
-import { styleTextField } from "../styles/Styles";
-import MyChargingDataAlert from "../components/MyChargingDataAlert";
-import MyError from "../components/MyError";
+import MyFooter from "../../../components/MyFooter";
+import { styleTextField } from "../../../styles/Styles";
+import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
+import MyError from "../../../components/MyError";
+import { rolesArray } from "../../../services/Api/Role";
 
 const Settings = () => {
 	const [me, setMe] = useState<User>();

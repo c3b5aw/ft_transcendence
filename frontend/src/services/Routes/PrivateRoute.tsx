@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import Connection from '../../scenes/Connection';
-import { api, apiMe, ROLE } from '../Api/Api';
+import Connection from '../../scenes/Connection/View/Connection';
+import { api, apiMe } from '../Api/Api';
+import { ROLE } from '../Api/Role';
 import { User } from '../Interface/Interface';
 
 const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array<ROLE>}) => {

@@ -3,18 +3,19 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 
-import { pageAdmin, pageChat, pageClassement, pageHome, pageSettings, pageStats, ROLE } from './services/Api/Api';
+import { pageAdmin, pageChat, pageClassement, pageHome, pageSettings, pageStats } from './services/Api/RoutePage';
 import "./scenes/App.css";
 import PrivateRoute from './services/Routes/PrivateRoute';
-import Stats from './scenes/Stats';
+import Stats from './scenes/Stats/View/Stats';
 // import MeProvider from './MeProvider';
 import MyMissing from './components/MyMissing';
-import Home from './scenes/Home';
-import Settings from './scenes/Settings';
-import Classement from './scenes/Classement';
+import Home from './scenes/Home/View/Home';
+import Settings from './scenes/Settings/View/Settings';
+import Classement from './scenes/Ladder/View/Classement';
 import React from 'react';
-import Chat from './scenes/Chat';
-import Admin from './scenes/Admin';
+import Chat from './scenes/Chat/View/Chat';
+import Admin from './scenes/Admin/View/Admin';
+import { ROLE } from './services/Api/Role';
 
 const useStyles = makeStyles({
 	theme: {

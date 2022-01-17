@@ -1,36 +1,16 @@
 import { Avatar, Divider, List, ListItem, Paper, Stack } from "@mui/material"
-import { useEffect, useState } from "react";
-import { api, apiMatch, apiUsers } from "../services/Api/Api";
-import axios from "axios";
-import { Match, User } from "../services/Interface/Interface";
-import MyChargingDataAlert from "./MyChargingDataAlert";
-import MyError from "./MyError";
-import MySnackBar from "./MySnackbar";
+import { User } from "../../../services/Interface/Interface";
+import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
+import MySnackBar from "../../../components/MySnackbar";
+import useMatchs from "../Services/useMatchs";
 
 const MyHistory = (props: {user: User}) => {
 	const { user } = props;
-	const [matchs, setMatchs] = useState<Match[]>();
-	const [error, setError] = useState<unknown>("");
-
-	useEffect(() => {
-		const fetchMatchs = async () => {
-			try {
-				const response = await axios.get(`${api}${apiUsers}/${user.login}${apiMatch}`);
-				setMatchs(response.data);
-			}
-			catch (err) {
-				setError(err);
-			}
-		}
-		fetchMatchs();
-	}, [user.login]);
+	const matchs = useMatchs(user);
 
 	// eslint-disable-next-line eqeqeq
-	if (matchs == undefined && error === "")
+	if (matchs == undefined)
 		return (<MyChargingDataAlert />);
-	// eslint-disable-next-line eqeqeq
-	else if (error !== "" || matchs == undefined)
-		return (<MyError error={error}/>);
 	return (
 		<Stack sx={{width: 1, height: "100vh"}} direction="column" alignItems="center" justifyContent="center" spacing={5}>
 			<Stack direction="column" sx={{width: 1, height: 9/12}}>

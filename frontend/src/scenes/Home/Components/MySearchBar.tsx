@@ -3,9 +3,9 @@ import Paper from "@mui/material/Paper";
 import SearchBar from "material-ui-search-bar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiStats } from "../services/Api/Api";
-import { User } from "../services/Interface/Interface";
-import { useStyles } from "../styles/Styles";
+import { apiStats } from "../../../services/Api/Api";
+import { User } from "../../../services/Interface/Interface";
+import { useStyles } from "../../../styles/Styles";
 
 export default function MySearchBar(props : {users: User[]}) {
 	const { users } = props;

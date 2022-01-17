@@ -7,10 +7,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { api, apiAdmin, apiBan, apiStats, ROLE, rolesArray } from "../services/Api/Api";
+import { api, apiAdmin, apiBan, apiStats } from "../../../services/Api/Api";
 import { useState } from 'react';
-import { User } from '../services/Interface/Interface';
+import { User } from '../../../services/Interface/Interface';
 import { Avatar, Stack, Switch } from '@mui/material';
+import { ROLE, rolesArray } from '../../../services/Api/Role';
 
 export default function MyInfosUser(props: {me: User | undefined, users: User[]}) {
 

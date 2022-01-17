@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
 import React from "react";
-import { ISearchBar, User } from "../services/Interface/Interface";
+import { ISearchBar, User } from "../../../services/Interface/Interface";
 import MySearchBarChat from "./MySearchBarChat";
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -27,6 +27,7 @@ function MyDialog(props: {users: User[]}) {
     const fSearchBar: ISearchBar = {
 		handleClickCell: handleClickCell
 	}
+
     return (
         <Dialog
 			open={open}

@@ -13,13 +13,13 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { api, apiLadder, apiMatch, apiStats, apiUsers } from "../services/Api/Api";
+import { api, apiLadder, apiMatch, apiStats, apiUsers } from "../../../services/Api/Api";
 import { useEffect, useState } from 'react';
-import { Match, User } from '../services/Interface/Interface';
+import { Match, User } from '../../../services/Interface/Interface';
 import { Stack } from '@mui/material';
-import MyChargingDataAlert from './MyChargingDataAlert';
-import MyError from './MyError';
-import MySnackBar from './MySnackbar';
+import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
+import MyError from '../../../components/MyError';
+import MySnackBar from '../../../components/MySnackbar';
 
 function Row(props: { user: User, me: User}) {
 	const [open, setOpen] = React.useState(false);

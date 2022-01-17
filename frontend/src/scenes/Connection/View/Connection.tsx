@@ -1,9 +1,9 @@
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
-import Button from '../components/MyButton';
-import { StyleH1 } from '../styles/Styles';
-import { apiConnection } from '../services/Api/Api';
+import Button from '../Components/MyButton';
+import { StyleH1 } from '../../../styles/Styles';
+import { apiConnection } from '../../../services/Api/Api';
 
 function Connection()
 {

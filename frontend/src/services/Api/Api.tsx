@@ -1,6 +1,3 @@
-/*
-** API
-*/
 export const api = "/api"
 export const apiMe = "/profile"
 export const apiUsers = `/users`
@@ -15,38 +12,3 @@ export const apiChat = "/chat"
 export const apiChannels = "/channels"
 export const apiAdmin = "/admin"
 export const apiBan = "/ban"
-
-/*
-** Route Page
-*/
-export const pageHome = "/"
-export const pageSettings = "/settings"
-export const pageStats = "/stats/:login"
-export const pageChat = "/chat"
-export const pageAdmin = "/admin"
-export const pageClassement = "/classement"
-export const pageLogin = "/login"
-export const apiGame = "/game";
-
-export enum ROLE {
-	MEMBER = 0,
-	MODERATOR = 1,
-	ADMIN = 2,
-}
-
-export const rolesArray = ["MEMBER", "MODERATOR", "ADMIN"];
-
-// export const me: User = {
-//     id: 100,
-// 	login: "sbeaujar",
-// 	display_name: "display_name_sbeaujar",
-// 	email: "sbeaujar@42.fr",
-// 	elo: 123,
-// 	played: 12,
-// 	victories: 13,
-// 	defeats: 2,
-// 	connected: false,
-// 	role: 1,
-// }
-
-// export const MeContext = React.createContext({ me });

@@ -1,5 +1,5 @@
 import { Avatar, Stack } from "@mui/material";
-import { rolesArray } from "../services/Api/Api";
+import { rolesArray } from "../services/Api/Role";
 import { User } from "../services/Interface/Interface";
 
 function MyAvatar(props: {user: User}) {

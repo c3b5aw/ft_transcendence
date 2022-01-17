@@ -1,6 +1,6 @@
 import { Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { ROLE } from "../services/Api/Api";
+import { ROLE } from "../services/Api/Role";
 import { User } from "../services/Interface/Interface";
 
 export default function MyFooter(props : {me: User}) {

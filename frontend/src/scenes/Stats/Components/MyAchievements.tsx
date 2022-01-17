@@ -1,37 +1,17 @@
 import { Avatar, Divider, List, ListItem, Paper, Stack } from "@mui/material";
-import { avatarStyle } from "../styles/Styles";
-import { useEffect, useState } from 'react';
-import { api, apiAchievements, apiUsers } from "../services/Api/Api";
-import { Achievements, User } from "../services/Interface/Interface";
-import axios from "axios";
-import MyChargingDataAlert from "./MyChargingDataAlert";
-import MyError from "./MyError";
-import MySnackBar from "./MySnackbar";
+import { avatarStyle } from "../../../styles/Styles";
+import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
+import MySnackBar from "../../../components/MySnackbar";
+import useAchievements from "../Services/useAchievements";
+import { User } from "../../../services/Interface/Interface";
 
 const MyAchievements = (props: {user: User}) => {
 	const { user } = props;
-	const [achievements, setAchievements] = useState<Achievements[]>([]);
-	const [error, setError] = useState<unknown>("");
-
-	useEffect(() => {
-		const fetchAchievements = async () => {
-			try {
-				const response = await axios.get(`${api}${apiUsers}/${user.login}${apiAchievements}`);
-				setAchievements(response.data);
-			}
-			catch (err) {
-				setError(err);
-			}
-		}
-		fetchAchievements();
-	}, [user.login]);
+	const achievements = useAchievements(user);
 
 	// eslint-disable-next-line eqeqeq
-	if (achievements == undefined && error === "")
+	if (achievements == undefined)
 		return (<MyChargingDataAlert />);
-	// eslint-disable-next-line eqeqeq
-	else if (error !== "" || achievements == undefined)
-		return (<MyError error={error}/>);
 	return (
 		<Stack sx={{ marginTop: "15%", width: 0.90, height: 0.4, backgroundColor: 'white', borderRadius: 7 }} direction="column">
 			<Stack direction="row" alignItems="center" justifyContent="space-between">

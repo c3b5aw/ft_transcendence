@@ -2,54 +2,31 @@ import { Button, ButtonGroup, Stack } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import MyAchievements from '../components/MyAchievements';
-import MyHistory from '../components/MyHistory';
-import { api, apiMe, apiStats, apiUsers } from '../services/Api/Api';
-import { Friends, User } from '../services/Interface/Interface';
+import MyAchievements from '../Components/MyAchievements';
+import MyHistory from '../Components/MyHistory';
+import { api, apiUsers } from '../../../services/Api/Api';
+import { Friends } from '../../../services/Interface/Interface';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
-import MyAvatar from '../components/MyAvatar';
-import MyChargingDataAlert from '../components/MyChargingDataAlert';
-import MyError from '../components/MyError';
-import MySnackBar from '../components/MySnackbar';
+import MyAvatar from '../../../components/MyAvatar';
+import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
+import MyError from '../../../components/MyError';
+import MySnackBar from '../../../components/MySnackbar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import useMe from '../../../services/Hooks/useMe';
+import useUserStats from '../Services/useUserStats';
 
 const Stats = () => {
 	const { login } = useParams();
 
-	const [user, setUser] = useState<User>();
-	const [me, setMe] = useState<User>();
+	const user = useUserStats(login);
+	const me = useMe();
 	const [error, setError] = useState<unknown>("");
 	const [successAdd, setSuccessAdd] = useState<boolean>(false);
 	const [successDelete, setSuccessDelete] = useState<boolean>(false);
 	const [friends, setFriends] = useState<Friends[]>([]);
 	const [friendsPending, setFriendsPending] = useState<Friends[]>([]);
-
-	useEffect(() => {
-		const fetchMe = async () => {
-			try {
-				const reponse = await axios.get(`${api}${apiMe}`);
-				setMe(reponse.data);
-			} catch (err) {
-				setError(err);
-			}
-		}
-		fetchMe();
-	}, [login])
-
-	useEffect(() => {
-		const fetchUser = async () => {
-			try {
-				const url = `http://127.0.0.1/api/users/${login}${apiStats}`;
-				const reponse = await axios.get(url);
-				setUser(reponse.data);
-			} catch (err) {
-				setError(err);
-			}
-		}
-		fetchUser();
-	}, [login, me])
 
 	useEffect(() => {
 		const fetchFriendsMe = async () => {
@@ -105,6 +82,7 @@ const Stats = () => {
 	// eslint-disable-next-line eqeqeq
 	else if (error !== "" || user == undefined || me == undefined)
 		return (<MyError error={error}/>);
+
 	const isFriend = friends.filter(function (friend) {
 		return friend.user_login === user?.login
 	});
