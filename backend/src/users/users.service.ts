@@ -101,6 +101,13 @@ export class UsersService {
 		return this.userRepository.save(user);
 	}
 
+	async updateUserConnect(user: User, bool: boolean): Promise<User> {
+		user.connected = bool;
+		if (bool)
+			user.lastLogin = new Date();
+		return this.userRepository.save(user);
+	}
+
 	async updateDisplayName(uid: number, displayName: string): Promise<any> {
 		return this.userRepository.update({ id: uid }, { display_name: displayName });
 	}
