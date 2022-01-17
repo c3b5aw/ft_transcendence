@@ -1,11 +1,6 @@
 import { IsString, MinLength, MaxLength } from 'class-validator';
 
-export class CreateChannelDto {
-	@IsString()
-	@MinLength(3)
-	@MaxLength(64)
-	name: string;
-
+export class UpdateChannelPasswordDto {
 	@IsString()
 	@MinLength(0)
 	@MaxLength(64)

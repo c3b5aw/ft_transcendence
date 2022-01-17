@@ -3,11 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Socket } from 'socket.io';
+import { createHash } from 'crypto';
+import { Response } from 'express';
 
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
 import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
+import { UserRole } from 'src/users/entities/roles.enum';
+import { UserModerateChannel } from './dto/userModerateChannel.interface';
 
 @Injectable()
 export class ChatService {
@@ -79,6 +83,94 @@ export class ChatService {
 	}
 
 	/*
+		CHANNEL USERS FLOW
+	*/
+
+	async addUserToChannel(userID: number, channelID: number, role: UserRole): Promise<ChannelUser> {
+		const userChannel = new ChannelUser();
+		
+		userChannel.role = role;
+		userChannel.user_id = userID;
+		userChannel.channel_id = channelID;
+		userChannel.banned = false;
+		userChannel.muted = new Date(0);
+
+		return this.userChannelRepository.save(userChannel);
+	}
+
+	async setChannelUserBan(userID: number, channelID: number, bool: boolean): Promise<void> {
+		const joined: boolean = await this.isUserInChannel(userID, channelID);
+		if (!joined)
+			return;
+		
+		await this.userChannelRepository.update(
+			{ user_id: userID, channel_id: channelID },
+			{ banned: bool },
+		);
+	}
+
+	async kickUserFromChannel(userID: number, channelID: number): Promise<void> {
+		const user = await this.userChannelRepository.findOne({
+			where: { user_id: userID, channel_id: channelID },
+		});
+
+		if (!user)
+			return;
+
+		await this.userChannelRepository.delete(user.id);
+	}
+
+	async muteUserInChannel(userID: number, channelID: number, until: Date): Promise<void> {
+		const joined: boolean = await this.isUserInChannel(userID, channelID);
+		if (!joined)
+			return;
+
+		await this.userChannelRepository.update(
+			{ user_id: userID, channel_id: channelID },
+			{ muted: until },
+		);
+	}
+
+	async userModerateChannel(reqUserId: number, targetLogin: string,
+								channelName: string, resp: Response)
+							: Promise<UserModerateChannel> {
+		let ret: UserModerateChannel = {
+			err: true,
+			target: null,
+			role: null,
+			channel: null,
+		}
+		
+		ret.channel = await this.findOneChannelByName(channelName);
+		if (!ret.channel) {
+			resp.status(404).json({ error: 'channel not found' });
+			return ret;
+		}
+
+		ret.role = await this.getUserRoleInChannel(reqUserId, ret.channel.id);
+		if (ret.role !== UserRole.MODERATOR && ret.role !== UserRole.ADMIN) {
+			resp.status(403).json({ error: 'not enough permissions' });
+			return ret;
+		}
+
+		ret.target = await this.usersService.findOneByLogin(targetLogin);
+		if (!ret.target) {
+			resp.status(404).json({ error: 'user not found' });
+			return ret;
+		}
+
+		const joined: boolean = await this.isUserInChannel(
+				ret.target.id, ret.channel.id);
+		if (!joined) {
+			resp.status(404).json({ error: 'user not in channel' });
+			return ret;
+		}
+
+		ret.err = false;
+		return ret;
+	}
+
+	/*
 		GETTERS
 	*/
 
@@ -105,6 +197,16 @@ export class ChatService {
 		});
 	}
 
+	async getUserRoleInChannel(userID: number, channelID: number): Promise<UserRole> {
+		const user = await this.userChannelRepository.findOne({
+			where: { user_id: userID, channel_id: channelID },
+		});
+
+		if (user.banned)
+			return UserRole.BANNED;
+		return user ? user.role : null;
+	}
+
 	/*
 		FINDER
 	*/
@@ -114,6 +216,26 @@ export class ChatService {
 			where: { name: name },
 			select: [ 'id', 'name', 'private', 'tunnel' ],
 		});
+	}
+
+	/*
+		UPDATER
+	*/
+	
+	async updateChannelPassword(channel: Channel): Promise<Channel> {
+		if (channel.private)
+			channel.password = createHash('md5').update(channel.password).digest('hex');
+		return this.channelsRepository.save(channel);
+	}
+
+	/*
+		CREATER
+	*/
+
+	async createChannel(channel: Channel): Promise<Channel> {
+		if (channel.private)
+			channel.password = createHash('md5').update(channel.password).digest('hex');
+		return this.channelsRepository.save(channel);
 	}
 
 	/*
@@ -142,5 +264,13 @@ export class ChatService {
 		if (!user || user.banned)
 			return false;
 		return true;
+	}
+
+	async isUniqueChannelName(name: string): Promise<boolean> {
+		const channel = await this.channelsRepository.findOne({
+			where: { name: name },
+		});
+
+		return !channel;
 	}
 }
