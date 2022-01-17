@@ -1,6 +1,8 @@
 import { Entity, PrimaryGeneratedColumn,
 		CreateDateColumn, Column } from 'typeorm';
 
+import { UserRole } from 'src/users/entities/roles.enum';
+
 @Entity('channels')
 export class Channel {
 	@PrimaryGeneratedColumn({ type: 'int' })
@@ -12,6 +14,12 @@ export class Channel {
 	@Column({ type: 'varchar', length: 64, nullable: true })
 	password: string;
 
+	@Column({ type: 'boolean', default: false, nullable: false })
+	tunnel: boolean;
+
+	@Column({ type: 'boolean', default: false, nullable: false })
+	private: boolean;
+
 	@Column({ type: 'int', nullable: false })
 	owner_id: number;
 }
@@ -21,8 +29,8 @@ export class ChannelUser {
 	@PrimaryGeneratedColumn({ type: 'int' })
 	id: number;
 
-	@Column({ type: 'boolean', default: false, nullable: false })
-	admin: boolean;
+	@Column({ type: 'enum', enum: UserRole, default: UserRole.MEMBER, nullable: false })
+	role: UserRole;
 
 	@Column({ type: 'boolean', default: false, nullable: false })
 	banned: boolean;
