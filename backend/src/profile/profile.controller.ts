@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Header, Param, Post, Req, Res,
 		UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 
@@ -17,6 +17,8 @@ import { Friend } from 'src/friends/entities/friend.entity';
 import { FriendsService } from 'src/friends/friends.service';
 
 @ApiTags('profile')
+@ApiCookieAuth()
+@UseGuards(JwtGuard)
 @Controller('profile')
 export class ProfileController {
 
@@ -24,14 +26,12 @@ export class ProfileController {
 		private readonly friendsService: FriendsService) {}
 
 	@Get()
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getMyself(@Req() req: any) : Promise<User> {
 		return this.usersService.findMe(req.user.id);
 	}
 
 	@Get('avatar')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/jpg')
 	async getAvatar(@Req() req: any, 
 					@Param('id') id: number, @Res() resp: Response) {
@@ -40,7 +40,6 @@ export class ProfileController {
 
 
 	@Get('stats')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getStats(@Req() req: any, @Res() resp: Response) {
 		const userStats = await this.usersService.getStatsById( req.user.id );
@@ -48,21 +47,18 @@ export class ProfileController {
 	}
 
 	@Get('friends')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getMyselfFriends(@Req() req: any) : Promise<Friend[]> {
 		return this.friendsService.findAllAcceptedById( req.user.id );
 	}
 
 	@Get('friends/pending')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getMyselfPendingFriendsRequest(@Req() req: any) : Promise<Friend[]> {
 		return this.friendsService.findAllPendingById( req.user.id );
 	}
 
 	@Post('display_name')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async setDisplayName(@Req() req: any, @Body() data: PostDisplayNameDto,
 						@Res() resp: Response) {
@@ -86,7 +82,6 @@ export class ProfileController {
   
 	// https://docs.nestjs.com/techniques/file-upload
 	@Post('avatar')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	@UseInterceptors(FileInterceptor('file', {
 		limits: { fileSize: 1024 * 1024 * 24 },  // ~24MB
