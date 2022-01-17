@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards, Header, Param, Res } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
@@ -10,20 +10,20 @@ import { Achievement } from './entities/achievement.entity';
 import { AchievementsService } from './achievements.service';
 
 @ApiTags('achievements')
+@ApiCookieAuth()
+@UseGuards(JwtGuard)
 @Controller('achievements')
 export class AchievementsController {
 
 	constructor(private readonly achievementsService: AchievementsService) {}
 
 	@Get()
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getAchievements() : Promise<Achievement[]> {
 		return this.achievementsService.findAll();
 	}
 
 	@Get('/:id')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getAchievement(@Param('id') id: number, @Res() resp: Response) {
 		const achievement: Achievement = await this.achievementsService.findOneByID( id );
@@ -33,7 +33,6 @@ export class AchievementsController {
 	}
 
 	@Get('/:id/avatar')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/png')
 	async getAchievementAvatar(@Param('id') id: number, @Res() resp: Response) {
 		return this.achievementsService.sendAvatar( id, resp );
