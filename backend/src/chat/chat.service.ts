@@ -6,18 +6,31 @@ import { Socket } from 'socket.io';
 
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
-import { Channel } from './entities/channel.entity';
+import { Channel, ChannelUser } from './entities/channel.entity';
+import { ChatMessage } from './entities/message.entity';
 
 @Injectable()
 export class ChatService {
 
 	constructor(
-		@InjectRepository(Channel) private readonly channelsRepository: Repository<Channel>,
+		@InjectRepository(Channel) 
+		private readonly channelsRepository: Repository<Channel>,
+		
+		@InjectRepository(ChannelUser)
+		private readonly userChannelRepository: Repository<ChannelUser>,
+
+		@InjectRepository(ChatMessage)
+		private readonly messagesRepository: Repository<ChatMessage>,
+
 		private readonly jwtService: JwtService,
 		private readonly usersService: UsersService,
 	) {
 		global.clients = {};
 	}
+
+	/*
+		LOG IN/OUT FLOW
+	*/
 
 	async wsLogin(client: Socket): Promise<boolean> {
 		/* Find cookie */
@@ -70,16 +83,64 @@ export class ChatService {
 	*/
 
 	async getUserIdBySocket(client: Socket): Promise<number> {
+		/*
+			Resolve userID using global clients variable shared 
+				accross all instances of chatServices
+		*/
 		const userID = global.clients[client.id];
 		return userID ? parseInt(userID) : null;
 	}
 
 	async getChannels(): Promise<Channel[]> {
 		return this.channelsRepository.find({
-			where: {
-				tunnel: false,
-			},
-			select: ['id', 'name', 'private'],
+			where: { tunnel: false },
+			select: [ 'id', 'name', 'private' ],
 		});
+	}
+
+	async getChannelMessages(channelID: number): Promise<any> {
+		// ToDo: manage blocked users in messages using nested select + not IN
+		return this.messagesRepository.find({
+			where: { channel_id: channelID },
+		});
+	}
+
+	/*
+		FINDER
+	*/
+
+	async findOneChannelByName(name: string): Promise<Channel> {
+		return this.channelsRepository.findOne({
+			where: { name: name },
+			select: [ 'id', 'name', 'private', 'tunnel' ],
+		});
+	}
+
+	/*
+		DELETER
+	*/
+
+	async deleteChannel(channel: Channel): Promise<void> {
+		await this.channelsRepository.delete(channel);
+	}
+
+	async deleteChannelPassword(channel: Channel): Promise<void> {
+		await this.channelsRepository.update(channel.id, {
+				password: null, private: false,
+		});
+	}
+
+	/*
+		BOOL
+	*/
+	
+	async isUserInChannel(userID: number, channelID: number): Promise<boolean> {
+		const user = await this.userChannelRepository.findOne({
+			where: { user_id: userID, channel_id: channelID },
+		});
+
+		if (!user || user.banned)
+			return false;
+		return true;
 	}
 }
