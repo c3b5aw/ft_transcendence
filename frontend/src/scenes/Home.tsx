@@ -11,6 +11,7 @@ import { User } from '../services/Interface/Interface';
 import MySearchBar from '../components/MySearchBar';
 import MyChargingDataAlert from '../components/MyChargingDataAlert';
 import MyError from '../components/MyError';
+import MySnackBar from '../components/MySnackbar';
 
 export default function Home() {
 	const [users, setUsers] = useState<User[]>([]);
@@ -57,6 +58,7 @@ export default function Home() {
 		return (<MyError error={error}/>);
 	return (
 		<Stack direction="row" sx={{width: 1, minHeight: "100vh"}}>
+			<MySnackBar message="Vous êtes connectés" severity="success" time={3000}/>
 			<Stack direction="column" sx={{width: 1}}>
 				<Stack direction="column" sx={{width: 1, height: 0.85}}>
 					<Box className={classes.box} sx={boxStyle}>
