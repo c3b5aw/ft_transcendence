@@ -20,6 +20,9 @@ export const buttonStyle = {
 		backgroundColor: '#D5D5D5',
 		color: '#000000',
 	},
+	"&:disabled": {
+		backgroundColor: "grey"
+	},
 	width: '12%',
 	borderRadius: 5,
 	border: 5,
