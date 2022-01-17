@@ -37,13 +37,13 @@ export default function MySearchBar(props : {users: User[]}) {
 	return (
 		<Paper className={classes.paper}>
 			<SearchBar className={classes.searchBar}
-				placeholder="Search friends..."
+				placeholder="Search users..."
 				value={searched}
 				onChange={(searchVal) => requestSearch(searchVal)}
 				onCancelSearch={() => cancelSearch()}
 				cancelOnEscape={true}
 			/>
-			<Paper className={classes.paper} style={{top: '17.5%', position: 'absolute', width: '40%'}}>
+			<Paper className={classes.paper} style={{top: '14%', position: 'absolute'}}>
 				<TableContainer sx={{maxHeight: 200}}>
 					<Table>
 						<TableBody>

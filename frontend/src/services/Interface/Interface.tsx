@@ -55,3 +55,7 @@ export interface Channel {
 	id: number
 	name: string
 }
+
+export interface ISearchBar {
+	handleClickCell: (row: User) => void
+}

@@ -7,24 +7,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { api, apiAdmin, apiBan, apiStats, apiUsers, ROLE, rolesArray } from "../services/Api/Api";
-import { useEffect, useState } from 'react';
+import { api, apiAdmin, apiBan, apiStats, ROLE, rolesArray } from "../services/Api/Api";
+import { useState } from 'react';
 import { User } from '../services/Interface/Interface';
-import { Avatar, Divider, FormControlLabel, Stack, Switch } from '@mui/material';
-import MySnackBar from './MySnackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { Avatar, Stack, Switch } from '@mui/material';
 
 export default function MyInfosUser(props: {me: User | undefined, users: User[]}) {
 
 	const { me } = props;
 	const { users } = props;
-
-	const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-		props,
-		ref,
-	  ) {
-		return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-	  });
 
 	function Row(props: { user: User, me: User | undefined }) {
 		const { user } = props;

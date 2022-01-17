@@ -1,4 +1,4 @@
-import { Avatar, FormControl, IconButton, List, ListItem, Paper, Stack, TextField } from '@mui/material';
+import { Avatar, Button, FormControl, IconButton, List, ListItem, Paper, Stack, TextField } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import MyList from '../components/MyList';
@@ -8,11 +8,13 @@ import SendIcon from '@mui/icons-material/Send';
 import { styleTextField } from '../styles/Styles';
 import MyChargingDataAlert from '../components/MyChargingDataAlert';
 import MyError from '../components/MyError';
+import MyCreateChannel from '../components/MyCreateChannel';
 
 function Chat() {
 	const [me, setMe] = useState<User>();
 	// const [channels, setChannels] = useState<Channel[]>([]);
 	const [error, setError] = useState<unknown>("");
+	const [open, setOpen] = useState<boolean>();
 
 	const classes = styleTextField()
 
@@ -52,6 +54,20 @@ function Chat() {
 		"9jfirjifjijrifjrijfr666",
 	]
 
+	const buttonStyle = {
+		border: "4px solid black",
+		borderRadius: "15px",
+		color: "black",
+		fontFamily: "Myriad Pro",
+		padding: "15px",
+		backgroundColor: "white",
+		fontSize: "17px",
+		'&:hover': {
+			backgroundColor: '#D5D5D5',
+			color: '#000000',
+		},
+	}
+
 	useEffect(() => {
 		const fetchMe = async () => {
 			try {
@@ -63,6 +79,10 @@ function Chat() {
 		}
 		fetchMe();
 	}, [])
+
+	function handleCreateChannel() {
+		setOpen(!open);
+	}
 
 	// useEffect(() => {
 	// 	const fetchChannel = async () => {
@@ -78,7 +98,7 @@ function Chat() {
 	// eslint-disable-next-line eqeqeq
 	if (me == undefined && error === "")
 		return (<MyChargingDataAlert />);
-	else if (error !== "")
+	else if (error !== "" || me == undefined)
 		return (<MyError error={error}/>);
 	return (
 		<Stack direction="column" sx={{width: 1, height: "100vh"}}>
@@ -93,10 +113,16 @@ function Chat() {
 			</Paper>
 			<Stack direction="row" sx={{width: 1, height: 0.95}}>
 				<Stack direction="column" sx={{width: 2/12, height: 1}}>
-					{/* get channels */}
-					<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/>
+					<Stack direction="column" sx={{width: 1, height: 0.9}}>
+						{/* get channels */}
+						<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/>
+					</Stack>
+					<Stack direction="column" sx={{width: 1, height: 0.1}} alignItems="center" justifyContent="center">
+						<Button sx={buttonStyle} onClick={() => handleCreateChannel()}>Create new channel</Button>
+					</Stack>
 				</Stack>
 				<Stack direction="column" sx={{width: 8/12, height: 1}} alignItems="center">
+					{open ? <MyCreateChannel /> : null}
 					<Stack direction="column" sx={{width: 1, height: 0.91}}>
 						<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#304649"}} elevation={0}>
 							{test.length > 0 ?

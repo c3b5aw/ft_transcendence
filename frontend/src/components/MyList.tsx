@@ -1,7 +1,7 @@
 import { Avatar, CircularProgress, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
 import CircleIcon from '@mui/icons-material/Circle';
 import { useNavigate } from 'react-router';
-import { api, apiUsers } from '../services/Api/Api';
+import { apiStats } from '../services/Api/Api';
 import { Friends, User } from '../services/Interface/Interface';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -17,7 +17,7 @@ function MyList(props : {me: User | undefined, url: string}) {
 	const navigate = useNavigate();
 
 	const handleClick = (login: string) => {
-		navigate(`${api}${apiUsers}/${login}`)
+		navigate(`${apiStats}/${login}`)
 	}
 	useEffect(() => {
 		const fetchFriends = async () => {
