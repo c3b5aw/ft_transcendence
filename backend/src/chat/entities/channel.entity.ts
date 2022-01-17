@@ -38,7 +38,7 @@ export class ChannelUser {
 	@Column({ type: 'boolean', default: false, nullable: false })
 	muted: boolean;
 
-	@CreateDateColumn({ update: false, default: () => 'CURRENT_TIMESTAMP', nullable: false  })
+	@CreateDateColumn({ update: false, default: 0, nullable: false  })
 	muted_until: Date;
 
 	@Column({ type: 'int', nullable: false })
