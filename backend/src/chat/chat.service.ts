@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Socket } from 'socket.io';
 import { createHash } from 'crypto';
 import { Response } from 'express';
+import { Server } from 'socket.io';
 
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
@@ -13,7 +14,7 @@ import { ChatMessage } from './entities/message.entity';
 import { UserRole } from 'src/users/entities/roles.enum';
 import { ModerationFlow } from './dto/moderationFlow.class';
 import { FriendStatus } from 'src/friends/entities/status.enum';
-import { RequestError } from './dto/errors.enum';
+import { RequestError, WsError } from './dto/errors.enum';
 
 @Injectable()
 export class ChatService {
@@ -187,8 +188,32 @@ export class ChatService {
 		WS FLOW
 	*/
 
-	async wsJoinChannel(data: any, client: Socket) {
+	async wsJoinChannel(client: Socket, channel: Channel, server: Server) {
+		const userID: number = await this.getUserIdBySocket(client);
+		if (!userID)
+			return client.emit('onError', { 
+				error: WsError.USER_NOT_FOUND
+		});
 
+		const user: User = await this.usersService.findOneByID(userID);
+		if (!user)
+			return client.emit('onError', {
+				error: WsError.USER_NOT_FOUND,
+			});
+
+		/* Make socket join channel */
+		client.join('#' + channel.id);
+
+		/* Send user joined to user */
+		client.emit('onSuccess', {
+			message: 'joined channel: #' + channel.name,
+		})
+
+		/* Send user joined to whole channel */
+		server.to('#' + channel.id).emit('channel:joined', {
+			channel: channel,
+			login: user.login,
+		});
 	}
 
 	/*
