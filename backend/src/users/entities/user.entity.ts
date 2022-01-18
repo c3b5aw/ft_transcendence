@@ -30,10 +30,6 @@ export class User {
 	@ApiProperty({ description: "user role", example: "MEMBER" })
 	role: UserRole;
 
-	@Column({ type: 'boolean', default: false, nullable: false })
-	@ApiProperty({ description: "user banned", example: true })
-	banned: boolean;
-
 	/*
 		2FA
 	*/

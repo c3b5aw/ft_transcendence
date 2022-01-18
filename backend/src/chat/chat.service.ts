@@ -64,7 +64,7 @@ export class ChatService {
 
 		/* Get User from DB */
 		const user: User = await this.usersService.findOneByID( payload.sub );
-		if (!user || user.banned)
+		if (!user || user.role === UserRole.BANNED)
 			return 0;
 
 		/* Update user connected */
@@ -101,7 +101,6 @@ export class ChatService {
 		userChannel.role = role;
 		userChannel.user_id = userID;
 		userChannel.channel_id = channelID;
-		userChannel.banned = false;
 		userChannel.muted = new Date(0);
 
 		return this.userChannelRepository.save(userChannel);
@@ -114,7 +113,7 @@ export class ChatService {
 		
 		await this.userChannelRepository.update(
 			{ user_id: userID, channel_id: channelID },
-			{ banned: bool },
+			{ role: bool ? UserRole.BANNED : UserRole.MEMBER },
 		);
 	}
 
@@ -356,7 +355,7 @@ export class ChatService {
 
 	async getChannelUsers(channelID: number): Promise<ChannelUser[]> {
 		return this.userChannelRepository.query(`
-			SELECT channel.user_id, channel.banned, channel.muted, channel.role, 
+			SELECT channel.user_id, channel.muted, channel.role, 
 					users.login, users.connected
 			FROM channels_users as channel
 			INNER JOIN users ON channel.user_id = users.id
@@ -371,7 +370,7 @@ export class ChatService {
 
 		if (!user)
 			return null;
-		if (user.banned)
+		if (user.role === UserRole.BANNED)
 			return UserRole.BANNED;
 		if (user.muted > new Date())
 			return UserRole.MUTED;
@@ -457,7 +456,7 @@ export class ChatService {
 			where: { user_id: userID, channel_id: channelID },
 		});
 
-		if (!user || user.banned)
+		if (!user || user.role === UserRole.BANNED)
 			return false;
 		return true;
 	}
