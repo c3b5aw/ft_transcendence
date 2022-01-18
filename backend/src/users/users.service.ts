@@ -126,7 +126,7 @@ export class UsersService {
 		}
 
 		const stats: UserStats[] = await this.userRepository.manager.query(`
-			SELECT id, login, rank::INTEGER, elo, played, victories, defeats FROM (
+			SELECT id, login, role::INTEGER, rank::INTEGER, elo, played, victories, defeats, created FROM (
 			SELECT *, ROW_NUMBER() OVER (ORDER BY elo DESC) AS rank FROM users
 			) u WHERE u.id = ${id};
 		`);
