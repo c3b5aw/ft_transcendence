@@ -12,6 +12,7 @@ import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
 import { UserRole } from 'src/users/entities/roles.enum';
 import { UserModerateChannel } from './dto/userModerateChannel.interface';
+import { FriendStatus } from 'src/friends/entities/status.enum';
 
 @Injectable()
 export class ChatService {
@@ -190,13 +191,20 @@ export class ChatService {
 		});
 	}
 
-	async getChannelMessages(channelID: number): Promise<any> {
-		// ToDo: manage blocked users in messages using nested select + not IN
+	async getChannelMessages(selfID: number, channelID: number): Promise<any> {
 		return getManager().query(`
 			SELECT chat.*, users.login
 			FROM chat_messages as chat
-			INNER JOIN users ON chat.user_id = users.id
-			WHERE channel_id = ${channelID}
+			LEFT JOIN users ON chat.user_id = users.id
+			WHERE chat.channel_id = ${channelID} AND chat.user_id NOT IN (
+				SELECT friend_id FROM friends 
+				WHERE friends.status = '${FriendStatus.STATUS_BLOCKED}'
+				AND friends.user_id = ${selfID}
+			) AND chat.user_id NOT IN (
+				SELECT user_id FROM friends
+				WHERE friends.status = '${FriendStatus.STATUS_BLOCKED}'
+				AND friends.friend_id = ${selfID}
+			)
 			ORDER BY chat.timestamp ASC
 		`);
 	}

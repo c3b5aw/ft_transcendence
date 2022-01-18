@@ -87,7 +87,7 @@ export class ChannelController {
 		if (role === null || role === UserRole.BANNED)
 			return resp.status(403).json({ error: 'not enough permissions' });
 
-		const messages = await this.chatService.getChannelMessages(channel.id);
+		const messages = await this.chatService.getChannelMessages(req.user.id, channel.id);
 		resp.send(messages);
 	}
 
