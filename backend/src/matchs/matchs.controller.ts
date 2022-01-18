@@ -1,6 +1,6 @@
-import { Controller, Get, Delete, Res,
+import { Controller, Get, Res,
 		Param, UseGuards, Header } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
@@ -10,6 +10,7 @@ import { Match } from './entities/match.entity';
 import { MatchsService } from './matchs.service';
 
 @ApiTags('matchs')
+@ApiCookieAuth()
 @Controller('matchs')
 export class MatchsController {
 	
@@ -18,6 +19,7 @@ export class MatchsController {
 	@Get('/count')
 	@UseGuards(AdminGuard)
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get number of total matchs played' })
 	async countAll(@Res() resp: Response) {
 		const total = await this.matchsService.countAll();
 		resp.send({ total });
@@ -26,6 +28,7 @@ export class MatchsController {
 	@Get('/:id')
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get match details' })
 	async getMatch(@Param('id') id: number, @Res() resp: Response) {
 		const match: Match = await this.matchsService.findOneById( id );
 		if (!match)

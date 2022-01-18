@@ -11,18 +11,28 @@ export class FriendsService {
 
 	constructor(@InjectRepository(Friend) private readonly friendRepository: Repository<Friend>) {}
 
+	async findAllByStatus(id: number, status: FriendStatus) : Promise<Friend[]> {
+		return this.friendRepository.query(`
+			SELECT query.*, users.login, users.connected FROM (
+				SELECT friends.status,
+					CASE
+						WHEN user_id = ${id} THEN friend_id
+						ELSE user_id
+					END AS id
+				FROM friends
+				WHERE (user_id = ${id} OR friend_id = ${id})
+					AND status = '${status}'
+			) AS query
+			INNER JOIN users ON query.id = users.id
+		`);
+	}
+
 	async findAllAcceptedById(id: number) : Promise<Friend[]> {
-		return this.friendRepository.createQueryBuilder()
-			.where('(user_id = :id OR friend_id = :id)', { id })
-			.andWhere('status = :status', { status: FriendStatus.STATUS_ACCEPTED })
-			.getMany();
+		return this.findAllByStatus(id, FriendStatus.STATUS_ACCEPTED);
 	}
 
 	async findAllPendingById(id: number) : Promise<Friend[]> {
-		return this.friendRepository.createQueryBuilder()
-			.where('(user_id = :id OR friend_id = :id)', { id })
-			.andWhere('status = :status', { status: FriendStatus.STATUS_PENDING })
-			.getMany();
+		return this.findAllByStatus(id, FriendStatus.STATUS_PENDING);
 	}
 
 	async findOneByBothId(uid: number, fid: number) : Promise<Friend> {
@@ -48,9 +58,7 @@ export class FriendsService {
 
 		const newFriend: Friend = new Friend();
 		newFriend.user_id = uid;
-		newFriend.user_login = ulogin;
 		newFriend.friend_id = fid;
-		newFriend.friend_login = flogin;
 		newFriend.status = FriendStatus.STATUS_PENDING;
 
 		await this.friendRepository.save(newFriend);
@@ -76,5 +84,34 @@ export class FriendsService {
 		
 		await this.friendRepository.delete(friendShip.id);
 		return true;	
+	}
+
+	async updateBlocked(me: number, him: number, blocked: boolean) : Promise<string> {
+		const friendShip: Friend = await this.findOneByBothId(me, him);
+		if (!friendShip)
+			return 'friendship not found';
+
+		if (blocked) {
+			if (friendShip.status === FriendStatus.STATUS_BLOCKED)
+				return 'you are already blocked';
+			friendShip.status = FriendStatus.STATUS_BLOCKED;
+			/*
+				We put the user who blocked the other in user_id field so we can
+				easily find the initiator in the database and prevent unblocking from
+				the wrong user.
+			*/
+			if (friendShip.user_id != me) {
+				friendShip.friend_id = him;
+				friendShip.user_id = me;
+			}
+		} else {
+			if (friendShip.user_id != me)
+				return 'you are blocked';
+			friendShip.status = FriendStatus.STATUS_PENDING;
+		}
+		
+		await this.friendRepository.save(friendShip);
+		
+		return null;
 	}
 }

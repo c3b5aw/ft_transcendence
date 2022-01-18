@@ -12,11 +12,13 @@ import { MatchsModule } from './matchs/matchs.module';
 import { ProfileModule } from './profile/profile.module';
 import { UsersModule } from './users/users.module';
 
-import { Achievement } from './achievements/entities/achievement.entity';
+import { Achievement, UserAchievement } from './achievements/entities/achievement.entity';
 import { Friend } from './friends/entities/friend.entity';
 import { Match } from './matchs/entities/match.entity';
 import { User } from './users/entities/user.entity';
-import { UserAchievement } from './achievements/entities/user_achievements.entity';
+import { ChatModule } from './chat/chat.module';
+import { ChatMessage } from './chat/entities/message.entity';
+import { Channel, ChannelUser } from './chat/entities/channel.entity';
 
 @Module({
 	imports: [
@@ -28,14 +30,16 @@ import { UserAchievement } from './achievements/entities/user_achievements.entit
 			username: process.env.POSTGRES_USER,
 			password: process.env.POSTGRES_PASSWORD,
 			database: process.env.POSTGRES_DB,
-
-			entities: [ Achievement, Friend, Match, User, UserAchievement ],
-			
+			entities: [ Achievement, Channel, ChannelUser,
+						ChatMessage,
+						Friend, Match, User, 
+						UserAchievement ],
 			synchronize: true,
 		}),
 		AchievementsModule,
 		AdminModule,
 		AuthModule,
+		ChatModule,
 		FriendsModule,
 		LadderModule,
 		MatchsModule,

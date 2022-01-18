@@ -1,5 +1,6 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
 import { UserRole } from './roles.enum';
 
 @Entity('users')
@@ -28,10 +29,6 @@ export class User {
 	@Column({ type: 'enum', enum: UserRole, default: UserRole.MEMBER, nullable: false })
 	@ApiProperty({ description: "user role", example: "MEMBER" })
 	role: UserRole;
-
-	@Column({ type: 'boolean', default: false, nullable: false })
-	@ApiProperty({ description: "user banned", example: true })
-	banned: boolean;
 
 	/*
 		2FA

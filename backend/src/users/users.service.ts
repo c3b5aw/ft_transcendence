@@ -9,6 +9,7 @@ import { User } from './entities/user.entity';
 import { UserStats } from './dto/stats.dto';
 import { UserInterface } from './interfaces/user.interface';
 import { createHash } from 'crypto';
+import { UserRole } from './entities/roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -65,8 +66,10 @@ export class UsersService {
 		return this.userRepository.findOne({ id });
 	}
 
-	async findAll() : Promise<User[]> {
-		return this.userRepository.find({ select: [ 'id', 'login' ] });
+	async findAll(adminRights: boolean) : Promise<User[]> {
+		if (!adminRights)
+			return this.userRepository.find({ select: [ 'id', 'login' ] });
+		return this.userRepository.find();
 	}
 
 	async findOneByLogin(login: string) : Promise<User> {
@@ -91,11 +94,19 @@ export class UsersService {
 	*/
 
 	async updateUserBan(id: number, banned: boolean) : Promise<any> {
-		return this.userRepository.update({ id: id }, { banned: banned });
+		return this.userRepository.update({ id: id }, 
+			{ role: banned ? UserRole.BANNED : UserRole.MEMBER });
 	}
 
 	async updateLastLogin(user: User) : Promise<User> {
 		user.lastLogin = new Date();
+		return this.userRepository.save(user);
+	}
+
+	async updateUserConnect(user: User, bool: boolean): Promise<User> {
+		user.connected = bool;
+		if (bool)
+			user.lastLogin = new Date();
 		return this.userRepository.save(user);
 	}
 
@@ -116,11 +127,15 @@ export class UsersService {
 			return undefined;
 		}
 
-		return this.userRepository.manager.query(`
-			SELECT id, login, rank::INTEGER, elo, played, victories, defeats FROM (
+		const stats: UserStats[] = await this.userRepository.manager.query(`
+			SELECT id, login, role, rank::INTEGER, elo, played, victories, defeats, created FROM (
 			SELECT *, ROW_NUMBER() OVER (ORDER BY elo DESC) AS rank FROM users
 			) u WHERE u.id = ${id};
 		`);
+			
+		if (stats.length === 0)
+			return undefined;
+		return stats[0];
 	}
 
 	async getLadder() : Promise<User[]> {

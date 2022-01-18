@@ -1,6 +1,6 @@
 import { Controller, Get, Put, Post, Delete,
 		UseGuards, Param, Res, Header, Req } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
@@ -18,8 +18,11 @@ import { MatchsService } from 'src/matchs/matchs.service';
 import { User } from './entities/user.entity';
 import { UserStats } from './dto/stats.dto';
 import { UsersService } from './users.service';
+import { UserRole } from './entities/roles.enum';
 
 @ApiTags('users')
+@ApiCookieAuth()
+@UseGuards(JwtGuard)
 @Controller('users')
 export class UsersController {
 
@@ -30,23 +33,26 @@ export class UsersController {
 		private readonly matchService: MatchsService) {}
 
 	@Get()
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
-	async getUsers() : Promise<User[]> {
-		return this.usersService.findAll();
+	@ApiOperation({ summary: 'Get all users' })
+	async getUsers(@Req() req: any) : Promise<User[]> {
+		const user: User = await this.usersService.findOneByID( req.user.id );
+		
+		return this.usersService.findAll(user.role === UserRole.ADMIN);
 	}
 
 	@Get('/count')
 	@UseGuards(AdminGuard)
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get users number' })
 	async getUserCount(@Res() resp: Response) {
 		const total = await this.usersService.countAll();
 		resp.send({ total });
 	}
 
 	@Get('/:login')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get user details' })
 	async getUser(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -56,22 +62,22 @@ export class UsersController {
 	}
 
 	@Get('/:login/stats')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get user stats' })
 	async getUserStats(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
 			return resp.status(404).json({ error: 'user not found' });
 
 		const userStats: UserStats = await this.usersService.getStatsById( user.id );
-		if (!userStats)
+		if (!userStats || userStats === undefined)
 			return resp.status(404).json({ error: 'user not found' });
 		resp.send(userStats);
 	}
 
 	@Get('/:login/matchs')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get user matchs' })
 	async getUserMatchs(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -82,9 +88,8 @@ export class UsersController {
 	}
 
 	@Get('/:login/avatar')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/jpg')
-	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get user avatar as jpg' })
 	async getUserAvatar(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -98,8 +103,8 @@ export class UsersController {
 	*/
 
 	@Get('/:login/achievements')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get user achievements' })
 	async getUserAchievements(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -114,8 +119,8 @@ export class UsersController {
 	*/
 
 	@Get('/:login/friends')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get user friends list' })
 	async getFriend(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -125,9 +130,9 @@ export class UsersController {
 		resp.send(friends);
 	}
 
-	@Put('/:login/friend')
-	@UseGuards(JwtGuard)
+	@Get('/:login/friend')
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Accepted user pending friend request' })
 	async acceptFriend(@Req() req: any, 
 						@Param('login') login: string, @Res() resp: Response) {
 
@@ -147,11 +152,12 @@ export class UsersController {
 		resp.json({ message: 'friendship accepted' });
 	}
 
-	@Post('/:login/friend')
-	@UseGuards(JwtGuard)
+	@Put('/:login/friend')
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Send user a friend request' })
 	async addFriend(@Req() req: any,
-					@Param('login') login: string, @Res() resp: Response) {
+					@Param('login') login: string, @Res() resp: Response)
+	{
 		const user = await this.usersService.findOneByLogin( login );
 		if (!user)
 			return resp.status(404).json({ error: 'user not found' });
@@ -166,10 +172,11 @@ export class UsersController {
 	}
 
 	@Delete('/:login/friend')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Remove user friendship' })
 	async removeFriend(@Req() req: any, @Param('login') login: string, 
-						@Res() resp: Response) {
+						@Res() resp: Response)
+	{
 		const user = await this.usersService.findOneByLogin( login );
 		if (!user)
 			return resp.status(404).json({ error: 'user not found' });
@@ -178,5 +185,39 @@ export class UsersController {
 		if (!ok)
 			return resp.status(404).json({ error: 'friendship not found' });
 		resp.json({ message: 'friendship deleted' });
+	}
+
+	@Put('/:login/block')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Block user' })
+	async blockUser(@Req() req: any, @Param('login') login: string,
+					 @Res() resp: Response)
+	{
+		const user = await this.usersService.findOneByLogin( login );
+		if (!user)
+			return resp.status(404).json({ error: 'user not found' });
+		
+		const state: string = await this.friendsService.updateBlocked(
+				req.user.id, user.id, true);
+		if (state !== null)
+			return resp.status(409).json({ error: state });
+		resp.json({ message: `${user.login} blocked` });
+	}
+
+	@Delete('/:login/block')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Unblock user' })
+	async unblockUser(@Req() req: any, @Param('login') login: string,
+					   @Res() resp: Response)
+	{
+		const user = await this.usersService.findOneByLogin( login );
+		if (!user)
+			return resp.status(404).json({ error: 'user not found' });
+		
+		const state: string = await this.friendsService.updateBlocked(
+				req.user.id, user.id, false);
+		if (state !== null)
+			return resp.status(409).json({ error: state });
+		resp.json({ message: `${user.login} unblocked` });
 	}
 }
