@@ -139,7 +139,7 @@ function Chat() {
 					<Stack direction="row" sx={{width: 1, height: 0.09, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
 						<FormControl sx={{ width: 0.95, marginLeft: 4}}>
 							<TextField
-								className={classes.searchBarStyle}
+								className={classes.styleTextField}
 								placeholder="Message"
 								variant="outlined"
 								fullWidth

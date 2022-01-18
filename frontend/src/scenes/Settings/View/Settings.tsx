@@ -12,10 +12,12 @@ import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyError from "../../../components/MyError";
 import { rolesArray } from "../../../services/Api/Role";
 import MySnackBar from "../../../components/MySnackbar";
+import { styleStack, sxButton } from "../Services/style";
 
 const Settings = () => {
 	const [me, setMe] = useState<User>();
 	const classes = styleTextField()
+	const classes2 = styleStack()
 	const [new_display, setNewDisplay] = useState<string>("");
 	const [new_displayTmp, setNewDisplayTmp] = useState<string>("");
 	const [event, setEvent] = useState<Date>();
@@ -81,7 +83,7 @@ const Settings = () => {
 					</Stack>
 					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>{me.display_name} ({rolesArray[me.role]})</h1>
 				</Stack>
-				<Stack sx={{ width: 1, height: 1/5}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
+				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
 					<AddPhotoAlternateIcon sx={{ fontSize: 55 }} />
 					<Box alignItems='center' display='flex' justifyContent='center' flexDirection='column'>
 						<form action="http://127.0.0.1/api/profile/avatar" method="post">
@@ -92,10 +94,10 @@ const Settings = () => {
 						</form>
 					</Box>
 				</Stack>
-				<Stack sx={{ width: 1, height: 1/5}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
+				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
 					<EditIcon sx={{ fontSize: 55 }} />
 					<TextField
-						className={classes.searchBarStyle}
+						className={classes.styleTextField}
 						required
 						id="outlined-required"
 						label={`${me.display_name}`}
@@ -110,45 +112,16 @@ const Settings = () => {
 							style: { color: '#ADADAD' },
 						  }}
 					/>
-					<Button sx={{
-						border: "4px solid black",
-						borderRadius: "15px",
-						color: "black",
-						fontFamily: "Myriad Pro",
-						padding: "15px",
-						backgroundColor: "white",
-						fontSize: "17px",
-						'&:hover': {
-							backgroundColor: '#D5D5D5',
-							color: '#000000',
-						},
-					}} onClick={() => handleSendNewDisplayName()}>
-					Valider</Button>
+					<Button sx={sxButton} onClick={() => handleSendNewDisplayName()}>Valider</Button>
 				</Stack>
-				<Stack sx={{ width: 1, height: 1/5}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
+				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
 					<KeyIcon sx={{ fontSize: 55 }} />
-					<Button sx={{
-						border: "4px solid black",
-						borderRadius: "15px",
-						color: "black",
-						fontFamily: "Myriad Pro",
-						padding: "15px",
-						backgroundColor: "white",
-						fontSize: "17px",
-						'&:hover': {
-							backgroundColor: '#D5D5D5',
-							color: '#000000',
-						},
-					}}>
-					Remove / Setup</Button>
+					<Button sx={sxButton}>Remove / Setup</Button>
 				</Stack>
 				<Stack direction="row" sx={{width: 1, height: 0.08}}>
 					<MyFooter me={me}/>
 				</Stack>
 			</Stack>
-			{/* <Stack sx={{ width: 0.2, height: 1, backgroundColor: "red"}} direction="column">
-				<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/>
-			</Stack> */}
 		</Stack>
 	);
 }

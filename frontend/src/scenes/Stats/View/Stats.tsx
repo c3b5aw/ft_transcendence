@@ -16,6 +16,7 @@ import MySnackBar from '../../../components/MySnackbar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
+import { sxButton, sxDiv } from '../Services/style';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -107,19 +108,19 @@ const Stats = () => {
 					{user.login !== me.login ?
 					<Box>
 						{isFriend.length === 0 && isFriendPending.length === 0 ?
-							<Button onClick={() => handleAddFriend()} sx={{borderRadius: 2, marginRight: "30px"}} variant="contained" startIcon={<PersonAddIcon />}>
-								<div style={{margin: "5px", padding: "3px", fontFamily: "Myriad Pro", fontSize: "16px"}}>Add friend</div>
+							<Button onClick={() => handleAddFriend()} sx={sxButton} variant="contained" startIcon={<PersonAddIcon />}>
+								<div style={sxDiv}>Add friend</div>
 							</Button> : isFriendPending.length !== 0 && isFriend.length === 0 ? 
 							<ButtonGroup>
-								<Button disabled sx={{borderRadius: 2, marginRight: "30px"}} variant="contained" startIcon={<AccessTimeIcon />}>
-									<div style={{margin: "5px", padding: "3px", fontFamily: "Myriad Pro", fontSize: "16px"}}>Pending</div>
+								<Button disabled sx={sxButton} variant="contained" startIcon={<AccessTimeIcon />}>
+									<div style={sxDiv}>Pending</div>
 								</Button> 
-								<Button onClick={() => handleDeleteFriend()} sx={{borderRadius: 2, marginRight: "30px"}} variant="contained" startIcon={<DeleteIcon />}>
-									<div style={{margin: "5px", padding: "3px", fontFamily: "Myriad Pro", fontSize: "16px"}}>Delete friend</div>
+								<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
+									<div style={sxDiv}>Delete friend</div>
 								</Button>
 							</ButtonGroup> :
-							<Button onClick={() => handleDeleteFriend()} sx={{borderRadius: 2, marginRight: "30px"}} variant="contained" startIcon={<DeleteIcon />}>
-								<div style={{margin: "5px", padding: "3px", fontFamily: "Myriad Pro", fontSize: "16px"}}>Delete friend</div>
+							<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
+								<div style={sxDiv}>Delete friend</div>
 							</Button>
 						}
 					</Box> : null

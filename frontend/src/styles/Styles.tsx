@@ -68,7 +68,7 @@ export const avatarStyleIconList = {
 };
 
 export const styleTextField = makeStyles(theme => ({
-	searchBarStyle: {
+	styleTextField: {
 		width: "200px",
 		margin: "0 0 0 0",
 		float: "right",
