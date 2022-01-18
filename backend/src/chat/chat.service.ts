@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
+import { getManager, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Socket } from 'socket.io';
 import { createHash } from 'crypto';
@@ -192,9 +192,13 @@ export class ChatService {
 
 	async getChannelMessages(channelID: number): Promise<any> {
 		// ToDo: manage blocked users in messages using nested select + not IN
-		return this.messagesRepository.find({
-			where: { channel_id: channelID },
-		});
+		return getManager().query(`
+			SELECT chat.*, users.login
+			FROM chat_messages as chat
+			INNER JOIN users on chat.user_id = users.id
+			WHERE channel_id = ${channelID}
+			ORDER BY chat.id ASC
+		`);
 	}
 
 	async getUserRoleInChannel(userID: number, channelID: number): Promise<UserRole> {
@@ -202,6 +206,8 @@ export class ChatService {
 			where: { user_id: userID, channel_id: channelID },
 		});
 
+		if (!user)
+			return null;
 		if (user.banned)
 			return UserRole.BANNED;
 		return user ? user.role : null;

@@ -67,7 +67,7 @@ export class ChannelController {
 			return resp.status(404).json({ error: 'channel not found' });
 
 		if (channel.owner_id !== req.user.id)
-			return resp.status(403).json({ error: 'you are not authorized to delete this channel' });
+			return resp.status(403).json({ error: 'not enough permissions' });
 
 		await this.chatService.deleteChannel( channel );
 		resp.send({ message: 'channel deleted' });
@@ -83,9 +83,9 @@ export class ChannelController {
 		if (!channel)
 			return resp.status(404).json({ error: 'channel not found' });
 
-		const role: UserRole = await this.chatService.getUserRoleInChannel(channel.id, req.user.id);
+		const role: UserRole = await this.chatService.getUserRoleInChannel(req.user.id, channel.id);
 		if (role === null || role === UserRole.BANNED)
-			return resp.status(403).json({ error: 'you are not authorized to access this content' });
+			return resp.status(403).json({ error: 'not enough permissions' });
 
 		const messages = await this.chatService.getChannelMessages(channel.id);
 		resp.send(messages);

@@ -11,7 +11,7 @@ export class Channel {
 	@Column({ type: 'varchar', length: 64, unique: true, nullable: false })
 	name: string;
 
-	@Column({ type: 'varchar', length: 64, nullable: true })
+	@Column({ type: 'varchar', length: 32, nullable: true })
 	password: string;
 
 	@Column({ type: 'boolean', default: false, nullable: false })

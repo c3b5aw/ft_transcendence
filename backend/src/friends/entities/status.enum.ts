@@ -1,5 +1,5 @@
 export enum FriendStatus {
-	STATUS_PENDING,
+	STATUS_PENDING = 0,
 	STATUS_ACCEPTED,
 	STATUS_BLOCKED,
 }
