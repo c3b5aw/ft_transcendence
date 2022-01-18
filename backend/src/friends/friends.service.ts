@@ -85,4 +85,33 @@ export class FriendsService {
 		await this.friendRepository.delete(friendShip.id);
 		return true;	
 	}
+
+	async updateBlocked(me: number, him: number, blocked: boolean) : Promise<string> {
+		const friendShip: Friend = await this.findOneByBothId(me, him);
+		if (!friendShip)
+			return 'friendship not found';
+
+		if (blocked) {
+			if (friendShip.status === FriendStatus.STATUS_BLOCKED)
+				return 'you are already blocked';
+			friendShip.status = FriendStatus.STATUS_BLOCKED;
+			/*
+				We put the user who blocked the other in user_id field so we can
+				easily find the initiator in the database and prevent unblocking from
+				the wrong user.
+			*/
+			if (friendShip.user_id != me) {
+				friendShip.friend_id = him;
+				friendShip.user_id = me;
+			}
+		} else {
+			if (friendShip.user_id != me)
+				return 'you are blocked';
+			friendShip.status = FriendStatus.STATUS_PENDING;
+		}
+		
+		await this.friendRepository.save(friendShip);
+		
+		return null;
+	}
 }

@@ -1,5 +1,5 @@
 import { Controller, Get, Header, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
+import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
@@ -15,6 +15,7 @@ export class LadderController {
 
 	@Get('/')
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get ladder' })
 	async getLadder(): Promise<string> {
 		const ladder: User[] = await this.usersService.getLadder();
 

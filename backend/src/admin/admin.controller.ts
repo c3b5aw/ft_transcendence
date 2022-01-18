@@ -1,6 +1,6 @@
 import { Controller, Put, UseGuards, 
 		Header, Delete, Param, Res } from '@nestjs/common';
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
@@ -20,6 +20,7 @@ export class AdminController {
 
 	@Put('/ban/:login')
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Ban a user' })
 	async banUser(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
@@ -37,6 +38,7 @@ export class AdminController {
 
 	@Delete('/ban/:login')
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Unban a user' })
 	async unbanUser(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
 		if (!user)
