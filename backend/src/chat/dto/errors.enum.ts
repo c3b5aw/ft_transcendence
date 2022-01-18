@@ -17,4 +17,7 @@ export enum WsError {
 	UNABLE_AUTH_CHANNEL = 'unable to authenticate with channel',
 	INVALID_JSON = 'invalid json',
 	MESSAGE_NOT_SPECIFIED = 'message not specified',
+	USER_NOT_IN_CHANNEL = 'user not in channel',
+	USER_BANNED = 'user banned',
+	USER_MUTED = 'user muted',
 }

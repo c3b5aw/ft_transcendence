@@ -35,9 +35,15 @@ export class ChatService {
 		global.clients = {};
 	}
 
+	server: Server;
+
 	/*
 		LOG IN/OUT FLOW
 	*/
+
+	async setServer(server: Server) {
+		this.server = server;
+	}
 
 	async wsLogin(client: Socket): Promise<number> {
 		/* Find cookie */
@@ -188,18 +194,53 @@ export class ChatService {
 		WS FLOW
 	*/
 
-	async wsJoinChannel(client: Socket, channel: Channel, server: Server) {
+	async wsParseJSON(client: Socket, data: string): Promise<{}> {
+		try {
+			return JSON.parse(data);
+		} catch (e) {
+			client.emit('onError', { error: WsError.INVALID_JSON });
+			return null;
+		}
+	}
+
+	async wsFatalUserNotFound(client: Socket) {
+		client.emit('onError', { error: WsError.USER_NOT_FOUND });
+		client.disconnect();
+	}
+
+	async wsSendMessageToChannel(client_id: number, message: string, channel: Channel) {
+		/* Resolve userID by socketID */
+		const user: User = await this.usersService.findOneByID(client_id);
+		if (!user)
+			return;
+		
+		/* Save message to database */
+		const msg: ChatMessage = new ChatMessage();
+		msg.user_id = user.id;
+		msg.channel_id = channel.id;
+		msg.announcement = false;
+		msg.content = message;
+		msg.timestamp = new Date();
+
+		await this.messagesRepository.save(msg);
+
+		/* Send message to all clients in channel */
+		this.server.to('#' + channel.id).emit('channel::message', {
+			user: user.login,
+			content: msg.content,
+			announcement: false,
+			timestamp: msg.timestamp,
+		});
+	}
+
+	async wsJoinChannel(client: Socket, channel: Channel, firstTime: boolean) {
 		const userID: number = await this.getUserIdBySocket(client);
 		if (!userID)
-			return client.emit('onError', { 
-				error: WsError.USER_NOT_FOUND
-		});
+			return this.wsFatalUserNotFound(client);
 
 		const user: User = await this.usersService.findOneByID(userID);
 		if (!user)
-			return client.emit('onError', {
-				error: WsError.USER_NOT_FOUND,
-			});
+			return this.wsFatalUserNotFound(client);
 
 		/* Make socket join channel */
 		client.join('#' + channel.id);
@@ -210,9 +251,68 @@ export class ChatService {
 		})
 
 		/* Send user joined to whole channel */
-		server.to('#' + channel.id).emit('channel:joined', {
+		this.server.to('#' + channel.id).emit('channel:joined', {
 			channel: channel,
 			login: user.login,
+		});
+
+		/* If first time, save channel join + tell you joined */
+		if (firstTime) {
+			await this.addUserToChannel(user.id, channel.id, UserRole.MEMBER);
+
+			await this.wsSendAnnouncementToChannel(channel.id, 
+				user.login + ' joined this channel.');
+		}
+	}
+
+	async wsLeaveChannel(client: Socket, channel: Channel) {
+		const userID: number = await this.getUserIdBySocket(client);
+		if (!userID)
+			return this.wsFatalUserNotFound(client);
+
+		const user: User = await this.usersService.findOneByID(userID);
+		if (!user)
+			return this.wsFatalUserNotFound(client);
+
+		/* Remove in database */
+		await this.removeUserFromChannel(user.id, channel.id);
+
+		/* Leave socket room */
+		client.leave('#' + channel.id);
+
+		/* Stream left event to channel */
+		this.server.to('#' + channel.id).emit('channel:left', {
+			channel: channel,
+			login: user.login,
+		});
+
+		/* Stream message left to channel */
+		await this.wsSendAnnouncementToChannel(channel.id, 
+			user.login + ' left this channel.');
+
+		/* Send success to user */
+		client.emit('onSuccess', {
+			message: 'left channel: #' + channel.name,
+		})
+	}
+
+	async wsSendAnnouncementToChannel(channelID: number, message: string) {
+		/* Save message to database */
+		const msg: ChatMessage = new ChatMessage();
+		msg.user_id = 0;
+		msg.channel_id = channelID;
+		msg.announcement = true;
+		msg.content = message;
+		msg.timestamp = new Date();
+
+		await this.messagesRepository.save(msg);
+		
+		/* Send message to all clients in channel */
+		this.server.to('#' + channelID).emit('channel::message', {
+			user: 'Server',
+			content: msg.content,
+			announcement: msg.announcement,
+			timestamp: msg.timestamp,
 		});
 	}
 
@@ -273,6 +373,8 @@ export class ChatService {
 			return null;
 		if (user.banned)
 			return UserRole.BANNED;
+		if (user.muted > new Date())
+			return UserRole.MUTED;
 		return user ? user.role : null;
 	}
 
@@ -326,6 +428,13 @@ export class ChatService {
 	*/
 
 	async deleteChannel(channel: Channel): Promise<void> {
+		/* Delete messages that match channel.id */
+		await this.messagesRepository.delete({ channel_id: channel.id });
+		
+		/* Delete userChannel tree */
+		await this.userChannelRepository.delete({ channel_id: channel.id });
+		
+		/* Finally delete channel */
 		await this.channelsRepository.delete(channel);
 	}
 
@@ -333,6 +442,10 @@ export class ChatService {
 		await this.channelsRepository.update(channel.id, {
 				password: null, private: false,
 		});
+	}
+
+	async removeUserFromChannel(userID: number, channelID: number): Promise<void> {
+		await this.userChannelRepository.delete({ user_id: userID, channel_id: channelID });
 	}
 
 	/*
