@@ -13,7 +13,7 @@ export class FriendsService {
 
 	async findAllByStatus(id: number, status: FriendStatus) : Promise<Friend[]> {
 		return this.friendRepository.query(`
-			SELECT query.*, users.login FROM (
+			SELECT query.*, users.login, users.connected FROM (
 				SELECT friends.status,
 					CASE
 						WHEN user_id = ${id} THEN friend_id
