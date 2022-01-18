@@ -11,18 +11,28 @@ export class FriendsService {
 
 	constructor(@InjectRepository(Friend) private readonly friendRepository: Repository<Friend>) {}
 
+	async findAllByStatus(id: number, status: FriendStatus) : Promise<Friend[]> {
+		return this.friendRepository.query(`
+			SELECT query.*, users.login FROM (
+				SELECT friends.status,
+					CASE
+						WHEN user_id = ${id} THEN friend_id
+						ELSE user_id
+					END AS id
+				FROM friends
+				WHERE (user_id = ${id} OR friend_id = ${id})
+					AND status = '${status}'
+			) AS query
+			INNER JOIN users ON query.id = users.id
+		`);
+	}
+
 	async findAllAcceptedById(id: number) : Promise<Friend[]> {
-		return this.friendRepository.createQueryBuilder()
-			.where('(user_id = :id OR friend_id = :id)', { id })
-			.andWhere('status = :status', { status: FriendStatus.STATUS_ACCEPTED })
-			.getMany();
+		return this.findAllByStatus(id, FriendStatus.STATUS_ACCEPTED);
 	}
 
 	async findAllPendingById(id: number) : Promise<Friend[]> {
-		return this.friendRepository.createQueryBuilder()
-			.where('(user_id = :id OR friend_id = :id)', { id })
-			.andWhere('status = :status', { status: FriendStatus.STATUS_PENDING })
-			.getMany();
+		return this.findAllByStatus(id, FriendStatus.STATUS_PENDING);
 	}
 
 	async findOneByBothId(uid: number, fid: number) : Promise<Friend> {
@@ -48,9 +58,7 @@ export class FriendsService {
 
 		const newFriend: Friend = new Friend();
 		newFriend.user_id = uid;
-		newFriend.user_login = ulogin;
 		newFriend.friend_id = fid;
-		newFriend.friend_login = flogin;
 		newFriend.status = FriendStatus.STATUS_PENDING;
 
 		await this.friendRepository.save(newFriend);
