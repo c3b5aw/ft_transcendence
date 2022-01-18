@@ -18,17 +18,39 @@ export class MatchsService {
 	*/
 
 	async findOneById(id: number) : Promise<Match> {
-		return this.matchRepository.findOne({ id });
+		return this.matchRepository.query(`
+			SELECT matchs.*, 
+				p1.login AS player1_login,
+				p2.login AS player2_login
+			FROM matchs
+			INNER JOIN users
+				AS p1
+				ON p1.id = matchs.player1
+			INNER JOIN users
+				AS p2
+				ON p2.id = matchs.player2
+			WHERE matchs.id = ${id};
+		`);
 	}
 
 	async findAllByPlayerId(id: number) : Promise<Match[]> {
-		return this.matchRepository.find({ 
-			where: [
-				{ player_1_id: id },
-				{ player_2_id: id }
-			],
-			order: { date: "DESC" }
-		});
+		return this.matchRepository.query(`
+			SELECT matchs.*, 
+				p1.login AS player1_login,
+				p2.login AS player2_login
+			FROM matchs
+			INNER JOIN users
+				AS p1
+				ON p1.id = matchs.player_1
+			INNER JOIN users
+				AS p2
+				ON p2.id = matchs.player_2
+			WHERE (
+				matchs.player_1 = ${id}
+				OR matchs.player_2 = ${id}
+			)
+			ORDER BY matchs.date DESC;
+		`);
 	}
 
 
