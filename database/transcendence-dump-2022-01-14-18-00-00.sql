@@ -5,7 +5,7 @@
 -- Dumped from database version 11.14
 -- Dumped by pg_dump version 11.14
 
--- Started on 2022-01-18 11:00:50 UTC
+-- Started on 2022-01-18 13:47:33 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -24,11 +24,11 @@ SET row_security = off;
 --
 
 CREATE TYPE public.channels_users_role_enum AS ENUM (
-    '0',
-    '1',
-    '2',
-    '3',
-    '4'
+    'NONE',
+    'BANNED',
+    'MEMBER',
+    'MODERATOR',
+    'ADMIN'
 );
 
 
@@ -40,9 +40,9 @@ ALTER TYPE public.channels_users_role_enum OWNER TO ft_root;
 --
 
 CREATE TYPE public.friends_status_enum AS ENUM (
-    '0',
-    '1',
-    '2'
+    'PENDING',
+    'ACCEPTED',
+    'BLOCKED'
 );
 
 
@@ -54,9 +54,9 @@ ALTER TYPE public.friends_status_enum OWNER TO ft_root;
 --
 
 CREATE TYPE public.matchs_type_enum AS ENUM (
-    '0',
-    '1',
-    '2'
+    'BOT',
+    'NORMAL',
+    'RANKED'
 );
 
 
@@ -68,11 +68,11 @@ ALTER TYPE public.matchs_type_enum OWNER TO ft_root;
 --
 
 CREATE TYPE public.users_role_enum AS ENUM (
-    '0',
-    '1',
-    '2',
-    '3',
-    '4'
+    'NONE',
+    'BANNED',
+    'MEMBER',
+    'MODERATOR',
+    'ADMIN'
 );
 
 
@@ -130,10 +130,10 @@ ALTER SEQUENCE public.achievements_id_seq OWNED BY public.achievements.id;
 CREATE TABLE public.channels (
     id integer NOT NULL,
     name character varying(64) NOT NULL,
+    password character varying(32),
     tunnel boolean DEFAULT false NOT NULL,
     private boolean DEFAULT false NOT NULL,
-    owner_id integer NOT NULL,
-    password character varying(32)
+    owner_id integer NOT NULL
 );
 
 
@@ -171,7 +171,7 @@ ALTER SEQUENCE public.channels_id_seq OWNED BY public.channels.id;
 
 CREATE TABLE public.channels_users (
     id integer NOT NULL,
-    role public.channels_users_role_enum DEFAULT '2'::public.channels_users_role_enum NOT NULL,
+    role public.channels_users_role_enum DEFAULT 'MEMBER'::public.channels_users_role_enum NOT NULL,
     banned boolean DEFAULT false NOT NULL,
     muted timestamp without time zone DEFAULT now() NOT NULL,
     channel_id integer NOT NULL,
@@ -259,7 +259,7 @@ CREATE TABLE public.friends (
     user_login character varying(64) NOT NULL,
     friend_id integer NOT NULL,
     friend_login character varying(64) NOT NULL,
-    status public.friends_status_enum DEFAULT '0'::public.friends_status_enum NOT NULL
+    status public.friends_status_enum DEFAULT 'PENDING'::public.friends_status_enum NOT NULL
 );
 
 
@@ -300,7 +300,7 @@ CREATE TABLE public.matchs (
     date timestamp without time zone DEFAULT now() NOT NULL,
     finished boolean DEFAULT false NOT NULL,
     duration integer DEFAULT 0 NOT NULL,
-    type public.matchs_type_enum DEFAULT '0'::public.matchs_type_enum NOT NULL,
+    type public.matchs_type_enum DEFAULT 'BOT'::public.matchs_type_enum NOT NULL,
     player_1_id integer DEFAULT 0 NOT NULL,
     player_1_login character varying(64) NOT NULL,
     player_1_score integer DEFAULT 0 NOT NULL,
@@ -347,7 +347,7 @@ CREATE TABLE public.users (
     login character varying(64) NOT NULL,
     display_name character varying(64) NOT NULL,
     email character varying(64) NOT NULL,
-    role public.users_role_enum DEFAULT '2'::public.users_role_enum NOT NULL,
+    role public.users_role_enum DEFAULT 'MEMBER'::public.users_role_enum NOT NULL,
     banned boolean DEFAULT false NOT NULL,
     two_factor_auth boolean DEFAULT false NOT NULL,
     two_factor_auth_secret character varying(64),
@@ -468,7 +468,7 @@ ALTER TABLE ONLY public.users_achievements ALTER COLUMN id SET DEFAULT nextval('
 COPY public.achievements (id, name, description, points) FROM stdin;
 1	Première Victoire	Vous avez gagné votre premier match. Bravo!	10
 2	Dixième Victoire	Vous avez gagné votre dixième match. Bravo!	50
-3	3-0	Une victoire écrasante !	100
+3	3-0\tUne victoire écrasante !	Une victoire écrasante !	100
 \.
 
 
@@ -478,11 +478,11 @@ COPY public.achievements (id, name, description, points) FROM stdin;
 -- Data for Name: channels; Type: TABLE DATA; Schema: public; Owner: ft_root
 --
 
-COPY public.channels (id, name, tunnel, private, owner_id, password) FROM stdin;
-1	public	f	f	0	\N
-2	zaap	f	f	0	\N
-3	private-eoliveir	f	t	77558	63a9f0ea7bb98050796b649e85481845
-4	private-sbeaujar	f	t	83781	63a9f0ea7bb98050796b649e85481845
+COPY public.channels (id, name, password, tunnel, private, owner_id) FROM stdin;
+1	public	\N	f	f	0
+2	zaap	\N	f	f	0
+3	private-eoliveir	63a9f0ea7bb98050796b649e85481845	f	t	77558
+4	private-sbeaujar	63a9f0ea7bb98050796b649e85481845	f	t	83781
 \.
 
 
@@ -493,16 +493,16 @@ COPY public.channels (id, name, tunnel, private, owner_id, password) FROM stdin;
 --
 
 COPY public.channels_users (id, role, banned, muted, channel_id, user_id) FROM stdin;
-1	3	f	2022-01-18 11:28:27.061135	1	77558
-2	2	f	2022-01-18 11:28:27.061135	2	77558
-3	3	f	2022-01-18 11:28:27.061135	1	83781
-4	2	f	2022-01-18 11:28:27.061135	2	83781
-5	3	f	2022-01-18 11:28:27.061135	1	73316
-6	2	f	2022-01-18 11:28:27.061135	2	73316
-7	3	f	2022-01-18 11:28:27.061135	1	77460
-8	2	f	2022-01-18 11:28:27.061135	2	77460
-9	4	f	2022-01-18 11:32:56.433936	3	77558
-10	4	f	2022-01-18 11:32:56.433936	4	83781
+1	MODERATOR	f	2022-01-18 13:19:44.94586	1	77558
+2	MEMBER	f	2022-01-18 13:19:44.94586	2	77558
+3	MODERATOR	f	2022-01-18 13:19:44.94586	1	83781
+4	MEMBER	f	2022-01-18 13:19:44.94586	2	83781
+5	MODERATOR	f	2022-01-18 13:19:44.94586	1	73316
+6	MEMBER	f	2022-01-18 13:19:44.94586	2	73316
+7	MODERATOR	f	2022-01-18 13:19:44.94586	1	77460
+8	MEMBER	f	2022-01-18 13:19:44.94586	2	77460
+9	ADMIN	f	2022-01-18 13:19:44.94586	3	77558
+10	ADMIN	f	2022-01-18 13:19:44.94586	4	83781
 \.
 
 
@@ -513,20 +513,20 @@ COPY public.channels_users (id, role, banned, muted, channel_id, user_id) FROM s
 --
 
 COPY public.chat_messages (id, user_id, channel_id, announcement, content, "timestamp") FROM stdin;
-1	83781	1	f	Hello World @public	2022-01-18 11:29:33.523264
-2	83781	2	f	Hello World @zaap	2022-01-18 11:29:33.523264
-3	77558	1	f	Hello World @public 2	2022-01-18 11:29:33.523264
-4	77558	2	f	Hello World @zaap 2	2022-01-18 11:29:33.523264
-5	83781	4	f	this is my private channel	2022-01-18 11:36:51.152673
-6	77558	3	f	this is my private channel	2022-01-18 11:36:51.152673
-7	0	4	t	sbeaujar has joined this channel!	2022-01-17 11:36:51.152673
-8	0	3	t	eoliveir has joined this channel!	2022-01-17 11:36:51.152673
-9	73316	1	f	Helllo this is jtrauque	2022-01-18 11:45:03.866753
-10	77460	1	f	Hello this is nbascaul	2022-01-18 11:45:03.866753
-11	0	1	t	sbeaujar has joined this channel!	2022-01-18 10:45:03.866753
-12	0	1	t	nbascaul has joined this channel!	2022-01-18 10:45:03.866753
-13	0	1	t	eoliveir has joined this channel!	2022-01-18 10:45:03.866753
-14	0	1	t	jtrauque has joined this channel!	2022-01-18 10:45:03.866753
+1	0	1	t	sbeaujar has joined this channel!	2022-01-18 13:20:59.712637
+2	0	1	t	eoliveir has joined this channel!	2022-01-18 13:20:59.712637
+3	0	1	t	nbascaul has joined this channel!	2022-01-18 13:20:59.712637
+4	0	1	t	jtrauque has joined this channel!	2022-01-18 13:20:59.712637
+5	0	4	t	sbeaujar has joined this channel!	2022-01-18 13:20:59.712637
+6	0	3	t	eoliveir has joined this channel!	2022-01-18 13:20:59.712637
+7	77558	3	f	this is my private channel	2022-01-18 13:21:23.092113
+8	83781	4	f	this is my private channel	2022-01-18 13:21:23.092113
+9	83781	1	f	Hello World #public	2022-01-18 13:22:09.176008
+10	83781	2	f	Hello World #zaap	2022-01-18 13:22:09.176008
+11	77558	1	f	Hello World #public	2022-01-18 13:22:09.176008
+12	77558	2	f	Hello World #zaap	2022-01-18 13:22:09.176008
+13	73316	1	f	Hello this is jtrauque	2022-01-18 13:22:34.542882
+14	77460	1	f	Hello this is nbascaul	2022-01-18 13:22:34.542882
 \.
 
 
@@ -537,9 +537,11 @@ COPY public.chat_messages (id, user_id, channel_id, announcement, content, "time
 --
 
 COPY public.friends (id, user_id, user_login, friend_id, friend_login, status) FROM stdin;
-1	83781	sbeaujar	77558	eoliveir	1
-2	77558	eoliveir	77460	nbascaul	0
-3	83781	sbeaujar	77460	nbascaul	0
+1	83781	sbeaujar	77558	eoliveir	ACCEPTED
+2	77558	eoliveir	77460	nbascaul	PENDING
+3	83781	sbeaujar	77460	nbascaul	PENDING
+4	77558	eoliveir	73316	jtrauque	BLOCKED
+5	83781	sbeaujar	73316	jtrauque	BLOCKED
 \.
 
 
@@ -550,16 +552,16 @@ COPY public.friends (id, user_id, user_login, friend_id, friend_login, status) F
 --
 
 COPY public.matchs (id, date, finished, duration, type, player_1_id, player_1_login, player_1_score, player_2_id, player_2_login, player_2_score) FROM stdin;
-1	2022-01-18 11:36:10.864507	t	1	2	83781	sbeaujar	3	77558	eoliveir	0
-2	2022-01-18 11:36:10.864507	t	1	2	77460	nbascaul	2	83781	sbeaujar	1
-3	2022-01-18 11:36:10.864507	t	1	2	77558	eoliveir	1	73316	jtrauque	2
-4	2022-01-18 11:36:10.864507	t	1	2	83781	sbeaujar	1	73316	jtrauque	2
-5	2022-01-18 11:36:10.864507	t	1	2	73316	jtrauque	2	77558	eoliveir	1
-6	2022-01-18 11:36:10.864507	t	1	2	77460	nbascaul	0	83781	sbeaujar	3
-7	2022-01-18 11:36:10.864507	t	1	2	77558	eoliveir	1	73316	jtrauque	2
-8	2022-01-18 11:36:10.864507	t	1	2	83781	sbeaujar	3	77460	nbascaul	0
-9	2022-01-18 11:36:10.864507	t	1	2	77460	nbascaul	0	77558	eoliveir	3
-10	2022-01-18 11:36:10.864507	t	1	2	77460	nbascaul	1	73316	jtrauque	2
+1	2022-01-18 13:27:15.290874	t	129	RANKED	83781	sbeaujar	3	77558	eoliveir	0
+2	2022-01-18 13:27:15.290874	t	8	RANKED	77460	nbascaul	2	83781	sbeaujar	1
+3	2022-01-18 13:27:15.290874	t	29	RANKED	77558	eoliveir	1	73316	jtrauque	2
+4	2022-01-18 13:27:15.290874	t	257	RANKED	83781	sbeaujar	1	73316	jtrauque	2
+5	2022-01-18 13:27:15.290874	t	234	RANKED	73316	jtrauque	2	77558	eoliveir	1
+6	2022-01-18 13:27:15.290874	t	72	RANKED	77460	nbascaul	0	83781	sbeaujar	3
+7	2022-01-18 13:27:15.290874	t	158	RANKED	77558	eoliveir	1	73316	jtrauque	2
+8	2022-01-18 13:27:15.290874	t	160	RANKED	83781	sbeaujar	3	77460	nbascaul	0
+9	2022-01-18 13:27:15.290874	t	130	RANKED	77460	nbascaul	0	77558	eoliveir	3
+10	2022-01-18 13:27:15.290874	t	120	RANKED	77460	nbascaul	1	73316	jtrauque	2
 \.
 
 
@@ -570,11 +572,10 @@ COPY public.matchs (id, date, finished, duration, type, player_1_id, player_1_lo
 --
 
 COPY public.users (id, login, display_name, email, role, banned, two_factor_auth, two_factor_auth_secret, elo, played, victories, defeats, connected, created, "lastLogin") FROM stdin;
-77460	nbascaul	nbascaul	nbascaul@student.42.fr	2	f	f	\N	1205	5	1	4	f	2022-01-18 11:10:03.649744	2022-01-18 11:10:03.649744
-77558	eoliveir	eoliveir	eoliveir@student.42.fr	4	f	f	\N	1205	5	2	3	f	2022-01-18 11:10:03.649744	2022-01-18 11:10:03.649744
-83781	sbeaujar	sbeaujar	sbeaujar@student.42.fr	4	f	f	\N	1210	5	2	3	f	2022-01-18 11:10:03.649744	2022-01-18 11:10:03.649744
-73316	jtrauque	jtrauque	jtrauque@student.42.fr	3	f	f	\N	1230	5	5	0	f	2022-01-18 11:10:03.649744	2022-01-18 11:10:03.649744
-0	SYSTEM-BOT	SYSTEM-BOT	bot@ft_transcendence.42.fr	4	f	f	\N	1200	0	0	0	f	2022-01-18 11:56:00.523224	2022-01-18 11:56:00.523224
+77460	nbascaul	nbascaul	nbascaul@student.42.fr	MEMBER	f	f	\N	1205	5	1	4	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
+77558	eoliveir	eoliveir	eoliveir@student.42.fr	ADMIN	f	f	\N	1205	5	2	3	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
+83781	sbeaujar	sbeaujar	sbeaujar@student.42.fr	ADMIN	f	f	\N	1210	5	2	3	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
+73316	jtrauque	jtrauque	jtrauque@student.42.fr	MODERATOR	f	f	\N	1230	5	5	0	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
 \.
 
 
@@ -585,12 +586,12 @@ COPY public.users (id, login, display_name, email, role, banned, two_factor_auth
 --
 
 COPY public.users_achievements (id, user_id, achievement_id, unlocked_at) FROM stdin;
-1	73316	1	2022-01-18 11:10:53.05085
-2	77460	1	2022-01-18 11:10:53.05085
-3	77558	1	2022-01-18 11:10:53.05085
-4	83781	1	2022-01-18 11:10:53.05085
-5	83781	3	2022-01-18 11:10:53.05085
-6	77558	3	2022-01-18 11:10:53.05085
+1	77460	1	2022-01-18 13:30:27.793572
+2	73316	1	2022-01-18 13:30:27.793572
+3	77558	1	2022-01-18 13:30:27.793572
+4	83781	1	2022-01-18 13:30:27.793572
+5	77558	3	2022-01-18 13:30:27.793572
+6	83781	3	2022-01-18 13:30:27.793572
 \.
 
 
@@ -636,7 +637,7 @@ SELECT pg_catalog.setval('public.chat_messages_id_seq', 14, true);
 -- Name: friends_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ft_root
 --
 
-SELECT pg_catalog.setval('public.friends_id_seq', 3, true);
+SELECT pg_catalog.setval('public.friends_id_seq', 5, true);
 
 
 --
@@ -786,7 +787,7 @@ GRANT ALL ON SCHEMA public TO ft_root;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2022-01-18 11:00:51 UTC
+-- Completed on 2022-01-18 13:47:33 UTC
 
 --
 -- PostgreSQL database dump complete
