@@ -11,11 +11,13 @@ import { styleTextField } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyError from "../../../components/MyError";
 import { rolesArray } from "../../../services/Api/Role";
+import MySnackBar from "../../../components/MySnackbar";
 
 const Settings = () => {
 	const [me, setMe] = useState<User>();
 	const classes = styleTextField()
 	const [new_display, setNewDisplay] = useState<string>("");
+	const [new_displayTmp, setNewDisplayTmp] = useState<string>("");
 	const [event, setEvent] = useState<Date>();
 	const [error, setError] = useState<unknown>("");
 
@@ -38,30 +40,36 @@ const Settings = () => {
 	}, [new_display]);
 
 	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
-		if (event.target.value.length > 3)
-		{
+		setNewDisplayTmp(event.target.value);
+    };
+
+	async function handleSendNewDisplayName() {
+		if (new_displayTmp.length > 3) {
 			try {
 				const reponse = await axios.post(`${api}${apiMe}/display_name`, {
-					display_name: `${event.target.value}`
+					display_name: `${new_displayTmp}`
 				})
 				if (reponse.status === 201) {
-					setNewDisplay(event.target.value);
+					setNewDisplay(new_displayTmp);
 				}
 			}
 			catch (err) {
 				setError(err);
 			}
 		}
-    };
+	}
 
 	// eslint-disable-next-line eqeqeq
 	if (me == undefined && error === "")
 		return (<MyChargingDataAlert />);
 	// eslint-disable-next-line eqeqeq
-	else if (error !== "" || me == undefined)
+	else if (me == undefined)
 		return (<MyError error={error}/>);
 	return (
 		<Stack direction="row" sx={{width: "100%", height: "100vh"}}>
+			{ error !== "" ?
+				<MySnackBar message={`${error}`} severity="error" time={2000}/> : null
+			}
 			<Stack direction="column" sx={{width: 0.97, height: 1}} justifyContent="center" alignItems="center">
 				<Stack sx={{ width: 1, height: 1/6, marginLeft: 10}} direction="row" alignItems="center" spacing={3}>
 					<Stack>
@@ -71,7 +79,7 @@ const Settings = () => {
 						</Avatar>
 						<h3 style={{ color: 'grey' }}>{event?.toDateString()}</h3>
 					</Stack>
-					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>{me.display_name} ({me.role != undefined ? rolesArray[me.role] : null})</h1>
+					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>{me.display_name} ({rolesArray[me.role]})</h1>
 				</Stack>
 				<Stack sx={{ width: 1, height: 1/5}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
 					<AddPhotoAlternateIcon sx={{ fontSize: 55 }} />
@@ -102,12 +110,26 @@ const Settings = () => {
 							style: { color: '#ADADAD' },
 						  }}
 					/>
+					<Button sx={{
+						border: "4px solid black",
+						borderRadius: "15px",
+						color: "black",
+						fontFamily: "Myriad Pro",
+						padding: "15px",
+						backgroundColor: "white",
+						fontSize: "17px",
+						'&:hover': {
+							backgroundColor: '#D5D5D5',
+							color: '#000000',
+						},
+					}} onClick={() => handleSendNewDisplayName()}>
+					Valider</Button>
 				</Stack>
 				<Stack sx={{ width: 1, height: 1/5}} direction="row" justifyContent="center" alignItems="center" spacing={3}>
 					<KeyIcon sx={{ fontSize: 55 }} />
 					<Button sx={{
 						border: "4px solid black",
-						borderRadius: "5px",
+						borderRadius: "15px",
 						color: "black",
 						fontFamily: "Myriad Pro",
 						padding: "15px",
