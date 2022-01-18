@@ -12,7 +12,11 @@ import { Channel } from './entities/channel.entity';
 
 import { CreateChannelDto } from './dto/createChannel.dto';
 import { UpdateChannelPasswordDto } from './dto/updateChannelPassword.dto';
+<<<<<<< HEAD
 import { ModerationFlow } from './dto/moderationFlow.class';
+=======
+import { ModerationFlow } from './dto/moderationFlow.interface';
+>>>>>>> origin/main
 import { RequestError } from './dto/errors.enum';
 
 @ApiTags('channel')

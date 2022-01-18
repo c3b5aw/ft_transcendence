@@ -4,12 +4,12 @@ import React from "react";
 import { ISearchBar, User } from "../../../services/Interface/Interface";
 import { useStyles } from "../../../styles/Styles";
 
-function MySearchBarChat(props : {users: User[], fSearchBar: ISearchBar}) {
+function MySearchBarChat(props : {users: User[], fSearchBar: ISearchBar, nameBar: string}) {
 
+    const { users, fSearchBar, nameBar } = props;
     const [searched, setSearched] = React.useState<string>("");
 	const [rows, setRows] = React.useState<User[]>([]);
 	const classes = useStyles();
-    const { users, fSearchBar } = props;
 	
 	const requestSearch = (searchedVal: string) => {
 		if (searchedVal === "") {
@@ -30,7 +30,7 @@ function MySearchBarChat(props : {users: User[], fSearchBar: ISearchBar}) {
     return (
         <Paper>
             <SearchBar className={classes.searchBar}
-                placeholder="Search users..."
+                placeholder={`${nameBar}`}
                 value={searched}
                 onChange={(searchVal) => requestSearch(searchVal)}
                 onCancelSearch={() => cancelSearch()}

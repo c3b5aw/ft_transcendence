@@ -5,15 +5,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Socket } from 'socket.io';
 import { createHash } from 'crypto';
 import { Response } from 'express';
+<<<<<<< HEAD
+=======
+import { Server } from 'socket.io';
+>>>>>>> origin/main
 
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
 import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
 import { UserRole } from 'src/users/entities/roles.enum';
+<<<<<<< HEAD
 import { ModerationFlow } from './dto/moderationFlow.class';
 import { FriendStatus } from 'src/friends/entities/status.enum';
 import { RequestError } from './dto/errors.enum';
+=======
+import { ModerationFlow } from './dto/moderationFlow.interface';
+import { FriendStatus } from 'src/friends/entities/status.enum';
+import { RequestError, WsError } from './dto/errors.enum';
+>>>>>>> origin/main
 
 @Injectable()
 export class ChatService {
@@ -34,10 +44,22 @@ export class ChatService {
 		global.clients = {};
 	}
 
+<<<<<<< HEAD
+=======
+	server: Server;
+
+>>>>>>> origin/main
 	/*
 		LOG IN/OUT FLOW
 	*/
 
+<<<<<<< HEAD
+=======
+	async setServer(server: Server) {
+		this.server = server;
+	}
+
+>>>>>>> origin/main
 	async wsLogin(client: Socket): Promise<number> {
 		/* Find cookie */
 		if ( !client.handshake.headers.hasOwnProperty('cookie')
@@ -57,7 +79,11 @@ export class ChatService {
 
 		/* Get User from DB */
 		const user: User = await this.usersService.findOneByID( payload.sub );
+<<<<<<< HEAD
 		if (!user || user.banned)
+=======
+		if (!user || user.role === UserRole.BANNED)
+>>>>>>> origin/main
 			return 0;
 
 		/* Update user connected */
@@ -94,7 +120,10 @@ export class ChatService {
 		userChannel.role = role;
 		userChannel.user_id = userID;
 		userChannel.channel_id = channelID;
+<<<<<<< HEAD
 		userChannel.banned = false;
+=======
+>>>>>>> origin/main
 		userChannel.muted = new Date(0);
 
 		return this.userChannelRepository.save(userChannel);
@@ -107,7 +136,11 @@ export class ChatService {
 		
 		await this.userChannelRepository.update(
 			{ user_id: userID, channel_id: channelID },
+<<<<<<< HEAD
 			{ banned: bool },
+=======
+			{ role: bool ? UserRole.BANNED : UserRole.MEMBER },
+>>>>>>> origin/main
 		);
 	}
 
@@ -187,8 +220,131 @@ export class ChatService {
 		WS FLOW
 	*/
 
+<<<<<<< HEAD
 	async wsJoinChannel(data: any, client: Socket) {
 
+=======
+	async wsParseJSON(client: Socket, data: string): Promise<{}> {
+		try {
+			return JSON.parse(data);
+		} catch (e) {
+			client.emit('onError', { error: WsError.INVALID_JSON });
+			return null;
+		}
+	}
+
+	async wsFatalUserNotFound(client: Socket) {
+		client.emit('onError', { error: WsError.USER_NOT_FOUND });
+		client.disconnect();
+	}
+
+	async wsSendMessageToChannel(client_id: number, message: string, channel: Channel) {
+		/* Resolve userID by socketID */
+		const user: User = await this.usersService.findOneByID(client_id);
+		if (!user)
+			return;
+		
+		/* Save message to database */
+		const msg: ChatMessage = new ChatMessage();
+		msg.user_id = user.id;
+		msg.channel_id = channel.id;
+		msg.announcement = false;
+		msg.content = message;
+		msg.timestamp = new Date();
+
+		await this.messagesRepository.save(msg);
+
+		/* Send message to all clients in channel */
+		this.server.to('#' + channel.id).emit('channel::message', {
+			user: user.login,
+			content: msg.content,
+			announcement: false,
+			timestamp: msg.timestamp,
+		});
+	}
+
+	async wsJoinChannel(client: Socket, channel: Channel, firstTime: boolean) {
+		const userID: number = await this.getUserIdBySocket(client);
+		if (!userID)
+			return this.wsFatalUserNotFound(client);
+
+		const user: User = await this.usersService.findOneByID(userID);
+		if (!user)
+			return this.wsFatalUserNotFound(client);
+
+		/* Make socket join channel */
+		client.join('#' + channel.id);
+
+		/* Send user joined to user */
+		client.emit('onSuccess', {
+			message: 'joined channel: #' + channel.name,
+		})
+
+		/* Send user joined to whole channel */
+		this.server.to('#' + channel.id).emit('channel:joined', {
+			channel: channel,
+			login: user.login,
+		});
+
+		/* If first time, save channel join + tell you joined */
+		if (firstTime) {
+			await this.addUserToChannel(user.id, channel.id, UserRole.MEMBER);
+
+			await this.wsSendAnnouncementToChannel(channel.id, 
+				user.login + ' joined this channel.');
+		}
+	}
+
+	async wsLeaveChannel(client: Socket, channel: Channel) {
+		const userID: number = await this.getUserIdBySocket(client);
+		if (!userID)
+			return this.wsFatalUserNotFound(client);
+
+		const user: User = await this.usersService.findOneByID(userID);
+		if (!user)
+			return this.wsFatalUserNotFound(client);
+
+		/* Remove in database */
+		await this.removeUserFromChannel(user.id, channel.id);
+
+		/* Leave socket room */
+		client.leave('#' + channel.id);
+
+		/* Stream left event to channel */
+		this.server.to('#' + channel.id).emit('channel:left', {
+			channel: channel,
+			login: user.login,
+		});
+
+		/* Stream message left to channel */
+		await this.wsSendAnnouncementToChannel(channel.id, 
+			user.login + ' left this channel.');
+
+		/* Send success to user */
+		client.emit('onSuccess', {
+			message: 'left channel: #' + channel.name,
+		})
+	}
+
+	async wsSendAnnouncementToChannel(channelID: number, message: string) {
+		/* Save message to database */
+		const msg: ChatMessage = new ChatMessage();
+		msg.user_id = 0;
+		msg.channel_id = channelID;
+		msg.announcement = true;
+		msg.content = message;
+		msg.timestamp = new Date();
+
+		await this.messagesRepository.save(msg);
+		
+		/* Send message to all clients in channel */
+		this.server.to('#' + channelID).emit('channel::message', {
+			user: 'Server',
+			content: msg.content,
+			announcement: msg.announcement,
+			timestamp: msg.timestamp,
+		});
+>>>>>>> origin/main
 	}
 
 	/*
@@ -231,7 +387,11 @@ export class ChatService {
 
 	async getChannelUsers(channelID: number): Promise<ChannelUser[]> {
 		return this.userChannelRepository.query(`
+<<<<<<< HEAD
 			SELECT channel.user_id, channel.banned, channel.muted, channel.role, 
+=======
+			SELECT channel.user_id, channel.muted, channel.role, 
+>>>>>>> origin/main
 					users.login, users.connected
 			FROM channels_users as channel
 			INNER JOIN users ON channel.user_id = users.id
@@ -246,8 +406,15 @@ export class ChatService {
 
 		if (!user)
 			return null;
+<<<<<<< HEAD
 		if (user.banned)
 			return UserRole.BANNED;
+=======
+		if (user.role === UserRole.BANNED)
+			return UserRole.BANNED;
+		if (user.muted > new Date())
+			return UserRole.MUTED;
+>>>>>>> origin/main
 		return user ? user.role : null;
 	}
 
@@ -301,6 +468,16 @@ export class ChatService {
 	*/
 
 	async deleteChannel(channel: Channel): Promise<void> {
+<<<<<<< HEAD
+=======
+		/* Delete messages that match channel.id */
+		await this.messagesRepository.delete({ channel_id: channel.id });
+		
+		/* Delete userChannel tree */
+		await this.userChannelRepository.delete({ channel_id: channel.id });
+		
+		/* Finally delete channel */
+>>>>>>> origin/main
 		await this.channelsRepository.delete(channel);
 	}
 
@@ -310,6 +487,13 @@ export class ChatService {
 		});
 	}
 
+<<<<<<< HEAD
+=======
+	async removeUserFromChannel(userID: number, channelID: number): Promise<void> {
+		await this.userChannelRepository.delete({ user_id: userID, channel_id: channelID });
+	}
+
+>>>>>>> origin/main
 	/*
 		BOOL
 	*/
@@ -319,7 +503,11 @@ export class ChatService {
 			where: { user_id: userID, channel_id: channelID },
 		});
 
+<<<<<<< HEAD
 		if (!user || user.banned)
+=======
+		if (!user || user.role === UserRole.BANNED)
+>>>>>>> origin/main
 			return false;
 		return true;
 	}

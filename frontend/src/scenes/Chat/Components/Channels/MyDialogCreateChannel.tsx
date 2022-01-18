@@ -1,15 +1,13 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
-import React, { SetStateAction, useState } from "react";
-import { ISearchBar, User } from "../../../services/Interface/Interface";
-import MySearchBarChat from "./MySearchBarChat";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { User } from "../../../../services/Interface/Interface";
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
-import { api, apiChannel } from "../../../services/Api/Api";
-import MySnackBar from "../../../components/MySnackbar";
+import { api, apiChannel } from "../../../../services/Api/Api";
+import MySnackBar from "../../../../components/MySnackbar";
 
-function MyDialogCreateChannel(props: {users: User[]}) {
-
-    const { users } = props;
+function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetStateAction<boolean>>}) {
+	const { reload, setReload } = props;
     const [open, setOpen] = React.useState(true);
 	const [addFriends, setAddFriends] = useState<User[]>([]);
 
@@ -18,12 +16,12 @@ function MyDialogCreateChannel(props: {users: User[]}) {
 
 	const [error, setError] = useState<string>("");
 
-	function handleClickCell(user: User) {
-		const tmp = addFriends.filter(item => item.login === user.login)
-		if (tmp.length === 0) {
-			setAddFriends(addFriends => [...addFriends, user])
-		}
-	}
+	// function handleClickCell(user: User) {
+	// 	const tmp = addFriends.filter(item => item.login === user.login)
+	// 	if (tmp.length === 0) {
+	// 		setAddFriends(addFriends => [...addFriends, user])
+	// 	}
+	// }
 
 	const handleRemoveFriend = (user: User) => {
 		setAddFriends(addFriends.filter(item => item.login !== user.login))
@@ -34,18 +32,22 @@ function MyDialogCreateChannel(props: {users: User[]}) {
 	};
 
 	const handleCreate = async () => {
-		// await axios.post(`${api}${apiChannel}`, {
-		// 	name: nameChannel,
-		// 	password: passwordChannel
-		// })
 		if (nameChannel.length > 3 && nameChannel.length < 64) {
-			console.log(nameChannel);
-			console.log(passwordChannel);
+			try {
+				await axios.post(`${api}${apiChannel}`, {
+					name: nameChannel,
+					password: passwordChannel
+				})
+				setError("Le channel a bien été créer");
+				handleClose();
+				setReload(!reload);
+			}
+			catch (err) {
+				setError(err as string);
+			}
 		}
 		else
-		{
 			setError("Le nom du channel doit contenir au moins 3 caractères");
-		}
 	};
 
 	const  handleTextChangeName = async (event: { target: { value: SetStateAction<string>; }; }) => {
@@ -56,10 +58,10 @@ function MyDialogCreateChannel(props: {users: User[]}) {
 		setPasswordChannel(event.target.value);
 	};
 
-    const fSearchBar: ISearchBar = {
-		handleClickCell: handleClickCell
-	}
-
+	// const fSearchBar: ISearchBar = {
+	// 	handleClickCell: handleClickCell
+	// }
+	
     return (
         <Dialog
 			open={open}
@@ -106,7 +108,7 @@ function MyDialogCreateChannel(props: {users: User[]}) {
 					onChange={handleTextChangePassword}
 				/>
 				<div style={{marginTop: 10}}></div>
-				<MySearchBarChat users={users} fSearchBar={fSearchBar} />
+				{/* <MySearchBarChat users={users} fSearchBar={fSearchBar} /> */}
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose}>Cancel</Button>

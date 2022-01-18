@@ -1,13 +1,12 @@
-import { Avatar, Button, Divider, FormControl, IconButton, Paper, Stack, TextField } from '@mui/material';
-import React, { SetStateAction, useEffect, useState } from 'react';
+import { Avatar, Divider, FormControl, IconButton, Paper, Stack, TextField } from '@mui/material';
+import React, { SetStateAction, useState } from 'react';
 import MyList from '../Components/MyListFriends';
 import { api, apiChannel, apiFriends, apiUsers } from '../../../services/Api/Api';
 import SendIcon from '@mui/icons-material/Send';
 import { styleTextField } from '../../../styles/Styles';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
-import MyCreateChannel from '../Components/MyCreateChannel';
 import useMe from '../../../services/Hooks/useMe';
-import MyListChannels from '../Components/MyListChannels';
+import MyListChannels from '../Components/Channels/MyListChannels';
 import MyMessages from '../Components/MyMessages';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -16,34 +15,15 @@ import { Channel } from '../Services/interface';
 function Chat() {
 	const me = useMe();
 	// const [channels, setChannels] = useState<Channel[]>([]);
-	const [open, setOpen] = useState<boolean>();
 	const [channel, setChannel] = useState<Channel>();
-	const [message, setMessage] = useState<string>("");
+	// const [message, setMessage] = useState<string>("");
 	const [messageTmp, setMessageTmp] = useState<string>("");
 
 	const classes = styleTextField()
 
-	const buttonStyle = {
-		border: "4px solid black",
-		borderRadius: "15px",
-		color: "black",
-		fontFamily: "Myriad Pro",
-		padding: "15px",
-		backgroundColor: "white",
-		fontSize: "17px",
-		'&:hover': {
-			backgroundColor: '#D5D5D5',
-			color: '#000000',
-		},
-	}
-
 	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
 		setMessageTmp(event.target.value);
 	};
-
-	function handleCreateChannel() {
-		setOpen(!open);
-	}
 
 	function handleSendMessage() {
 		console.log(messageTmp);
@@ -79,17 +59,8 @@ function Chat() {
 				</Stack>
 			</Paper>
 			<Stack direction="row" sx={{width: 1, height: 0.95}}>
-				<Stack direction="column" sx={{width: 1.5/12, height: 1}}>
-					<Stack direction="column" sx={{width: 1, height: 0.9}}>
-						{/* load channels */}
-						<MyListChannels me={me} setChannel={setChannel}/>
-					</Stack>
-					<Stack direction="column" sx={{width: 1, height: 0.1}} alignItems="center" justifyContent="center">
-						<Button sx={buttonStyle} onClick={() => handleCreateChannel()}>Create new channel</Button>
-					</Stack>
-				</Stack>
+				<MyListChannels me={me} setChannel={setChannel}/>
 				<Stack direction="column" sx={{width: 9/12, height: 1}} alignItems="center">
-					{open ? <MyCreateChannel /> : null}
 					{channel != undefined ? 
 						<React.Fragment>
 							{/* load messages */}

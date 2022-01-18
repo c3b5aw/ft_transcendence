@@ -4,8 +4,8 @@ import { api, apiAchievements, apiUsers } from "../../../services/Api/Api";
 import { Achievements, User } from "../../../services/Interface/Interface";
 
 function useAchievements(user: User) {
-    const [achievements, setAchievements] = useState<Achievements[]>([]);
-    useEffect(() => {
+	const [achievements, setAchievements] = useState<Achievements[]>([]);
+	useEffect(() => {
 		const fetchAchievements = async () => {
 			try {
 				const response = await axios.get(`${api}${apiUsers}/${user.login}${apiAchievements}`);
@@ -17,7 +17,7 @@ function useAchievements(user: User) {
 		}
 		fetchAchievements();
 	}, [user.login]);
-    return (achievements);
+	return (achievements);
 }
 
 export default useAchievements;

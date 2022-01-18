@@ -6,6 +6,7 @@ import { Request } from 'express';
 
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { UserRole } from 'src/users/entities/roles.enum';
 
 /*
 	https://docs.nestjs.com/security/authentication#implementing-passport-jwt
@@ -36,7 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		if (!user)
 			throw new UnauthorizedException();
 
-		if (user.banned)
+		if (user.role === UserRole.BANNED)
 			throw new AuthBannedException();
 
 		return user;

@@ -1,6 +1,10 @@
 import { Body, Controller, Get, Header, Param, Post, Req, Res,
 		UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+<<<<<<< HEAD
 import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
+=======
+import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
+>>>>>>> origin/main
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 
@@ -27,12 +31,14 @@ export class ProfileController {
 
 	@Get()
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get yours details' })
 	async getMyself(@Req() req: any) : Promise<User> {
 		return this.usersService.findMe(req.user.id);
 	}
 
 	@Get('avatar')
 	@Header('Content-Type', 'image/jpg')
+	@ApiOperation({ summary: 'Get your avatar as jpg' })
 	async getAvatar(@Req() req: any, 
 					@Param('id') id: number, @Res() resp: Response) {
 		return await this.usersService.sendAvatar( req.user.id, resp );
@@ -41,6 +47,7 @@ export class ProfileController {
 
 	@Get('stats')
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get yours stats' })
 	async getStats(@Req() req: any, @Res() resp: Response) {
 		const userStats = await this.usersService.getStatsById( req.user.id );
 		resp.send(userStats);
@@ -48,18 +55,21 @@ export class ProfileController {
 
 	@Get('friends')
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get yours accepted friends' })
 	async getMyselfFriends(@Req() req: any) : Promise<Friend[]> {
 		return this.friendsService.findAllAcceptedById( req.user.id );
 	}
 
 	@Get('friends/pending')
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get your pending friendship' })
 	async getMyselfPendingFriendsRequest(@Req() req: any) : Promise<Friend[]> {
 		return this.friendsService.findAllPendingById( req.user.id );
 	}
 
 	@Post('display_name')
 	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Update your display name' })
 	async setDisplayName(@Req() req: any, @Body() data: PostDisplayNameDto,
 						@Res() resp: Response) {
 		const name: User = await this.usersService.findOneByDisplayName(data.display_name);
@@ -86,6 +96,7 @@ export class ProfileController {
 			}
 		}),
 	}))
+	@ApiOperation({ summary: 'Update your avatar' })
 	async setAvatar(@Req() req: any, @UploadedFile() file: Express.Multer.File,
 					@Res() resp: Response) {
 		if (!file)

@@ -32,11 +32,9 @@ export class AdminStrategy extends PassportStrategy(Strategy, 'admin') {
 		
 		if (!user)
 			throw new UnauthorizedException();
-		
-		if (user.banned)
+		if (user.role === UserRole.BANNED)
 			throw new AuthBannedException();
-
-		if (user.role != UserRole.ADMIN)
+		if (user.role !== UserRole.ADMIN)
 			throw new InsufficientPermissionsException();
 
 		return true;

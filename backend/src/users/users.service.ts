@@ -9,6 +9,7 @@ import { User } from './entities/user.entity';
 import { UserStats } from './dto/stats.dto';
 import { UserInterface } from './interfaces/user.interface';
 import { createHash } from 'crypto';
+import { UserRole } from './entities/roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -93,7 +94,8 @@ export class UsersService {
 	*/
 
 	async updateUserBan(id: number, banned: boolean) : Promise<any> {
-		return this.userRepository.update({ id: id }, { banned: banned });
+		return this.userRepository.update({ id: id }, 
+			{ role: banned ? UserRole.BANNED : UserRole.MEMBER });
 	}
 
 	async updateLastLogin(user: User) : Promise<User> {

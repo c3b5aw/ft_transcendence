@@ -41,7 +41,6 @@ function MyListFriends(props : {me: User | undefined, url: string}) {
 			</Stack>
 		);
 	}
-	console.log(friends);
 	return (
         <Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
 			<Stack sx={{width: 1, height: 1}} direction="column">
