@@ -1,5 +1,5 @@
 export enum MATCH_TYPE {
-	MATCH_BOT,
+	MATCH_BOT = 0,
 	MATCH_NORMAL,
 	MATCH_RANKED,
 }
