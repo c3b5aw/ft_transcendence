@@ -221,6 +221,16 @@ export class ChatService {
 		`);
 	}
 
+	async getChannelUsers(channelID: number): Promise<ChannelUser[]> {
+		return this.userChannelRepository.query(`
+			SELECT channel.user_id, channel.banned, channel.muted, channel.role, 
+					users.login, users.connected
+			FROM channels_users as channel
+			INNER JOIN users ON channel.user_id = users.id
+			WHERE channel_id = ${channelID}
+		`)
+	}
+
 	async getUserRoleInChannel(userID: number, channelID: number): Promise<UserRole> {
 		const user = await this.userChannelRepository.findOne({
 			where: { user_id: userID, channel_id: channelID },

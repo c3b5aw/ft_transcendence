@@ -22,10 +22,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const state: boolean = await this.chatService.wsLogin(client);
 		if (!state)
 			return client.disconnect();
+	
+		// send connected to joinedChannels
 	}
 
 	async handleDisconnect( client: Socket ) {
 		await this.chatService.wsLogout(client);
+
+		// send disconnect to joinedChannels
 	}
 
 	@SubscribeMessage('channelJoin')

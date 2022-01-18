@@ -92,6 +92,24 @@ export class ChannelController {
 		resp.send(messages);
 	}
 
+	@Get('/:channelName/users')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get channel users' })
+	async getChannelUsers(@Param('channelName') channelName: string,
+							@Req() req: any, @Res() resp: Response)
+	{
+		const channel: Channel = await this.chatService.findOneChannelByName(channelName);
+		if (!channel)
+			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
+
+		const role: UserRole = await this.chatService.getUserRoleInChannel(req.user.id, channel.id);
+		if (role === null || role === UserRole.BANNED)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
+		const users = await this.chatService.getChannelUsers(channel.id);
+		resp.send(users);
+	}
+
 	/* PWD - OWNER ONLY*/
 	@Post('/:channelName/password')
 	@Header('Content-Type', 'application/json')
