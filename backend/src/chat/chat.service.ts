@@ -12,7 +12,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
 import { UserRole } from 'src/users/entities/roles.enum';
-import { ModerationFlow } from './dto/moderationFlow.class';
+import { ModerationFlow } from './dto/moderationFlow.interface';
 import { FriendStatus } from 'src/friends/entities/status.enum';
 import { RequestError, WsError } from './dto/errors.enum';
 
