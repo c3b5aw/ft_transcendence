@@ -1,19 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getManager } from 'typeorm';
 import { Response } from 'express';
 
-import { getManager } from 'typeorm';
-
-import { Achievement } from './entities/achievement.entity';
-import { UserAchievement } from './entities/user_achievements.entity';
+import { Achievement, UserAchievement } from './entities/achievement.entity';
 
 @Injectable()
 export class AchievementsService {
 
-	constructor(
-		@InjectRepository(Achievement) private readonly achievementRepository: Repository<Achievement>,
-		@InjectRepository(UserAchievement) private readonly userAchievementRepository: Repository<UserAchievement>) {}
+	constructor(@InjectRepository(Achievement) 
+	private readonly achievementRepository: Repository<Achievement>) {}
 
 	async findOneByID(id: number) : Promise<Achievement> {
 		return this.achievementRepository.findOne( id );
