@@ -1,6 +1,6 @@
-import { Controller, Get, Delete, Res,
+import { Controller, Get, Res,
 		Param, UseGuards, Header } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
@@ -10,6 +10,7 @@ import { Match } from './entities/match.entity';
 import { MatchsService } from './matchs.service';
 
 @ApiTags('matchs')
+@ApiCookieAuth()
 @Controller('matchs')
 export class MatchsController {
 	

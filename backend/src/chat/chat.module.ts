@@ -2,17 +2,17 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'src/users/users.module';
-import { ChatController } from './chat.controller';
+import { ChannelController, ChannelsController } from './chat.controller';
 
 import { ChatGateway } from './chat.gateway';
 import { ChatService } from './chat.service';
 import { Channel, ChannelUser } from './entities/channel.entity';
-import { ChannelMessage, DirectMessage } from './entities/message.entity';
+import { ChatMessage } from './entities/message.entity';
 
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([ 
-			DirectMessage, ChannelMessage,
+			ChatMessage,
 			Channel, ChannelUser 
 		]),
 		JwtModule.register({
@@ -23,7 +23,7 @@ import { ChannelMessage, DirectMessage } from './entities/message.entity';
 		}),
 		UsersModule,
 	],
-	controllers: [ ChatController ],
+	controllers: [ ChannelController, ChannelsController ],
 	providers: [ ChatGateway, ChatService ],
 	exports: []
 })

@@ -1,6 +1,6 @@
 import { Controller, Put, UseGuards, 
 		Header, Delete, Param, Res } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
@@ -11,13 +11,14 @@ import { UserRole } from 'src/users/entities/roles.enum';
 import { UsersService } from 'src/users/users.service';
 
 @ApiTags('admin')
+@ApiCookieAuth()
+@UseGuards(AdminGuard)
 @Controller('admin')
 export class AdminController {
 
 	constructor(private readonly usersService: UsersService) {}
 
 	@Put('/ban/:login')
-	@UseGuards(AdminGuard)
 	@Header('Content-Type', 'application/json')
 	async banUser(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
@@ -35,7 +36,6 @@ export class AdminController {
 	}
 
 	@Delete('/ban/:login')
-	@UseGuards(AdminGuard)
 	@Header('Content-Type', 'application/json')
 	async unbanUser(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );

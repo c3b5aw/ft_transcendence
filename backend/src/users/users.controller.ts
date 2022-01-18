@@ -1,6 +1,6 @@
 import { Controller, Get, Put, Post, Delete,
 		UseGuards, Param, Res, Header, Req } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
@@ -21,6 +21,8 @@ import { UsersService } from './users.service';
 import { UserRole } from './entities/roles.enum';
 
 @ApiTags('users')
+@ApiCookieAuth()
+@UseGuards(JwtGuard)
 @Controller('users')
 export class UsersController {
 
@@ -31,7 +33,6 @@ export class UsersController {
 		private readonly matchService: MatchsService) {}
 
 	@Get()
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUsers(@Req() req: any) : Promise<User[]> {
 		const user: User = await this.usersService.findOneByID( req.user.id );
@@ -48,7 +49,6 @@ export class UsersController {
 	}
 
 	@Get('/:login')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUser(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
@@ -59,7 +59,6 @@ export class UsersController {
 	}
 
 	@Get('/:login/stats')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUserStats(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
@@ -73,7 +72,6 @@ export class UsersController {
 	}
 
 	@Get('/:login/matchs')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUserMatchs(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
@@ -85,7 +83,6 @@ export class UsersController {
 	}
 
 	@Get('/:login/avatar')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'image/jpg')
 	@Header('Content-Type', 'application/json')
 	async getUserAvatar(@Param('login') login: string, @Res() resp: Response) {
@@ -101,7 +98,6 @@ export class UsersController {
 	*/
 
 	@Get('/:login/achievements')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getUserAchievements(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
@@ -117,7 +113,6 @@ export class UsersController {
 	*/
 
 	@Get('/:login/friends')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async getFriend(@Param('login') login: string, @Res() resp: Response) {
 		const user: User = await this.usersService.findOneByLogin( login );
@@ -129,7 +124,6 @@ export class UsersController {
 	}
 
 	@Put('/:login/friend')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async acceptFriend(@Req() req: any, 
 						@Param('login') login: string, @Res() resp: Response) {
@@ -151,7 +145,6 @@ export class UsersController {
 	}
 
 	@Post('/:login/friend')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async addFriend(@Req() req: any,
 					@Param('login') login: string, @Res() resp: Response) {
@@ -169,7 +162,6 @@ export class UsersController {
 	}
 
 	@Delete('/:login/friend')
-	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	async removeFriend(@Req() req: any, @Param('login') login: string, 
 						@Res() resp: Response) {

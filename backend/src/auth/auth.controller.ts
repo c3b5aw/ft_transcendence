@@ -1,5 +1,5 @@
 import { Controller, Get, Header, Req, Res, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
@@ -13,10 +13,12 @@ export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
 	@Get('/login')
+	@ApiBasicAuth()
 	@UseGuards(Intra42Guard)
 	async login() {}
 
 	@Get('/status')
+	@ApiCookieAuth()
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	status(@Req() req: any, @Res() resp: Response) {
@@ -32,6 +34,7 @@ export class AuthController {
 	}
 
 	@Get('/42/callback')
+	@ApiBasicAuth()
 	@UseGuards(Intra42Guard)
 	async callback_42(@Req() req: any, @Res({ passthrough: true }) resp: Response) {
 		if (req.user) {

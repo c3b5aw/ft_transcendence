@@ -1,8 +1,13 @@
 import { IsString, MinLength, MaxLength } from 'class-validator';
 
-export class PostDisplayNameDto {
+export class CreateChannelDto {
 	@IsString()
 	@MinLength(3)
 	@MaxLength(64)
-	display_name: string;
+	name: string;
+
+	@IsString()
+	@MinLength(0)
+	@MaxLength(64)
+	password: string;
 }
