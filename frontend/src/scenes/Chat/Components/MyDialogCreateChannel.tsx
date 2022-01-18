@@ -1,14 +1,22 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
-import React from "react";
+import React, { SetStateAction, useState } from "react";
 import { ISearchBar, User } from "../../../services/Interface/Interface";
 import MySearchBarChat from "./MySearchBarChat";
 import CloseIcon from '@mui/icons-material/Close';
+import axios from "axios";
+import { api, apiChannel } from "../../../services/Api/Api";
+import MySnackBar from "../../../components/MySnackbar";
 
-function MyDialog(props: {users: User[]}) {
+function MyDialogCreateChannel(props: {users: User[]}) {
 
     const { users } = props;
     const [open, setOpen] = React.useState(true);
-	const [addFriends, setAddFriends] = React.useState<User[]>([]);
+	const [addFriends, setAddFriends] = useState<User[]>([]);
+
+	const [nameChannel, setNameChannel] = useState<string>("");
+	const [passwordChannel, setPasswordChannel] = useState<string>("");
+
+	const [error, setError] = useState<string>("");
 
 	function handleClickCell(user: User) {
 		const tmp = addFriends.filter(item => item.login === user.login)
@@ -24,6 +32,30 @@ function MyDialog(props: {users: User[]}) {
 	const handleClose = () => {
 		setOpen(false);
 	};
+
+	const handleCreate = async () => {
+		// await axios.post(`${api}${apiChannel}`, {
+		// 	name: nameChannel,
+		// 	password: passwordChannel
+		// })
+		if (nameChannel.length > 3 && nameChannel.length < 64) {
+			console.log(nameChannel);
+			console.log(passwordChannel);
+		}
+		else
+		{
+			setError("Le nom du channel doit contenir au moins 3 caractères");
+		}
+	};
+
+	const  handleTextChangeName = async (event: { target: { value: SetStateAction<string>; }; }) => {
+		setNameChannel(event.target.value);
+	};
+
+	const  handleTextChangePassword = async (event: { target: { value: SetStateAction<string>; }; }) => {
+		setPasswordChannel(event.target.value);
+	};
+
     const fSearchBar: ISearchBar = {
 		handleClickCell: handleClickCell
 	}
@@ -61,6 +93,7 @@ function MyDialog(props: {users: User[]}) {
 					type="text"
 					fullWidth
 					variant="standard"
+					onChange={handleTextChangeName}
 				/>
 				<TextField
 					autoFocus
@@ -70,16 +103,18 @@ function MyDialog(props: {users: User[]}) {
 					type="password"
 					fullWidth
 					variant="standard"
+					onChange={handleTextChangePassword}
 				/>
 				<div style={{marginTop: 10}}></div>
 				<MySearchBarChat users={users} fSearchBar={fSearchBar} />
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose}>Cancel</Button>
-				<Button onClick={handleClose}>Create</Button>
+				<Button onClick={handleCreate}>Create</Button>
 			</DialogActions>
+			{error !== "" ? <MySnackBar message={`${error}`} severity="error" time={3000} setError={setError}/> : null}
 		</Dialog>
-    );
+	);
 }
 
-export default MyDialog;
+export default MyDialogCreateChannel;

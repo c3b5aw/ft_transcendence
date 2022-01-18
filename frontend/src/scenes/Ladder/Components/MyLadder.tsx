@@ -95,8 +95,8 @@ function Row(props: { user: User, me: User}) {
 				</Table>
 				</Box>
 				{error !== "" ?
-					<MySnackBar message={`${error}`} severity="error" time={10000}/> :
-					<MySnackBar message={`Données matchs ${user.login} chargées`} severity="success" time={2000}/>
+					<MySnackBar message={`${error}`} severity="error" time={10000} setError={setError}/> :
+					<MySnackBar message={`Données matchs ${user.login} chargées`} severity="success" time={2000} setError={setError}/>
 				}
 			</Collapse>
 			</TableCell>
@@ -151,7 +151,7 @@ export default function MyLadder(props: {me: User}) {
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<MySnackBar message={`Données classement chargées`} severity="success" time={2000}/>
+			<MySnackBar message={`Données classement chargées`} severity="success" time={2000} setError={setError}/>
 		</Stack>
 	);
 }

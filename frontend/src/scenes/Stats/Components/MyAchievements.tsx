@@ -4,10 +4,12 @@ import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MySnackBar from "../../../components/MySnackbar";
 import useAchievements from "../Services/useAchievements";
 import { User } from "../../../services/Interface/Interface";
+import { useState } from "react";
 
 const MyAchievements = (props: {user: User}) => {
 	const { user } = props;
 	const achievements = useAchievements(user);
+	const [error, setError] = useState<string>("Les données des achievements ont été chargées");
 
 	// eslint-disable-next-line eqeqeq
 	if (achievements == undefined)
@@ -46,7 +48,7 @@ const MyAchievements = (props: {user: User}) => {
 					</List> : null
 				}
 			</Paper>
-			<MySnackBar message="Données achievements chargées" severity="success" time={4000}/>
+			<MySnackBar message={`${error}`} severity="success" time={4000} setError={setError}/>
 		</Stack>
 	);
 }

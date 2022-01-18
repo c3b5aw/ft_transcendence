@@ -41,6 +41,7 @@ function MyListFriends(props : {me: User | undefined, url: string}) {
 			</Stack>
 		);
 	}
+	console.log(friends);
 	return (
         <Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
 			<Stack sx={{width: 1, height: 1}} direction="column">
@@ -49,7 +50,7 @@ function MyListFriends(props : {me: User | undefined, url: string}) {
 						{friends.length > 0 ?
 						<List>
 							{friends.map(friend => (
-								<div key={friend.id}>
+								<div key={friend.user_id}>
 									<ListItem component="div" disablePadding>
 										<ListItemButton onClick={() => handleClick(friend.user_login)}>
 											<Stack direction="row" alignItems="center" sx={{width: 1}}>

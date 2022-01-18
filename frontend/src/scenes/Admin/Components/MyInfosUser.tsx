@@ -11,7 +11,7 @@ import { api, apiAdmin, apiBan, apiStats } from "../../../services/Api/Api";
 import { useState } from 'react';
 import { User } from '../../../services/Interface/Interface';
 import { Avatar, Stack, Switch } from '@mui/material';
-import { ROLE, rolesArray } from '../../../services/Api/Role';
+import { ROLE } from '../../../services/Api/Role';
 
 export default function MyInfosUser(props: {me: User | undefined, users: User[]}) {
 
@@ -54,7 +54,7 @@ export default function MyInfosUser(props: {me: User | undefined, users: User[]}
 				</Avatar>
 			</TableCell>
 			<TableCell onClick={() => navigate(`${apiStats}/${user.login}`)} component="th" scope="row">{user.id}</TableCell>
-			<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{user.login} ({rolesArray[user.role]})</TableCell>
+			<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{user.login} ({user.role})</TableCell>
 			<TableCell align="center">{user.victories}</TableCell>
 			<TableCell align="center">
 				{user.role !== ROLE.ADMIN ?

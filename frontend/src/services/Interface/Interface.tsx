@@ -1,3 +1,5 @@
+import { ROLE } from "../Api/Role";
+
 export interface User {
 	banned: boolean
 	connected: boolean
@@ -10,7 +12,7 @@ export interface User {
 	lastLogin: string
 	login: string
 	played: number
-	role: number
+	role: ROLE
 	rank: number
 	victories: number
 }
@@ -36,12 +38,6 @@ export interface Achievements {
 	unlocked_at: string
 }
 
-export interface Message {
-	id: number
-	description: string
-	to: string
-}
-
 export interface Friends {
 	id: number
 	user_id: number
@@ -49,11 +45,6 @@ export interface Friends {
 	friend_id: number
 	friend_login: string
 	status: number
-}
-
-export interface Channel {
-	id: number
-	name: string
 }
 
 export interface ISearchBar {

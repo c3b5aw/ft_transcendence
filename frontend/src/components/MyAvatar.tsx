@@ -1,5 +1,4 @@
 import { Avatar, Stack } from "@mui/material";
-import { rolesArray } from "../services/Api/Role";
 import { User } from "../services/Interface/Interface";
 
 function MyAvatar(props: {user: User}) {
@@ -12,7 +11,7 @@ function MyAvatar(props: {user: User}) {
                 src={`http://127.0.0.1/api/users/${user.login}/avatar`}
                 sx={{ width: "126px", height: "126px" }}>
             </Avatar>
-            <h2>{user.login} ({rolesArray[user.role]})</h2>
+            <h2>{user.login} ({user.role})</h2>
             <h3 style={{ color: 'grey' }}>{event?.toDateString()}</h3>
         </Stack>
 	);

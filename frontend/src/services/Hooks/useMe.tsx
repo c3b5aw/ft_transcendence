@@ -11,8 +11,9 @@ function useMe() {
 			try {
 				const reponse = await axios.get(`${api}${apiMe}`);
 				setMe(reponse.data);
+				console.log(reponse.data);
 			} catch (err) {
-				// console.log(err);
+				console.log(err);
 			}
 		}
 		fetchMe();

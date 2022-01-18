@@ -128,9 +128,9 @@ const Stats = () => {
 				</Stack>
 				<MyHistory user={user}/>
 			</Stack>
-			{error !== "" ? <MySnackBar message={`${error}`} severity="error" time={2000}/> : successAdd === true ?
-			<MySnackBar message={`Demande d'ami envoyée`} severity="success" time={2000}/> : successDelete === true ? 
-			<MySnackBar message={`Suppression ami recu`} severity="success" time={2000}/> : null
+			{error !== "" ? <MySnackBar message={`${error}`} severity="error" time={2000} setError={setError}/> : successAdd === true ?
+			<MySnackBar message={`Demande d'ami envoyée`} severity="success" time={2000} setError={setError}/> : successDelete === true ? 
+			<MySnackBar message={`Suppression ami recu`} severity="success" time={2000} setError={setError}/> : null
 			}
 		</Stack>
 	);

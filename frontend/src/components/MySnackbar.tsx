@@ -7,14 +7,14 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props,
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function MySnackBar(props: {message: string, severity: AlertColor, time: number}) {
-	const { message, severity, time } = props;
+function MySnackBar(props: {message: string, severity: AlertColor, time: number, setError: React.Dispatch<React.SetStateAction<string>>}) {
+	const { message, severity, time, setError } = props;
 	const [open, setOpen] = React.useState(true);
 
 	const handleClose = (event?: React.SyntheticEvent | Event) => {
 		setOpen(false);
+		setError("");
 	};
-
 	return (
 		<Stack spacing={2} sx={{ width: '100%', position: "absolute" }}>
 			<Snackbar open={open} autoHideDuration={time} onClose={handleClose}>

@@ -10,7 +10,6 @@ import MyFooter from "../../../components/MyFooter";
 import { styleTextField } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyError from "../../../components/MyError";
-import { rolesArray } from "../../../services/Api/Role";
 import MySnackBar from "../../../components/MySnackbar";
 import { styleStack, sxButton } from "../Services/style";
 
@@ -43,7 +42,7 @@ const Settings = () => {
 
 	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
 		setNewDisplayTmp(event.target.value);
-    };
+	};
 
 	async function handleSendNewDisplayName() {
 		if (new_displayTmp.length > 3) {
@@ -70,7 +69,7 @@ const Settings = () => {
 	return (
 		<Stack direction="row" sx={{width: "100%", height: "100vh"}}>
 			{ error !== "" ?
-				<MySnackBar message={`${error}`} severity="error" time={2000}/> : null
+				<MySnackBar message={`${error}`} severity="error" time={2000} setError={setError}/> : null
 			}
 			<Stack direction="column" sx={{width: 0.97, height: 1}} justifyContent="center" alignItems="center">
 				<Stack sx={{ width: 1, height: 1/6, marginLeft: 10}} direction="row" alignItems="center" spacing={3}>
@@ -81,7 +80,7 @@ const Settings = () => {
 						</Avatar>
 						<h3 style={{ color: 'grey' }}>{event?.toDateString()}</h3>
 					</Stack>
-					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>{me.display_name} ({rolesArray[me.role]})</h1>
+					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>{me.display_name} ({me.role})</h1>
 				</Stack>
 				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
 					<AddPhotoAlternateIcon sx={{ fontSize: 55 }} />
