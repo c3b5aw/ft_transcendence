@@ -11,8 +11,9 @@ import { User } from 'src/users/entities/user.entity';
 import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
 import { UserRole } from 'src/users/entities/roles.enum';
-import { UserModerateChannel } from './dto/userModerateChannel.interface';
+import { ModerationFlow } from './dto/moderationFlow.class';
 import { FriendStatus } from 'src/friends/entities/status.enum';
+import { RequestError } from './dto/errors.enum';
 
 @Injectable()
 export class ChatService {
@@ -110,6 +111,17 @@ export class ChatService {
 		);
 	}
 
+	async setUserChannelModerator(userID: number, channelID: number, bool: boolean): Promise<void> {
+		const joined: boolean = await this.isUserInChannel(userID, channelID);
+		if (!joined)
+			return;
+
+		await this.userChannelRepository.update(
+			{ user_id: userID, channel_id: channelID },
+			{ role: bool ? UserRole.MODERATOR : UserRole.MEMBER },
+		);
+	}
+
 	async kickUserFromChannel(userID: number, channelID: number): Promise<void> {
 		const user = await this.userChannelRepository.findOne({
 			where: { user_id: userID, channel_id: channelID },
@@ -132,10 +144,10 @@ export class ChatService {
 		);
 	}
 
-	async userModerateChannel(reqUserId: number, targetLogin: string,
+	async moderationFlow(reqUserId: number, targetLogin: string,
 								channelName: string, resp: Response)
-							: Promise<UserModerateChannel> {
-		let ret: UserModerateChannel = {
+							: Promise<ModerationFlow> {
+		let ret: ModerationFlow = {
 			err: true,
 			target: null,
 			role: null,
@@ -144,26 +156,26 @@ export class ChatService {
 		
 		ret.channel = await this.findOneChannelByName(channelName);
 		if (!ret.channel) {
-			resp.status(404).json({ error: 'channel not found' });
+			resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 			return ret;
 		}
 
 		ret.role = await this.getUserRoleInChannel(reqUserId, ret.channel.id);
 		if (ret.role !== UserRole.MODERATOR && ret.role !== UserRole.ADMIN) {
-			resp.status(403).json({ error: 'not enough permissions' });
+			resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 			return ret;
 		}
 
 		ret.target = await this.usersService.findOneByLogin(targetLogin);
 		if (!ret.target) {
-			resp.status(404).json({ error: 'user not found' });
+			resp.status(404).json({ error: RequestError.USER_NOT_FOUND });
 			return ret;
 		}
 
 		const joined: boolean = await this.isUserInChannel(
 				ret.target.id, ret.channel.id);
 		if (!joined) {
-			resp.status(404).json({ error: 'user not in channel' });
+			resp.status(404).json({ error: RequestError.USER_NOT_IN_CHANNEL });
 			return ret;
 		}
 
@@ -207,6 +219,16 @@ export class ChatService {
 			)
 			ORDER BY chat.timestamp ASC
 		`);
+	}
+
+	async getChannelUsers(channelID: number): Promise<ChannelUser[]> {
+		return this.userChannelRepository.query(`
+			SELECT channel.user_id, channel.banned, channel.muted, channel.role, 
+					users.login, users.connected
+			FROM channels_users as channel
+			INNER JOIN users ON channel.user_id = users.id
+			WHERE channel_id = ${channelID}
+		`)
 	}
 
 	async getUserRoleInChannel(userID: number, channelID: number): Promise<UserRole> {
