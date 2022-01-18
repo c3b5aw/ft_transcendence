@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 
-import { pageAdmin, pageChat, pageClassement, pageHome, pageSettings, pageStats } from './services/Api/RoutePage';
+import { pageAdmin, pageChat, pageClassement, pageHome, pageSettings, pageStats } from './services/Routes/RoutePage';
 import "./scenes/App.css";
 import PrivateRoute from './services/Routes/PrivateRoute';
 import Stats from './scenes/Stats/View/Stats';

@@ -9,7 +9,7 @@ import axios from 'axios';
 // function Row(props: { row: UserProps }) {
 
 
-function MyList(props : {me: User | undefined, url: string}) {
+function MyListFriends(props : {me: User | undefined, url: string}) {
 	const { me } = props;
 	const { url } = props
 	const [friends, setFriends] = useState<Friends[]>([]);
@@ -82,4 +82,4 @@ function MyList(props : {me: User | undefined, url: string}) {
     );
 }
 
-export default MyList;
+export default MyListFriends;

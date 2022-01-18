@@ -1,19 +1,31 @@
 import { Avatar, Button, FormControl, IconButton, List, ListItem, Paper, Stack, TextField } from '@mui/material';
-import { useState } from 'react';
-import MyList from '../Components/MyList';
+import { useEffect, useRef, useState } from 'react';
+import MyList from '../Components/MyListFriends';
 import { api, apiFriends, apiUsers } from '../../../services/Api/Api';
 import SendIcon from '@mui/icons-material/Send';
 import { styleTextField } from '../../../styles/Styles';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import MyCreateChannel from '../Components/MyCreateChannel';
 import useMe from '../../../services/Hooks/useMe';
+import MyListChannels from '../Components/MyListChannels';
 
 function Chat() {
 	const me = useMe();
 	// const [channels, setChannels] = useState<Channel[]>([]);
 	const [open, setOpen] = useState<boolean>();
+	const messageEl = useRef<HTMLDivElement>(null);
 
 	const classes = styleTextField()
+
+	useEffect(() => {
+		const node = messageEl.current;
+		if (node) {
+			node.scrollIntoView({
+				behavior: "auto",
+				block: "end",
+			});
+		}
+	  }, [me])
 
 	const test: string[] = [
 		"jfirjifjijrifjrijfr1",
@@ -49,6 +61,30 @@ function Chat() {
 		"7jfirjifjijrifjrijfr666",
 		"8jfirjifjijrifjrijfr666",
 		"9jfirjifjijrifjrijfr666",
+		"94jfirjifjijrifjrijfr666",
+		"9jfi55rjifjijrifjrijfr666",
+		"9jfir67jifjijrifjrijfr666",
+		"9jfirjif8jijrifjrijfr666",
+		"9jfirjifj5w5ijrifjrijfr666",
+		"9jfirjif5w5tgjijrifjrijfr666",
+		"9jfirjifjigrjrifjrijfr666",
+		"9jfirjifjgijrifjrijfr666",
+		"9jfirjifjijrggrifjrijfr666",
+		"9jfirjifjijaarifjrijfr666",
+		"9jfirjifjijuiirifjrijfr666",
+		"9jfirjifjij0hyrifjrijfr666",
+		"9jfirjifjij90rifjrijfr666",
+		"9jfirjifjiojrifjrijfr666",
+		"9jfirjifji0-ejrifjrijfr666",
+		"9jfirjifjijrifwjrijfr666",
+		"9jfirjifjijrtthifjrijfr666",
+		"9jfirjifjtitrhq4jrifjrijfr666",
+		"9jfirjifjijtshrifjrijfr666",
+		"9jfirjifjijsta4rifjrijfr666",
+		"9jfirjifjtijreata4ifjrijfr666",
+		"9jfirjifjijri67fjrijfr666",
+		"9jfirjifjijri7u7uwfjrijfr666",
+		"9jfirjifjijriww5fjrijfr666",
 	]
 
 	const buttonStyle = {
@@ -69,17 +105,6 @@ function Chat() {
 		setOpen(!open);
 	}
 
-	// useEffect(() => {
-	// 	const fetchChannel = async () => {
-	// 		try {
-	// 			const reponse = await axios.get(`${api}${apiChat}${apiChannels}`);
-	// 			setChannels(reponse.data);
-	// 		} catch (err) {
-	// 			console.log(err);
-	// 		}
-	// 	}
-	// 	fetchChannel();
-	// }, [])
 	// eslint-disable-next-line eqeqeq
 	if (me == undefined)
 		return (<MyChargingDataAlert />);
@@ -98,7 +123,7 @@ function Chat() {
 				<Stack direction="column" sx={{width: 2/12, height: 1}}>
 					<Stack direction="column" sx={{width: 1, height: 0.9}}>
 						{/* get channels */}
-						<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/>
+						<MyListChannels me={me}/>
 					</Stack>
 					<Stack direction="column" sx={{width: 1, height: 0.1}} alignItems="center" justifyContent="center">
 						<Button sx={buttonStyle} onClick={() => handleCreateChannel()}>Create new channel</Button>
@@ -109,7 +134,8 @@ function Chat() {
 					<Stack direction="column" sx={{width: 1, height: 0.91}}>
 						<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#304649"}} elevation={0}>
 							{test.length > 0 ?
-							<List>
+							<div ref={messageEl}>
+								<List >
 								{test.map(friend => (
 									<div key={friend}>
 										<ListItem component="div" sx={{marginBottom: 2}}>
@@ -132,9 +158,10 @@ function Chat() {
 										</ListItem>
 									</div>
 								))}
-							</List> : null
+							</List>
+							</div> : null
 							}
-					</Paper>
+						</Paper>
 					</Stack>
 					<Stack direction="row" sx={{width: 1, height: 0.09, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
 						<FormControl sx={{ width: 0.95, marginLeft: 4}}>

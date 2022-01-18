@@ -1,7 +1,9 @@
 export enum ROLE {
-	MEMBER = 0,
-	MODERATOR = 1,
-	ADMIN = 2,
+	NONE = 0,
+	BANNED = 1,
+	MEMBER = 2,
+	MODERATOR = 3,
+	ADMIN = 4,
 }
 
-export const rolesArray = ["MEMBER", "MODERATOR", "ADMIN"];
+export const rolesArray = ["NONE", "BANNED", "MEMBER", "MODERATOR", "ADMIN"];
