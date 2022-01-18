@@ -1,7 +1,7 @@
 export enum UserRole {
-	NONE = 0,
-	BANNED,
-	MEMBER,
-	MODERATOR,
-	ADMIN,
+	NONE = 'NONE',
+	BANNED = 'BANNED',
+	MEMBER = 'MEMBER',
+	MODERATOR = 'MODERATOR',
+	ADMIN = 'ADMIN',
 }
