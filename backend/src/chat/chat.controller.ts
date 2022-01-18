@@ -50,7 +50,7 @@ export class ChannelController {
 	@ApiOperation({ summary: 'Get channel informations' })
 	async getChannel(@Param('channelName') channelName: string, @Res() resp: Response)
 	{
-		const channel: Channel = await this.chatService.findOneChannelByName( channelName );
+		const channel: Channel = await this.chatService.findChannelByName( channelName );
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
@@ -63,7 +63,7 @@ export class ChannelController {
 	async deleteChannel(@Param('channelName') channelName: string,
 						@Req() req: any, @Res() resp: Response)
 	{
-		const channel: Channel = await this.chatService.findOneChannelByName(channelName);
+		const channel: Channel = await this.chatService.findChannelByName(channelName);
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
@@ -80,7 +80,7 @@ export class ChannelController {
 	async getChannelMessages(@Param('channelName') channelName: string,
 							@Req() req: any, @Res() resp: Response)						
 	{
-		const channel: Channel = await this.chatService.findOneChannelByName(channelName);
+		const channel: Channel = await this.chatService.findChannelByName(channelName);
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
@@ -98,7 +98,7 @@ export class ChannelController {
 	async getChannelUsers(@Param('channelName') channelName: string,
 							@Req() req: any, @Res() resp: Response)
 	{
-		const channel: Channel = await this.chatService.findOneChannelByName(channelName);
+		const channel: Channel = await this.chatService.findChannelByName(channelName);
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
@@ -118,7 +118,7 @@ export class ChannelController {
 								@Body() data: UpdateChannelPasswordDto,
 								@Req() req: any, @Res() resp: Response)
 	{
-		const channel: Channel = await this.chatService.findOneChannelByName(channelName);
+		const channel: Channel = await this.chatService.findChannelByName(channelName);
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
@@ -141,7 +141,7 @@ export class ChannelController {
 	async deleteChannelPassword(@Param('channelName') channelName: string,
 								@Req() req: any, @Res() resp: Response)
 	{
-		const channel: Channel = await this.chatService.findOneChannelByName(channelName);
+		const channel: Channel = await this.chatService.findChannelByName(channelName);
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 

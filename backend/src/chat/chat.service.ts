@@ -38,16 +38,16 @@ export class ChatService {
 		LOG IN/OUT FLOW
 	*/
 
-	async wsLogin(client: Socket): Promise<boolean> {
+	async wsLogin(client: Socket): Promise<number> {
 		/* Find cookie */
 		if ( !client.handshake.headers.hasOwnProperty('cookie')
 		|| !client.handshake.headers.cookie)
-			return false;
+			return 0;
 
 		const cookies = client.handshake.headers.cookie;
 		const cookie = cookies.split(';').find( c => c.trim().startsWith('access_token='));
 		if (!cookie)
-			return false;
+			return 0;
 
 		/* Verify token from cookie */
 		const accessToken = cookie.split('=')[1];
@@ -58,7 +58,7 @@ export class ChatService {
 		/* Get User from DB */
 		const user: User = await this.usersService.findOneByID( payload.sub );
 		if (!user || user.banned)
-			return false;
+			return 0;
 
 		/* Update user connected */
 		await this.usersService.updateUserConnect(user, true);
@@ -66,7 +66,7 @@ export class ChatService {
 		/* Add client to global clients */
 		global.clients[client.id] = user.id;
 
-		return true;
+		return user.id;
 	}
 
 	async wsLogout(client: Socket) {
@@ -154,7 +154,7 @@ export class ChatService {
 			channel: null,
 		}
 		
-		ret.channel = await this.findOneChannelByName(channelName);
+		ret.channel = await this.findChannelByName(channelName);
 		if (!ret.channel) {
 			resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 			return ret;
@@ -181,6 +181,14 @@ export class ChatService {
 
 		ret.err = false;
 		return ret;
+	}
+
+	/*
+		WS FLOW
+	*/
+
+	async wsJoinChannel(data: any, client: Socket) {
+
 	}
 
 	/*
@@ -243,11 +251,25 @@ export class ChatService {
 		return user ? user.role : null;
 	}
 
+	async getUserChannels(userID: number) {
+		return this.userChannelRepository.find({
+			where: { user_id: userID },
+		});
+	}
+
+	async getChannelPasswordHash(channelID: number): Promise<string> {
+		const channel = await this.channelsRepository.findOne(channelID);
+		if (!channel)
+			return undefined;
+		return channel.password;
+	}
+		
+
 	/*
 		FINDER
 	*/
 
-	async findOneChannelByName(name: string): Promise<Channel> {
+	async findChannelByName(name: string): Promise<Channel> {
 		return this.channelsRepository.findOne({
 			where: { name: name },
 			select: [ 'id', 'name', 'private', 'tunnel' ],
