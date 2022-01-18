@@ -5,7 +5,7 @@
 -- Dumped from database version 11.14
 -- Dumped by pg_dump version 11.14
 
--- Started on 2022-01-18 10:39:10 UTC
+-- Started on 2022-01-18 11:00:50 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -521,6 +521,12 @@ COPY public.chat_messages (id, user_id, channel_id, announcement, content, "time
 6	77558	3	f	this is my private channel	2022-01-18 11:36:51.152673
 7	0	4	t	sbeaujar has joined this channel!	2022-01-17 11:36:51.152673
 8	0	3	t	eoliveir has joined this channel!	2022-01-17 11:36:51.152673
+9	73316	1	f	Helllo this is jtrauque	2022-01-18 11:45:03.866753
+10	77460	1	f	Hello this is nbascaul	2022-01-18 11:45:03.866753
+11	0	1	t	sbeaujar has joined this channel!	2022-01-18 10:45:03.866753
+12	0	1	t	nbascaul has joined this channel!	2022-01-18 10:45:03.866753
+13	0	1	t	eoliveir has joined this channel!	2022-01-18 10:45:03.866753
+14	0	1	t	jtrauque has joined this channel!	2022-01-18 10:45:03.866753
 \.
 
 
@@ -568,6 +574,7 @@ COPY public.users (id, login, display_name, email, role, banned, two_factor_auth
 77558	eoliveir	eoliveir	eoliveir@student.42.fr	4	f	f	\N	1205	5	2	3	f	2022-01-18 11:10:03.649744	2022-01-18 11:10:03.649744
 83781	sbeaujar	sbeaujar	sbeaujar@student.42.fr	4	f	f	\N	1210	5	2	3	f	2022-01-18 11:10:03.649744	2022-01-18 11:10:03.649744
 73316	jtrauque	jtrauque	jtrauque@student.42.fr	3	f	f	\N	1230	5	5	0	f	2022-01-18 11:10:03.649744	2022-01-18 11:10:03.649744
+0	SYSTEM-BOT	SYSTEM-BOT	bot@ft_transcendence.42.fr	4	f	f	\N	1200	0	0	0	f	2022-01-18 11:56:00.523224	2022-01-18 11:56:00.523224
 \.
 
 
@@ -620,7 +627,7 @@ SELECT pg_catalog.setval('public.channels_users_id_seq', 10, true);
 -- Name: chat_messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ft_root
 --
 
-SELECT pg_catalog.setval('public.chat_messages_id_seq', 8, true);
+SELECT pg_catalog.setval('public.chat_messages_id_seq', 14, true);
 
 
 --
@@ -779,7 +786,7 @@ GRANT ALL ON SCHEMA public TO ft_root;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2022-01-18 10:39:11 UTC
+-- Completed on 2022-01-18 11:00:51 UTC
 
 --
 -- PostgreSQL database dump complete

@@ -195,9 +195,9 @@ export class ChatService {
 		return getManager().query(`
 			SELECT chat.*, users.login
 			FROM chat_messages as chat
-			INNER JOIN users on chat.user_id = users.id
+			INNER JOIN users ON chat.user_id = users.id
 			WHERE channel_id = ${channelID}
-			ORDER BY chat.id ASC
+			ORDER BY chat.timestamp ASC
 		`);
 	}
 
