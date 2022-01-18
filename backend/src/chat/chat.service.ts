@@ -193,10 +193,11 @@ export class ChatService {
 	async getChannelMessages(channelID: number): Promise<any> {
 		// ToDo: manage blocked users in messages using nested select + not IN
 		return getManager().query(`
-			SELECT chat.*, user.login
+			SELECT chat.*, users.login
 			FROM chat_messages as chat
-			INNER JOIN users AS u on chat.user_id = user.id
+			INNER JOIN users on chat.user_id = users.id
 			WHERE channel_id = ${channelID}
+			ORDER BY chat.id ASC
 		`);
 	}
 
