@@ -331,7 +331,7 @@ export class ChatService {
 	async getChannels(): Promise<Channel[]> {
 		return this.channelsRepository.find({
 			where: { tunnel: false },
-			select: [ 'id', 'name', 'private' ],
+			select: [ 'id', 'name', 'private', 'owner_id' ],
 		});
 	}
 
