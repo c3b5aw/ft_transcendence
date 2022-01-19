@@ -331,7 +331,7 @@ export class ChatService {
 	async getChannels(): Promise<Channel[]> {
 		return this.channelsRepository.find({
 			where: { tunnel: false },
-			select: [ 'id', 'name', 'private' ],
+			select: [ 'id', 'name', 'private', 'owner_id' ],
 		});
 	}
 
@@ -409,6 +409,11 @@ export class ChatService {
 	async updateChannelPassword(channel: Channel): Promise<Channel> {
 		if (channel.private)
 			channel.password = createHash('md5').update(channel.password).digest('hex');
+		return this.channelsRepository.save(channel);
+	}
+
+	async updateChannelName(channel: Channel, name: string): Promise<Channel> {
+		channel.name = name;
 		return this.channelsRepository.save(channel);
 	}
 
