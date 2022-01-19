@@ -363,6 +363,19 @@ export class ChatService {
 		`)
 	}
 
+	async getChannelModerators(channelID: number): Promise<ChannelUser[]> {
+		return this.userChannelRepository.query(`
+			SELECT channel.user_id as id, channel.muted, channel.role, 
+					users.login, users.connected
+			FROM channels_users as channel
+			INNER JOIN users ON channel.user_id = users.id
+			WHERE channel_id = ${channelID} AND (
+				channel.role = '${UserRole.MODERATOR}' OR 
+				channel.role = '${UserRole.ADMIN}'
+			)
+		`)
+	}
+
 	async getUserRoleInChannel(userID: number, channelID: number): Promise<UserRole> {
 		const user = await this.userChannelRepository.findOne({
 			where: { user_id: userID, channel_id: channelID },
