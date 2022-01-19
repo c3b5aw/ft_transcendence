@@ -412,6 +412,11 @@ export class ChatService {
 		return this.channelsRepository.save(channel);
 	}
 
+	async updateChannelName(channel: Channel, name: string): Promise<Channel> {
+		channel.name = name;
+		return this.channelsRepository.save(channel);
+	}
+
 	/*
 		CREATER
 	*/

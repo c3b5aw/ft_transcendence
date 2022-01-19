@@ -11,6 +11,7 @@ import { ChatService } from './chat.service';
 import { Channel } from './entities/channel.entity';
 
 import { CreateChannelDto } from './dto/createChannel.dto';
+import { UpdateChannelNameDto } from './dto/updateChannelName.dto';
 import { UpdateChannelPasswordDto } from './dto/updateChannelPassword.dto';
 import { ModerationFlow } from './dto/moderationFlow.interface';
 import { RequestError } from './dto/errors.enum';
@@ -111,6 +112,24 @@ export class ChannelController {
 	}
 
 	/* PWD - OWNER ONLY*/
+	@Post('/:channelName/name')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Update channel name' })
+	async updateChannelName(@Param('channelName') channelName: string,
+							@Body() data: UpdateChannelNameDto,
+							@Req() req: any, @Res() resp: Response)
+	{
+		const channel: Channel = await this.chatService.findChannelByName(channelName);
+		if (!channel)
+			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
+
+		if (channel.owner_id !== req.user_id)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
+		await this.chatService.updateChannelName(channel, data.name);
+		resp.send({ message: 'channel name updated' });
+	}
+
 	@Post('/:channelName/password')
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Update channel password' })
