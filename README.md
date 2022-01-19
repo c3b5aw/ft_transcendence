@@ -10,7 +10,6 @@
 - [@eoliveir](https://github.com/Razgouls)
 - [@jtrauque](https://github.com/jtrauque)
 - [@c3b5aw](https://www.github.com/c3b5aw)
-- [@nbascaul]()
 
 ## Tech Stack
 
