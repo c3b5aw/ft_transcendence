@@ -32,12 +32,6 @@ export class ChannelUser {
 	@Column({ type: 'enum', enum: UserRole, default: UserRole.MEMBER, nullable: false })
 	role: UserRole;
 
-<<<<<<< HEAD
-	@Column({ type: 'boolean', default: false, nullable: false })
-	banned: boolean;
-
-=======
->>>>>>> origin/main
 	@CreateDateColumn({ update: false, default: 0, nullable: false  })
 	muted: Date;
 

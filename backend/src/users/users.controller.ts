@@ -1,10 +1,6 @@
 import { Controller, Get, Put, Post, Delete,
 		UseGuards, Param, Res, Header, Req } from '@nestjs/common';
-<<<<<<< HEAD
-import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
-=======
 import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
->>>>>>> origin/main
 
 import { Response } from 'express';
 
@@ -38,10 +34,7 @@ export class UsersController {
 
 	@Get()
 	@Header('Content-Type', 'application/json')
-<<<<<<< HEAD
-=======
 	@ApiOperation({ summary: 'Get all users' })
->>>>>>> origin/main
 	async getUsers(@Req() req: any) : Promise<User[]> {
 		const user: User = await this.usersService.findOneByID( req.user.id );
 		
@@ -137,11 +130,7 @@ export class UsersController {
 		resp.send(friends);
 	}
 
-<<<<<<< HEAD
-	@Put('/:login/friend')
-=======
 	@Get('/:login/friend')
->>>>>>> origin/main
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Accepted user pending friend request' })
 	async acceptFriend(@Req() req: any, 
@@ -163,11 +152,7 @@ export class UsersController {
 		resp.json({ message: 'friendship accepted' });
 	}
 
-<<<<<<< HEAD
-	@Post('/:login/friend')
-=======
 	@Put('/:login/friend')
->>>>>>> origin/main
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Send user a friend request' })
 	async addFriend(@Req() req: any,

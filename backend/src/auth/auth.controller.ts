@@ -1,9 +1,5 @@
 import { Controller, Get, Header, Req, Res, UseGuards } from '@nestjs/common';
-<<<<<<< HEAD
-import { ApiBasicAuth, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
-=======
 import { ApiBasicAuth, ApiCookieAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
->>>>>>> origin/main
 import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';

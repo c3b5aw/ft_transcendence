@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom';
 import MyAchievements from '../Components/MyAchievements';
 import MyHistory from '../Components/MyHistory';
 import { api, apiUsers } from '../../../services/Api/Api';
-import { Friends } from '../../../services/Interface/Interface';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
@@ -17,6 +16,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
 import { sxButton, sxDiv } from '../Services/style';
+import { Friends } from '../../../services/Interface/Interface';
 
 const Stats = () => {
 	const { login } = useParams();

@@ -4,8 +4,6 @@ export enum RequestError {
 	CHANNEL_NOT_FOUND = 'channel not found',
 	CHANNEL_ALREADY_EXIST = 'channel already exist',
 	NOT_ENOUGH_PERMISSIONS = 'not enough permissions',
-<<<<<<< HEAD
-=======
 }
 
 export enum WsError {
@@ -22,5 +20,4 @@ export enum WsError {
 	USER_NOT_IN_CHANNEL = 'user not in channel',
 	USER_BANNED = 'user banned',
 	USER_MUTED = 'user muted',
->>>>>>> origin/main
 }

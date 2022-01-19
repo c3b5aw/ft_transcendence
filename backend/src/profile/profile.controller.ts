@@ -1,10 +1,6 @@
 import { Body, Controller, Get, Header, Param, Post, Req, Res,
 		UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-<<<<<<< HEAD
-import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
-=======
 import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
->>>>>>> origin/main
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 

@@ -5,25 +5,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Socket } from 'socket.io';
 import { createHash } from 'crypto';
 import { Response } from 'express';
-<<<<<<< HEAD
-=======
 import { Server } from 'socket.io';
->>>>>>> origin/main
 
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
 import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
 import { UserRole } from 'src/users/entities/roles.enum';
-<<<<<<< HEAD
-import { ModerationFlow } from './dto/moderationFlow.class';
-import { FriendStatus } from 'src/friends/entities/status.enum';
-import { RequestError } from './dto/errors.enum';
-=======
 import { ModerationFlow } from './dto/moderationFlow.interface';
 import { FriendStatus } from 'src/friends/entities/status.enum';
 import { RequestError, WsError } from './dto/errors.enum';
->>>>>>> origin/main
 
 @Injectable()
 export class ChatService {
@@ -44,22 +35,16 @@ export class ChatService {
 		global.clients = {};
 	}
 
-<<<<<<< HEAD
-=======
 	server: Server;
 
->>>>>>> origin/main
 	/*
 		LOG IN/OUT FLOW
 	*/
 
-<<<<<<< HEAD
-=======
 	async setServer(server: Server) {
 		this.server = server;
 	}
 
->>>>>>> origin/main
 	async wsLogin(client: Socket): Promise<number> {
 		/* Find cookie */
 		if ( !client.handshake.headers.hasOwnProperty('cookie')
@@ -79,11 +64,7 @@ export class ChatService {
 
 		/* Get User from DB */
 		const user: User = await this.usersService.findOneByID( payload.sub );
-<<<<<<< HEAD
-		if (!user || user.banned)
-=======
 		if (!user || user.role === UserRole.BANNED)
->>>>>>> origin/main
 			return 0;
 
 		/* Update user connected */
@@ -120,10 +101,6 @@ export class ChatService {
 		userChannel.role = role;
 		userChannel.user_id = userID;
 		userChannel.channel_id = channelID;
-<<<<<<< HEAD
-		userChannel.banned = false;
-=======
->>>>>>> origin/main
 		userChannel.muted = new Date(0);
 
 		return this.userChannelRepository.save(userChannel);
@@ -136,11 +113,7 @@ export class ChatService {
 		
 		await this.userChannelRepository.update(
 			{ user_id: userID, channel_id: channelID },
-<<<<<<< HEAD
-			{ banned: bool },
-=======
 			{ role: bool ? UserRole.BANNED : UserRole.MEMBER },
->>>>>>> origin/main
 		);
 	}
 
@@ -220,10 +193,6 @@ export class ChatService {
 		WS FLOW
 	*/
 
-<<<<<<< HEAD
-	async wsJoinChannel(data: any, client: Socket) {
-
-=======
 	async wsParseJSON(client: Socket, data: string): Promise<{}> {
 		try {
 			return JSON.parse(data);
@@ -344,7 +313,6 @@ export class ChatService {
 			announcement: msg.announcement,
 			timestamp: msg.timestamp,
 		});
->>>>>>> origin/main
 	}
 
 	/*
@@ -387,11 +355,7 @@ export class ChatService {
 
 	async getChannelUsers(channelID: number): Promise<ChannelUser[]> {
 		return this.userChannelRepository.query(`
-<<<<<<< HEAD
-			SELECT channel.user_id, channel.banned, channel.muted, channel.role, 
-=======
 			SELECT channel.user_id, channel.muted, channel.role, 
->>>>>>> origin/main
 					users.login, users.connected
 			FROM channels_users as channel
 			INNER JOIN users ON channel.user_id = users.id
@@ -406,15 +370,10 @@ export class ChatService {
 
 		if (!user)
 			return null;
-<<<<<<< HEAD
-		if (user.banned)
-			return UserRole.BANNED;
-=======
 		if (user.role === UserRole.BANNED)
 			return UserRole.BANNED;
 		if (user.muted > new Date())
 			return UserRole.MUTED;
->>>>>>> origin/main
 		return user ? user.role : null;
 	}
 
@@ -468,8 +427,6 @@ export class ChatService {
 	*/
 
 	async deleteChannel(channel: Channel): Promise<void> {
-<<<<<<< HEAD
-=======
 		/* Delete messages that match channel.id */
 		await this.messagesRepository.delete({ channel_id: channel.id });
 		
@@ -477,7 +434,6 @@ export class ChatService {
 		await this.userChannelRepository.delete({ channel_id: channel.id });
 		
 		/* Finally delete channel */
->>>>>>> origin/main
 		await this.channelsRepository.delete(channel);
 	}
 
@@ -487,13 +443,10 @@ export class ChatService {
 		});
 	}
 
-<<<<<<< HEAD
-=======
 	async removeUserFromChannel(userID: number, channelID: number): Promise<void> {
 		await this.userChannelRepository.delete({ user_id: userID, channel_id: channelID });
 	}
 
->>>>>>> origin/main
 	/*
 		BOOL
 	*/
@@ -503,11 +456,7 @@ export class ChatService {
 			where: { user_id: userID, channel_id: channelID },
 		});
 
-<<<<<<< HEAD
-		if (!user || user.banned)
-=======
 		if (!user || user.role === UserRole.BANNED)
->>>>>>> origin/main
 			return false;
 		return true;
 	}

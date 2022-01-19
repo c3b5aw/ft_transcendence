@@ -1,10 +1,6 @@
 import { Controller, Get, Res,
 		Param, UseGuards, Header } from '@nestjs/common';
-<<<<<<< HEAD
-import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
-=======
 import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
->>>>>>> origin/main
 import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';

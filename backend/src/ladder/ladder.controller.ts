@@ -1,9 +1,5 @@
 import { Controller, Get, Header, UseGuards } from '@nestjs/common';
-<<<<<<< HEAD
-import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
-=======
 import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
->>>>>>> origin/main
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
