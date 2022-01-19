@@ -64,6 +64,8 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	}
 
 	function handleClickSettingsChannel(channel: Channel) {
+		console.log(channel);
+		console.log(me);
 		if (channel.owner_id === me.id) {
 			console.log("ADMIN");
 			setChannelTmp(channel);

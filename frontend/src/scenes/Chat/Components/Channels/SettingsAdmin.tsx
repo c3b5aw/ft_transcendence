@@ -36,7 +36,7 @@ function SettingsAdmin(props: { channel: Channel,
 	}
 	const handleRemoveModo = async (user: User) => {
 		try {
-			await axios.delete(`${api}${apiChannel}${channel.name}/moderator/${user.login}`);
+			await axios.delete(`${api}${apiChannel}/${channel.name}/moderator/${user.login}`);
 			setModos(modos.filter(item => item.login !== user.login));
 		}
 		catch (err) {
@@ -48,6 +48,16 @@ function SettingsAdmin(props: { channel: Channel,
 		setOpen(false);
 		setOpenSettings(false);
 	};
+
+	const handleDeleteChannel = async () => {
+		try {
+			await axios.delete(`${api}${apiChannel}/${channel.name}`);
+			handleClose();
+		}
+		catch (err) {
+			console.log(err);
+		}
+	}
 
 	const handleUpdate = async () => {
 		if (nameChannel.length > 0) {
@@ -88,15 +98,6 @@ function SettingsAdmin(props: { channel: Channel,
 		handleClickCell: handleClickCell
 	};
 
-	const handleDeleteChannel = async () => {
-		try {
-			await axios.delete(`${api}${apiChannel}${channel.name}`);
-			handleClose();
-		}
-		catch (err) {
-			console.log(err);
-		}
-	}
 	return (
 		<Dialog
 			open={open}
