@@ -7,6 +7,8 @@ import MySearchBarChat from "../MySearchBarChat";
 import { ROLE } from "../../../../services/Api/Role";
 import { Channel } from "../../Services/interface";
 import useUsersChannel from "../../Services/useUsersChannel";
+import { api, apiChannel } from "../../../../services/Api/Api";
+import axios from "axios";
 
 function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetStateAction<boolean>>, me: User}) {
 	const { channel, setOpenSettings, me } = props;
@@ -18,15 +20,27 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
 
-	function handleClickCell(user: User) {
+	async function handleClickCell(user: User) {
 		const tmp = modos.filter(item => item.login === user.login)
 		if (tmp.length === 0) {
-			setModos(modos => [...modos, user])
+			try {
+				await axios.put(`${api}${apiChannel}/${channel.name}/moderator/${user.login}`);
+				setModos(modos => [...modos, user]);
+			}
+			catch (err) {
+				console.log(err);
+			}
 		}
 	}
-
-	const handleRemoveModo = (user: User) => {
-		setModos(modos.filter(item => item.login !== user.login))
+	console.log(usersChannel);
+	const handleRemoveModo = async (user: User) => {
+		try {
+			await axios.delete(`${api}${apiChannel}${channel.name}/moderator/${user.login}`);
+			setModos(modos.filter(item => item.login !== user.login));
+		}
+		catch (err) {
+			console.log(err);
+		}
 	}
 
 	const handleClose = () => {
@@ -34,7 +48,27 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 		setOpen(false);
 	};
 
-	const handleUpdate = () => {
+	const handleUpdate = async () => {
+		if (nameChannel.length > 0) {
+			try {
+				await axios.post(`${api}${apiChannel}/${channel.name}/name`, {
+					name: nameChannel,
+				});
+			}
+			catch (err) {
+				console.log(err);
+			}
+		}
+		if (passwordChannel.length > 0) {
+			try {
+				await axios.post(`${api}${apiChannel}/${channel.name}/password`, {
+					password: passwordChannel
+				});
+			}
+			catch (err) {
+				console.log(err);
+			}
+		}
 		setOpenSettings(false);
 		setOpen(false);
 	}
@@ -51,10 +85,15 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 		handleClickCell: handleClickCell
 	};
 
-	const handleDeleteChannel = () => {
-		setOpenSettings(false);
-		setOpen(false);
-		console.log("delete channel");
+	const handleDeleteChannel = async () => {
+		try {
+			await axios.delete(`${api}${apiChannel}${channel.name}`);
+			setOpenSettings(false);
+			setOpen(false);
+		}
+		catch (err) {
+			console.log(err);
+		}
 	}
 
 	return (

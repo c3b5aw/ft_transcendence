@@ -22,8 +22,7 @@ export default function Home() {
 		navigate('/game');
 	}
 
-	// eslint-disable-next-line eqeqeq
-	if ((me == undefined || users == undefined))
+	if ((me === undefined || users === undefined))
 		return (<MyChargingDataAlert />);
 	return (
 		<Stack direction="row" sx={{width: 1, minHeight: "100vh"}}>

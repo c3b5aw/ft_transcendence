@@ -15,8 +15,7 @@ function Admin() {
 	const countMatchs = useCountMatchs();
 	const [error, setError] = useState<string>("Données chargées");
 
-	// eslint-disable-next-line eqeqeq
-	if ((me == undefined || users == undefined || countMatchs == undefined))
+	if ((me === undefined || users === undefined || countMatchs === undefined))
 		return (<MyChargingDataAlert />);
 	return (
 		<Stack sx={{width: 1, height: 1}} direction="row" alignItems="center" justifyContent="center">

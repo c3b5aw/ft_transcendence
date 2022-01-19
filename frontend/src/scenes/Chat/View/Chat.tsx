@@ -19,7 +19,7 @@ function Chat() {
 	// const [message, setMessage] = useState<string>("");
 	const [messageTmp, setMessageTmp] = useState<string>("");
 
-	const classes = styleTextField()
+	const classes = styleTextField();
 
 	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
 		setMessageTmp(event.target.value);
@@ -29,8 +29,7 @@ function Chat() {
 		console.log(messageTmp);
 	}
 
-	// eslint-disable-next-line eqeqeq
-	if (me == undefined)
+	if (me === undefined)
 		return (<MyChargingDataAlert />);
 	return (
 		<Stack direction="column" sx={{width: 1, height: "100vh"}}>
@@ -44,14 +43,14 @@ function Chat() {
 						<h3 style={{color: "white"}}>{me?.login}</h3>
 					</Stack>
 					<Divider orientation="vertical" flexItem />
-					{channel != undefined ?
+					{channel !== undefined ?
 						<Stack sx={{width: 9/12}} direction="row" alignItems="center">
 							{channel.private ? <LockIcon color="warning"/> : <LockOpenIcon color="warning"/>}
 							<h3 style={{color: "white", fontFamily: "Myriad Pro", marginLeft: "10px"}}>{channel.name}</h3>
 						</Stack> : null
 					}
 					<Divider orientation="vertical" flexItem />
-					{channel != undefined ?
+					{channel !== undefined ?
 					<Stack sx={{width: 1.5/12}} direction="row" alignItems="center">
 						<h3 style={{color: "white", marginLeft: "10px"}}>Users in {channel.name}</h3>
 					</Stack> : null
@@ -61,7 +60,7 @@ function Chat() {
 			<Stack direction="row" sx={{width: 1, height: 0.95}}>
 				<MyListChannels me={me} setChannel={setChannel}/>
 				<Stack direction="column" sx={{width: 9/12, height: 1}} alignItems="center">
-					{channel != undefined ? 
+					{channel !== undefined ? 
 						<React.Fragment>
 							{/* load messages */}
 							<MyMessages nameChannel={channel.name}/>
@@ -94,9 +93,13 @@ function Chat() {
 				</Stack>
 				<Stack direction="column" sx={{width: 1.5/12, height: 1}}>
 					{/* load user in channel */}
-					{me != undefined && channel != undefined? <MyList me={me} url={`${api}${apiChannel}/${channel?.name}${apiUsers}`}/> : null}
+					{me !== undefined && channel !== undefined ? 
+						<MyList me={me} url={`${api}${apiChannel}/${channel?.name}${apiUsers}`} isListUserChannel={true} channel={channel}/>
+						: null}
 					<h3 style={{fontFamily: "Myriad Pro", textAlign: "center"}}>My friends</h3>
-					{me != undefined ? <MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`}/> : null}
+					{me !== undefined ?
+						<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`} isListUserChannel={false}/>
+						: null}
 				</Stack>
 			</Stack>
 		</Stack>

@@ -10,6 +10,7 @@ import { Channel } from '../../Services/interface';
 import MyDialogCreateChannel from './MyDialogCreateChannel';
 import SettingsAdmin from './SettingsAdmin';
 import SettingsM from './SettingsMember';
+import { io } from 'socket.io-client';
 
 function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<Channel | undefined>> }) {
 	const { me, setChannel } = props;
@@ -51,6 +52,14 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	}
 
 	function handleClickChannel(channel: Channel) {
+		const socket = io("http://127.0.0.1/chat");
+		if (socket.connected) {
+			console.log("CONNECTED");
+		}
+		else {
+			console.log("NOT CONNECTED");
+		}
+		console.log(socket);
 		setChannel(channel);
 	}
 
@@ -67,8 +76,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 		}
 	}
 
-	// eslint-disable-next-line eqeqeq
-	if (me == undefined) {
+	if (me === undefined) {
 		return (
 			<Stack direction="column" sx={{width: 1, height: "100vh"}} alignItems="center" justifyContent="center">
 				<CircularProgress sx={{color: "white"}} />
@@ -101,8 +109,8 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 					</List> : null
 					}
 				</Paper>
-				{openSettingsAdmin && channelTmp != undefined ? <SettingsAdmin channel={channelTmp} setOpenSettings={setOpenSettingsAdmin} me={me}/> : null}
-				{openSettingsM && channelTmp != undefined ? <SettingsM channel={channelTmp} setOpenSettings={setOpenSettingsM} me={me}/> : null}
+				{openSettingsAdmin && channelTmp !== undefined ? <SettingsAdmin channel={channelTmp} setOpenSettings={setOpenSettingsAdmin} me={me}/> : null}
+				{openSettingsM && channelTmp !== undefined ? <SettingsM channel={channelTmp} setOpenSettings={setOpenSettingsM} me={me}/> : null}
 			</Stack>
 			<Stack direction="column" sx={{width: 1, height: 0.1}} alignItems="center" justifyContent="center">
 				<Button sx={buttonStyle} onClick={() => handleCreateChannel()}>Create new channel</Button>

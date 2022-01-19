@@ -8,8 +8,7 @@ export default function MyFooter(props : {me: User}) {
 	const navigate = useNavigate();
 
 	function handleLaunchStats() {
-		// eslint-disable-next-line eqeqeq
-		if (me?.login != undefined)
+		if (me?.login !== undefined)
 			navigate(`/stats/${me?.login}`);
 	}
 

@@ -42,8 +42,7 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 			fetchMe();
 	}, [logged])
 
-	// eslint-disable-next-line eqeqeq
-	if (logged && me != undefined && roles.includes(me.role))
+	if (logged && me !== undefined && roles.includes(me.role))
 		return (children)
 	else
 		return (<Connection />);

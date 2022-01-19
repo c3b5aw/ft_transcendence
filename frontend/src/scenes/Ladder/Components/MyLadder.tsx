@@ -41,8 +41,7 @@ function Row(props: { user: User, me: User}) {
 				setError(err)
 			}
 		}
-		// eslint-disable-next-line eqeqeq
-		if (open && me != undefined)
+		if (open && me !== undefined)
 			fetchMatchs();
 	}, [user, open, me])
 
@@ -124,8 +123,7 @@ export default function MyLadder(props: {me: User}) {
 		fetchUsers();
 	}, []);
 
-	// eslint-disable-next-line eqeqeq
-	if (users == undefined && error === "")
+	if (users === undefined && error === "")
 		return (<MyChargingDataAlert />);
 	else if (error !== "")
 		return (<MyError error={error}/>);

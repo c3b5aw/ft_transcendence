@@ -10,8 +10,7 @@ const MyHistory = (props: {user: User}) => {
 	const matchs = useMatchs(user);
 	const [error, setError] = useState<string>("Les données de l'historique ont été chargées")
 
-	// eslint-disable-next-line eqeqeq
-	if (matchs == undefined)
+	if (matchs === undefined)
 		return (<MyChargingDataAlert />);
 	return (
 		<Stack sx={{width: 1, height: "100vh"}} direction="column" alignItems="center" justifyContent="center" spacing={5}>

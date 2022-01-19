@@ -30,6 +30,9 @@ function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetState
 	}
 
 	const handleQuitChannel = () => {
+		// try {
+		// 	await axios.put(`${api}${apiChannel}`)
+		// }
 		setOpenSettings(false);
 		setOpen(false);
 		console.log("Je quitte le channel");

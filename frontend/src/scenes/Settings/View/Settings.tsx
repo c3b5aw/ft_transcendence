@@ -60,11 +60,9 @@ const Settings = () => {
 		}
 	}
 
-	// eslint-disable-next-line eqeqeq
-	if (me == undefined && error === "")
+	if (me === undefined && error === "")
 		return (<MyChargingDataAlert />);
-	// eslint-disable-next-line eqeqeq
-	else if (me == undefined)
+	else if (me === undefined)
 		return (<MyError error={error}/>);
 	return (
 		<Stack direction="row" sx={{width: "100%", height: "100vh"}}>

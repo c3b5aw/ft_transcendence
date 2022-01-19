@@ -11,8 +11,7 @@ const MyAchievements = (props: {user: User}) => {
 	const achievements = useAchievements(user);
 	const [error, setError] = useState<string>("Les données des achievements ont été chargées");
 
-	// eslint-disable-next-line eqeqeq
-	if (achievements == undefined)
+	if (achievements === undefined)
 		return (<MyChargingDataAlert />);
 	return (
 		<Stack sx={{ marginTop: "15%", width: 0.90, height: 0.4, backgroundColor: 'white', borderRadius: 7 }} direction="column">

@@ -77,11 +77,11 @@ const Stats = () => {
 		}
 	}
 
-	// eslint-disable-next-line eqeqeq
-	if ((me == undefined || user == undefined || friends == undefined || friendsPending == undefined) && error === "")
+	// 
+	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined) && error === "")
 		return (<MyChargingDataAlert />);
-	// eslint-disable-next-line eqeqeq
-	else if (error !== "" || user == undefined || me == undefined)
+	// 
+	else if (error !== "" || user === undefined || me === undefined)
 		return (<MyError error={error}/>);
 
 	const isFriend = friends.filter(function (friend) {

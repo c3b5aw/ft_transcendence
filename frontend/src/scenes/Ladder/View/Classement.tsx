@@ -7,8 +7,7 @@ import useMe from '../../../services/Hooks/useMe';
 function Classement() {
 	const me = useMe();
 
-	// eslint-disable-next-line eqeqeq
-	if (me == undefined)
+	if (me === undefined)
 		return (<MyChargingDataAlert />);
 	return (
 		<Stack sx={{width: 1, height: 1}} direction="row">
