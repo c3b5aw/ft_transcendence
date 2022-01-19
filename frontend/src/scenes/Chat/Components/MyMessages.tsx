@@ -48,7 +48,7 @@ function MyMessages(props: {nameChannel: string}) {
 											<DoubleArrowIcon style={{color: "#008D33", fontSize: "27px", marginRight: "10px"}}/> 
 											<Stack direction="column" sx={{width: 0.9, maxWidth: 0.9}} spacing={1}>
 												<div style={{fontSize: "18px", fontFamily: "Myriad Pro"}}>{message.login}</div>
-												<div style={{color: "#7F8C8D"}}>{message.content}</div>
+												<div style={{color: "#99A3A4"}}>{message.content}</div>
 											</Stack>
 										</React.Fragment>
 										:
