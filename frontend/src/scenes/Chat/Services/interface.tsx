@@ -2,7 +2,7 @@ export interface Message {
     id: number,
     user_id: number,
     channel_id: number,
-    annoucement: boolean,
+    announcement: boolean,
     content: string,
     timestamp: string,
     login: string

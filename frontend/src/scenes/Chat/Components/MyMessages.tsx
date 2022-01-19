@@ -3,6 +3,8 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { api, apiChannel, apiMessages } from "../../../services/Api/Api";
 import { Message } from "../Services/interface";
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+import React from "react";
 
 function MyMessages(props: {nameChannel: string}) {
 	const { nameChannel } = props;
@@ -41,16 +43,26 @@ function MyMessages(props: {nameChannel: string}) {
 						{messages.map(message => (
 							<div key={message.id}>
 								<ListItem component="div" sx={{marginBottom: 2}}>
-									<Stack direction="row">
-										<Avatar
-											src={`http://127.0.0.1/api/users/${message.login}/avatar`}
-											sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
-										</Avatar>
-									</Stack>
-									<Stack direction="column" sx={{width: 0.9, maxWidth: 0.9}} spacing={1}>
-										<div style={{fontSize: "18px", fontFamily: "Myriad Pro", color: "white"}}>{message.login}</div>
-										<div style={{color: "white"}}>{message.content}</div>
-									</Stack>
+									{message.announcement ?
+										<React.Fragment>
+											<DoubleArrowIcon style={{color: "#008D33", fontSize: "27px", marginRight: "10px"}}/> 
+											<Stack direction="column" sx={{width: 0.9, maxWidth: 0.9}} spacing={1}>
+												<div style={{fontSize: "18px", fontFamily: "Myriad Pro"}}>{message.login}</div>
+												<div style={{color: "#7F8C8D"}}>{message.content}</div>
+											</Stack>
+										</React.Fragment>
+										:
+										<React.Fragment>
+											<Avatar
+												src={`http://127.0.0.1/api/users/${message.login}/avatar`}
+												sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
+											</Avatar>
+											<Stack direction="column" sx={{width: 0.9, maxWidth: 0.9}} spacing={1}>
+												<div style={{fontSize: "18px", fontFamily: "Myriad Pro", color: "white"}}>{message.login}</div>
+												<div style={{color: "white"}}>{message.content}</div>
+											</Stack>
+										</React.Fragment>
+									}
 								</ListItem>
 							</div>
 						))}
