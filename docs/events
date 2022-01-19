@@ -1,0 +1,62 @@
+RECEIVE / LISTEN
+
+- onError					- SOMETHING HAPPENED WRONGLY
+{
+	error:string
+}
+- onSuccess					- SOMETHING HAPPENED SUCCESSFULLY
+{
+	message: string
+}
+
+- channel::joined			- SOMEONE NEW JOINED CHANNEL
+- channel::left				- SOMEONE OLD LEFT CHANNEL
+- channel::message			- NEW MESSAGE
+{
+	user: string,
+	content: string,
+	announcement: boolean,
+	timestamp: Date
+}
+- channel::connect			- SOMEONE GOES ONLINE
+- channel::disconnect		- SOMEONE GOES OFFLINE
+- channel::onKick			- YOUVE BEEN KICKED FROM CHANNEL
+{
+	channelID: number,
+}
+- channel::onBan				- YOUVE BEEN BANNED FROM CHANNEL
+{
+	channelID: number,
+	banned: boolean
+}
+- channel::onRoleUpdate			- YOUVE BEEN UPDATED IN ROLE
+{
+	channelID: number,
+	role: UserRole.enum
+}
+- channel:onMute				- YOUVE BEEN MUTED
+{
+	channelID: number,
+	until: Date
+}
+
+
+SEND / EMIT
+
+- channel::join				- JOIN A CHANNEL, /!\ Required to send messages
+{
+	channel: string,
+	password: string or "" for empty pwd
+}
+
+- channel::send				- SEND A MESSAGE, must have joined channel before
+{
+	channel:string,
+	message: string
+}
+
+- channel::leave			- LEAVE A CHANNEL, will no longer have access until joinned back,
+												should not leave as a disconnect
+{
+	channel: string
+}
