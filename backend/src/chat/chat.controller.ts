@@ -171,6 +171,24 @@ export class ChannelController {
 		resp.send({ message: 'channel password deleted' });
 	}
 
+	@Get('/:channelName/moderators')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get channel moderators' })
+	async getChannelModerators(@Param('channelName') channelName: string,
+								@Req() req: any, @Res() resp: Response)
+	{
+		const channel: Channel = await this.chatService.findChannelByName(channelName);
+		if (!channel)
+			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
+
+		const role: UserRole = await this.chatService.getUserRoleInChannel(req.user.id, channel.id);
+		if (role !== UserRole.MODERATOR && role !== UserRole.ADMIN)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
+		const moderators = await this.chatService.getChannelModerators(channel.id);
+		resp.send(moderators);
+	}
+
 	/* MODERATOR MANAGEMENT - OWNER ONLY */
 	@Put('/:channelName/moderator/:login')
 	@Header('Content-Type', 'application/json')
