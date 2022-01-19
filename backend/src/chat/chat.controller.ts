@@ -41,7 +41,7 @@ export class ChannelController {
 		obj.private = data.password.length > 0;
 
 		const channel: Channel = await this.chatService.createChannel(obj);
-		await this.chatService.addUserToChannel(channel.id, req.user.id, UserRole.ADMIN);
+		await this.chatService.addUserToChannel(req.user.id, channel.id, UserRole.ADMIN);
 		resp.send({ "message": "channel created", "channel": channel });
 	}
 

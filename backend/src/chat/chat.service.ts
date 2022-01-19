@@ -355,7 +355,7 @@ export class ChatService {
 
 	async getChannelUsers(channelID: number): Promise<ChannelUser[]> {
 		return this.userChannelRepository.query(`
-			SELECT channel.user_id, channel.muted, channel.role, 
+			SELECT channel.user_id as id, channel.muted, channel.role, 
 					users.login, users.connected
 			FROM channels_users as channel
 			INNER JOIN users ON channel.user_id = users.id
@@ -398,7 +398,7 @@ export class ChatService {
 	async findChannelByName(name: string): Promise<Channel> {
 		return this.channelsRepository.findOne({
 			where: { name: name },
-			select: [ 'id', 'name', 'private', 'tunnel' ],
+			select: [ 'id', 'name', 'private', 'tunnel', 'owner_id' ],
 		});
 	}
 

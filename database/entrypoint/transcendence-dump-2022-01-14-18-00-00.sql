@@ -572,7 +572,7 @@ COPY public.users (id, login, display_name, email, role, two_factor_auth, two_fa
 77460	nbascaul	nbascaul	nbascaul@student.42.fr	MEMBER	f	\N	1205	5	1	4	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
 77558	eoliveir	eoliveir	eoliveir@student.42.fr	ADMIN	f	\N	1205	5	2	3	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
 73316	jtrauque	jtrauque	jtrauque@student.42.fr	MODERATOR	f	\N	1230	5	5	0	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
-83781	sbeaujar	sbeaujar	sbeaujar@student.42.fr	ADMIN	f	\N	1210	5	2	3	t	2022-01-18 13:29:54.639076	2022-01-18 22:15:36.6
+83781	sbeaujar	sbeaujar	sbeaujar@student.42.fr	ADMIN	f	\N	1210	5	2	3	f	2022-01-18 13:29:54.639076	2022-01-18 22:15:36.6
 \.
 
 
