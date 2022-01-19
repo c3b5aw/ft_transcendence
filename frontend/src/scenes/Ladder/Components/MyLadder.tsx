@@ -84,11 +84,11 @@ function Row(props: { user: User, me: User}) {
 					<TableBody>
 					{matchs.map((match) => (
 						<TableRow key={match.id}>
-						<TableCell component="th" scope="row" align="center">{match.player_1_login}</TableCell>
-						<TableCell align="center" sx={{color: match.player_1_score > match.player_2_score ? "green" : match.player_1_score < match.player_2_score ? "#C70039" : "black"}}>{match.player_1_score}</TableCell>
+						<TableCell component="th" scope="row" align="center">{match.player1_login}</TableCell>
+						<TableCell align="center" sx={{color: match.player1_score > match.player2_score ? "green" : match.player1_score < match.player2_score ? "#C70039" : "black"}}>{match.player1_score}</TableCell>
 						<TableCell align="center" sx={{fontFamily: 'Myriad Pro', fontSize: "27px", alignContent: "center"}}>-</TableCell>
-						<TableCell align="center" sx={{color: match.player_2_score > match.player_1_score ? "green" : match.player_2_score < match.player_1_score ? "#C70039" : "black"}}>{match.player_2_score}</TableCell>
-						<TableCell align="center">{match.player_2_login}</TableCell>
+						<TableCell align="center" sx={{color: match.player2_score > match.player1_score ? "green" : match.player2_score < match.player1_score ? "#C70039" : "black"}}>{match.player2_score}</TableCell>
+						<TableCell align="center">{match.player2_login}</TableCell>
 						</TableRow>
 					))}
 					</TableBody>

@@ -11,5 +11,6 @@ export interface Message {
 export interface Channel {
 	id: number,
 	name: string,
+    owner_id: number,
     private: boolean,
 }

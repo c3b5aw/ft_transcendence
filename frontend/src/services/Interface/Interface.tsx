@@ -22,12 +22,12 @@ export interface Match {
 	date: string
 	finished: boolean
 	duration: number
-	player_1_id: number
-	player_1_login: string
-	player_1_score: number
-	player_2_id: number
-	player_2_login: string
-	player_2_score: number
+	player1: number
+	player1_login: string
+	player1_score: number
+	player2: number
+	player2_login: string
+	player2_score: number
 }
 
 export interface Achievements {
@@ -39,14 +39,18 @@ export interface Achievements {
 }
 
 export interface Friends {
-	id: number
-	user_id: number
-	user_login: string
-	friend_id: number
-	friend_login: string
-	status: number
+	id: number,
+	connected: boolean,
+	login: string,
+	status: string,
 }
 
 export interface ISearchBar {
 	handleClickCell: (row: User) => void
+}
+
+export enum STATUS {
+	PENDING = "PENDING",
+	ACCEPTED = "ACCEPTED",
+	BLOCKED = "BLOCKED",
 }

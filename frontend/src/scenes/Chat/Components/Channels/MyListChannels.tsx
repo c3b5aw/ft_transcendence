@@ -55,12 +55,12 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	}
 
 	function handleClickSettingsChannel(channel: Channel) {
-		if (channel.name === "private-eoliveir1") {
+		if (channel.owner_id === me.id) {
 			console.log("ADMIN");
 			setChannelTmp(channel);
 			setOpenSettingsAdmin(true);
 		}
-		else if (channel.name === "private-eoliveir") {
+		else {
 			console.log("MODERATOR OR MEMBER");
 			setChannelTmp(channel);
 			setOpenSettingsM(true);

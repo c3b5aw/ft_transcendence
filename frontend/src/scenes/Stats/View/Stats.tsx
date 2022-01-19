@@ -16,7 +16,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
 import { sxButton, sxDiv } from '../Services/style';
-import { Friends } from '../../../services/Interface/Interface';
+import { Friends, STATUS } from '../../../services/Interface/Interface';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -57,7 +57,7 @@ const Stats = () => {
 
 	async function handleAddFriend() {
 		try {
-			await axios.post(`${api}${apiUsers}/${login}/friend`)
+			await axios.put(`${api}${apiUsers}/${login}/friend`)
 			setSuccessDelete(false);
 			setSuccessAdd(true);
 		}
@@ -85,10 +85,10 @@ const Stats = () => {
 		return (<MyError error={error}/>);
 
 	const isFriend = friends.filter(function (friend) {
-		return friend.user_login === user?.login
+		return (friend.status === STATUS.ACCEPTED && friend.login === user?.login);
 	});
 	const isFriendPending = friendsPending.filter(function (friendPending) {
-		return friendPending.friend_login === user?.login
+		return (friendPending.status === STATUS.PENDING && friendPending.login === user?.login);
 	});
 	return (
 		<Stack sx={{width: 1, height: 1}} direction="row" spacing={3}>

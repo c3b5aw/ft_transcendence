@@ -27,16 +27,16 @@ const MyHistory = (props: {user: User}) => {
 												<Stack direction="row" sx={{width: 1/2}} alignItems="center" spacing={2}>
 													<Avatar
 														sx={{width: "64px", height: "64px"}}
-														src={`http://127.0.0.1/api/users/${match.player_1_login}/avatar`}>
+														src={`http://127.0.0.1/api/users/${match.player1_login}/avatar`}>
 													</Avatar>
-													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.player_1_login}</div>
+													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.player1_login}</div>
 												</Stack>
 												<Stack direction="row" sx={{width: 1/2}} justifyContent="flex-end">
 												<div style={{
 													fontSize: "32px",
-													color: match.player_1_score > match.player_2_score ? "green" : match.player_1_score < match.player_2_score ? "#C70039" : "black",
+													color: match.player1_score > match.player2_score ? "green" : match.player1_score < match.player2_score ? "#C70039" : "black",
 													fontStyle: "bold",
-													fontFamily: "Myriad Pro" }}>{match.player_1_score}
+													fontFamily: "Myriad Pro" }}>{match.player1_score}
 												</div>
 												</Stack>
 											</Stack>
@@ -47,16 +47,16 @@ const MyHistory = (props: {user: User}) => {
 												<Stack direction="row" sx={{width: 1/2}} justifyContent="flex-start">
 													<div style={{
 														fontSize: "32px",
-														color: match.player_2_score > match.player_1_score ? "green" : match.player_2_score < match.player_1_score ? "#C70039" : "black",
+														color: match.player2_score > match.player1_score ? "green" : match.player2_score < match.player1_score ? "#C70039" : "black",
 														fontStyle: "bold",
-														fontFamily: "Myriad Pro" }}>{match.player_2_score}
+														fontFamily: "Myriad Pro" }}>{match.player2_score}
 													</div>
 												</Stack>
 												<Stack direction="row" sx={{width: 1/2}} alignItems="center" justifyContent="flex-end" spacing={2}>
-													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.player_2_login}</div>
+													<div style={{fontSize: "24px", fontFamily: "Myriad Pro"}}>{match.player2_login}</div>
 													<Avatar
 														sx={{width: "64px", height: "64px"}}
-														src={`http://127.0.0.1/api/users/${match.player_2_login}/avatar`}>
+														src={`http://127.0.0.1/api/users/${match.player2_login}/avatar`}>
 													</Avatar>
 												</Stack>
 											</Stack>
