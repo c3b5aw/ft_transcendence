@@ -398,7 +398,7 @@ export class ChatService {
 	async findChannelByName(name: string): Promise<Channel> {
 		return this.channelsRepository.findOne({
 			where: { name: name },
-			select: [ 'id', 'name', 'private', 'tunnel' ],
+			select: [ 'id', 'name', 'private', 'tunnel', 'owner_id' ],
 		});
 	}
 
