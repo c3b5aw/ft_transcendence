@@ -53,10 +53,10 @@ function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetState
 			<DialogTitle>
 				<Stack direction="row" spacing={3}>
 					<div>{channel.name}</div>
-					{insideChannel ? <div>Your status : {me.role}</div> : null}
+					{!insideChannel ? <div>Your status : {me.role}</div> : null}
 				</Stack>
 			</DialogTitle>
-			{insideChannel ?
+			{!insideChannel ?
 				<DialogContent>
 					<Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
 						<LockIcon fontSize="large"/>
@@ -76,7 +76,7 @@ function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetState
 			}
 			<DialogActions>
 				<Button onClick={handleClose} variant="contained" color="error">Cancel</Button>
-				{insideChannel ?
+				{!insideChannel ?
 					<Button onClick={handleValidPassword} variant="contained" color="success">Valider</Button> :
 					<Button onClick={handleQuitChannel} variant="contained" color="success">Quitter</Button>
 				}
