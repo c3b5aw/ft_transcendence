@@ -45,7 +45,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 			}
 		}
 		fetchChannels();
-	}, [me, reload])
+	}, [me, reload, openSettingsAdmin])
 
 	function handleCreateChannel() {
 		setOpen(!open);

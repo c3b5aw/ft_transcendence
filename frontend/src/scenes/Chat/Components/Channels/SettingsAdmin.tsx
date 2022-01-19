@@ -1,20 +1,22 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import MySnackBar from "../../../../components/MySnackbar";
 import { ISearchBar, User } from "../../../../services/Interface/Interface";
 import MySearchBarChat from "../MySearchBarChat";
-import { ROLE } from "../../../../services/Api/Role";
 import { Channel } from "../../Services/interface";
 import useUsersChannel from "../../Services/useUsersChannel";
 import { api, apiChannel } from "../../../../services/Api/Api";
 import axios from "axios";
+import useModosChannel from "../../Services/UseModosChannel";
 
-function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetStateAction<boolean>>, me: User}) {
+function SettingsAdmin(props: { channel: Channel,
+		setOpenSettings: Dispatch<SetStateAction<boolean>>,
+		me: User}) {
 	const { channel, setOpenSettings, me } = props;
 	const usersChannel = useUsersChannel(channel);
     const [open, setOpen] = useState(true);
-	const [modos, setModos] = useState<User[]>(usersChannel.filter(item => item.role === ROLE.MODERATOR));
+	const [modos, setModos] = useState<User[]>(useModosChannel(channel));
 	const [error, setError] = useState<string>("");
 
 	const [nameChannel, setNameChannel] = useState<string>("");
@@ -32,7 +34,6 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 			}
 		}
 	}
-	console.log(usersChannel);
 	const handleRemoveModo = async (user: User) => {
 		try {
 			await axios.delete(`${api}${apiChannel}${channel.name}/moderator/${user.login}`);
@@ -44,8 +45,8 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 	}
 
 	const handleClose = () => {
-		setOpenSettings(false);
 		setOpen(false);
+		setOpenSettings(false);
 	};
 
 	const handleUpdate = async () => {
@@ -54,6 +55,7 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 				await axios.post(`${api}${apiChannel}/${channel.name}/name`, {
 					name: nameChannel,
 				});
+				handleClose();
 			}
 			catch (err) {
 				console.log(err);
@@ -61,16 +63,17 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 		}
 		if (passwordChannel.length > 0) {
 			try {
-				await axios.post(`${api}${apiChannel}/${channel.name}/password`, {
+				await axios.post(`${api}${apiChannel}/${nameChannel}/password`, {
 					password: passwordChannel
 				});
+				handleClose();
 			}
 			catch (err) {
 				console.log(err);
 			}
 		}
-		setOpenSettings(false);
-		setOpen(false);
+		else
+			handleClose();
 	}
 
 	const  handleTextChangeName = async (event: { target: { value: SetStateAction<string>; }; }) => {
@@ -88,14 +91,12 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 	const handleDeleteChannel = async () => {
 		try {
 			await axios.delete(`${api}${apiChannel}${channel.name}`);
-			setOpenSettings(false);
-			setOpen(false);
+			handleClose();
 		}
 		catch (err) {
 			console.log(err);
 		}
 	}
-
 	return (
 		<Dialog
 			open={open}
