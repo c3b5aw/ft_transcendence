@@ -41,13 +41,13 @@ export class MatchsService {
 			FROM matchs
 			INNER JOIN users
 				AS p1
-				ON p1.id = matchs.player_1
+				ON p1.id = matchs.player1
 			INNER JOIN users
 				AS p2
-				ON p2.id = matchs.player_2
+				ON p2.id = matchs.player2
 			WHERE (
-				matchs.player_1 = ${id}
-				OR matchs.player_2 = ${id}
+				matchs.player1 = ${id}
+				OR matchs.player2 = ${id}
 			)
 			ORDER BY matchs.date DESC;
 		`);
