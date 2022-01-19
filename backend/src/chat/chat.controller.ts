@@ -123,7 +123,7 @@ export class ChannelController {
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
-		if (channel.owner_id !== req.user_id)
+		if (channel.owner_id !== req.user.id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		await this.chatService.updateChannelName(channel, data.name);
@@ -141,7 +141,7 @@ export class ChannelController {
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
-		if (channel.owner_id !== req.user_id)
+		if (channel.owner_id !== req.user.id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		if (data.password.length === 0) {
@@ -164,7 +164,7 @@ export class ChannelController {
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
-		if (channel.owner_id !== req.user_id)
+		if (channel.owner_id !== req.user.id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		await this.chatService.deleteChannelPassword( channel );
