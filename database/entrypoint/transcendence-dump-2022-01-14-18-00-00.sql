@@ -475,8 +475,8 @@ COPY public.achievements (id, name, description, points) FROM stdin;
 --
 
 COPY public.channels (id, name, password, tunnel, private, owner_id) FROM stdin;
-1	public	\N	f	f	0
-2	zaap	\N	f	f	0
+1	public	\N	f	f	77558
+2	zaap	\N	f	f	83781
 3	private-eoliveir	63a9f0ea7bb98050796b649e85481845	f	t	77558
 4	private-sbeaujar	63a9f0ea7bb98050796b649e85481845	f	t	83781
 \.
