@@ -125,82 +125,68 @@ export class ChatService {
 			this.server.to(userSocketID).emit(event, JSON.stringify(data));
 	}
 
-	async setChannelUserBan(user: User, channelID: number, bool: boolean): Promise<void> {
-		const joined: boolean = await this.isUserInChannel(user.id, channelID);
-		if (!joined)
-			return;
-		
+	async sendEventToChannel(channel: Channel, event: string, data: any) {
+		this.server.to('#' + channel.id).emit(event, JSON.stringify({
+			channel: { id: channel.id, name: channel.name }, data }));
+	}
+
+	async setChannelUserBan(user: User, channel: Channel, bool: boolean): Promise<void> {
 		await this.userChannelRepository.update(
-			{ user_id: user.id, channel_id: channelID },
-			{ role: bool ? UserRole.BANNED : UserRole.MEMBER },
-		);
+			{ user_id: user.id, channel_id: channel.id },
+			{ role: bool ? UserRole.BANNED : UserRole.MEMBER });
 
 		await this.sendEventToUser(user.id, 'channel::onBan', {
-			channelID, 'banned': bool,
-		})
+			channel: { id: channel.id, name: channel.name },
+			banned: bool });
+		await this.sendEventToChannel(channel, 'channel::membersReload', {});
 
 		const alert = `${user.login} has been ${bool ? 'banned' : 'unbanned'}`;
-		await this.wsSendAnnouncementToChannel(channelID, alert);
+		await this.wsSendAnnouncementToChannel(channel, alert);
 	}
 
-	async setUserChannelModerator(user: User, channelID: number, bool: boolean): Promise<void> {
-		const joined: boolean = await this.isUserInChannel(user.id, channelID);
-		if (!joined)
-			return;
-
+	async setUserChannelModerator(user: User, channel: Channel, bool: boolean): Promise<void> {
 		await this.userChannelRepository.update(
-			{ user_id: user.id, channel_id: channelID },
-			{ role: bool ? UserRole.MODERATOR : UserRole.MEMBER },
-		);
+			{ user_id: user.id, channel_id: channel.id },
+			{ role: bool ? UserRole.MODERATOR : UserRole.MEMBER });
 
 		await this.sendEventToUser(user.id, 'channel::onRoleUpdate', {
-			channelID, 'role': bool ? UserRole.MODERATOR : UserRole.MEMBER,
-		})
+			channel: { id: channel.id, name: channel.name },
+			role: bool ? UserRole.MODERATOR : UserRole.MEMBER });
 
 		const alert = `${user.login} has been ${bool ? 'promoted' : 'demoted'} to ${bool ? 'moderator' : 'member'}`;
-		await this.wsSendAnnouncementToChannel(channelID, alert);
+		await this.wsSendAnnouncementToChannel(channel, alert);
 	}
 
-	async kickUserFromChannel(user: any, channelID: number): Promise<void> {
-		this.sendEventToUser(user.id, 'channel::onKick', { channelID });
-		
+	async kickUserFromChannel(user: any, channel: Channel): Promise<void> {		
 		const userChannel = await this.userChannelRepository.findOne({
-			where: { user_id: user.id, channel_id: channelID },
-		});
+			where: { user_id: user.id, channel_id: channel.id }});
 		if (!user)
 			return;
 
+		await this.sendEventToUser(user.id, 'channel::onKick', { channel: { id: channel.id, name: channel.name }});
+		await this.sendEventToChannel(channel, 'channel::membersReload', {});
+
 		await this.userChannelRepository.delete(userChannel);
 
-		await this.wsSendAnnouncementToChannel(channelID, `${user.login} has been kicked`);
+		await this.wsSendAnnouncementToChannel(channel, `${user.login} has been kicked`);
 	}
 
-	async muteUserInChannel(user: User, channelID: number, until: Date): Promise<void> {
-		const joined: boolean = await this.isUserInChannel(user.id, channelID);
-		if (!joined)
-			return;
-
+	async muteUserInChannel(user: User, channel: Channel, until: Date): Promise<void> {
 		await this.userChannelRepository.update(
-			{ user_id: user.id, channel_id: channelID },
-			{ muted: until },
-		);
+			{ user_id: user.id, channel_id: channel.id },
+			{ muted: until });
 
 		await this.sendEventToUser(user.id, 'channel::onMute', {
-			channelID, 'until': until
-		});
+			channel: { id: channel.id, name: channel.name }, 'until': until });
 
-		await this.wsSendAnnouncementToChannel(channelID, `${user.login} has been muted`);
+		await this.wsSendAnnouncementToChannel(channel, `${user.login} has been muted`);
 	}
 
 	async moderationFlow(reqUserId: number, targetLogin: string,
 						channelName: string, resp: Response) : Promise<ModerationFlow>
 	{
-		let ret: ModerationFlow = {
-			err: true,
-			target: null,
-			role: null,
-			channel: null,
-		}
+		let ret: ModerationFlow = { err: true, target: null,
+			role: null, channel: null };
 		
 		ret.channel = await this.findChannelByName(channelName);
 		if (!ret.channel) {
@@ -267,11 +253,11 @@ export class ChatService {
 
 		/* Send message to all clients in channel */
 		this.server.to('#' + channel.id).emit('channel::message', {
-			user: user.login,
-			content: msg.content,
-			announcement: false,
-			timestamp: msg.timestamp,
-		});
+			channel: { id: channel.id, name: channel.name },
+			message: {
+				user: user.login, content: msg.content,
+				announcement: false, timestamp: msg.timestamp,
+			}});
 	}
 
 	async wsJoinChannel(client: Socket, channel: Channel, firstTime: boolean) {
@@ -283,27 +269,21 @@ export class ChatService {
 		if (!user)
 			return this.wsFatalUserNotFound(client);
 
-		/* Make socket join channel */
-		client.join('#' + channel.id);
-
-		/* Send user joined to user */
-		client.emit('onSuccess', {
-			message: 'joined channel: #' + channel.name,
-		})
-
-		/* Send user joined to whole channel */
-		this.server.to('#' + channel.id).emit('channel:joined', {
-			channel: channel,
-			login: user.login,
-		});
-
 		/* If first time, save channel join + tell you joined */
 		if (firstTime) {
 			await this.addUserToChannel(user.id, channel.id, UserRole.MEMBER);
 
-			await this.wsSendAnnouncementToChannel(channel.id, 
-				user.login + ' joined this channel.');
+			await this.wsSendAnnouncementToChannel(channel, user.login + ' joined this channel.');
 		}
+
+		/* Make socket join channel */
+		client.join('#' + channel.id);
+
+		/* Send user success joined */
+		client.emit('channel::onJoin', JSON.stringify({ id: channel.id, name: channel.name }));
+
+		/* Send user joined to whole channel */
+		await this.sendEventToChannel(channel, "channel::membersReload", {});
 	}
 
 	async wsLeaveChannel(client: Socket, channel: Channel) {
@@ -328,8 +308,7 @@ export class ChatService {
 		});
 
 		/* Stream message left to channel */
-		await this.wsSendAnnouncementToChannel(channel.id, 
-			user.login + ' left this channel.');
+		await this.wsSendAnnouncementToChannel(channel, user.login + ' left this channel.');
 
 		/* Send success to user */
 		client.emit('onSuccess', {
@@ -337,11 +316,11 @@ export class ChatService {
 		})
 	}
 
-	async wsSendAnnouncementToChannel(channelID: number, message: string) {
+	async wsSendAnnouncementToChannel(channel: Channel, message: string) {
 		/* Save message to database */
 		const msg: ChatMessage = new ChatMessage();
 		msg.user_id = 0;
-		msg.channel_id = channelID;
+		msg.channel_id = channel.id;
 		msg.announcement = true;
 		msg.content = message;
 		msg.timestamp = new Date();
@@ -349,12 +328,9 @@ export class ChatService {
 		await this.messagesRepository.save(msg);
 		
 		/* Send message to all clients in channel */
-		this.server.to('#' + channelID).emit('channel::message', {
-			user: 'Server',
-			content: msg.content,
-			announcement: msg.announcement,
-			timestamp: msg.timestamp,
-		});
+		await this.sendEventToChannel(channel, 'channel::message', { message: {
+			user: 'Server', content: msg.content,
+			announcement: msg.announcement, timestamp: msg.timestamp }});
 	}
 
 	/*
@@ -371,10 +347,18 @@ export class ChatService {
 	}
 
 	async getChannels(): Promise<Channel[]> {
-		return this.channelsRepository.find({
-			where: { tunnel: false },
-			select: [ 'id', 'name', 'private', 'owner_id' ],
-		});
+		return this.channelsRepository.find({ where: { tunnel: false },
+			select: [ 'id', 'name', 'private', 'owner_id' ] });
+	}
+
+	async getJoinedChannels(userID: number): Promise<Channel[]> {
+		return this.channelsRepository.query(`
+			SELECT channels.id, channels.name, channels.tunnel, 
+				channels.private, channels.owner_id
+			FROM channels_users AS users
+			INNER JOIN channels ON users.channel_id = channels.id
+			WHERE user_id = 83781
+		`);
 	}
 
 	async getChannelMessages(selfID: number, channelID: number): Promise<any> {
@@ -420,28 +404,21 @@ export class ChatService {
 
 	async getUserRoleInChannel(userID: number, channelID: number): Promise<UserRole> {
 		const user = await this.userChannelRepository.findOne({
-			where: { user_id: userID, channel_id: channelID },
-		});
+			where: { user_id: userID, channel_id: channelID }});
 
-		if (!user)
-			return null;
-		if (user.role === UserRole.BANNED)
-			return UserRole.BANNED;
-		if (user.muted > new Date())
-			return UserRole.MUTED;
+		if (!user) return null;
+		else if (user.role === UserRole.BANNED) return UserRole.BANNED;
+		else if (user.muted > new Date()) return UserRole.MUTED;
 		return user ? user.role : null;
 	}
 
 	async getUserChannels(userID: number) {
-		return this.userChannelRepository.find({
-			where: { user_id: userID },
-		});
+		return this.userChannelRepository.find({ where: { user_id: userID } });
 	}
 
 	async getChannelPasswordHash(channelID: number): Promise<string> {
 		const channel = await this.channelsRepository.findOne(channelID);
-		if (!channel)
-			return undefined;
+		if (!channel) return undefined;
 		return channel.password;
 	}
 		
@@ -453,8 +430,7 @@ export class ChatService {
 	async findChannelByName(name: string): Promise<Channel> {
 		return this.channelsRepository.findOne({
 			where: { name: name },
-			select: [ 'id', 'name', 'private', 'tunnel', 'owner_id' ],
-		});
+			select: [ 'id', 'name', 'private', 'tunnel', 'owner_id' ] });
 	}
 
 	/*
@@ -480,8 +456,7 @@ export class ChatService {
 
 	async createChannel(data: CreateChannelDto, owner: number) : Promise<Channel> {
 		const unique: boolean = await this.isUniqueChannelName(data.name);
-		if (!unique)
-			return null;
+		if (!unique) return null;
 		
 		let chan: Channel = new Channel();
 
@@ -495,11 +470,9 @@ export class ChatService {
 			chan.password = createHash('md5').update(chan.password).digest('hex');
 
 		await this.channelsRepository.save(chan);
-
 		await this.addUserToChannel(owner, chan.id, UserRole.ADMIN);
 
 		delete chan.password;
-
 		return chan;
 	}
 
@@ -512,8 +485,7 @@ export class ChatService {
 		const users = await this.getChannelUsers(channel.id);
 		for (let i = 0; i < users.length; i++) {
 			await this.sendEventToUser(users[i].id, 'channel::onKick', {
-				channelID: channel.id,
-			})
+				channel: { id: channel.id, name: channel.name } });
 		}
 
 		/* Delete messages that match channel.id */
@@ -527,9 +499,7 @@ export class ChatService {
 	}
 
 	async deleteChannelPassword(channel: Channel): Promise<void> {
-		await this.channelsRepository.update(channel.id, {
-				password: null, private: false,
-		});
+		await this.channelsRepository.update(channel.id, { password: null, private: false });
 	}
 
 	async removeUserFromChannel(userID: number, channelID: number): Promise<void> {
@@ -542,18 +512,14 @@ export class ChatService {
 	
 	async isUserInChannel(userID: number, channelID: number): Promise<boolean> {
 		const user = await this.userChannelRepository.findOne({
-			where: { user_id: userID, channel_id: channelID },
-		});
+			where: { user_id: userID, channel_id: channelID } });
 
-		if (!user || user.role === UserRole.BANNED)
-			return false;
+		if (!user || user.role === UserRole.BANNED) return false;
 		return true;
 	}
 
 	async isUniqueChannelName(name: string): Promise<boolean> {
-		const channel = await this.channelsRepository.findOne({
-			where: { name: name },
-		});
+		const channel = await this.channelsRepository.findOne({ where: { name: name } });
 
 		return !channel;
 	}

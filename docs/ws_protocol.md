@@ -24,10 +24,16 @@
 ```typescript
 /* New incoming message */
 {
-	user: string,
-	content: string,
-	announcement: boolean,
-	timestamp: Date
+	channel: [2] {
+		id: number,
+		name: string
+	},
+	message: {
+		user: string,
+		content: string,
+		announcement: boolean,
+		timestamp: Date
+	}
 }
 ```
 
