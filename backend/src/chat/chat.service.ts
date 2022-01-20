@@ -9,14 +9,17 @@ import { Server } from 'socket.io';
 
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
+import { UserRole } from 'src/users/entities/roles.enum';
+import { UserStatus } from 'src/users/entities/status.enum';
+
+import { FriendStatus } from 'src/friends/entities/status.enum';
+
 import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
-import { UserRole } from 'src/users/entities/roles.enum';
-import { ModerationFlow } from './dto/moderationFlow.interface';
-import { FriendStatus } from 'src/friends/entities/status.enum';
+
 import { RequestError, WsError } from './dto/errors.enum';
 import { CreateChannelDto } from './dto/createChannel.dto';
-
+import { ModerationFlow } from './dto/moderationFlow.interface';
 @Injectable()
 export class ChatService {
 
@@ -79,7 +82,7 @@ export class ChatService {
 		}
 
 		/* Update user connected */
-		await this.usersService.updateUserConnect(user, true);
+		await this.usersService.updateUserConnect(user, UserStatus.ONLINE);
 
 		/* Add client to global clients */
 		global.clients[client.id] = user.id;
@@ -96,7 +99,7 @@ export class ChatService {
 		const user: User = await this.usersService.findOneByID(userID);
 
 		/* Update user connected */
-		await this.usersService.updateUserConnect(user, false);
+		await this.usersService.updateUserConnect(user, UserStatus.OFFLINE);
 
 		/* Remove client from global clients */
 		delete global.clients[client.id];
@@ -122,12 +125,18 @@ export class ChatService {
 		const userSocketID: string = Object.keys(global.clients).find( 
 			key => global.clients[key] === userID);
 		if (userSocketID)
-			this.server.to(userSocketID).emit(event, JSON.stringify(data));
+			this.server.to(userSocketID).emit(event, data);
 	}
 
 	async sendEventToChannel(channel: Channel, event: string, data: any) {
-		this.server.to('#' + channel.id).emit(event, JSON.stringify({
-			channel: { id: channel.id, name: channel.name }, data }));
+		const channelSerialized: any = {
+			id: channel.id,
+			name: channel.name,
+		}
+
+		this.server.to('#' + channel.id).emit(event,
+			data === {} ? { channel: channelSerialized }
+						: { channel: channelSerialized, data });
 	}
 
 	async setChannelUserBan(user: User, channel: Channel, bool: boolean): Promise<void> {
@@ -280,7 +289,7 @@ export class ChatService {
 		client.join('#' + channel.id);
 
 		/* Send user success joined */
-		client.emit('channel::onJoin', JSON.stringify({ id: channel.id, name: channel.name }));
+		client.emit('channel::onJoin', { id: channel.id, name: channel.name });
 
 		/* Send user joined to whole channel */
 		await this.sendEventToChannel(channel, "channel::membersReload", {});
@@ -382,7 +391,7 @@ export class ChatService {
 	async getChannelUsers(channelID: number): Promise<ChannelUser[]> {
 		return this.userChannelRepository.query(`
 			SELECT channel.user_id as id, channel.muted, channel.role, 
-					users.login, users.connected
+					users.login, users.status
 			FROM channels_users as channel
 			INNER JOIN users ON channel.user_id = users.id
 			WHERE channel_id = ${channelID}
@@ -392,7 +401,7 @@ export class ChatService {
 	async getChannelModerators(channelID: number): Promise<ChannelUser[]> {
 		return this.userChannelRepository.query(`
 			SELECT channel.user_id as id, channel.muted, channel.role, 
-					users.login, users.connected
+					users.login, users.status
 			FROM channels_users as channel
 			INNER JOIN users ON channel.user_id = users.id
 			WHERE channel_id = ${channelID} AND (
