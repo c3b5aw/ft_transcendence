@@ -2,6 +2,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { UserRole } from './roles.enum';
+import { UserStatus } from './status.enum';
 
 @Entity('users')
 export class User {
@@ -66,9 +67,9 @@ export class User {
 		USER INFOS
 	*/
 
-	@Column({ type: 'boolean', default: false })
-	@ApiProperty({ description: "is online", example: true })
-	connected: boolean;
+	@Column({ type: 'enum', enum: UserStatus, default: UserStatus.OFFLINE })
+	@ApiProperty({ description: "user connection status", example: "CONNECTED" })
+	status: UserStatus;
 
 	@CreateDateColumn({ update: false, default: () => 'CURRENT_TIMESTAMP', nullable: false  })
 	@ApiProperty({ description: "user register date", example: "2020-01-01T00:00:00.000Z" })
