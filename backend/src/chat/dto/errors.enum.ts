@@ -22,4 +22,5 @@ export enum WsError {
 	USER_MUTED = 'user muted',
 	NO_COOKIE = 'no cookie',
 	ACCESS_TOKEN_NOT_FOUND = 'access token not found',
+	ACCESS_TOKEN_INVALID = 'access token invalid',
 }

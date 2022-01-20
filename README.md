@@ -50,4 +50,4 @@ make
 ## Documentation
 
 - [REST Documentation (require deploy)](http://localhost/api/docs)
-- [Socket.io Protocol](https://github.com/c3b5aw/ft_transcendence/blob/main/docs/ws_protocol)
+- [Our WS Protocol](https://github.com/c3b5aw/ft_transcendence/blob/main/docs/ws_protocol.md)

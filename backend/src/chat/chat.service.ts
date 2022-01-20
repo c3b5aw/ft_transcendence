@@ -48,35 +48,34 @@ export class ChatService {
 
 	async wsLogin(client: Socket): Promise<number> {
 		/* Find cookie */
-		if ( !client.handshake.headers.hasOwnProperty('cookie')
-		|| !client.handshake.headers.cookie) {
-			client.emit('onError', { error: WsError.NO_COOKIE });
-			return 0;
+		if (!client.handshake.headers.hasOwnProperty('cookie') || !client.handshake.headers.cookie) {
+			client.emit('onError', { error: WsError.NO_COOKIE }); return 0;
 		}
 
 		const cookies = client.handshake.headers.cookie;
 		const cookie = cookies.split(';').find( c => c.trim().startsWith('access_token='));
 		if (!cookie) {
-			client.emit('onError', { error: WsError.ACCESS_TOKEN_NOT_FOUND });
-			return 0;
+			client.emit('onError', { error: WsError.ACCESS_TOKEN_NOT_FOUND }); return 0;
 		}
 
 		/* Verify token from cookie */
 		const accessToken = cookie.split('=')[1];
-		const payload = this.jwtService.verify(accessToken, {
-			ignoreExpiration: false,
-		});
+
+		let payload: any = {};
+		try {
+			payload = this.jwtService.verify(accessToken, { ignoreExpiration: false });
+		} catch (e) {
+			client.emit('onError', { error: WsError.ACCESS_TOKEN_INVALID }); return 0;
+		}
 
 		/* Get User from DB */
 		const user: User = await this.usersService.findOneByID( payload.sub );
 		if (!user) {
-			client.emit('onError', { error: WsError.USER_NOT_FOUND });
-			return 0;
+			client.emit('onError', { error: WsError.USER_NOT_FOUND }); return 0;
 		}
 			 
 		if (user.role === UserRole.BANNED) {
-			client.emit('onError', { error: WsError.USER_BANNED });
-			return 0;
+			client.emit('onError', { error: WsError.USER_BANNED }); return 0;
 		}
 
 		/* Update user connected */
