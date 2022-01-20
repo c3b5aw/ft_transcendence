@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from "@mui/material";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ISearchBarChannel, User } from "../../../../Services/Interface/Interface";
 import { useSnackbar } from 'notistack'
 import CloseIcon from '@mui/icons-material/Close';
@@ -8,6 +8,7 @@ import useChannels from "../../Services/useChannels";
 import MySearchBarChannels from "../MySearchBarChannels";
 import LockIcon from '@mui/icons-material/Lock';
 import useChannelsJoin from "../../Services/useChannelsJoin";
+import { socket } from "../../../../Services/ws/utils";
 
 function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>>, reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, me: User}) {
 	const { setOpen, reload, setReload } = props;
@@ -17,7 +18,6 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>>, reload
 	const joinChannels = useChannelsJoin();
 
 	const [joinChannel, setJoinChannel] = useState<Channel>();
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
 
 
@@ -26,8 +26,24 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>>, reload
 		setOpen2(false);
 	};
 
+	const channelJoin = () => {
+		if (joinChannel !== undefined) {
+			socket.emit("channel::join", JSON.stringify({
+				channel: `${joinChannel.name}`,
+				password: passwordChannel,
+			}));
+		}
+	}
+
+	// useEffect(() => {
+	// 	socket.on("channel::onJoin", (data) => {
+	// 		console.log(data);
+	// 	});
+	// })
+
 	const handleJoinChannel = () => {
-		//check password
+		channelJoin();
+		console.log(socket);
 		setReload(!reload);
 		setOpen(false);
 		setOpen2(false);

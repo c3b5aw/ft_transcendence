@@ -29,23 +29,25 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 					socket.connect();
 	
 					socket.on("onError", (data) => {
-						enqueueSnackbar(`${data}`, { 
+						enqueueSnackbar(`${data.error}`, { 
 							variant: 'error',
 							autoHideDuration: 3000,
 						});
 					});
 	
 					socket.on("onSuccess", (data) => {
-						enqueueSnackbar(`${data}`, { 
+						enqueueSnackbar(`${data.error}`, { 
 							variant: 'success',
 							autoHideDuration: 3000,
 						});
 					});
 	
 					socket.on("channel::message", (data) => {
-						console.log("DEBUT");
+						console.log(data.error);
+					});
+
+					socket.on("channel::onJoin", (data) => {
 						console.log(data);
-						console.log("FIN");
 					});
 				}
 			}		
