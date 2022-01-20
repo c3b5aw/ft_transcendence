@@ -357,7 +357,7 @@ export class ChatService {
 				channels.private, channels.owner_id
 			FROM channels_users AS users
 			INNER JOIN channels ON users.channel_id = channels.id
-			WHERE user_id = 83781
+			WHERE user_id = ${userID}
 		`);
 	}
 
