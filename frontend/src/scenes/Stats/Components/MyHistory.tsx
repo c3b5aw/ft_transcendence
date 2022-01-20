@@ -1,14 +1,11 @@
 import { Avatar, Divider, List, ListItem, Paper, Stack } from "@mui/material"
 import { User } from "../../../services/Interface/Interface";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
-import MySnackBar from "../../../components/MySnackbar";
 import useMatchs from "../Services/useMatchs";
-import { useState } from "react";
 
 const MyHistory = (props: {user: User}) => {
 	const { user } = props;
 	const matchs = useMatchs(user);
-	const [error, setError] = useState<string>("Les données de l'historique ont été chargées")
 
 	if (matchs === undefined)
 		return (<MyChargingDataAlert />);
@@ -68,7 +65,6 @@ const MyHistory = (props: {user: User}) => {
 				</Paper> : <div style={{fontSize: "48px", color: "#A3A3A3", fontFamily: "Myriad Pro", textAlign: "center"}}>No matchs</div>
 				}
 			</Stack>
-			<MySnackBar message={`${error}`} severity="success" time={2000} setError={setError}/>
 		</Stack>
 	);
 }

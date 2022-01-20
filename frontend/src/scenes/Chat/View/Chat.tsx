@@ -14,7 +14,6 @@ import { Channel } from '../Services/interface';
 
 function Chat() {
 	const me = useMe();
-	// const [channels, setChannels] = useState<Channel[]>([]);
 	const [channel, setChannel] = useState<Channel>();
 	// const [message, setMessage] = useState<string>("");
 	const [messageTmp, setMessageTmp] = useState<string>("");

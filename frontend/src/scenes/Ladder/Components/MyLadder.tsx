@@ -18,13 +18,12 @@ import { useEffect, useState } from 'react';
 import { Match, User } from '../../../services/Interface/Interface';
 import { Stack } from '@mui/material';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
-import MyError from '../../../components/MyError';
-import MySnackBar from '../../../components/MySnackbar';
+import { useSnackbar } from 'notistack'
 
 function Row(props: { user: User, me: User}) {
 	const [open, setOpen] = React.useState(false);
 	const [matchs, setMatchs] = React.useState<Match[]>([]);
-	const [error, setError] = React.useState<unknown>("");
+	const { enqueueSnackbar } = useSnackbar();
 	const { user } = props;
 	const { me } = props;
 	const navigate = useNavigate();
@@ -32,18 +31,20 @@ function Row(props: { user: User, me: User}) {
 	useEffect(() => {
 		const fetchMatchs = async () => {
 			try {
-				if (user)
-				{
+				if (user) {
 					const reponse = await axios.get(`${api}${apiUsers}/${user.login}${apiMatch}`);
 					setMatchs(reponse.data);
 				}
 			} catch (err) {
-				setError(err)
+				enqueueSnackbar(`Impossible de charger l'historique des matchs de ${user.login} (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		if (open && me !== undefined)
 			fetchMatchs();
-	}, [user, open, me])
+	}, [user, open, me, enqueueSnackbar])
 
 	return (
 		<React.Fragment>
@@ -52,8 +53,7 @@ function Row(props: { user: User, me: User}) {
 			<IconButton
 				aria-label="expand row"
 				size="small"
-				onClick={() => setOpen(!open)}
-			>
+				onClick={() => setOpen(!open)}>
 				{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
 			</IconButton>
 			</TableCell>
@@ -93,10 +93,6 @@ function Row(props: { user: User, me: User}) {
 					</TableBody>
 				</Table>
 				</Box>
-				{error !== "" ?
-					<MySnackBar message={`${error}`} severity="error" time={10000} setError={setError}/> :
-					<MySnackBar message={`Données matchs ${user.login} chargées`} severity="success" time={2000} setError={setError}/>
-				}
 			</Collapse>
 			</TableCell>
 		</TableRow>
@@ -107,7 +103,7 @@ function Row(props: { user: User, me: User}) {
 export default function MyLadder(props: {me: User}) {
 
 	const [users, setUsers] = useState<User[]>([]);
-	const [error, setError] = useState<unknown>("");
+	const { enqueueSnackbar } = useSnackbar();
 	const { me } = props;
 
 	useEffect(() => {
@@ -117,16 +113,17 @@ export default function MyLadder(props: {me: User}) {
 				setUsers(response.data);
 			}
 			catch (err) {
-				setError(err);
+				enqueueSnackbar(`Impossible de charger le classement (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchUsers();
-	}, []);
+	}, [enqueueSnackbar]);
 
-	if (users === undefined && error === "")
+	if (users === undefined)
 		return (<MyChargingDataAlert />);
-	else if (error !== "")
-		return (<MyError error={error}/>);
 	return (
 		<Stack sx={{backgroundColor: "white", width: 1, height: 0.82, borderRadius: 5}} direction="column">
 			<TableContainer>
@@ -149,7 +146,6 @@ export default function MyLadder(props: {me: User}) {
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<MySnackBar message={`Données classement chargées`} severity="success" time={2000} setError={setError}/>
 		</Stack>
 	);
 }

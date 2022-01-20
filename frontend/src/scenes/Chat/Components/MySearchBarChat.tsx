@@ -10,7 +10,7 @@ function MySearchBarChat(props : {users: User[], fSearchBar: ISearchBar, nameBar
     const [searched, setSearched] = React.useState<string>("");
 	const [rows, setRows] = React.useState<User[]>([]);
 	const classes = useStyles();
-	
+
 	const requestSearch = (searchedVal: string) => {
 		if (searchedVal === "") {
 			setRows([]);

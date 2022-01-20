@@ -4,7 +4,7 @@ import { User } from "../../../../services/Interface/Interface";
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
 import { api, apiChannel } from "../../../../services/Api/Api";
-import MySnackBar from "../../../../components/MySnackbar";
+import { useSnackbar } from 'notistack'
 
 function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetStateAction<boolean>>}) {
 	const { reload, setReload } = props;
@@ -14,7 +14,7 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
 
-	const [error, setError] = useState<string>("");
+	const { enqueueSnackbar } = useSnackbar();
 
 	// function handleClickCell(user: User) {
 	// 	const tmp = addFriends.filter(item => item.login === user.login)
@@ -38,16 +38,26 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 					name: nameChannel,
 					password: passwordChannel
 				})
-				setError("Le channel a bien été créer");
+				enqueueSnackbar(`Le channel ${nameChannel} a été crée`, { 
+					variant: 'success',
+					autoHideDuration: 3000,
+				});
 				handleClose();
 				setReload(!reload);
 			}
 			catch (err) {
-				setError(err as string);
+				enqueueSnackbar(`Le channel ${nameChannel} n'a pas pu etre crée (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
-		else
-			setError("Le nom du channel doit contenir au moins 3 caractères");
+		else {
+			enqueueSnackbar(`Le nom du channel doit contenir au moins 3 caractères`, { 
+				variant: 'warning',
+				autoHideDuration: 3000,
+			});
+		}
 	};
 
 	const  handleTextChangeName = async (event: { target: { value: SetStateAction<string>; }; }) => {
@@ -108,13 +118,11 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 					onChange={handleTextChangePassword}
 				/>
 				<div style={{marginTop: 10}}></div>
-				{/* <MySearchBarChat users={users} fSearchBar={fSearchBar} /> */}
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose}>Cancel</Button>
 				<Button onClick={handleCreate}>Create</Button>
 			</DialogActions>
-			{error !== "" ? <MySnackBar message={`${error}`} severity="error" time={3000} setError={setError}/> : null}
 		</Dialog>
 	);
 }

@@ -4,11 +4,12 @@ import Connection from '../../scenes/Connection/View/Connection';
 import { api, apiMe } from '../Api/Api';
 import { ROLE } from '../Api/Role';
 import { User } from '../Interface/Interface';
+import { useSnackbar } from 'notistack'
 
 const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array<ROLE>}) => {
 	const [logged, setLogged] = useState(false);
 	const [me, setMe] = useState<User>();
-	// const [rolesUser, setRoles] = useState<Array<ROLE>>([]);
+	const { enqueueSnackbar } = useSnackbar();
 
 	useEffect(() => {
 		const fetchConnected = async () => {
@@ -25,9 +26,12 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 		}
 		fetchConnected()
 		.catch(e => {
-			console.log('Il y a eu un problème : ' + e.message);
+			enqueueSnackbar(`${e}`, { 
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
 		});
-	}, [])
+	}, [enqueueSnackbar])
 
 	useEffect(() => {
 		const fetchMe = async () => {
@@ -35,12 +39,15 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 				const reponse = await axios.get(`${api}${apiMe}`);
 				setMe(reponse.data);
 			} catch (err) {
-				console.log(err);
+				enqueueSnackbar(`${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		if (logged)
 			fetchMe();
-	}, [logged])
+	}, [enqueueSnackbar, logged])
 
 	if (logged && me !== undefined && roles.includes(me.role))
 		return (children)

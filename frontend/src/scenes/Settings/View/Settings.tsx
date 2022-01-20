@@ -9,9 +9,8 @@ import KeyIcon from '@mui/icons-material/Key';
 import MyFooter from "../../../components/MyFooter";
 import { styleTextField } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
-import MyError from "../../../components/MyError";
-import MySnackBar from "../../../components/MySnackbar";
 import { styleStack, sxButton } from "../Services/style";
+import { useSnackbar } from 'notistack'
 
 const Settings = () => {
 	const [me, setMe] = useState<User>();
@@ -20,7 +19,7 @@ const Settings = () => {
 	const [new_display, setNewDisplay] = useState<string>("");
 	const [new_displayTmp, setNewDisplayTmp] = useState<string>("");
 	const [event, setEvent] = useState<Date>();
-	const [error, setError] = useState<unknown>("");
+	const { enqueueSnackbar } = useSnackbar();
 
 	useEffect(() => {
 		const fetchMe = async () => {
@@ -30,7 +29,10 @@ const Settings = () => {
 				return reponse;
 			}
 			catch (err) {
-				setError(err);
+				enqueueSnackbar(`Impossible de recuperer les informations te concernant (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		async function fetchCreated() {
@@ -38,7 +40,7 @@ const Settings = () => {
 			setEvent(new Date(result?.data.created))
 		}
 		fetchCreated();
-	}, [new_display]);
+	}, [enqueueSnackbar, new_display]);
 
 	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
 		setNewDisplayTmp(event.target.value);
@@ -47,28 +49,34 @@ const Settings = () => {
 	async function handleSendNewDisplayName() {
 		if (new_displayTmp.length > 3) {
 			try {
-				const reponse = await axios.post(`${api}${apiMe}/display_name`, {
+				await axios.post(`${api}${apiMe}/display_name`, {
 					display_name: `${new_displayTmp}`
 				})
-				if (reponse.status === 201) {
-					setNewDisplay(new_displayTmp);
-				}
+				setNewDisplay(new_displayTmp);
+				enqueueSnackbar(`Le dislay_name a été mis a jour`, { 
+					variant: 'success',
+					autoHideDuration: 3000,
+				});
 			}
 			catch (err) {
-				setError(err);
+				enqueueSnackbar(`Impossible de mettre a jour le display name (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
+		}
+		else {
+			enqueueSnackbar(`Le display_name doit contenir au moins 3 caractères`, { 
+				variant: 'warning',
+				autoHideDuration: 3000,
+			});
 		}
 	}
 
-	if (me === undefined && error === "")
+	if (me === undefined)
 		return (<MyChargingDataAlert />);
-	else if (me === undefined)
-		return (<MyError error={error}/>);
 	return (
 		<Stack direction="row" sx={{width: "100%", height: "100vh"}}>
-			{ error !== "" ?
-				<MySnackBar message={`${error}`} severity="error" time={2000} setError={setError}/> : null
-			}
 			<Stack direction="column" sx={{width: 0.97, height: 1}} justifyContent="center" alignItems="center">
 				<Stack sx={{ width: 1, height: 1/6, marginLeft: 10}} direction="row" alignItems="center" spacing={3}>
 					<Stack>

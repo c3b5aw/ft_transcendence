@@ -10,7 +10,7 @@ import { Channel } from '../../Services/interface';
 import MyDialogCreateChannel from './MyDialogCreateChannel';
 import SettingsAdmin from './SettingsAdmin';
 import SettingsM from './SettingsMember';
-import MySnackBar from '../../../../components/MySnackbar';
+import { useSnackbar } from 'notistack'
 
 function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<Channel | undefined>> }) {
 	const { me, setChannel } = props;
@@ -20,7 +20,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	const [openSettingsM, setOpenSettingsM] = useState<boolean>(false);
 	const [channelTmp, setChannelTmp] = useState<Channel>();
 	const [reload, setReload] = useState<boolean>(false);
-	const [error, setError] = useState<string>("");
+	const { enqueueSnackbar } = useSnackbar();
 
 	const buttonStyle = {
 		border: "4px solid black",
@@ -42,11 +42,14 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 				const reponse = await axios.get(`${api}${apiChannels}`);
 				setChannels(reponse.data);
 			} catch (err) {
-				console.log(err);
+				enqueueSnackbar(`Impossible de charger la liste des channels (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchChannels();
-	}, [me, reload, openSettingsAdmin])
+	}, [me, reload, openSettingsAdmin, enqueueSnackbar])
 
 	function handleCreateChannel() {
 		setOpen(!open);
@@ -58,8 +61,12 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 		if (res.length > 0) {
 			setChannel(channel);
 		}
-		else
-			setError("Impossible de consulter les messages car tu n'es pas dans le channel");
+		else {
+			enqueueSnackbar(`Impossible de consulter les messages car tu n'es pas dans le channel`, { 
+				variant: 'warning',
+				autoHideDuration: 3000,
+			});
+		}
 	}
 
 	function handleClickSettingsChannel(channel: Channel) {
@@ -112,7 +119,6 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 			<Stack direction="column" sx={{width: 1, height: 0.1}} alignItems="center" justifyContent="center">
 				<Button sx={buttonStyle} onClick={() => handleCreateChannel()}>Create new channel</Button>
 			</Stack>
-			{error !== "" ? <MySnackBar message={`${error}`} severity="error" time={3000} setError={setError}/> : null}
 		</Stack>
 	);
 }

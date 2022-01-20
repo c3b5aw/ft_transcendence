@@ -7,6 +7,7 @@ import axios from 'axios';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BanKickMute from './BanKickMute';
 import { Channel } from '../Services/interface';
+import { useSnackbar } from 'notistack'
 
 // function Row(props: { row: UserProps }) {
 
@@ -16,6 +17,7 @@ function MyListFriends(props : {me: User | undefined, url: string, isListUserCha
 	const [users, setUsers] = useState<User[]>([]);
 	const [open, setOpen] = useState<boolean>(false);
 	const [userCurrent, setUserCurrent] = useState<User>();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const navigate = useNavigate();
 
@@ -29,17 +31,18 @@ function MyListFriends(props : {me: User | undefined, url: string, isListUserCha
 				const reponse = await axios.get(`${url}`);
 				setUsers(reponse.data);
 			} catch (err) {
-				console.log(err);
+				enqueueSnackbar(`Impossible de charger la liste amis (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchFriends();
-	}, [me, url])
+	}, [enqueueSnackbar, me, url])
 
 	function handleOpenDialogBan(user: User) {
 		setUserCurrent(user);
 		setOpen(!open);
-		console.log(open);
-		console.log(userCurrent);
 	}
 
 	if (me === undefined)

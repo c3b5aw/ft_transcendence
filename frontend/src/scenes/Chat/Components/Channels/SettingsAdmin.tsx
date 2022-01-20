@@ -1,46 +1,74 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
-import MySnackBar from "../../../../components/MySnackbar";
 import { ISearchBar, User } from "../../../../services/Interface/Interface";
 import MySearchBarChat from "../MySearchBarChat";
 import { Channel } from "../../Services/interface";
 import useUsersChannel from "../../Services/useUsersChannel";
-import { api, apiChannel } from "../../../../services/Api/Api";
+import { api, apiChannel, apiModos } from "../../../../services/Api/Api";
 import axios from "axios";
-import useModosChannel from "../../Services/UseModosChannel";
+import { useSnackbar } from 'notistack'
 
-function SettingsAdmin(props: { channel: Channel,
-		setOpenSettings: Dispatch<SetStateAction<boolean>>,
-		me: User}) {
+function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetStateAction<boolean>>, me: User}) {
+	const { enqueueSnackbar } = useSnackbar();
 	const { channel, setOpenSettings, me } = props;
 	const usersChannel = useUsersChannel(channel);
     const [open, setOpen] = useState(true);
-	const [modos, setModos] = useState<User[]>(useModosChannel(channel));
-	const [error, setError] = useState<string>("");
+	const [modos, setModos] = useState<User[]>([]);
 
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
 
-	async function handleClickCell(user: User) {
+	async function handleAddModo(user: User) {
 		const tmp = modos.filter(item => item.login === user.login)
 		if (tmp.length === 0) {
 			try {
 				await axios.put(`${api}${apiChannel}/${channel.name}/moderator/${user.login}`);
 				setModos(modos => [...modos, user]);
+				enqueueSnackbar(`${user.login} a été ajouté en tant que moderateur de ${channel.name}`, { 
+					variant: 'success',
+					autoHideDuration: 3000,
+				});
 			}
 			catch (err) {
-				console.log(err);
+				enqueueSnackbar(`Impossible d'ajouter ${user.login} comme modérateur de ${channel.name} (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 	}
+
+	useEffect(() => {
+		const fetchModosChannel = async () => {
+			try {
+				const response = await axios.get(`${api}${apiChannel}/${channel.name}${apiModos}`);
+				setModos(response.data);
+			}
+			catch (err) {
+				enqueueSnackbar(`La liste des modérateurs n'a pas pu etre chargée (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+			}
+		}
+		fetchModosChannel();
+	}, [channel.name, enqueueSnackbar]);
+
 	const handleRemoveModo = async (user: User) => {
 		try {
 			await axios.delete(`${api}${apiChannel}/${channel.name}/moderator/${user.login}`);
 			setModos(modos.filter(item => item.login !== user.login));
+			enqueueSnackbar(`${user.login} a été supprimé de la liste des moderateurs de ${channel.name}`, { 
+				variant: 'success',
+				autoHideDuration: 3000,
+			});
 		}
 		catch (err) {
-			console.log(err);
+			enqueueSnackbar(`Impossible de supprimer ${user.login} de la liste des modérateurs de ${channel.name} (${err})`, { 
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
 		}
 	}
 
@@ -52,33 +80,56 @@ function SettingsAdmin(props: { channel: Channel,
 	const handleDeleteChannel = async () => {
 		try {
 			await axios.delete(`${api}${apiChannel}/${channel.name}`);
+			enqueueSnackbar(`Le channel ${channel.name} a été supprimé`, { 
+				variant: 'success',
+				autoHideDuration: 3000,
+			});
 			handleClose();
 		}
 		catch (err) {
-			console.log(err);
+			enqueueSnackbar(`Le channel ${channel.name} n'a pas pu etre supprimé (${err})`, { 
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
 		}
 	}
 
 	const handleUpdate = async () => {
+		if (passwordChannel.length > 0) {
+			try {
+				await axios.post(`${api}${apiChannel}/${channel.name}/password`, {
+					password: passwordChannel
+				});
+				enqueueSnackbar(`Le password du channel ${channel.name} a été modifié`, { 
+					variant: 'success',
+					autoHideDuration: 3000,
+				});
+				handleClose();
+			}
+			catch (err) {
+				enqueueSnackbar(`Le password du channel ${channel.name} n'a pas pu etre modifié (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+				console.log(err);
+			}
+		}
 		if (nameChannel.length > 0) {
 			try {
 				await axios.post(`${api}${apiChannel}/${channel.name}/name`, {
 					name: nameChannel,
 				});
-				handleClose();
-			}
-			catch (err) {
-				console.log(err);
-			}
-		}
-		if (passwordChannel.length > 0) {
-			try {
-				await axios.post(`${api}${apiChannel}/${nameChannel}/password`, {
-					password: passwordChannel
+				enqueueSnackbar(`Le nom du channel a été modifié par ${nameChannel}`, { 
+					variant: 'success',
+					autoHideDuration: 3000,
 				});
 				handleClose();
 			}
 			catch (err) {
+				enqueueSnackbar(`Le nom du channel n'a pas pu etre modifié (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 				console.log(err);
 			}
 		}
@@ -95,9 +146,9 @@ function SettingsAdmin(props: { channel: Channel,
 	};
 
 	const fSearchBar: ISearchBar = {
-		handleClickCell: handleClickCell
+		handleClickCell: handleAddModo
 	};
-
+	// console.log(modos);
 	return (
 		<Dialog
 			open={open}
@@ -151,7 +202,6 @@ function SettingsAdmin(props: { channel: Channel,
 				<Button onClick={handleClose} variant="contained" color="warning">Cancel</Button>
 				<Button onClick={handleUpdate} variant="contained" color="success">Update</Button>
 			</DialogActions>
-			{error !== "" ? <MySnackBar message={`${error}`} severity="error" time={3000} setError={setError}/> : null}
 		</Dialog>
 	);
 }

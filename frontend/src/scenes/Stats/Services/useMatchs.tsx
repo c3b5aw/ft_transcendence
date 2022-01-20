@@ -2,9 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { api, apiMatch, apiUsers } from "../../../services/Api/Api";
 import { Match, User } from "../../../services/Interface/Interface";
+import { useSnackbar } from 'notistack'
 
 function useMatchs(user: User) {
     const [matchs, setMatchs] = useState<Match[]>();
+	const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
 		const fetchMatchs = async () => {
@@ -13,11 +15,14 @@ function useMatchs(user: User) {
 				setMatchs(response.data);
 			}
 			catch (err) {
-				// console.log(err);
+				enqueueSnackbar(`Impossible de charger les matchs de ${user.login} (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchMatchs();
-	}, []);
+	}, [enqueueSnackbar, user.login]);
     return matchs;
 }
 

@@ -5,11 +5,13 @@ import { api, apiChannel, apiMessages } from "../../../services/Api/Api";
 import { Message } from "../Services/interface";
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import React from "react";
+import { useSnackbar } from 'notistack'
 
 function MyMessages(props: {nameChannel: string}) {
 	const { nameChannel } = props;
 	const [messages, setMessages] = useState<Message[]>([])
 	const messageEl = useRef<HTMLDivElement>(null);
+	const { enqueueSnackbar } = useSnackbar();
 
 	useEffect(() => {
 		const fetchMessagesChannel = async () => {
@@ -18,11 +20,14 @@ function MyMessages(props: {nameChannel: string}) {
 				setMessages(reponse.data);
 			}
 			catch (err) {
-				console.log(err);
+				enqueueSnackbar(`Impossible de charger les messages du channel ${nameChannel} (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchMessagesChannel();
-	}, [nameChannel])
+	}, [enqueueSnackbar, nameChannel])
 
 	useEffect(() => {
 		const node = messageEl.current;

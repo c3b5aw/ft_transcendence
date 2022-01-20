@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { api, apiChannel, apiUsers } from "../../../services/Api/Api";
 import { User } from "../../../services/Interface/Interface";
 import { Channel } from "./interface";
+import { useSnackbar } from 'notistack'
 
 function useUsersChannel(channel: Channel) {
+	const { enqueueSnackbar } = useSnackbar();
     const [usersChannel, setUsersChannel] = useState<User[]>([]);
 
     useEffect(() => {
@@ -14,11 +16,14 @@ function useUsersChannel(channel: Channel) {
 				setUsersChannel(response.data);
 			}
 			catch (err) {
-				// console.log(err);
+				enqueueSnackbar(`${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchUsers();
-	}, [channel.name]);
+	}, [channel.name, enqueueSnackbar]);
     return (usersChannel);
 }
 

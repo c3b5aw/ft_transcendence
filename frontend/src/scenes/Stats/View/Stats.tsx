@@ -10,20 +10,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
 import MyAvatar from '../../../components/MyAvatar';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
-import MyError from '../../../components/MyError';
-import MySnackBar from '../../../components/MySnackbar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
 import { sxButton, sxDiv } from '../Services/style';
 import { Friends, STATUS } from '../../../services/Interface/Interface';
+import { useSnackbar } from 'notistack'
 
 const Stats = () => {
 	const { login } = useParams();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const user = useUserStats(login);
 	const me = useMe();
-	const [error, setError] = useState<unknown>("");
 	const [successAdd, setSuccessAdd] = useState<boolean>(false);
 	const [successDelete, setSuccessDelete] = useState<boolean>(false);
 	const [friends, setFriends] = useState<Friends[]>([]);
@@ -36,11 +35,14 @@ const Stats = () => {
 				const reponse = await axios.get(url);
 				setFriends(reponse.data);
 			} catch (err) {
-				setError(err);
+				enqueueSnackbar(`${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchFriendsMe();
-	}, [successAdd, successDelete])
+	}, [enqueueSnackbar, successAdd, successDelete])
 
 	useEffect(() => {
 		const fetchFriendsMePending = async () => {
@@ -49,41 +51,53 @@ const Stats = () => {
 				const reponse = await axios.get(url);
 				setFriendsPending(reponse.data);
 			} catch (err) {
-				setError(err);
+				enqueueSnackbar(`${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchFriendsMePending();
-	}, [successDelete, successAdd])
+	}, [successDelete, successAdd, enqueueSnackbar])
 
 	async function handleAddFriend() {
 		try {
 			await axios.put(`${api}${apiUsers}/${login}/friend`)
+			enqueueSnackbar(`Demande d'ami envoyé à ${login}`, { 
+				variant: 'success',
+				autoHideDuration: 3000,
+			});
 			setSuccessDelete(false);
 			setSuccessAdd(true);
 		}
 		catch (err) {
-			setError(err);
+			enqueueSnackbar(`Impossible de demander en ami ${login} (${err})`, { 
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
 		}
 	}
 
 	async function handleDeleteFriend() {
 		try {
 			await axios.delete(`${api}${apiUsers}/${login}/friend`)
+			enqueueSnackbar(`${login} ne fait plus parti de vos amis`, { 
+				variant: 'success',
+				autoHideDuration: 3000,
+			});
 			setSuccessAdd(false);
 			setSuccessDelete(true);
 		}
 		catch (err) {
-			setError(err);
+			enqueueSnackbar(`Impossible de supprimer ${login} de vos amis (${err})`, { 
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
 		}
 	}
 
-	// 
-	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined) && error === "")
+	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined))
 		return (<MyChargingDataAlert />);
-	// 
-	else if (error !== "" || user === undefined || me === undefined)
-		return (<MyError error={error}/>);
-
 	const isFriend = friends.filter(function (friend) {
 		return (friend.status === STATUS.ACCEPTED && friend.login === user?.login);
 	});
@@ -128,10 +142,6 @@ const Stats = () => {
 				</Stack>
 				<MyHistory user={user}/>
 			</Stack>
-			{error !== "" ? <MySnackBar message={`${error}`} severity="error" time={2000} setError={setError}/> : successAdd === true ?
-			<MySnackBar message={`Demande d'ami envoyée`} severity="success" time={2000} setError={setError}/> : successDelete === true ? 
-			<MySnackBar message={`Suppression ami recu`} severity="success" time={2000} setError={setError}/> : null
-			}
 		</Stack>
 	);
 }

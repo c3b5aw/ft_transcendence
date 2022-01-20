@@ -19,16 +19,19 @@ export default function BanKickMute(props: {setOpen: React.Dispatch<React.SetSta
 	};
 
 	const handleBanUser = async () => {
+		//channel::ban
 		console.log("Ban user");
 		handleClose();
 	}
 
 	const handleKickUser = async () => {
+		//channel::kick
 		console.log("Kick user");
 		handleClose();
 	}
 
 	const handleMuteUser = async () => {
+		//channel::mute
 		console.log("Mute user");
 		handleClose();
 	}

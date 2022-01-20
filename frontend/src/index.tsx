@@ -16,6 +16,7 @@ import React from 'react';
 import Chat from './scenes/Chat/View/Chat';
 import Admin from './scenes/Admin/View/Admin';
 import { ROLE } from './services/Api/Role';
+import { SnackbarProvider } from 'notistack';
 
 const useStyles = makeStyles({
 	theme: {
@@ -29,69 +30,69 @@ const useStyles = makeStyles({
 function ManageRouter() {
 	const classes = useStyles();
 	return (
-		// <MeProvider>
-			<div className={classes.theme}>
-				<Router>
-					<Routes>
-						<Route path='*' element={ <MyMissing />} />
-						<Route
-							path={pageHome}
-							element={
-								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-									<Home />
-								</PrivateRoute>
-							}
-						/>
-						<Route
-							path={pageSettings}
-							element={
-								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-									<Settings />
-								</PrivateRoute>
-							}
-						/>
-						<Route
-							path={pageClassement}
-							element={
-								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-									<Classement />
-								</PrivateRoute>
-							}
-						/>
-						<Route
-							path={pageStats}
-							element={
-								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-									<Stats />
-								</PrivateRoute>
-							}
-						/>
-						<Route
-							path={pageChat}
-							element={
-								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-									<Chat />
-								</PrivateRoute>
-							}
-						/>
-						<Route
-							path={pageAdmin}
-							element={
-								<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-									<Admin />
-								</PrivateRoute>
-							}
-						/>
-					</Routes>
-				</Router>
-			</div>
-		// </MeProvider>
+		<div className={classes.theme}>
+			<Router>
+				<Routes>
+					<Route path='*' element={ <MyMissing />} />
+					<Route
+						path={pageHome}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Home />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageSettings}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Settings />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageClassement}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Classement />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageStats}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Stats />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageChat}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Chat />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageAdmin}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Admin />
+							</PrivateRoute>
+						}
+					/>
+				</Routes>
+			</Router>
+		</div>
 	);
 }
 
 ReactDOM.render(
-	<React.StrictMode>
-		<ManageRouter/>
-	</React.StrictMode>,
+	<SnackbarProvider maxSnack={3}>
+		<React.StrictMode>
+			<ManageRouter/>
+		</React.StrictMode>
+	</SnackbarProvider>,
 	document.getElementById('root')
 );

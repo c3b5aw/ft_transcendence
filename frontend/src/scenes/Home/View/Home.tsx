@@ -16,7 +16,7 @@ export default function Home() {
 	const classes = useStyles();
 	const styleH1 = StyleH1();
 	const navigate = useNavigate();
-
+  
 
 	function handleLaunchGame() {
 		navigate('/game');

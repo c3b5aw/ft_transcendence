@@ -21,6 +21,8 @@
 		"axios": "^0.24.0",
 		"install": "^0.13.0",
 		"material-ui-search-bar": "^1.0.0",
+		"material-ui-snackbar-provider": "^1.5.0",
+		"notistack": "^2.0.3",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
 		"react-images-uploading": "^3.1.3",

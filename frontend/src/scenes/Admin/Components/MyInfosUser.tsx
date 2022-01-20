@@ -12,11 +12,13 @@ import { useState } from 'react';
 import { User } from '../../../services/Interface/Interface';
 import { Avatar, Stack, Switch } from '@mui/material';
 import { ROLE } from '../../../services/Api/Role';
+import { useSnackbar } from 'notistack'
 
 export default function MyInfosUser(props: {me: User | undefined, users: User[]}) {
 
 	const { me } = props;
 	const { users } = props;
+	const { enqueueSnackbar } = useSnackbar();
 
 	function Row(props: { user: User, me: User | undefined }) {
 		const { user } = props;
@@ -29,18 +31,32 @@ export default function MyInfosUser(props: {me: User | undefined, users: User[]}
 				try {
 					await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
 					setBanned(!banned);
+					enqueueSnackbar(`${user.login} a été débanni`, { 
+						variant: 'success',
+						autoHideDuration: 3000,
+					});
 				}
 				catch (err) {
-					console.log(err);
+					enqueueSnackbar(`Impossible de débannir ${user.login} (${err})`, { 
+						variant: 'error',
+						autoHideDuration: 3000,
+					});
 				}
 			}
 			else {
 				try {
 					await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
 					setBanned(!banned);
+					enqueueSnackbar(`${user.login} a été banni`, { 
+						variant: 'success',
+						autoHideDuration: 3000,
+					});
 				}
 				catch (err) {
-					console.log(err);
+					enqueueSnackbar(`Impossible de bannir ${user.login} (${err})`, { 
+						variant: 'error',
+						autoHideDuration: 3000,
+					});
 				}
 			}
 		}

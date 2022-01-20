@@ -2,8 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { api, apiAchievements, apiUsers } from "../../../services/Api/Api";
 import { Achievements, User } from "../../../services/Interface/Interface";
+import { useSnackbar } from 'notistack'
 
 function useAchievements(user: User) {
+	const { enqueueSnackbar } = useSnackbar();
 	const [achievements, setAchievements] = useState<Achievements[]>([]);
 	useEffect(() => {
 		const fetchAchievements = async () => {
@@ -12,11 +14,14 @@ function useAchievements(user: User) {
 				setAchievements(response.data);
 			}
 			catch (err) {
-				// console.log(err);
+				enqueueSnackbar(`Impossible de charger la liste des achievements (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchAchievements();
-	}, [user.login]);
+	}, [enqueueSnackbar, user.login]);
 	return (achievements);
 }
 
