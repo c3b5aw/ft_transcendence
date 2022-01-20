@@ -143,7 +143,7 @@ export class ChannelController {
 		channel.password = data.password;
 
 		await this.chatService.updateChannelPassword(channel);
-		resp.send({ message: 'channel password updated' });
+		resp.send({ message: `#${channel.name} password updated` });
 	}
 
 	@Delete('/:channelName/password')
@@ -160,7 +160,7 @@ export class ChannelController {
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		await this.chatService.deleteChannelPassword( channel );
-		resp.send({ message: 'channel password deleted' });
+		resp.send({ message: `#${channel.name} password deleted` });
 	}
 
 	@Get('/:channelName/moderators')
@@ -236,8 +236,8 @@ export class ChannelController {
 		if (flow.target.id === flow.channel.owner_id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
-		await this.chatService.setChannelUserBan(flow.target, flow.channel, false);
-		resp.send({ message: 'user banned' });
+		await this.chatService.setChannelUserBan(flow.target, flow.channel, true);
+		resp.send({ message: `${flow.target.login} has been banned` });
 	}
 
 	@Delete('/:channelName/ban/:login')
@@ -256,7 +256,7 @@ export class ChannelController {
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		await this.chatService.setChannelUserBan(flow.target, flow.channel, false);
-		resp.send({ message: 'user unbanned' });
+		resp.send({ message:  `${flow.target.login} has been unbanned` });
 	}
 
 	@Put('/:channelName/kick/:login')
@@ -276,7 +276,7 @@ export class ChannelController {
 
 
 		await this.chatService.kickUserFromChannel(flow.target, flow.channel);
-		resp.send({ message: 'user kicked' });
+		resp.send({ message:  `${flow.target.login} has been kicked` });
 	}
 
 	@Post('/:channelName/mute/:login/:duration')
@@ -297,7 +297,7 @@ export class ChannelController {
 
 		const futur: Date = new Date(new Date().getTime() + (duration * 1000));
 		await this.chatService.muteUserInChannel(flow.target, flow.channel, futur);
-		resp.send({ message: `user muted for ${duration}` });
+		resp.send({ message: `${flow.target.login} muted for ${duration}` });
 	}
 
 	@Delete('/:channelName/mute/:login')
@@ -316,7 +316,7 @@ export class ChannelController {
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		await this.chatService.muteUserInChannel(flow.target, flow.channel, new Date(0));
-		resp.send({ message: 'user unmuted' });
+		resp.send({ message: `${flow.target.login} has been unmuted` });
 	}
 }
 

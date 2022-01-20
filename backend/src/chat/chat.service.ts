@@ -253,11 +253,11 @@ export class ChatService {
 
 		/* Send message to all clients in channel */
 		this.server.to('#' + channel.id).emit('channel::message', {
-			user: user.login,
-			content: msg.content,
-			announcement: false,
-			timestamp: msg.timestamp,
-		});
+			channel: { id: channel.id, name: channel.name },
+			message: {
+				user: user.login, content: msg.content,
+				announcement: false, timestamp: msg.timestamp,
+			}});
 	}
 
 	async wsJoinChannel(client: Socket, channel: Channel, firstTime: boolean) {
