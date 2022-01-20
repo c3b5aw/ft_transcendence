@@ -63,6 +63,7 @@ export class ChannelController {
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		await this.chatService.deleteChannel( channel );
+
 		resp.send({ message: 'channel deleted' });
 	}
 
@@ -192,8 +193,8 @@ export class ChannelController {
 		if (flow.role !== UserRole.ADMIN && flow.channel.owner_id !== req.id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 		
-		await this.chatService.setUserChannelModerator(flow.channel.id, flow.target.id, true);
-		resp.send({ message: 'user added to moderator list' });
+		await this.chatService.setUserChannelModerator(flow.target, flow.channel.id, true);
+		resp.send({ message: `${flow.target.login} have been added in moderator list` });
 	}
 
 	@Delete('/:channelName/moderator/:login')
@@ -211,8 +212,8 @@ export class ChannelController {
 		if (flow.role !== UserRole.ADMIN && flow.channel.owner_id !== req.user.id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 		
-		await this.chatService.setUserChannelModerator(flow.channel.id, flow.target.id, false);
-		resp.send({ message: 'user added to moderator list' });
+		await this.chatService.setUserChannelModerator(flow.target, flow.channel.id, false);
+		resp.send({ message: `${flow.target.login} have been removed from moderator list` });
 	}
 
 	/* BAN - KICK - MUTE - MODERATOR/ADMIN ONLY */
@@ -228,7 +229,7 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		await this.chatService.setChannelUserBan(flow.target.id, flow.channel.id, false);
+		await this.chatService.setChannelUserBan(flow.target, flow.channel.id, false);
 		resp.send({ message: 'user banned' });
 	}
 
@@ -244,7 +245,7 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		await this.chatService.setChannelUserBan(flow.target.id, flow.channel.id, false);
+		await this.chatService.setChannelUserBan(flow.target, flow.channel.id, false);
 		resp.send({ message: 'user unbanned' });
 	}
 
@@ -260,7 +261,7 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		await this.chatService.kickUserFromChannel(flow.target.id, flow.channel.id);
+		await this.chatService.kickUserFromChannel(flow.target, flow.channel.id);
 		resp.send({ message: 'user kicked' });
 	}
 
@@ -278,7 +279,7 @@ export class ChannelController {
 			return;
 
 		const futur: Date = new Date(new Date().getTime() + (duration * 1000));
-		await this.chatService.muteUserInChannel(flow.target.id, flow.channel.id, futur);
+		await this.chatService.muteUserInChannel(flow.target, flow.channel.id, futur);
 		resp.send({ message: `user muted for ${duration}` });
 	}
 
@@ -294,7 +295,7 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		await this.chatService.muteUserInChannel(flow.target.id, flow.channel.id, new Date(0));
+		await this.chatService.muteUserInChannel(flow.target, flow.channel.id, new Date(0));
 		resp.send({ message: 'user unmuted' });
 	}
 }

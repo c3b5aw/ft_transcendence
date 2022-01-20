@@ -118,48 +118,79 @@ export class ChatService {
 		return this.userChannelRepository.save(userChannel);
 	}
 
-	async setChannelUserBan(userID: number, channelID: number, bool: boolean): Promise<void> {
-		const joined: boolean = await this.isUserInChannel(userID, channelID);
+	async sendEventToUser(userID: number, event: string, data: any) {
+		/* Find user in global clients, if exists, send event */
+		const userSocketID: string = Object.keys(global.clients).find( 
+			key => global.clients[key] === userID);
+		if (userSocketID)
+			this.server.to(userSocketID).emit(event, JSON.stringify(data));
+	}
+
+	async setChannelUserBan(user: User, channelID: number, bool: boolean): Promise<void> {
+		const joined: boolean = await this.isUserInChannel(user.id, channelID);
 		if (!joined)
 			return;
 		
 		await this.userChannelRepository.update(
-			{ user_id: userID, channel_id: channelID },
+			{ user_id: user.id, channel_id: channelID },
 			{ role: bool ? UserRole.BANNED : UserRole.MEMBER },
 		);
+
+		await this.sendEventToUser(user.id, 'channel::onBan', {
+			channelID, 'banned': bool,
+		})
+
+		const alert = `${user.login} has been ${bool ? 'banned' : 'unbanned'}`;
+		await this.wsSendAnnouncementToChannel(channelID, alert);
 	}
 
-	async setUserChannelModerator(userID: number, channelID: number, bool: boolean): Promise<void> {
-		const joined: boolean = await this.isUserInChannel(userID, channelID);
+	async setUserChannelModerator(user: User, channelID: number, bool: boolean): Promise<void> {
+		const joined: boolean = await this.isUserInChannel(user.id, channelID);
 		if (!joined)
 			return;
 
 		await this.userChannelRepository.update(
-			{ user_id: userID, channel_id: channelID },
+			{ user_id: user.id, channel_id: channelID },
 			{ role: bool ? UserRole.MODERATOR : UserRole.MEMBER },
 		);
+
+		await this.sendEventToUser(user.id, 'channel::onRoleUpdate', {
+			channelID, 'role': bool ? UserRole.MODERATOR : UserRole.MEMBER,
+		})
+
+		const alert = `${user.login} has been ${bool ? 'promoted' : 'demoted'} to ${bool ? 'moderator' : 'member'}`;
+		await this.wsSendAnnouncementToChannel(channelID, alert);
 	}
 
-	async kickUserFromChannel(userID: number, channelID: number): Promise<void> {
-		const user = await this.userChannelRepository.findOne({
-			where: { user_id: userID, channel_id: channelID },
+	async kickUserFromChannel(user: any, channelID: number): Promise<void> {
+		this.sendEventToUser(user.id, 'channel::onKick', { channelID });
+		
+		const userChannel = await this.userChannelRepository.findOne({
+			where: { user_id: user.id, channel_id: channelID },
 		});
-
 		if (!user)
 			return;
 
-		await this.userChannelRepository.delete(user.id);
+		await this.userChannelRepository.delete(userChannel);
+
+		await this.wsSendAnnouncementToChannel(channelID, `${user.login} has been kicked`);
 	}
 
-	async muteUserInChannel(userID: number, channelID: number, until: Date): Promise<void> {
-		const joined: boolean = await this.isUserInChannel(userID, channelID);
+	async muteUserInChannel(user: User, channelID: number, until: Date): Promise<void> {
+		const joined: boolean = await this.isUserInChannel(user.id, channelID);
 		if (!joined)
 			return;
 
 		await this.userChannelRepository.update(
-			{ user_id: userID, channel_id: channelID },
+			{ user_id: user.id, channel_id: channelID },
 			{ muted: until },
 		);
+
+		await this.sendEventToUser(user.id, 'channel::onMute', {
+			channelID, 'until': until
+		});
+
+		await this.wsSendAnnouncementToChannel(channelID, `${user.login} has been muted`);
 	}
 
 	async moderationFlow(reqUserId: number, targetLogin: string,
@@ -432,8 +463,10 @@ export class ChatService {
 	*/
 	
 	async updateChannelPassword(channel: Channel): Promise<Channel> {
-		if (channel.private)
+		if (channel.password.length > 0) {
+			channel.private = true;
 			channel.password = createHash('md5').update(channel.password).digest('hex');
+		}
 		return this.channelsRepository.save(channel);
 	}
 
@@ -476,9 +509,17 @@ export class ChatService {
 	*/
 
 	async deleteChannel(channel: Channel): Promise<void> {
+		/* Kick all users from channel */
+		const users = await this.getChannelUsers(channel.id);
+		for (let i = 0; i < users.length; i++) {
+			await this.sendEventToUser(users[i].id, 'channel::onKick', {
+				channelID: channel.id,
+			})
+		}
+
 		/* Delete messages that match channel.id */
 		await this.messagesRepository.delete({ channel_id: channel.id });
-		
+
 		/* Delete userChannel tree */
 		await this.userChannelRepository.delete({ channel_id: channel.id });
 		
