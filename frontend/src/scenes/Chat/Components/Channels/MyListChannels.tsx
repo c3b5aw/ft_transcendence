@@ -10,8 +10,6 @@ import { Channel } from '../../Services/interface';
 import MyDialogCreateChannel from './MyDialogCreateChannel';
 import SettingsAdmin from './SettingsAdmin';
 import SettingsM from './SettingsMember';
-import useUserChannel from '../../Services/useUserChannel';
-import useUsersChannel from '../../Services/useUsersChannel';
 import MySnackBar from '../../../../components/MySnackbar';
 
 function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<Channel | undefined>> }) {
