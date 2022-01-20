@@ -37,6 +37,12 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 				});
 			}
 		}
+		else {
+			enqueueSnackbar(`Impossible d'ajouter ${user.login} car il a deja ete ajouté`, { 
+				variant: 'warning',
+				autoHideDuration: 3000,
+			});
+		}
 	}
 
 	useEffect(() => {

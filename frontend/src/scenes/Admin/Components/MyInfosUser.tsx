@@ -18,23 +18,23 @@ export default function MyInfosUser(props: {me: User | undefined, users: User[]}
 
 	const { me } = props;
 	const { users } = props;
-	const { enqueueSnackbar } = useSnackbar();
 
 	function Row(props: { user: User, me: User | undefined }) {
 		const { user } = props;
 		const { me } = props;
 		const navigate = useNavigate();
-		const [banned, setBanned] = useState<boolean>(user.banned);
+		const [banned, setBanned] = useState<boolean>(user.role === "BANNED" ? true : false);
+		const { enqueueSnackbar } = useSnackbar();
 
 		const handleBanned = async () => {
 			if (banned) {
 				try {
 					await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
-					setBanned(!banned);
 					enqueueSnackbar(`${user.login} a été débanni`, { 
 						variant: 'success',
 						autoHideDuration: 3000,
 					});
+					setBanned(!banned);
 				}
 				catch (err) {
 					enqueueSnackbar(`Impossible de débannir ${user.login} (${err})`, { 
@@ -46,11 +46,11 @@ export default function MyInfosUser(props: {me: User | undefined, users: User[]}
 			else {
 				try {
 					await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
-					setBanned(!banned);
 					enqueueSnackbar(`${user.login} a été banni`, { 
 						variant: 'success',
 						autoHideDuration: 3000,
 					});
+					setBanned(!banned);
 				}
 				catch (err) {
 					enqueueSnackbar(`Impossible de bannir ${user.login} (${err})`, { 
@@ -74,7 +74,7 @@ export default function MyInfosUser(props: {me: User | undefined, users: User[]}
 			<TableCell align="center">{user.victories}</TableCell>
 			<TableCell align="center">
 				{user.role !== ROLE.ADMIN ?
-					<Switch checked={banned} onChange={() => handleBanned()}/> :
+					<Switch checked={banned} onChange={handleBanned}/> :
 					<Switch disabled/>
 				}
 			</TableCell>

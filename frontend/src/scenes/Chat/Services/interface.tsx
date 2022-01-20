@@ -13,4 +13,5 @@ export interface Channel {
 	name: string,
     owner_id: number,
     private: boolean,
+    tunnel: boolean,
 }

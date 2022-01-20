@@ -39,7 +39,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	useEffect(() => {
 		const fetchChannels = async () => {
 			try {
-				const reponse = await axios.get(`${api}${apiChannels}`);
+				const reponse = await axios.get(`${api}${apiChannels}/joined`);
 				setChannels(reponse.data);
 			} catch (err) {
 				enqueueSnackbar(`Impossible de charger la liste des channels (${err})`, { 

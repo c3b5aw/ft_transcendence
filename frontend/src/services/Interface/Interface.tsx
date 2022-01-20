@@ -1,3 +1,4 @@
+import { Channel } from "../../scenes/Chat/Services/interface";
 import { ROLE } from "../Api/Role";
 
 export interface User {
@@ -47,6 +48,10 @@ export interface Friends {
 
 export interface ISearchBar {
 	handleClickCell: (row: User) => void
+}
+
+export interface ISearchBarChannel {
+	handleClickCell: (row: Channel) => void
 }
 
 export enum STATUS {

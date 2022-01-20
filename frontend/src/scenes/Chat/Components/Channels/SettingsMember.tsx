@@ -8,7 +8,7 @@ import { useSnackbar } from 'notistack'
 
 function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetStateAction<boolean>>, reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, me: User}) {
 	const { channel, setOpenSettings, reload, setReload, me } = props;
-    const [open, setOpen] = useState(true);
+	const [open, setOpen] = useState(true);
 	const insideChannel = useUserChannel(channel, me);
 	const { enqueueSnackbar } = useSnackbar();
 
