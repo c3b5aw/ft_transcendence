@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { api, apiChannel, apiUsers } from "../../../services/Api/Api";
-import { User } from "../../../services/Interface/Interface";
+import { api, apiChannel, apiUsers } from "../../../Services/Api/Api";
+import { User } from "../../../Services/Interface/Interface";
 import { Channel } from "./interface";
 import { useSnackbar } from 'notistack'
 

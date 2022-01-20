@@ -1,7 +1,7 @@
 import { Avatar, List, ListItem, Paper, Stack } from "@mui/material";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { api, apiChannel, apiMessages } from "../../../services/Api/Api";
+import { api, apiChannel, apiMessages } from "../../../Services/Api/Api";
 import { Message } from "../Services/interface";
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import React from "react";

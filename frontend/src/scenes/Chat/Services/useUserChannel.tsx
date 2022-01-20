@@ -1,4 +1,4 @@
-import { User } from "../../../services/Interface/Interface";
+import { User } from "../../../Services/Interface/Interface";
 import { Channel } from "./interface";
 import useUsersChannel from "./useUsersChannel";
 

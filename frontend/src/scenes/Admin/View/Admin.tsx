@@ -2,8 +2,8 @@ import { Stack } from "@mui/material";
 import MyAvatar from "../../../components/MyAvatar";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyInfosUser from "../Components/MyInfosUser";
-import useMe from "../../../services/Hooks/useMe";
-import useUsers from "../../../services/Hooks/useUsers";
+import useMe from "../../../Services/Hooks/useMe";
+import useUsers from "../../../Services/Hooks/useUsers";
 import useCountMatchs from "../Services/useCountMatchs";
 
 function Admin() {

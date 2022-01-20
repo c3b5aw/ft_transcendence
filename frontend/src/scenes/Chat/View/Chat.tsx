@@ -1,11 +1,11 @@
 import { Avatar, Divider, FormControl, IconButton, Paper, Stack, TextField } from '@mui/material';
 import React, { SetStateAction, useState } from 'react';
 import MyList from '../Components/MyListFriends';
-import { api, apiChannel, apiFriends, apiUsers } from '../../../services/Api/Api';
+import { api, apiChannel, apiFriends, apiUsers } from '../../../Services/Api/Api';
 import SendIcon from '@mui/icons-material/Send';
 import { styleTextField } from '../../../styles/Styles';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
-import useMe from '../../../services/Hooks/useMe';
+import useMe from '../../../Services/Hooks/useMe';
 import MyListChannels from '../Components/Channels/MyListChannels';
 import MyMessages from '../Components/MyMessages';
 import LockIcon from '@mui/icons-material/Lock';

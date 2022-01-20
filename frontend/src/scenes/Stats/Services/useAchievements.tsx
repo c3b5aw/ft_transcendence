@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { api, apiAchievements, apiUsers } from "../../../services/Api/Api";
-import { Achievements, User } from "../../../services/Interface/Interface";
+import { api, apiAchievements, apiUsers } from "../../../Services/Api/Api";
+import { Achievements, User } from "../../../Services/Interface/Interface";
 import { useSnackbar } from 'notistack'
 
 function useAchievements(user: User) {

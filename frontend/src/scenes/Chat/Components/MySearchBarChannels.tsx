@@ -1,7 +1,7 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
 import SearchBar from "material-ui-search-bar";
 import React from "react";
-import { ISearchBarChannel } from "../../../services/Interface/Interface";
+import { ISearchBarChannel } from "../../../Services/Interface/Interface";
 import { useStyles } from "../../../styles/Styles";
 import { Channel } from "../Services/interface";
 

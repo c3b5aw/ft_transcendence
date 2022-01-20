@@ -6,8 +6,8 @@ import MyFooter from '../../../components/MyFooter';
 import { boxStyle, StyleH1, useStyles } from '../../../styles/Styles';
 import MySearchBar from '../Components/MySearchBar';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
-import useUsers from '../../../services/Hooks/useUsers';
-import useMe from '../../../services/Hooks/useMe';
+import useUsers from '../../../Services/Hooks/useUsers';
+import useMe from '../../../Services/Hooks/useMe';
 
 export default function Home() {
 	const users = useUsers();
@@ -17,13 +17,13 @@ export default function Home() {
 	const styleH1 = StyleH1();
 	const navigate = useNavigate();
   
-
 	function handleLaunchGame() {
 		navigate('/game');
 	}
 
 	if ((me === undefined || users === undefined))
 		return (<MyChargingDataAlert />);
+
 	return (
 		<Stack direction="row" sx={{width: 1, minHeight: "100vh"}}>
 			<Stack direction="column" sx={{width: 1}}>

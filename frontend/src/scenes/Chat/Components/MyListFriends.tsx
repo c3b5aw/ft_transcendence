@@ -1,7 +1,7 @@
 import { Avatar, Badge, CircularProgress, IconButton, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
 import { useNavigate } from 'react-router';
-import { apiStats } from '../../../services/Api/Api';
-import { User } from '../../../services/Interface/Interface';
+import { apiStats } from '../../../Services/Api/Api';
+import { User } from '../../../Services/Interface/Interface';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import MoreVertIcon from '@mui/icons-material/MoreVert';

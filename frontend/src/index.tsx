@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 
-import { pageAdmin, pageChat, pageClassement, pageHome, pageSettings, pageStats } from './services/Routes/RoutePage';
+import { pageAdmin, pageChat, pageClassement, pageHome, pageSettings, pageStats } from './Services/Routes/RoutePage';
 import "./scenes/App.css";
-import PrivateRoute from './services/Routes/PrivateRoute';
+import PrivateRoute from './Services/Routes/PrivateRoute';
 import Stats from './scenes/Stats/View/Stats';
 // import MeProvider from './MeProvider';
 import MyMissing from './components/MyMissing';
@@ -15,7 +15,7 @@ import Classement from './scenes/Ladder/View/Classement';
 import React from 'react';
 import Chat from './scenes/Chat/View/Chat';
 import Admin from './scenes/Admin/View/Admin';
-import { ROLE } from './services/Api/Role';
+import { ROLE } from './Services/Api/Role';
 import { SnackbarProvider } from 'notistack';
 
 const useStyles = makeStyles({

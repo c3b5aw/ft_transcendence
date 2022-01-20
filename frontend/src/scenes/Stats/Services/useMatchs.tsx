@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { api, apiMatch, apiUsers } from "../../../services/Api/Api";
-import { Match, User } from "../../../services/Interface/Interface";
+import { api, apiMatch, apiUsers } from "../../../Services/Api/Api";
+import { Match, User } from "../../../Services/Interface/Interface";
 import { useSnackbar } from 'notistack'
 
 function useMatchs(user: User) {

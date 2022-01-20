@@ -2,7 +2,7 @@ import { Avatar, Divider, List, ListItem, Paper, Stack } from "@mui/material";
 import { avatarStyle } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import useAchievements from "../Services/useAchievements";
-import { User } from "../../../services/Interface/Interface";
+import { User } from "../../../Services/Interface/Interface";
 
 const MyAchievements = (props: {user: User}) => {
 	const { user } = props;

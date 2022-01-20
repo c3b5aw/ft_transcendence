@@ -7,11 +7,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { api, apiAdmin, apiBan, apiStats } from "../../../services/Api/Api";
+import { api, apiAdmin, apiBan, apiStats } from "../../../Services/Api/Api";
 import { useState } from 'react';
-import { User } from '../../../services/Interface/Interface';
+import { User } from '../../../Services/Interface/Interface';
 import { Avatar, Stack, Switch } from '@mui/material';
-import { ROLE } from '../../../services/Api/Role';
+import { ROLE } from '../../../Services/Api/Role';
 import { useSnackbar } from 'notistack'
 
 export default function MyInfosUser(props: {me: User | undefined, users: User[]}) {

@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from "@mui/material";
 import { Dispatch, SetStateAction, useState } from "react";
-import { ISearchBarChannel, User } from "../../../../services/Interface/Interface";
+import { ISearchBarChannel, User } from "../../../../Services/Interface/Interface";
 import { useSnackbar } from 'notistack'
 import CloseIcon from '@mui/icons-material/Close';
 import { Channel } from "../../Services/interface";

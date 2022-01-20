@@ -1,9 +1,9 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { User } from "../../../../services/Interface/Interface";
+import { User } from "../../../../Services/Interface/Interface";
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
-import { api, apiChannel } from "../../../../services/Api/Api";
+import { api, apiChannel } from "../../../../Services/Api/Api";
 import { useSnackbar } from 'notistack'
 
 function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetStateAction<boolean>>}) {

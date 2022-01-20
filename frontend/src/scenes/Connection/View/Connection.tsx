@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Button from '../Components/MyButton';
 import { StyleH1 } from '../../../styles/Styles';
-import { apiConnection } from '../../../services/Api/Api';
+import { apiConnection } from '../../../Services/Api/Api';
 import { sxAvatar, sxBox } from '../Services/style';
 
 function Connection()

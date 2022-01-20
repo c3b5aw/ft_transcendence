@@ -2,7 +2,7 @@ import { Stack } from '@mui/material';
 import MyAvatar from '../../../components/MyAvatar';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import MyLadder from '../Components/MyLadder';
-import useMe from '../../../services/Hooks/useMe';
+import useMe from '../../../Services/Hooks/useMe';
 
 function Classement() {
 	const me = useMe();

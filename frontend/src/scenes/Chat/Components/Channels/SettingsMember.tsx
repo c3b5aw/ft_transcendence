@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from "@mui/material";
 import { Dispatch, SetStateAction, useState } from "react";
-import { User } from "../../../../services/Interface/Interface";
+import { User } from "../../../../Services/Interface/Interface";
 import { Channel } from "../../Services/interface";
 import LockIcon from '@mui/icons-material/Lock';
 import useUserChannel from "../../Services/useUserChannel";

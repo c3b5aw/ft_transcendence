@@ -4,17 +4,17 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MyAchievements from '../Components/MyAchievements';
 import MyHistory from '../Components/MyHistory';
-import { api, apiUsers } from '../../../services/Api/Api';
+import { api, apiUsers } from '../../../Services/Api/Api';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
 import MyAvatar from '../../../components/MyAvatar';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import useMe from '../../../services/Hooks/useMe';
+import useMe from '../../../Services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
 import { sxButton, sxDiv } from '../Services/style';
-import { Friends, STATUS } from '../../../services/Interface/Interface';
+import { Friends, STATUS } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
 
 const Stats = () => {

@@ -1,8 +1,8 @@
 import { Avatar, Box, Button, Stack, TextField } from "@mui/material";
 import axios from "axios";
 import { SetStateAction, useEffect, useState } from "react";
-import { api, apiMe } from "../../../services/Api/Api";
-import { User } from "../../../services/Interface/Interface";
+import { api, apiMe } from "../../../Services/Api/Api";
+import { User } from "../../../Services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
 import KeyIcon from '@mui/icons-material/Key';

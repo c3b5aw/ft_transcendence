@@ -13,9 +13,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { api, apiLadder, apiMatch, apiStats, apiUsers } from "../../../services/Api/Api";
+import { api, apiLadder, apiMatch, apiStats, apiUsers } from "../../../Services/Api/Api";
 import { useEffect, useState } from 'react';
-import { Match, User } from '../../../services/Interface/Interface';
+import { Match, User } from '../../../Services/Interface/Interface';
 import { Stack } from '@mui/material';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import { useSnackbar } from 'notistack'

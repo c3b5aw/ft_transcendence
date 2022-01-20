@@ -1,6 +1,6 @@
 import { Button, CircularProgress, IconButton, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
-import { api, apiChannel, apiChannels, apiUsers } from '../../../../services/Api/Api';
-import { User } from '../../../../services/Interface/Interface';
+import { api, apiChannel, apiChannels, apiUsers } from '../../../../Services/Api/Api';
+import { User } from '../../../../Services/Interface/Interface';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import axios from 'axios';
 import SettingsIcon from '@mui/icons-material/Settings';

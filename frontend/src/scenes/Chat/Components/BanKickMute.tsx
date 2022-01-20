@@ -7,7 +7,7 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { sxButton } from '../../Settings/Services/style';
-import { User } from '../../../services/Interface/Interface';
+import { User } from '../../../Services/Interface/Interface';
 
 export default function BanKickMute(props: {setOpen: React.Dispatch<React.SetStateAction<boolean>>, user: User}) {
 	const { setOpen, user } = props;

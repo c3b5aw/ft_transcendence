@@ -1,5 +1,5 @@
 import { Avatar, Divider, List, ListItem, Paper, Stack } from "@mui/material"
-import { User } from "../../../services/Interface/Interface";
+import { User } from "../../../Services/Interface/Interface";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import useMatchs from "../Services/useMatchs";
 

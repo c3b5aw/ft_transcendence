@@ -1,11 +1,11 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
-import { ISearchBar, User } from "../../../../services/Interface/Interface";
+import { ISearchBar, User } from "../../../../Services/Interface/Interface";
 import MySearchBarChat from "../MySearchBarChat";
 import { Channel } from "../../Services/interface";
 import useUsersChannel from "../../Services/useUsersChannel";
-import { api, apiChannel, apiModos } from "../../../../services/Api/Api";
+import { api, apiChannel, apiModos } from "../../../../Services/Api/Api";
 import axios from "axios";
 import { useSnackbar } from 'notistack'
 

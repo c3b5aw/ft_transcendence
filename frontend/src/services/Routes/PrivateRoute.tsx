@@ -5,6 +5,7 @@ import { api, apiMe } from '../Api/Api';
 import { ROLE } from '../Api/Role';
 import { User } from '../Interface/Interface';
 import { useSnackbar } from 'notistack'
+import { socket } from '../ws/utils';
 
 const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array<ROLE>}) => {
 	const [logged, setLogged] = useState(false);
@@ -19,8 +20,33 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 			}
 			else {
 				const body = await response.json();
-				if (body.isAuthenticated) {
-					setLogged(body.isAuthenticated);
+				if (body.isAuthenticated === true) {
+					enqueueSnackbar(`${body.user.login} est connecté`, { 
+						variant: 'success',
+						autoHideDuration: 3000,
+					});
+					setLogged(true);	
+					socket.connect();
+	
+					socket.on("onError", (data) => {
+						enqueueSnackbar(`${data}`, { 
+							variant: 'error',
+							autoHideDuration: 3000,
+						});
+					});
+	
+					socket.on("onSuccess", (data) => {
+						enqueueSnackbar(`${data}`, { 
+							variant: 'success',
+							autoHideDuration: 3000,
+						});
+					});
+	
+					socket.on("channel::message", (data) => {
+						console.log("DEBUT");
+						console.log(data);
+						console.log("FIN");
+					});
 				}
 			}		
 		}

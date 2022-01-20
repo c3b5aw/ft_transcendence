@@ -1,5 +1,5 @@
 import { Avatar, Stack } from "@mui/material";
-import { User } from "../services/Interface/Interface";
+import { User } from "../Services/Interface/Interface";
 
 function MyAvatar(props: {user: User}) {
 	const { user } = props;
