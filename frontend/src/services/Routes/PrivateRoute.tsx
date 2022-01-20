@@ -36,18 +36,10 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 					});
 	
 					socket.on("onSuccess", (data) => {
-						enqueueSnackbar(`${data.error}`, { 
+						enqueueSnackbar(`${data.message}`, { 
 							variant: 'success',
 							autoHideDuration: 3000,
 						});
-					});
-	
-					socket.on("channel::message", (data) => {
-						console.log(data.error);
-					});
-
-					socket.on("channel::onJoin", (data) => {
-						console.log(data);
 					});
 				}
 			}		

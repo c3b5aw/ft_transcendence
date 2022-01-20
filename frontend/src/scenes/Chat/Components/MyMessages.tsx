@@ -6,12 +6,18 @@ import { Message } from "../Services/interface";
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import React from "react";
 import { useSnackbar } from 'notistack'
+import { socket } from "../../../Services/ws/utils";
 
 function MyMessages(props: {nameChannel: string}) {
 	const { nameChannel } = props;
+	const [send2, setSend2] = useState<boolean>(false);
 	const [messages, setMessages] = useState<Message[]>([])
 	const messageEl = useRef<HTMLDivElement>(null);
 	const { enqueueSnackbar } = useSnackbar();
+
+	socket.on("channel::message", (data) => {
+		setSend2(!send2);
+	});
 
 	useEffect(() => {
 		const fetchMessagesChannel = async () => {
@@ -27,7 +33,7 @@ function MyMessages(props: {nameChannel: string}) {
 			}
 		}
 		fetchMessagesChannel();
-	}, [enqueueSnackbar, nameChannel])
+	}, [enqueueSnackbar, nameChannel, send2])
 
 	useEffect(() => {
 		const node = messageEl.current;
@@ -38,7 +44,6 @@ function MyMessages(props: {nameChannel: string}) {
 			});
 		}
 	}, [messages])
-
 	return (
 		<Stack direction="column" sx={{width: 1, height: 0.91}}>
 			<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#304649"}} elevation={0}>

@@ -11,30 +11,38 @@ import MyDialogCreateChannel from './MyDialogCreateChannel';
 import SettingsAdmin from './SettingsAdmin';
 import SettingsM from './SettingsMember';
 import { useSnackbar } from 'notistack'
+import JoinChannel from './JoinChannel';
+import { socket } from '../../../../Services/ws/utils';
 
-function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<Channel | undefined>> }) {
+function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<Channel | undefined>>}) {
 	const { me, setChannel } = props;
 	const [channels, setChannels] = useState<Channel[]>([]);
 	const [open, setOpen] = useState<boolean>(false);
+	const [openJoin, setOpenJoin] = useState<boolean>(false);
 	const [openSettingsAdmin, setOpenSettingsAdmin] = useState<boolean>(false);
 	const [openSettingsM, setOpenSettingsM] = useState<boolean>(false);
 	const [channelTmp, setChannelTmp] = useState<Channel>();
 	const [reload, setReload] = useState<boolean>(false);
+	const [reload2, setReload2] = useState<boolean>(false);
 	const { enqueueSnackbar } = useSnackbar();
 
 	const buttonStyle = {
-		border: "4px solid black",
-		borderRadius: "15px",
+		border: "3px solid black",
+		borderRadius: "10px",
 		color: "black",
 		fontFamily: "Myriad Pro",
-		padding: "15px",
+		padding: "10px",
 		backgroundColor: "white",
-		fontSize: "17px",
+		fontSize: "14px",
 		'&:hover': {
 			backgroundColor: '#D5D5D5',
 			color: '#000000',
 		},
 	}
+
+	socket.on("channel::onJoin", (data) => {
+		setReload2(!reload2);
+	});
 
 	useEffect(() => {
 		const fetchChannels = async () => {
@@ -49,10 +57,14 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 			}
 		}
 		fetchChannels();
-	}, [me, reload, enqueueSnackbar])
+	}, [me, reload, reload2, enqueueSnackbar])
 
 	function handleCreateChannel() {
 		setOpen(!open);
+	}
+
+	function handleJoinChannel() {
+		setOpenJoin(!openJoin);
 	}
 
 	async function HandleClickChannel(channel: Channel) {
@@ -89,7 +101,8 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	}
 	return (
 		<Stack direction="column" sx={{width: 1.5/12, height: 1}}>
-			{open ? <MyDialogCreateChannel reload={reload} setReload={setReload}/>: null}
+			{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} />: null}
+			{openJoin ? <JoinChannel setOpen={setOpenJoin} />: null}
 			<Stack direction="column" sx={{width: 1, height: 0.9, boxShadow: 3}}>
 				{/* load channels */}
 				<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#1d3033"}}>
@@ -114,10 +127,11 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 					}
 				</Paper>
 				{openSettingsAdmin && channelTmp !== undefined ? <SettingsAdmin channel={channelTmp} setOpenSettings={setOpenSettingsAdmin} reload={reload} setReload={setReload} me={me}/> : null}
-				{openSettingsM && channelTmp !== undefined ? <SettingsM channel={channelTmp} setOpenSettings={setOpenSettingsM} reload={reload} setReload={setReload} me={me}/> : null}
+				{openSettingsM && channelTmp !== undefined ? <SettingsM channel={channelTmp} setOpenSettings={setOpenSettingsM} me={me} setChannel={setChannel} channels={channels} setChannels={setChannels}/> : null}
 			</Stack>
-			<Stack direction="column" sx={{width: 1, height: 0.1}} alignItems="center" justifyContent="center">
+			<Stack direction="row" sx={{width: 1, height: 0.1}} alignItems="center" justifyContent="center" spacing={4}>
 				<Button sx={buttonStyle} onClick={() => handleCreateChannel()}>Create new channel</Button>
+				<Button sx={buttonStyle} onClick={() => handleJoinChannel()}>Join channel</Button>
 			</Stack>
 		</Stack>
 	);

@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from "@mui/material";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { ISearchBarChannel, User } from "../../../../Services/Interface/Interface";
+import { Dispatch, SetStateAction, useState } from "react";
+import { ISearchBarChannel } from "../../../../Services/Interface/Interface";
 import { useSnackbar } from 'notistack'
 import CloseIcon from '@mui/icons-material/Close';
 import { Channel } from "../../Services/interface";
@@ -8,13 +8,13 @@ import useChannels from "../../Services/useChannels";
 import MySearchBarChannels from "../MySearchBarChannels";
 import LockIcon from '@mui/icons-material/Lock';
 import useChannelsJoin from "../../Services/useChannelsJoin";
-import { socket } from "../../../../Services/ws/utils";
+import { channelJoin } from "../../Services/wsChat";
 
-function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>>, reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, me: User}) {
-	const { setOpen, reload, setReload } = props;
+function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
+	const { setOpen } = props;
     const [open2, setOpen2] = useState(true);
 	const { enqueueSnackbar } = useSnackbar();
-	const channels = useChannels();
+	const allChannels = useChannels();
 	const joinChannels = useChannelsJoin();
 
 	const [joinChannel, setJoinChannel] = useState<Channel>();
@@ -26,28 +26,11 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>>, reload
 		setOpen2(false);
 	};
 
-	const channelJoin = () => {
-		if (joinChannel !== undefined) {
-			socket.emit("channel::join", JSON.stringify({
-				channel: `${joinChannel.name}`,
-				password: passwordChannel,
-			}));
-		}
-	}
-
-	// useEffect(() => {
-	// 	socket.on("channel::onJoin", (data) => {
-	// 		console.log(data);
-	// 	});
-	// })
-
 	const handleJoinChannel = () => {
-		channelJoin();
-		console.log(socket);
-		setReload(!reload);
-		setOpen(false);
-		setOpen2(false);
-		console.log("JOIN");
+		if (joinChannel !== undefined) {
+			channelJoin(joinChannel, passwordChannel);
+			handleClose();
+		}
 	}
 
 	function handleAddChannel(channel: Channel) {
@@ -109,7 +92,7 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>>, reload
 					</Stack> : null
 				}
 				<div><p></p></div>
-				<MySearchBarChannels channels={channels} fSearchBarChannel={ISearchBarChannel} nameBar="Search channels..."/>
+				<MySearchBarChannels channels={allChannels} fSearchBarChannel={ISearchBarChannel} nameBar="Search channels..."/>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose} variant="contained" color="error">Cancel</Button>

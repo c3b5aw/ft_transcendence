@@ -4,13 +4,19 @@ import { User } from "../../../../Services/Interface/Interface";
 import { Channel } from "../../Services/interface";
 import LockIcon from '@mui/icons-material/Lock';
 import useUserChannel from "../../Services/useUserChannel";
-import { useSnackbar } from 'notistack'
+import { channelJoin, channelLeave } from "../../Services/wsChat";
 
-function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetStateAction<boolean>>, reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, me: User}) {
-	const { channel, setOpenSettings, reload, setReload, me } = props;
+function SettingsM(props: { 
+		channel: Channel,
+		setOpenSettings: Dispatch<SetStateAction<boolean>>,
+		me: User,
+		setChannel: Dispatch<SetStateAction<Channel | undefined>>
+		channels: Channel[],
+		setChannels: Dispatch<SetStateAction<Channel[]>>
+	}) {
+	const { channel, setOpenSettings, me, setChannel, channels, setChannels } = props;
 	const [open, setOpen] = useState(true);
 	const insideChannel = useUserChannel(channel, me);
-	const { enqueueSnackbar } = useSnackbar();
 
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
 
@@ -28,23 +34,15 @@ function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetState
 	}
 
 	const handleEnterChannel = () => {
-		// channel::join
-		handleValidPassword();
-		enqueueSnackbar(`${me.login} a été ajouté au channel ${channel.name}`, { 
-			variant: 'success',
-			autoHideDuration: 3000,
-		});
+		channelJoin(channel, passwordChannel);
 		handleClose();
 	}
 
 	const handleQuitChannel = () => {
-		// channel::leave
-		enqueueSnackbar(`${me.login} a quitté le channel ${channel.name}`, { 
-			variant: 'success',
-			autoHideDuration: 3000,
-		});
-		handleClose()
-		setReload(!reload);
+		channelLeave(channel);
+		handleClose();
+		setChannels(channels.filter(item => item.id !== channel.id));
+		setChannel(undefined);
 	}
 
 	return (
