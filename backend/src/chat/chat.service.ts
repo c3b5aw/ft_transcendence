@@ -134,10 +134,9 @@ export class ChatService {
 			name: channel.name,
 		}
 
-		if (data === {})
-			this.server.to('#' + channel.id).emit(event, { channel: channelSerialized });
-		else
-			this.server.to('#' + channel.id).emit(event, { channel: channelSerialized, data });
+		this.server.to('#' + channel.id).emit(event,
+			data === {} ? { channel: channelSerialized }
+						: { channel: channelSerialized, data });
 	}
 
 	async setChannelUserBan(user: User, channel: Channel, bool: boolean): Promise<void> {
