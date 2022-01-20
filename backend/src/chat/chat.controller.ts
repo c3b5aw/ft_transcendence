@@ -30,19 +30,10 @@ export class ChannelController {
 	async createChannel(@Body() data: CreateChannelDto,
 						@Req() req: any, @Res() resp: Response)					
 	{
-		const unique: boolean = await this.chatService.isUniqueChannelName(data.name);
-		if (!unique)
+		const channel: Channel = await this.chatService.createChannel(data, req.user.id);
+		if (!channel || channel === null)
 			return resp.status(409).json({ error: RequestError.CHANNEL_ALREADY_EXIST });
 
-		const obj: Channel = new Channel();
-		obj.name = data.name;
-		obj.password = data.password;
-		obj.tunnel = false;
-		obj.owner_id = req.user.id;
-		obj.private = data.password.length > 0;
-
-		const channel: Channel = await this.chatService.createChannel(obj);
-		await this.chatService.addUserToChannel(req.user.id, channel.id, UserRole.ADMIN);
 		resp.send({ "message": "channel created", "channel": channel });
 	}
 

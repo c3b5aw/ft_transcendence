@@ -15,6 +15,7 @@ import { UserRole } from 'src/users/entities/roles.enum';
 import { ModerationFlow } from './dto/moderationFlow.interface';
 import { FriendStatus } from 'src/friends/entities/status.enum';
 import { RequestError, WsError } from './dto/errors.enum';
+import { CreateChannelDto } from './dto/createChannel.dto';
 
 @Injectable()
 export class ChatService {
@@ -162,8 +163,8 @@ export class ChatService {
 	}
 
 	async moderationFlow(reqUserId: number, targetLogin: string,
-								channelName: string, resp: Response)
-							: Promise<ModerationFlow> {
+						channelName: string, resp: Response) : Promise<ModerationFlow>
+	{
 		let ret: ModerationFlow = {
 			err: true,
 			target: null,
@@ -445,10 +446,29 @@ export class ChatService {
 		CREATER
 	*/
 
-	async createChannel(channel: Channel): Promise<Channel> {
-		if (channel.private)
-			channel.password = createHash('md5').update(channel.password).digest('hex');
-		return this.channelsRepository.save(channel);
+	async createChannel(data: CreateChannelDto, owner: number) : Promise<Channel> {
+		const unique: boolean = await this.isUniqueChannelName(data.name);
+		if (!unique)
+			return null;
+		
+		let chan: Channel = new Channel();
+
+		chan.name = data.name;
+		chan.password = data.password;
+		chan.tunnel = false;
+		chan.owner_id = owner;
+		chan.private = data.password.length > 0;
+
+		if (chan.private)
+			chan.password = createHash('md5').update(chan.password).digest('hex');
+
+		await this.channelsRepository.save(chan);
+
+		await this.addUserToChannel(owner, chan.id, UserRole.ADMIN);
+
+		delete chan.password;
+
+		return chan;
 	}
 
 	/*
