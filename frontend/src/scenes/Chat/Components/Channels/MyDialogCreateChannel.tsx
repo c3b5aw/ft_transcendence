@@ -16,13 +16,6 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 
 	const { enqueueSnackbar } = useSnackbar();
 
-	// function handleClickCell(user: User) {
-	// 	const tmp = addFriends.filter(item => item.login === user.login)
-	// 	if (tmp.length === 0) {
-	// 		setAddFriends(addFriends => [...addFriends, user])
-	// 	}
-	// }
-
 	const handleRemoveFriend = (user: User) => {
 		setAddFriends(addFriends.filter(item => item.login !== user.login))
 	}
@@ -67,10 +60,6 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 	const  handleTextChangePassword = async (event: { target: { value: SetStateAction<string>; }; }) => {
 		setPasswordChannel(event.target.value);
 	};
-
-	// const fSearchBar: ISearchBar = {
-	// 	handleClickCell: handleClickCell
-	// }
 	
     return (
         <Dialog

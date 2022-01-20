@@ -49,7 +49,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 			}
 		}
 		fetchChannels();
-	}, [me, reload, openSettingsAdmin, enqueueSnackbar])
+	}, [me, reload, enqueueSnackbar])
 
 	function handleCreateChannel() {
 		setOpen(!open);
@@ -113,8 +113,8 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 					</List> : null
 					}
 				</Paper>
-				{openSettingsAdmin && channelTmp !== undefined ? <SettingsAdmin channel={channelTmp} setOpenSettings={setOpenSettingsAdmin} me={me}/> : null}
-				{openSettingsM && channelTmp !== undefined ? <SettingsM channel={channelTmp} setOpenSettings={setOpenSettingsM} me={me}/> : null}
+				{openSettingsAdmin && channelTmp !== undefined ? <SettingsAdmin channel={channelTmp} setOpenSettings={setOpenSettingsAdmin} reload={reload} setReload={setReload} me={me}/> : null}
+				{openSettingsM && channelTmp !== undefined ? <SettingsM channel={channelTmp} setOpenSettings={setOpenSettingsM} reload={reload} setReload={setReload} me={me}/> : null}
 			</Stack>
 			<Stack direction="column" sx={{width: 1, height: 0.1}} alignItems="center" justifyContent="center">
 				<Button sx={buttonStyle} onClick={() => handleCreateChannel()}>Create new channel</Button>

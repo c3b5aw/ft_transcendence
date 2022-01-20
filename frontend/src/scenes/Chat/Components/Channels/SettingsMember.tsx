@@ -6,8 +6,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import useUserChannel from "../../Services/useUserChannel";
 import { useSnackbar } from 'notistack'
 
-function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetStateAction<boolean>>, me: User}) {
-	const { channel, setOpenSettings, me } = props;
+function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetStateAction<boolean>>, reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, me: User}) {
+	const { channel, setOpenSettings, reload, setReload, me } = props;
     const [open, setOpen] = useState(true);
 	const insideChannel = useUserChannel(channel, me);
 	const { enqueueSnackbar } = useSnackbar();
@@ -44,6 +44,7 @@ function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetState
 			autoHideDuration: 3000,
 		});
 		handleClose()
+		setReload(!reload);
 	}
 
 	return (
