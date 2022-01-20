@@ -11,6 +11,7 @@ import { ChatService } from './chat.service';
 import { Channel } from './entities/channel.entity';
 
 import { CreateChannelDto } from './dto/createChannel.dto';
+import { UpdateChannelNameDto } from './dto/updateChannelName.dto';
 import { UpdateChannelPasswordDto } from './dto/updateChannelPassword.dto';
 import { ModerationFlow } from './dto/moderationFlow.interface';
 import { RequestError } from './dto/errors.enum';
@@ -29,21 +30,16 @@ export class ChannelController {
 	async createChannel(@Body() data: CreateChannelDto,
 						@Req() req: any, @Res() resp: Response)					
 	{
-		const unique: boolean = await this.chatService.isUniqueChannelName(data.name);
-		if (!unique)
+		const channel: Channel = await this.chatService.createChannel(data, req.user.id);
+		if (!channel || channel === null)
 			return resp.status(409).json({ error: RequestError.CHANNEL_ALREADY_EXIST });
 
-		const obj: Channel = new Channel();
-		obj.name = data.name;
-		obj.password = data.password;
-		obj.tunnel = false;
-		obj.owner_id = req.user.id;
-		obj.private = data.password.length > 0;
-
-		const channel: Channel = await this.chatService.createChannel(obj);
-		await this.chatService.addUserToChannel(channel.id, req.user.id, UserRole.ADMIN);
 		resp.send({ "message": "channel created", "channel": channel });
 	}
+
+	// @Get('/dm/:login') -> to dm someone, 
+	//	join correct channel (create if non-existent)
+	//	
 
 	@Get('/:channelName')
 	@Header('Content-Type', 'application/json')
@@ -71,6 +67,7 @@ export class ChannelController {
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		await this.chatService.deleteChannel( channel );
+
 		resp.send({ message: 'channel deleted' });
 	}
 
@@ -102,15 +99,29 @@ export class ChannelController {
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
-		const role: UserRole = await this.chatService.getUserRoleInChannel(req.user.id, channel.id);
-		if (role === null || role === UserRole.BANNED)
-			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
-
 		const users = await this.chatService.getChannelUsers(channel.id);
 		resp.send(users);
 	}
 
 	/* PWD - OWNER ONLY*/
+	@Post('/:channelName/name')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Update channel name' })
+	async updateChannelName(@Param('channelName') channelName: string,
+							@Body() data: UpdateChannelNameDto,
+							@Req() req: any, @Res() resp: Response)
+	{
+		const channel: Channel = await this.chatService.findChannelByName(channelName);
+		if (!channel)
+			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
+
+		if (channel.owner_id !== req.user.id)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
+		await this.chatService.updateChannelName(channel, data.name);
+		resp.send({ message: 'channel name updated' });
+	}
+
 	@Post('/:channelName/password')
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Update channel password' })
@@ -122,7 +133,7 @@ export class ChannelController {
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
-		if (channel.owner_id !== req.user_id)
+		if (channel.owner_id !== req.user.id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		if (data.password.length === 0) {
@@ -132,7 +143,7 @@ export class ChannelController {
 		channel.password = data.password;
 
 		await this.chatService.updateChannelPassword(channel);
-		resp.send({ message: 'channel password updated' });
+		resp.send({ message: `#${channel.name} password updated` });
 	}
 
 	@Delete('/:channelName/password')
@@ -145,11 +156,29 @@ export class ChannelController {
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
-		if (channel.owner_id !== req.user_id)
+		if (channel.owner_id !== req.user.id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		await this.chatService.deleteChannelPassword( channel );
-		resp.send({ message: 'channel password deleted' });
+		resp.send({ message: `#${channel.name} password deleted` });
+	}
+
+	@Get('/:channelName/moderators')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get channel moderators' })
+	async getChannelModerators(@Param('channelName') channelName: string,
+								@Req() req: any, @Res() resp: Response)
+	{
+		const channel: Channel = await this.chatService.findChannelByName(channelName);
+		if (!channel)
+			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
+
+		const role: UserRole = await this.chatService.getUserRoleInChannel(req.user.id, channel.id);
+		if (role !== UserRole.MODERATOR && role !== UserRole.ADMIN)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
+		const moderators = await this.chatService.getChannelModerators(channel.id);
+		resp.send(moderators);
 	}
 
 	/* MODERATOR MANAGEMENT - OWNER ONLY */
@@ -165,11 +194,11 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		if (flow.role !== UserRole.ADMIN && flow.channel.owner_id !== req.id)
+		if (flow.role !== UserRole.ADMIN || flow.channel.owner_id !== req.user.id || flow.target.id === flow.channel.owner_id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
-		
-		await this.chatService.setUserChannelModerator(flow.channel.id, flow.target.id, true);
-		resp.send({ message: 'user added to moderator list' });
+
+		await this.chatService.setUserChannelModerator(flow.target, flow.channel, true);
+		resp.send({ message: `${flow.target.login} have been added in moderator list` });
 	}
 
 	@Delete('/:channelName/moderator/:login')
@@ -184,11 +213,11 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		if (flow.role !== UserRole.ADMIN && flow.channel.owner_id !== req.user.id)
+		if (flow.role !== UserRole.ADMIN || flow.channel.owner_id !== req.user.id || flow.target.id === flow.channel.owner_id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 		
-		await this.chatService.setUserChannelModerator(flow.channel.id, flow.target.id, false);
-		resp.send({ message: 'user added to moderator list' });
+		await this.chatService.setUserChannelModerator(flow.target, flow.channel, false);
+		resp.send({ message: `${flow.target.login} have been removed from moderator list` });
 	}
 
 	/* BAN - KICK - MUTE - MODERATOR/ADMIN ONLY */
@@ -204,8 +233,11 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		await this.chatService.setChannelUserBan(flow.target.id, flow.channel.id, false);
-		resp.send({ message: 'user banned' });
+		if (flow.target.id === flow.channel.owner_id)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
+		await this.chatService.setChannelUserBan(flow.target, flow.channel, true);
+		resp.send({ message: `${flow.target.login} has been banned` });
 	}
 
 	@Delete('/:channelName/ban/:login')
@@ -220,8 +252,11 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		await this.chatService.setChannelUserBan(flow.target.id, flow.channel.id, false);
-		resp.send({ message: 'user unbanned' });
+		if (flow.target.id === flow.channel.owner_id)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
+		await this.chatService.setChannelUserBan(flow.target, flow.channel, false);
+		resp.send({ message:  `${flow.target.login} has been unbanned` });
 	}
 
 	@Put('/:channelName/kick/:login')
@@ -236,8 +271,12 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		await this.chatService.kickUserFromChannel(flow.target.id, flow.channel.id);
-		resp.send({ message: 'user kicked' });
+		if (flow.target.id === flow.channel.owner_id)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
+
+		await this.chatService.kickUserFromChannel(flow.target, flow.channel);
+		resp.send({ message:  `${flow.target.login} has been kicked` });
 	}
 
 	@Post('/:channelName/mute/:login/:duration')
@@ -253,9 +292,12 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
+		if (flow.target.id === flow.channel.owner_id)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
 		const futur: Date = new Date(new Date().getTime() + (duration * 1000));
-		await this.chatService.muteUserInChannel(flow.target.id, flow.channel.id, futur);
-		resp.send({ message: `user muted for ${duration}` });
+		await this.chatService.muteUserInChannel(flow.target, flow.channel, futur);
+		resp.send({ message: `${flow.target.login} muted for ${duration}` });
 	}
 
 	@Delete('/:channelName/mute/:login')
@@ -270,8 +312,11 @@ export class ChannelController {
 		if (flow.err)
 			return;
 
-		await this.chatService.muteUserInChannel(flow.target.id, flow.channel.id, new Date(0));
-		resp.send({ message: 'user unmuted' });
+		if (flow.target.id === flow.channel.owner_id)
+			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
+
+		await this.chatService.muteUserInChannel(flow.target, flow.channel, new Date(0));
+		resp.send({ message: `${flow.target.login} has been unmuted` });
 	}
 }
 
@@ -288,6 +333,14 @@ export class ChannelsController {
 	@ApiOperation({ summary: 'Return existing channels list' })
 	async getChannels() {
 		const chans: Channel[] = await this.chatService.getChannels();
+		return chans;
+	}
+
+	@Get('/joined')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Return joined channels list' })
+	async getJoinedChannels(@Req() req: any) {
+		const chans: Channel[] = await this.chatService.getJoinedChannels(req.user.id);
 		return chans;
 	}
 }

@@ -4,12 +4,13 @@ import axios from 'axios';
 import { Response } from 'express';
 import { createWriteStream } from 'fs';
 import { Repository } from 'typeorm';
+import { createHash } from 'crypto';
 
 import { User } from './entities/user.entity';
 import { UserStats } from './dto/stats.dto';
 import { UserInterface } from './interfaces/user.interface';
-import { createHash } from 'crypto';
 import { UserRole } from './entities/roles.enum';
+import { UserStatus } from './entities/status.enum';
 
 @Injectable()
 export class UsersService {
@@ -103,9 +104,9 @@ export class UsersService {
 		return this.userRepository.save(user);
 	}
 
-	async updateUserConnect(user: User, bool: boolean): Promise<User> {
-		user.connected = bool;
-		if (bool)
+	async updateUserConnect(user: User, state: UserStatus): Promise<User> {
+		user.status = state;
+		if (state === UserStatus.ONLINE)
 			user.lastLogin = new Date();
 		return this.userRepository.save(user);
 	}

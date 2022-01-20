@@ -20,4 +20,7 @@ export enum WsError {
 	USER_NOT_IN_CHANNEL = 'user not in channel',
 	USER_BANNED = 'user banned',
 	USER_MUTED = 'user muted',
+	NO_COOKIE = 'no cookie',
+	ACCESS_TOKEN_NOT_FOUND = 'access token not found',
+	ACCESS_TOKEN_INVALID = 'access token invalid',
 }

@@ -475,8 +475,8 @@ COPY public.achievements (id, name, description, points) FROM stdin;
 --
 
 COPY public.channels (id, name, password, tunnel, private, owner_id) FROM stdin;
-1	public	\N	f	f	0
-2	zaap	\N	f	f	0
+1	public	\N	f	f	77558
+2	zaap	\N	f	f	83781
 3	private-eoliveir	63a9f0ea7bb98050796b649e85481845	f	t	77558
 4	private-sbeaujar	63a9f0ea7bb98050796b649e85481845	f	t	83781
 \.
@@ -489,16 +489,16 @@ COPY public.channels (id, name, password, tunnel, private, owner_id) FROM stdin;
 --
 
 COPY public.channels_users (id, role, muted, channel_id, user_id) FROM stdin;
-1	MODERATOR	2022-01-18 13:19:44.94586	1	77558
-2	MEMBER	2022-01-18 13:19:44.94586	2	77558
-3	MODERATOR	2022-01-18 13:19:44.94586	1	83781
-4	MEMBER	2022-01-18 13:19:44.94586	2	83781
-5	MODERATOR	2022-01-18 13:19:44.94586	1	73316
-6	MEMBER	2022-01-18 13:19:44.94586	2	73316
-7	MODERATOR	2022-01-18 13:19:44.94586	1	77460
-8	MEMBER	2022-01-18 13:19:44.94586	2	77460
-9	ADMIN	2022-01-18 13:19:44.94586	3	77558
-10	ADMIN	2022-01-18 13:19:44.94586	4	83781
+1	MODERATOR	1970-01-01 00:00:00	1	77558
+2	MEMBER	1970-01-01 00:00:00	2	77558
+3	MODERATOR	1970-01-01 00:00:00	1	83781
+4	MEMBER	1970-01-01 00:00:00	2	83781
+5	MODERATOR	1970-01-01 00:00:00	1	73316
+6	MEMBER	1970-01-01 00:00:00	2	73316
+7	MODERATOR	1970-01-01 00:00:00	1	77460
+8	MEMBER	1970-01-01 00:00:00	2	77460
+9	ADMIN	1970-01-01 00:00:00	3	77558
+10	ADMIN	1970-01-01 00:00:00	4	83781
 \.
 
 
@@ -572,7 +572,7 @@ COPY public.users (id, login, display_name, email, role, two_factor_auth, two_fa
 77460	nbascaul	nbascaul	nbascaul@student.42.fr	MEMBER	f	\N	1205	5	1	4	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
 77558	eoliveir	eoliveir	eoliveir@student.42.fr	ADMIN	f	\N	1205	5	2	3	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
 73316	jtrauque	jtrauque	jtrauque@student.42.fr	MODERATOR	f	\N	1230	5	5	0	f	2022-01-18 13:29:54.639076	2022-01-18 13:29:54.639076
-83781	sbeaujar	sbeaujar	sbeaujar@student.42.fr	ADMIN	f	\N	1210	5	2	3	t	2022-01-18 13:29:54.639076	2022-01-18 22:15:36.6
+83781	sbeaujar	sbeaujar	sbeaujar@student.42.fr	ADMIN	f	\N	1210	5	2	3	f	2022-01-18 13:29:54.639076	2022-01-18 22:15:36.6
 \.
 
 
