@@ -19,7 +19,6 @@ function useUsersChannel(channel: Channel) {
 		}
 		fetchUsers();
 	}, [channel.name]);
-
     return (usersChannel);
 }
 

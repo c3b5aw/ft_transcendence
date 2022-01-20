@@ -24,17 +24,20 @@ function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetState
 	};
 
 	const handleValidPassword = () => {
-		setOpenSettings(false);
-		setOpen(false);
+		handleClose();
 		console.log(passwordChannel);
+	}
+
+	const handleEnterChannel = () => {
+		handleClose();
+		console.log("Je rentre dans le channel");
 	}
 
 	const handleQuitChannel = () => {
 		// try {
 		// 	await axios.put(`${api}${apiChannel}`)
 		// }
-		setOpenSettings(false);
-		setOpen(false);
+		handleClose()
 		console.log("Je quitte le channel");
 	}
 
@@ -56,7 +59,7 @@ function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetState
 					{!insideChannel ? <div>Your status : {me.role}</div> : null}
 				</Stack>
 			</DialogTitle>
-			{!insideChannel ?
+			{!insideChannel && channel.private ?
 				<DialogContent>
 					<Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
 						<LockIcon fontSize="large"/>
@@ -76,8 +79,9 @@ function SettingsM(props: { channel: Channel, setOpenSettings: Dispatch<SetState
 			}
 			<DialogActions>
 				<Button onClick={handleClose} variant="contained" color="error">Cancel</Button>
-				{!insideChannel ?
-					<Button onClick={handleValidPassword} variant="contained" color="success">Valider</Button> :
+				{!insideChannel && channel.private ?
+					<Button onClick={handleValidPassword} variant="contained" color="success">Valider</Button> : !insideChannel && !channel.private ?
+					<Button onClick={handleEnterChannel} variant="contained" color="success">Entrer</Button> :
 					<Button onClick={handleQuitChannel} variant="contained" color="success">Quitter</Button>
 				}
 			</DialogActions>

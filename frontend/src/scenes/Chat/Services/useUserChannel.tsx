@@ -5,7 +5,8 @@ import useUsersChannel from "./useUsersChannel";
 function useUserChannel(channel: Channel, me: User) {
 	const usersChannel = useUsersChannel(channel);
 
-	return (usersChannel.includes(me));
+	const res = (usersChannel.filter(user => user.login === me.login))
+	return (res.length !== 0);
 }
 
 export default useUserChannel;

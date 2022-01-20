@@ -1,5 +1,5 @@
 import { Button, CircularProgress, IconButton, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
-import { api, apiChannels } from '../../../../services/Api/Api';
+import { api, apiChannel, apiChannels, apiUsers } from '../../../../services/Api/Api';
 import { User } from '../../../../services/Interface/Interface';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import axios from 'axios';
@@ -10,7 +10,9 @@ import { Channel } from '../../Services/interface';
 import MyDialogCreateChannel from './MyDialogCreateChannel';
 import SettingsAdmin from './SettingsAdmin';
 import SettingsM from './SettingsMember';
-import { io } from 'socket.io-client';
+import useUserChannel from '../../Services/useUserChannel';
+import useUsersChannel from '../../Services/useUsersChannel';
+import MySnackBar from '../../../../components/MySnackbar';
 
 function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<Channel | undefined>> }) {
 	const { me, setChannel } = props;
@@ -20,6 +22,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	const [openSettingsM, setOpenSettingsM] = useState<boolean>(false);
 	const [channelTmp, setChannelTmp] = useState<Channel>();
 	const [reload, setReload] = useState<boolean>(false);
+	const [error, setError] = useState<string>("");
 
 	const buttonStyle = {
 		border: "4px solid black",
@@ -51,28 +54,22 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 		setOpen(!open);
 	}
 
-	function handleClickChannel(channel: Channel) {
-		const socket = io("http://127.0.0.1/chat");
-		if (socket.connected) {
-			console.log("CONNECTED");
+	async function HandleClickChannel(channel: Channel) {
+		const response = await axios.get(`${api}${apiChannel}/${channel.name}${apiUsers}`);
+		const res = (response.data.filter((user: { login: string; }) => user.login === me.login))
+		if (res.length > 0) {
+			setChannel(channel);
 		}
-		else {
-			console.log("NOT CONNECTED");
-		}
-		console.log(socket);
-		setChannel(channel);
+		else
+			setError("Impossible de consulter les messages car tu n'es pas dans le channel");
 	}
 
 	function handleClickSettingsChannel(channel: Channel) {
-		console.log(channel);
-		console.log(me);
 		if (channel.owner_id === me.id) {
-			console.log("ADMIN");
 			setChannelTmp(channel);
 			setOpenSettingsAdmin(true);
 		}
 		else {
-			console.log("MODERATOR OR MEMBER");
 			setChannelTmp(channel);
 			setOpenSettingsM(true);
 		}
@@ -96,7 +93,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 						{channels.map(channel => (
 							<div key={channel.id}>
 								<ListItem component="div">
-									<ListItemButton onClick={() => handleClickChannel(channel)}>
+									<ListItemButton onClick={() => HandleClickChannel(channel)}>
 										<Stack sx={{ width: "85%", height: 1}} alignItems="center" spacing={2} direction="row">
 											{channel.private ? <LockIcon color="warning"/> : <LockOpenIcon color="warning"/>}
 											<h4 style={{color: "white"}}>{channel.name}</h4>
@@ -117,6 +114,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 			<Stack direction="column" sx={{width: 1, height: 0.1}} alignItems="center" justifyContent="center">
 				<Button sx={buttonStyle} onClick={() => handleCreateChannel()}>Create new channel</Button>
 			</Stack>
+			{error !== "" ? <MySnackBar message={`${error}`} severity="error" time={3000} setError={setError}/> : null}
 		</Stack>
 	);
 }
