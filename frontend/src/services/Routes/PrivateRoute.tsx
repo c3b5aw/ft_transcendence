@@ -1,16 +1,17 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Connection from '../../scenes/Connection/View/Connection';
 import { api, apiMe } from '../Api/Api';
 import { ROLE } from '../Api/Role';
 import { User } from '../Interface/Interface';
 import { useSnackbar } from 'notistack'
-import { socket } from '../ws/utils';
+import { SocketContext } from '../ws/utils';
 
 const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array<ROLE>}) => {
 	const [logged, setLogged] = useState<boolean>(false);
 	const [me, setMe] = useState<User>();
 	const { enqueueSnackbar } = useSnackbar();
+	const socket = useContext(SocketContext);
 
 	useEffect(() => {
 		const fetchConnected = async () => {
@@ -65,7 +66,7 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 				autoHideDuration: 3000,
 			});
 		});
-	}, [enqueueSnackbar])
+	}, [enqueueSnackbar, socket])
 
 	useEffect(() => {
 		const fetchMe = async () => {
@@ -85,8 +86,7 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 
 	if (logged && me !== undefined && roles.includes(me.role))
 		return (children)
-	else
-		return (<Connection />);
+	return (<Connection />);
 };
 
 export default PrivateRoute;

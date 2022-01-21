@@ -54,10 +54,12 @@ export interface ISearchBarChannel {
 	handleClickCell: (row: Channel) => void
 }
 
+
 export enum STATUS {
 	PENDING = "PENDING",
 	ACCEPTED = "ACCEPTED",
 	BLOCKED = "BLOCKED",
+	BANNED = "BANNED"
 }
 
 export enum USER_STATUS {

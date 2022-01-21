@@ -18,6 +18,7 @@ import Admin from './scenes/Admin/View/Admin';
 import { ROLE } from './Services/Api/Role';
 import { SnackbarProvider } from 'notistack';
 import Game from './scenes/game/Game';
+import { socket, SocketContext } from './Services/ws/utils';
 
 const useStyles = makeStyles({
 	theme: {
@@ -30,6 +31,7 @@ const useStyles = makeStyles({
 
 function ManageRouter() {
 	const classes = useStyles();
+
 	return (
 		<div className={classes.theme}>
 			<Router>
@@ -98,10 +100,12 @@ function ManageRouter() {
 }
 
 ReactDOM.render(
-	<SnackbarProvider maxSnack={3}>
-		<React.StrictMode>
-			<ManageRouter/>
-		</React.StrictMode>
-	</SnackbarProvider>,
+	<SocketContext.Provider value={socket}>
+		<SnackbarProvider maxSnack={3}>
+			<React.StrictMode>
+				<ManageRouter/>
+			</React.StrictMode>
+		</SnackbarProvider>
+	</SocketContext.Provider>,
 	document.getElementById('root')
 );

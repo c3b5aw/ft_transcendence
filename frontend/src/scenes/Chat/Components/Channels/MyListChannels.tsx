@@ -1,7 +1,7 @@
 import { Button, CircularProgress, IconButton, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
 import { api, apiChannel, apiChannels, apiUsers } from '../../../../Services/Api/Api';
 import { User } from '../../../../Services/Interface/Interface';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LockIcon from '@mui/icons-material/Lock';
@@ -12,7 +12,8 @@ import SettingsAdmin from './SettingsAdmin';
 import SettingsM from './SettingsMember';
 import { useSnackbar } from 'notistack'
 import JoinChannel from './JoinChannel';
-import { socket } from '../../../../Services/ws/utils';
+import { socket, SocketContext } from '../../../../Services/ws/utils';
+import { channelJoin } from '../../Services/wsChat';
 
 function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<Channel | undefined>>}) {
 	const { me, setChannel } = props;
@@ -26,6 +27,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	const [reload2, setReload2] = useState<boolean>(false);
 	const { enqueueSnackbar } = useSnackbar();
 
+	const socket = useContext(SocketContext);
 	const buttonStyle = {
 		border: "3px solid black",
 		borderRadius: "10px",
@@ -40,15 +42,20 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 		},
 	}
 
-	socket.on("channel::onJoin", (data) => {
-		setReload2(!reload2);
-	});
+	const ahndleJoinChannel = useCallback(() => {
+		setReload2(true);
+	  }, []);
+
+	useEffect(() => {
+		socket.on("channel::onJoin", ahndleJoinChannel);
+	}, [ahndleJoinChannel, socket])
 
 	useEffect(() => {
 		const fetchChannels = async () => {
 			try {
 				const reponse = await axios.get(`${api}${apiChannels}/joined`);
 				setChannels(reponse.data);
+				setReload2(false);
 			} catch (err) {
 				enqueueSnackbar(`Impossible de charger la liste des channels (${err})`, { 
 					variant: 'error',
@@ -57,7 +64,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 			}
 		}
 		fetchChannels();
-	}, [me, reload, reload2, enqueueSnackbar])
+	}, [me, reload, enqueueSnackbar])
 
 	function handleCreateChannel() {
 		setOpen(!open);
@@ -102,7 +109,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	return (
 		<Stack direction="column" sx={{width: 1.5/12, height: 1}}>
 			{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} />: null}
-			{openJoin ? <JoinChannel setOpen={setOpenJoin} setChannel={setChannel}/>: null}
+			{openJoin ? <JoinChannel setOpen={setOpenJoin} />: null}
 			<Stack direction="column" sx={{width: 1, height: 0.9, boxShadow: 3}}>
 				{/* load channels */}
 				<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#1d3033"}}>

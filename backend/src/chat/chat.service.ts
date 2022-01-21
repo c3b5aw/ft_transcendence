@@ -265,7 +265,7 @@ export class ChatService {
 		await this.messagesRepository.save(msg);
 
 		/* Send message to all clients in channel */
-		this.sendEventToChannel(channel, 'channel::message', {
+		await this.sendEventToChannel(channel, 'channel::message', {
 			message: {
 				user: user.login, content: msg.content,
 				announcement: false, timestamp: msg.timestamp,
@@ -341,9 +341,12 @@ export class ChatService {
 		await this.messagesRepository.save(msg);
 		
 		/* Send message to all clients in channel */
-		await this.sendEventToChannel(channel, 'channel::message', { message: {
-			user: 'Server', content: msg.content,
-			announcement: msg.announcement, timestamp: msg.timestamp }});
+		this.sendEventToChannel(channel, 'channel::message', {
+			message: {
+				user: 'Server', content: msg.content,
+				announcement: msg.announcement, timestamp: msg.timestamp,
+			}
+		});
 	}
 
 	/*

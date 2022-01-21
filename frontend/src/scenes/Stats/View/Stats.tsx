@@ -14,7 +14,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../Services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
 import { sxButton, sxDiv } from '../Services/style';
-import { Friends, STATUS } from '../../../Services/Interface/Interface';
+import { Friends } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
 
 const Stats = () => {
@@ -99,11 +99,12 @@ const Stats = () => {
 	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined))
 		return (<MyChargingDataAlert />);
 	const isFriend = friends.filter(function (friend) {
-		return (friend.status === STATUS.ACCEPTED && friend.login === user?.login);
+		return (friend.login === user.login);
 	});
 	const isFriendPending = friendsPending.filter(function (friendPending) {
-		return (friendPending.status === STATUS.PENDING && friendPending.login === user?.login);
+		return (friendPending.login === user.login);
 	});
+	console.log(user);
 	return (
 		<Stack sx={{width: 1, height: 1}} direction="row" spacing={3}>
 			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">

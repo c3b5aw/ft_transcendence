@@ -1,19 +1,21 @@
 import { Avatar, List, ListItem, Paper, Stack } from "@mui/material";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { api, apiChannel, apiMessages, apiStats } from "../../../Services/Api/Api";
 import { Message } from "../Services/interface";
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import React from "react";
 import { useSnackbar } from 'notistack'
-import { socket } from "../../../Services/ws/utils";
 import { useNavigate } from "react-router-dom";
+import { SocketContext } from "../../../Services/ws/utils";
 
 function MyMessages(props: {nameChannel: string}) {
 	const { nameChannel } = props;
 	const [messages, setMessages] = useState<Message[]>([])
 	const messageEl = useRef<HTMLDivElement>(null);
 	const { enqueueSnackbar } = useSnackbar();
+	const [reload, setReload]  = useState<boolean>(false);
+	const socket = useContext(SocketContext);
 
 	const navigate = useNavigate();
 
@@ -21,13 +23,16 @@ function MyMessages(props: {nameChannel: string}) {
 		navigate(`${apiStats}/${login}`)
 	}
 
+	const handleInviteAccepted = useCallback(() => {
+		setReload(true);
+	  }, []);
+
+	useEffect(() => {
+		socket.on("channel::message", handleInviteAccepted);
+	}, [handleInviteAccepted, socket])
+
 	useEffect(() => {
 		const fetchMessagesChannel = async () => {
-			socket.on("channel::message", async (data) => {
-				console.log("ELIE 1");
-				const reponse = await axios.get(`${api}${apiChannel}/${nameChannel}${apiMessages}`);
-				setMessages(reponse.data);
-			});
 			try {
 				const reponse = await axios.get(`${api}${apiChannel}/${nameChannel}${apiMessages}`);
 				setMessages(reponse.data);
@@ -40,11 +45,12 @@ function MyMessages(props: {nameChannel: string}) {
 			}
 		}
 		fetchMessagesChannel();
-	}, [enqueueSnackbar, nameChannel])
+	}, [enqueueSnackbar, nameChannel, reload])
 
 	useEffect(() => {
 		const node = messageEl.current;
 		if (node) {
+			setReload(false);
 			node.scrollIntoView({
 				behavior: "auto",
 				block: "end",

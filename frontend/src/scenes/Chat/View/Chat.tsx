@@ -11,7 +11,7 @@ import MyMessages from '../Components/MyMessages';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Channel } from '../Services/interface';
-import { channelSend } from '../Services/wsChat';
+import { channelJoin, channelSend } from '../Services/wsChat';
 import useFirstChannel from '../Services/useFirstChannel';
 
 function Chat() {
@@ -32,6 +32,14 @@ function Chat() {
 			setMessageTmp("");
 		}
 	}
+
+	useEffect(() => {
+		function channelJoinn() {
+			if (channel !== undefined)
+				channelJoin(channel, "");
+		}
+		channelJoinn();
+	}, [channel])
 
 	if (me === undefined)
 		return (<MyChargingDataAlert />);

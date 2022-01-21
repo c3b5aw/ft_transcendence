@@ -3,7 +3,6 @@ import { User, USER_STATUS } from "../Services/Interface/Interface";
 
 function MyAvatar(props: {user: User}) {
 	const { user } = props;
-	console.log(user);
 	const event = new Date(user.created);
 	return (
 		<Stack sx={{ width: 1, height: 1/4, marginTop: "30px"}} direction="column" alignItems="center" justifyContent="flex-start" spacing={3}>
