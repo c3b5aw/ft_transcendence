@@ -23,7 +23,6 @@ RUN		npm prune --production
 
 FROM	node:16.13.1-alpine as worker
 
-USER	node
 WORKDIR /home/node
 ENV		NODE_ENV production
 
@@ -33,4 +32,7 @@ COPY	--from=builder /app/dist/ ./dist/
 
 COPY	public/ ./public/
 
+RUN		chown -R node:node ./public/
+
+USER	node
 CMD		["node", "./dist/main"]
