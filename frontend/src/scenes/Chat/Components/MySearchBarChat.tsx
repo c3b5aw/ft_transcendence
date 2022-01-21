@@ -6,8 +6,8 @@ import { useStyles } from "../../../styles/Styles";
 
 function MySearchBarChat(props : {users: User[], fSearchBar: ISearchBar, nameBar: string}) {
 
-    const { users, fSearchBar, nameBar } = props;
-    const [searched, setSearched] = React.useState<string>("");
+	const { users, fSearchBar, nameBar } = props;
+	const [searched, setSearched] = React.useState<string>("");
 	const [rows, setRows] = React.useState<User[]>([]);
 	const classes = useStyles();
 
@@ -27,32 +27,37 @@ function MySearchBarChat(props : {users: User[], fSearchBar: ISearchBar, nameBar
 		requestSearch(searched);
 	};
 
-    return (
-        <Paper>
-            <SearchBar className={classes.searchBar}
-                placeholder={`${nameBar}`}
-                value={searched}
-                onChange={(searchVal) => requestSearch(searchVal)}
-                onCancelSearch={() => cancelSearch()}
-                cancelOnEscape={true}
-            />
-            <Paper>
-                <TableContainer sx={{maxHeight: 200, width: 400}}>
-                    <Table>
-                        <TableBody>
-                            {rows.map((row) => (
-                            <TableRow key={row.login} hover>
-                                <TableCell scope="row" onClick={() => fSearchBar.handleClickCell(row)}>
-                                    {row.login}
-                                </TableCell>
-                            </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
-        </Paper>
-    );
+	const handleClick = (user: User) => {
+		fSearchBar.handleClickCell(user);
+		cancelSearch();
+	}
+
+	return (
+		<Paper>
+			<SearchBar className={classes.searchBar}
+				placeholder={`${nameBar}`}
+				value={searched}
+				onChange={(searchVal) => requestSearch(searchVal)}
+				onCancelSearch={() => cancelSearch()}
+				cancelOnEscape={true}
+			/>
+			<Paper>
+				<TableContainer sx={{maxHeight: 200, width: 400}}>
+					<Table>
+						<TableBody>
+							{rows.map((row) => (
+							<TableRow key={row.login} hover>
+								<TableCell scope="row" onClick={() => handleClick(row)}>
+									{row.login}
+								</TableCell>
+							</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</TableContainer>
+			</Paper>
+		</Paper>
+	);
 }
 
 export default MySearchBarChat;

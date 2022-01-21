@@ -1,15 +1,19 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { User } from "../../../../Services/Interface/Interface";
+import { ISearchBar, User } from "../../../../Services/Interface/Interface";
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
 import { api, apiChannel } from "../../../../Services/Api/Api";
 import { useSnackbar } from 'notistack'
+import MySearchBarChat from "../MySearchBarChat";
+import useFriends from "../../Services/useFriends";
 
 function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetStateAction<boolean>>}) {
 	const { reload, setReload } = props;
     const [open, setOpen] = React.useState(true);
-	const [addFriends, setAddFriends] = useState<User[]>([]);
+    const [openDM, setOpenDM] = React.useState(false);
+	const [friend, setFriend] = useState<User>();
+	const friends = useFriends();
 
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
@@ -17,12 +21,16 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 	const { enqueueSnackbar } = useSnackbar();
 
 	const handleRemoveFriend = (user: User) => {
-		setAddFriends(addFriends.filter(item => item.login !== user.login))
+		setFriend(undefined);
 	}
 
 	const handleClose = () => {
 		setOpen(false);
 	};
+
+	function handleAddFriend(user: User) {
+		setFriend(user);
+	}
 
 	const handleCreate = async () => {
 		if (nameChannel.length > 3 && nameChannel.length < 64) {
@@ -61,6 +69,14 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 		setPasswordChannel(event.target.value);
 	};
 	
+	const fSearchBar: ISearchBar = {
+		handleClickCell: handleAddFriend
+	}
+
+	const handleChange = () => {
+		setOpenDM(!openDM)
+	}
+
     return (
         <Dialog
 			open={open}
@@ -75,17 +91,6 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 			aria-describedby="alert-dialog-description">
 			<DialogTitle>New channel</DialogTitle>
 			<DialogContent>
-				<Box sx={{ flexGrow: 1, marginTop: 1}}>
-					<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-						{addFriends.map((friend) => (
-						<Grid item xs={3.5} key={friend.id}>
-							<Button onClick={() => handleRemoveFriend(friend)} key={friend.id} size="small" variant="contained" endIcon={<CloseIcon />}>
-								{friend.login}
-					 		</Button>
-						</Grid>
-						))}
-					</Grid>
-				</Box>
 				<TextField
 					autoFocus
 					margin="dense"
@@ -107,6 +112,17 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 					onChange={handleTextChangePassword}
 				/>
 				<div style={{marginTop: 10}}></div>
+				<FormControlLabel value="start" control={<Checkbox onChange={handleChange}/>} label="Do you want to create a DM channel ? " />
+				{openDM ? 
+					<React.Fragment>
+						<MySearchBarChat users={friends} fSearchBar={fSearchBar} nameBar="Search your friend..." />
+						<div style={{marginTop: 10}}></div>
+						{friend !== undefined ? 
+							<Button onClick={() => handleRemoveFriend(friend)} key={friend.login} size="small" variant="contained" endIcon={<CloseIcon />}>
+								{friend.login}
+							</Button> : null}
+						</React.Fragment> : null
+					}
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose}>Cancel</Button>

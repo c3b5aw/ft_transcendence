@@ -28,6 +28,12 @@ function MySearchBarChannels(props : {channels: Channel[], fSearchBarChannel: IS
 		requestSearch(searched);
 	};
 
+    const handleClick = (channel: Channel) => {
+		fSearchBarChannel.handleClickCell(channel);
+		cancelSearch();
+	}
+
+
     return (
         <Paper>
             <SearchBar className={classes.searchBar}
@@ -43,7 +49,7 @@ function MySearchBarChannels(props : {channels: Channel[], fSearchBarChannel: IS
                         <TableBody>
                             {rows.map((row) => (
                             <TableRow key={row.name} hover>
-                                <TableCell scope="row" onClick={() => fSearchBarChannel.handleClickCell(row)}>
+                                <TableCell scope="row" onClick={() => handleClick(row)}>
                                     {row.name}
                                 </TableCell>
                             </TableRow>
