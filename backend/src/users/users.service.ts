@@ -7,7 +7,6 @@ import { Repository } from 'typeorm';
 import { createHash } from 'crypto';
 
 import { User } from './entities/user.entity';
-import { UserStats } from './dto/stats.dto';
 import { UserInterface } from './interfaces/user.interface';
 import { UserRole } from './entities/roles.enum';
 import { UserStatus } from './entities/status.enum';
@@ -122,31 +121,29 @@ export class UsersService {
 		- getLadder
 	*/
 
-	async getStatsById(id: number) : Promise<UserStats> {
-		const user: User = await this.userRepository.findOne({ id });
-		if (!user) {
-			return undefined;
-		}
-
-		const stats: UserStats[] = await this.userRepository.manager.query(`
-			SELECT id, login, role, rank::INTEGER, elo, played, victories, defeats, created FROM (
-			SELECT *, ROW_NUMBER() OVER (ORDER BY elo DESC) AS rank FROM users
-			) u WHERE u.id = ${id};
+	async getStatsById(id: number) {
+		return this.userRepository.query(`
+			SELECT * FROM (
+				SELECT users.login, users.status, stats.*,
+				ROW_NUMBER() over (ORDER BY stats.elo DESC, stats.victories DESC) as rank
+				FROM users
+				INNER JOIN users_stats
+					AS stats
+					ON stats.id = users.id
+				ORDER BY stats.elo DESC, stats.victories DESC
+			) usr WHERE usr.id = ${id};
 		`);
-			
-		if (stats.length === 0)
-			return undefined;
-		return stats[0];
 	}
 
-	async getLadder() : Promise<User[]> {
-		return this.userRepository.find({
-			select: [
-				'id', 'login', 'display_name',
-				'elo', 'played', 'victories', 'defeats'
-			],
-			order: { elo: 'DESC' },
-		});
+	async getLadder() {
+		return this.userRepository.query(`
+			SELECT users.login, users.status, stats.*
+			FROM users
+			INNER JOIN users_stats
+				AS stats
+				ON stats.id = users.id
+			ORDER BY stats.elo DESC, stats.victories DESC
+		`);
 	}
 
 	async countAll() : Promise<number> {

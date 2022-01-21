@@ -10,15 +10,17 @@ import { FriendsModule } from './friends/friends.module';
 import { LadderModule } from './ladder/ladder.module';
 import { MatchsModule } from './matchs/matchs.module';
 import { ProfileModule } from './profile/profile.module';
+import { StatsModule } from './stats/stats.module';
 import { UsersModule } from './users/users.module';
 
 import { Achievement, UserAchievement } from './achievements/entities/achievement.entity';
-import { Friend } from './friends/entities/friend.entity';
-import { Match } from './matchs/entities/match.entity';
-import { User } from './users/entities/user.entity';
 import { ChatModule } from './chat/chat.module';
 import { ChatMessage } from './chat/entities/message.entity';
 import { Channel, ChannelUser } from './chat/entities/channel.entity';
+import { Friend } from './friends/entities/friend.entity';
+import { Match } from './matchs/entities/match.entity';
+import { UserStats } from './stats/entities/stats.entity';
+import { User } from './users/entities/user.entity';
 
 @Module({
 	imports: [
@@ -31,8 +33,7 @@ import { Channel, ChannelUser } from './chat/entities/channel.entity';
 			password: process.env.POSTGRES_PASSWORD,
 			database: process.env.POSTGRES_DB,
 			entities: [ Achievement, Channel, ChannelUser,
-						ChatMessage,
-						Friend, Match, User, 
+						ChatMessage, Friend, Match, User, UserStats,
 						UserAchievement ],
 			synchronize: true,
 		}),
@@ -44,6 +45,7 @@ import { Channel, ChannelUser } from './chat/entities/channel.entity';
 		LadderModule,
 		MatchsModule,
 		ProfileModule,
+		StatsModule,
 		UsersModule,
 	],
 	controllers: [AppController],
