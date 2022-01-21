@@ -16,7 +16,6 @@ import { Match } from 'src/matchs/entities/match.entity';
 import { MatchsService } from 'src/matchs/matchs.service';
 
 import { User } from './entities/user.entity';
-import { UserStats } from './dto/stats.dto';
 import { UsersService } from './users.service';
 import { UserRole } from './entities/roles.enum';
 
@@ -69,10 +68,8 @@ export class UsersController {
 		if (!user)
 			return resp.status(404).json({ error: 'user not found' });
 
-		const userStats: UserStats = await this.usersService.getStatsById( user.id );
-		if (!userStats || userStats === undefined)
-			return resp.status(404).json({ error: 'user not found' });
-		resp.send(userStats);
+		const stats = await this.usersService.getStatsById( user.id );
+		resp.send(stats);
 	}
 
 	@Get('/:login/matchs')
