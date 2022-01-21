@@ -124,8 +124,10 @@ export class ChatService {
 		/* Find user in global clients, if exists, send event */
 		const userSocketID: string = Object.keys(global.clients).find( 
 			key => global.clients[key] === userID);
-		if (userSocketID)
+		if (userSocketID) {
+			console.log(`Sending event ${event} to user ${userID}`, '\n', data, '\n');
 			this.server.to(userSocketID).emit(event, data);
+		}
 	}
 
 	async sendEventToChannel(channel: Channel, event: string, data: any) {
@@ -133,6 +135,8 @@ export class ChatService {
 			id: channel.id,
 			name: channel.name,
 		}
+
+		console.log(`Sending event ${event} to channel ${channel.id}`, '\n', data, '\n');
 
 		this.server.to('#' + channel.id).emit(event,
 			data === {} ? { channel: channelSerialized }
@@ -261,12 +265,12 @@ export class ChatService {
 		await this.messagesRepository.save(msg);
 
 		/* Send message to all clients in channel */
-		this.server.to('#' + channel.id).emit('channel::message', {
-			channel: { id: channel.id, name: channel.name },
+		this.sendEventToChannel(channel, 'channel::message', {
 			message: {
 				user: user.login, content: msg.content,
 				announcement: false, timestamp: msg.timestamp,
-			}});
+			}
+		});
 	}
 
 	async wsJoinChannel(client: Socket, channel: Channel, firstTime: boolean) {
