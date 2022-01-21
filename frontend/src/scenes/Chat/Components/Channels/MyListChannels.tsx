@@ -102,7 +102,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	return (
 		<Stack direction="column" sx={{width: 1.5/12, height: 1}}>
 			{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} />: null}
-			{openJoin ? <JoinChannel setOpen={setOpenJoin} />: null}
+			{openJoin ? <JoinChannel setOpen={setOpenJoin} setChannel={setChannel}/>: null}
 			<Stack direction="column" sx={{width: 1, height: 0.9, boxShadow: 3}}>
 				{/* load channels */}
 				<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#1d3033"}}>

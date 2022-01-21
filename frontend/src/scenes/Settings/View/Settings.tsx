@@ -1,8 +1,8 @@
-import { Avatar, Box, Button, Stack, TextField } from "@mui/material";
+import { Avatar, Badge, Box, Button, Stack, TextField } from "@mui/material";
 import axios from "axios";
 import { SetStateAction, useEffect, useState } from "react";
 import { api, apiMe } from "../../../Services/Api/Api";
-import { User } from "../../../Services/Interface/Interface";
+import { User, USER_STATUS } from "../../../Services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
 import KeyIcon from '@mui/icons-material/Key';
@@ -86,16 +86,19 @@ const Settings = () => {
 						</Avatar>
 						<h3 style={{ color: 'grey' }}>{event?.toDateString()}</h3>
 					</Stack>
-					<h1 style={{fontFamily: "Myriad Pro", marginBottom: 50}}>{me.display_name} ({me.role})</h1>
+					<div style={{fontFamily: "Myriad Pro", marginBottom: 50, fontSize: "31px"}}>{me.display_name} ({me.role})
+						<Badge badgeContent={""} 
+							color={me.status === USER_STATUS.ONLINE ? "success" :
+							me.status === USER_STATUS.IN_GAME ? "warning" : "error"} style={{marginLeft: "21px"}}>
+						</Badge>
+					</div>
 				</Stack>
 				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
 					<AddPhotoAlternateIcon sx={{ fontSize: 55 }} />
 					<Box alignItems='center' display='flex' justifyContent='center' flexDirection='column'>
-						<form action="http://127.0.0.1/api/profile/avatar" method="post">
-							<input type="file"
-								id="Choose your new avatar" name="Choose your new avatar"
-								accept="image/jpeg"/>
-							<button>Send</button>
+						<form action="/api/profile/avatar" encType="multipart/form-data" method="POST">
+							<input type="file" name="avatar" />
+							<input type="submit" value="Upload a file"/>
 						</form>
 					</Box>
 				</Stack>

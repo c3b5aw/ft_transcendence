@@ -3,7 +3,7 @@ import { ROLE } from "../Api/Role";
 
 export interface User {
 	banned: boolean
-	connected: boolean
+	status: USER_STATUS
 	created: string
 	defeats: number
 	display_name: string
@@ -58,4 +58,10 @@ export enum STATUS {
 	PENDING = "PENDING",
 	ACCEPTED = "ACCEPTED",
 	BLOCKED = "BLOCKED",
+}
+
+export enum USER_STATUS {
+	OFFLINE = 'OFFLINE',
+	ONLINE = 'ONLINE',
+	IN_GAME = 'IN_GAME',
 }

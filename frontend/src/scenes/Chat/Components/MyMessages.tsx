@@ -1,26 +1,33 @@
 import { Avatar, List, ListItem, Paper, Stack } from "@mui/material";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { api, apiChannel, apiMessages } from "../../../Services/Api/Api";
+import { api, apiChannel, apiMessages, apiStats } from "../../../Services/Api/Api";
 import { Message } from "../Services/interface";
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import React from "react";
 import { useSnackbar } from 'notistack'
 import { socket } from "../../../Services/ws/utils";
+import { useNavigate } from "react-router-dom";
 
 function MyMessages(props: {nameChannel: string}) {
 	const { nameChannel } = props;
-	const [send2, setSend2] = useState<boolean>(false);
 	const [messages, setMessages] = useState<Message[]>([])
 	const messageEl = useRef<HTMLDivElement>(null);
 	const { enqueueSnackbar } = useSnackbar();
 
-	socket.on("channel::message", (data) => {
-		setSend2(!send2);
-	});
+	const navigate = useNavigate();
+
+	const handleClick = (login: string) => {
+		navigate(`${apiStats}/${login}`)
+	}
 
 	useEffect(() => {
 		const fetchMessagesChannel = async () => {
+			socket.on("channel::message", async (data) => {
+				console.log("ELIE 1");
+				const reponse = await axios.get(`${api}${apiChannel}/${nameChannel}${apiMessages}`);
+				setMessages(reponse.data);
+			});
 			try {
 				const reponse = await axios.get(`${api}${apiChannel}/${nameChannel}${apiMessages}`);
 				setMessages(reponse.data);
@@ -33,7 +40,7 @@ function MyMessages(props: {nameChannel: string}) {
 			}
 		}
 		fetchMessagesChannel();
-	}, [enqueueSnackbar, nameChannel, send2])
+	}, [enqueueSnackbar, nameChannel])
 
 	useEffect(() => {
 		const node = messageEl.current;
@@ -60,12 +67,13 @@ function MyMessages(props: {nameChannel: string}) {
 												<div style={{fontSize: "18px", fontFamily: "Myriad Pro"}}>{message.login}</div>
 												<div style={{color: "#99A3A4"}}>{message.content}</div>
 											</Stack>
-										</React.Fragment>
-										:
+										</React.Fragment> :
 										<React.Fragment>
 											<Avatar
 												src={`http://127.0.0.1/api/users/${message.login}/avatar`}
-												sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
+												sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}
+												onClick={() => handleClick(message.login)}
+												>
 											</Avatar>
 											<Stack direction="column" sx={{width: 0.9, maxWidth: 0.9}} spacing={1}>
 												<div style={{fontSize: "18px", fontFamily: "Myriad Pro", color: "white"}}>{message.login}</div>

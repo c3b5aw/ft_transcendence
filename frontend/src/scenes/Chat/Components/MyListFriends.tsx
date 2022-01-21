@@ -1,7 +1,7 @@
 import { Avatar, Badge, CircularProgress, IconButton, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { apiStats } from '../../../Services/Api/Api';
-import { User } from '../../../Services/Interface/Interface';
+import { User, USER_STATUS } from '../../../Services/Interface/Interface';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -68,7 +68,9 @@ function MyListFriends(props : {me: User | undefined, url: string, isListUserCha
 											<ListItemButton onClick={() => handleClick(user)}>
 												<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row">
 													<Stack sx={{ width: "85%", height: 1}} alignItems="center" spacing={2} direction="row">
-														<Badge badgeContent={""} color={user.connected ? "success" : "error"}>
+														<Badge badgeContent={""} 
+															color={user.status === USER_STATUS.ONLINE ? "success" :
+															user.status === USER_STATUS.IN_GAME ? "warning" : "error"}>
 															<Avatar
 																sx={{marginLeft: "10px",
 																	width: "40px",

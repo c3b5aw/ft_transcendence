@@ -8,4 +8,4 @@ export const pageChat = "/chat"
 export const pageAdmin = "/admin"
 export const pageClassement = "/classement"
 export const pageLogin = "/login"
-export const apiGame = "/game";
+export const pageGame = "/game";

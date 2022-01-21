@@ -60,7 +60,6 @@ function SettingsM(props: {
 			<DialogTitle>
 				<Stack direction="row" spacing={3}>
 					<div>{channel.name}</div>
-					{!insideChannel ? <div>Your status : {me.role}</div> : null}
 				</Stack>
 			</DialogTitle>
 			{!insideChannel && channel.private ?

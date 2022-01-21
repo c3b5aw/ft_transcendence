@@ -10,8 +10,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import useChannelsJoin from "../../Services/useChannelsJoin";
 import { channelJoin } from "../../Services/wsChat";
 
-function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
-	const { setOpen } = props;
+function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>>, setChannel: Dispatch<SetStateAction<Channel | undefined>> }) {
+	const { setOpen, setChannel } = props;
     const [open2, setOpen2] = useState(true);
 	const { enqueueSnackbar } = useSnackbar();
 	const allChannels = useChannels();
@@ -30,6 +30,7 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 		if (joinChannel !== undefined) {
 			channelJoin(joinChannel, passwordChannel);
 			handleClose();
+			setChannel(joinChannel);
 		}
 	}
 

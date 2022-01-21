@@ -38,7 +38,7 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 			}
 		}
 		else {
-			enqueueSnackbar(`Impossible d'ajouter ${user.login} car il a deja ete ajouté`, { 
+			enqueueSnackbar(`Impossible d'ajouter ${user.login}`, { 
 				variant: 'warning',
 				autoHideDuration: 3000,
 			});
@@ -169,7 +169,7 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 			  }}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description">
-			<DialogTitle>Update channel {channel.name} / Your status : {me.role}</DialogTitle>
+			<DialogTitle>Update channel {channel.name}</DialogTitle>
 			<DialogContent>
 				<Box sx={{ flexGrow: 1, marginTop: 1}}>
 					<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>

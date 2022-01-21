@@ -7,15 +7,14 @@ import { useSnackbar } from 'notistack'
 function useUserStats(login: string | undefined) {
     const [user, setUser] = useState<User>();
 	const { enqueueSnackbar } = useSnackbar();
-
     useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				const url = `http://127.0.0.1/api/users/${login}${apiStats}`;
+				const url = `http://127.0.0.1/api/users/${login}`;
 				const reponse = await axios.get(url);
 				setUser(reponse.data);
 			} catch (err) {
-				enqueueSnackbar(`Impossible de charfer les stats de ${login} (${err})`, { 
+				enqueueSnackbar(`Impossible de charger les stats de ${login} (${err})`, { 
 					variant: 'error',
 					autoHideDuration: 3000,
 				});

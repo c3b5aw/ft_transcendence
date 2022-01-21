@@ -1,5 +1,5 @@
 import { Avatar, Divider, FormControl, IconButton, Paper, Stack, TextField } from '@mui/material';
-import React, { SetStateAction, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import MyList from '../Components/MyListFriends';
 import { api, apiChannel, apiFriends, apiUsers } from '../../../Services/Api/Api';
 import SendIcon from '@mui/icons-material/Send';
@@ -12,9 +12,11 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Channel } from '../Services/interface';
 import { channelSend } from '../Services/wsChat';
+import useFirstChannel from '../Services/useFirstChannel';
 
 function Chat() {
 	const me = useMe();
+	const firstChannel = useFirstChannel()[0];
 	const [channel, setChannel] = useState<Channel>();
 	const [messageTmp, setMessageTmp] = useState<string>("");
 	const classes = styleTextField();
@@ -67,7 +69,7 @@ function Chat() {
 					{channel !== undefined ? 
 						<React.Fragment>
 							{/* load messages */}
-							<MyMessages nameChannel={channel.name}/>
+							<MyMessages nameChannel={channel.name} />
 							<Stack direction="row" sx={{width: 1, height: 0.1, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
 								<Stack direction="row" sx={{width: 1, marginTop: 3}}>
 									<FormControl sx={{ width: 0.95, marginLeft: 4}}>

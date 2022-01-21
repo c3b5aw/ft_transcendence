@@ -8,7 +8,7 @@ import { useSnackbar } from 'notistack'
 import { socket } from '../ws/utils';
 
 const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array<ROLE>}) => {
-	const [logged, setLogged] = useState(false);
+	const [logged, setLogged] = useState<boolean>(false);
 	const [me, setMe] = useState<User>();
 	const { enqueueSnackbar } = useSnackbar();
 
@@ -37,6 +37,20 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 	
 					socket.on("onSuccess", (data) => {
 						enqueueSnackbar(`${data.message}`, { 
+							variant: 'success',
+							autoHideDuration: 3000,
+						});
+					});
+
+					socket.on("channel::onJoin", (data) => {
+						enqueueSnackbar(`Join ${data.name}`, { 
+							variant: 'success',
+							autoHideDuration: 3000,
+						});
+					});
+
+					socket.on("channel::onReload", async (data) => {
+						enqueueSnackbar(`Join ${data.name}`, { 
 							variant: 'success',
 							autoHideDuration: 3000,
 						});
