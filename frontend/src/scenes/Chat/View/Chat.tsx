@@ -12,11 +12,9 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Channel } from '../Services/interface';
 import { channelJoin, channelSend } from '../Services/wsChat';
-import useFirstChannel from '../Services/useFirstChannel';
 
 function Chat() {
 	const me = useMe();
-	const firstChannel = useFirstChannel()[0];
 	const [channel, setChannel] = useState<Channel>();
 	const [messageTmp, setMessageTmp] = useState<string>("");
 	const classes = styleTextField();

@@ -11,7 +11,7 @@ import { useSnackbar } from 'notistack'
 
 function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetStateAction<boolean>>, reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, me: User}) {
 	const { enqueueSnackbar } = useSnackbar();
-	const { channel, setOpenSettings, me, reload, setReload } = props;
+	const { channel, setOpenSettings, reload, setReload } = props;
 	const usersChannel = useUsersChannel(channel);
     const [open, setOpen] = useState(true);
 	const [modos, setModos] = useState<User[]>([]);

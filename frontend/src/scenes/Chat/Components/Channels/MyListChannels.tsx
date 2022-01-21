@@ -12,8 +12,7 @@ import SettingsAdmin from './SettingsAdmin';
 import SettingsM from './SettingsMember';
 import { useSnackbar } from 'notistack'
 import JoinChannel from './JoinChannel';
-import { socket, SocketContext } from '../../../../Services/ws/utils';
-import { channelJoin } from '../../Services/wsChat';
+import { SocketContext } from '../../../../Services/ws/utils';
 
 function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<Channel | undefined>>}) {
 	const { me, setChannel } = props;
@@ -42,13 +41,13 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 		},
 	}
 
-	const ahndleJoinChannel = useCallback(() => {
+	const handleJoinChannelWS = useCallback(() => {
 		setReload2(true);
 	  }, []);
 
 	useEffect(() => {
-		socket.on("channel::onJoin", ahndleJoinChannel);
-	}, [ahndleJoinChannel, socket])
+		socket.on("channel::onJoin", handleJoinChannelWS);
+	}, [handleJoinChannelWS, socket])
 
 	useEffect(() => {
 		const fetchChannels = async () => {
@@ -64,7 +63,7 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 			}
 		}
 		fetchChannels();
-	}, [me, reload, enqueueSnackbar])
+	}, [me, reload, reload2, enqueueSnackbar])
 
 	function handleCreateChannel() {
 		setOpen(!open);
