@@ -515,9 +515,9 @@ COPY public.channels (id, name, password, tunnel, private, owner_id) FROM stdin;
 --
 
 COPY public.channels_users (id, role, muted, channel_id, user_id) FROM stdin;
-1	MODERATOR	1970-01-01 00:00:00	1	77558
+1	ADMIN	1970-01-01 00:00:00	1	77558
 2	MEMBER	1970-01-01 00:00:00	2	77558
-3	MODERATOR	1970-01-01 00:00:00	1	83781
+3	ADMIN	1970-01-01 00:00:00	1	83781
 4	MEMBER	1970-01-01 00:00:00	2	83781
 5	MODERATOR	1970-01-01 00:00:00	1	73316
 6	MEMBER	1970-01-01 00:00:00	2	73316
