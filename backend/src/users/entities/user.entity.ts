@@ -44,26 +44,6 @@ export class User {
 	two_factor_auth_secret: string;
 
 	/*
-		MATCH STATS
-	*/
-
-	@Column({ type: 'int', default: 1200 })
-	@ApiProperty({ description: "user elo", example: 1248 })
-	elo: number;
-
-	@Column({ type: 'int', default: 0 })
-	@ApiProperty({ description: "user total match played", example: 12 })
-	played: number;
-
-	@Column({ type: 'int', default: 0 })
-	@ApiProperty({ description: "user total match won", example: 4 })
-	victories: number;
-
-	@Column({ type: 'int', default: 0 })
-	@ApiProperty({ description: "user total match lost", example: 8 })
-	defeats: number;
-
-	/*
 		USER INFOS
 	*/
 
