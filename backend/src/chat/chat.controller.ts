@@ -274,12 +274,11 @@ export class ChannelController {
 		if (flow.target.id === flow.channel.owner_id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
-
 		await this.chatService.kickUserFromChannel(flow.target, flow.channel);
 		resp.send({ message:  `${flow.target.login} has been kicked` });
 	}
 
-	@Post('/:channelName/mute/:login/:duration')
+	@Put('/:channelName/mute/:login/:duration')
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Mute a user from a channel' })
 	async muteUser(@Param('channelName') channelName: string,
