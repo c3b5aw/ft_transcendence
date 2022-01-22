@@ -5,12 +5,13 @@ import { Response } from 'express';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
+import { User } from 'src/users/entities/user.entity';
 import { UserRole } from 'src/users/entities/roles.enum';
 
 import { ChatService } from './chat.service';
 import { Channel } from './entities/channel.entity';
 
-import { CreateChannelDto } from './dto/createChannel.dto';
+import { CreateChannelDto, CreateDirectChannelDto } from './dto/createChannel.dto';
 import { UpdateChannelNameDto } from './dto/updateChannelName.dto';
 import { UpdateChannelPasswordDto } from './dto/updateChannelPassword.dto';
 import { ModerationFlow } from './dto/moderationFlow.interface';
@@ -37,9 +38,22 @@ export class ChannelController {
 		resp.send({ "message": "channel created", "channel": channel });
 	}
 
-	// @Get('/dm/:login') -> to dm someone, 
-	//	join correct channel (create if non-existent)
-	//	
+	@Post('/dm')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Create a direct message channel' })
+	async createDirectMessageChannel(@Body() data: CreateDirectChannelDto,
+									 @Req() req: any, @Res() resp: Response)
+	{
+		const target: User = await this.chatService.getUser(data.login);
+		if (!target || target === null)
+			return resp.status(404).json({ error: RequestError.USER_NOT_FOUND });
+
+		const channel: Channel = await this.chatService.createDirectChannel(req.user, target);
+		if (!channel || channel === null)
+			return resp.status(409).json({ error: RequestError.CHANNEL_ALREADY_EXIST });
+		
+		resp.send({ "message": "channel created", "channel": channel });
+	}
 
 	@Get('/:channelName')
 	@Header('Content-Type', 'application/json')
@@ -92,8 +106,7 @@ export class ChannelController {
 	@Get('/:channelName/users')
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get channel users' })
-	async getChannelUsers(@Param('channelName') channelName: string,
-							@Req() req: any, @Res() resp: Response)
+	async getChannelUsers(@Param('channelName') channelName: string, @Res() resp: Response)
 	{
 		const channel: Channel = await this.chatService.findChannelByName(channelName);
 		if (!channel)

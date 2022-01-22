@@ -37,9 +37,20 @@
 }
 ```
 
-- channel::membersReload
+- channel::onMembersReload
 ```typescript
 /* You must refresh member list */
+{
+	channel: [2] {
+		id: number,
+		name: string
+	}
+}
+```
+
+- channel::onListReload
+```typescript
+/* You must refresh channel list */
 {
 	channel: [2] {
 		id: number,
