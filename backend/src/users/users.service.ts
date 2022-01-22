@@ -122,7 +122,7 @@ export class UsersService {
 	*/
 
 	async getStatsById(id: number) {
-		return this.userRepository.query(`
+		const stats = await this.userRepository.query(`
 			SELECT * FROM (
 				SELECT users.login, users.status, stats.*,
 				ROW_NUMBER() over (ORDER BY stats.elo DESC, stats.victories DESC) as rank
@@ -133,6 +133,7 @@ export class UsersService {
 				ORDER BY stats.elo DESC, stats.victories DESC
 			) usr WHERE usr.id = ${id};
 		`);
+		return stats.length > 0 ? stats[0] : null;
 	}
 
 	async getLadder() {

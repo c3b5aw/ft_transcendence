@@ -18,7 +18,7 @@ import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
 
 import { RequestError, WsError } from './dto/errors.enum';
-import { CreateChannelDto } from './dto/createChannel.dto';
+import { CreateChannelDto, CreateDirectChannelDto } from './dto/createChannel.dto';
 import { ModerationFlow } from './dto/moderationFlow.interface';
 @Injectable()
 export class ChatService {
@@ -109,15 +109,22 @@ export class ChatService {
 		CHANNEL USERS FLOW
 	*/
 
-	async addUserToChannel(userID: number, channelID: number, role: UserRole): Promise<ChannelUser> {
+	async addUserToChannel(user: User, channel: Channel, role: UserRole): Promise<ChannelUser> {
 		const userChannel = new ChannelUser();
 		
 		userChannel.role = role;
-		userChannel.user_id = userID;
-		userChannel.channel_id = channelID;
+		userChannel.user_id = user.id;
+		userChannel.channel_id = channel.id;
 		userChannel.muted = new Date(0);
 
-		return this.userChannelRepository.save(userChannel);
+		await this.userChannelRepository.save(userChannel);
+		await this.wsSendAnnouncementToChannel(channel, `${user.login} joined channel ${channel.name}`);
+
+		await this.sendEventToUser(user.id, 'channel::onListReload', {
+			channel: { id: channel.id, name: channel.name } });
+		await this.sendEventToChannel(channel, 'channel::onMembersReload', {});
+		
+		return userChannel;
 	}
 
 	async sendEventToUser(userID: number, event: string, data: any) {
@@ -147,7 +154,7 @@ export class ChatService {
 		await this.sendEventToUser(user.id, 'channel::onBan', {
 			channel: { id: channel.id, name: channel.name },
 			banned: bool });
-		await this.sendEventToChannel(channel, 'channel::membersReload', {});
+		await this.sendEventToChannel(channel, 'channel::onMembersReload', {});
 
 		const alert = `${user.login} has been ${bool ? 'banned' : 'unbanned'}`;
 		await this.wsSendAnnouncementToChannel(channel, alert);
@@ -173,7 +180,7 @@ export class ChatService {
 			return;
 
 		await this.sendEventToUser(user.id, 'channel::onKick', { channel: { id: channel.id, name: channel.name }});
-		await this.sendEventToChannel(channel, 'channel::membersReload', {});
+		await this.sendEventToChannel(channel, 'channel::onMembersReload', {});
 
 		await this.userChannelRepository.delete(userChannel);
 
@@ -191,32 +198,31 @@ export class ChatService {
 		await this.wsSendAnnouncementToChannel(channel, `${user.login} has been muted`);
 	}
 
-	async moderationFlow(reqUserId: number, targetLogin: string,
-						channelName: string, resp: Response) : Promise<ModerationFlow>
+	async moderationFlow(user: number, target: string,
+						channel: string, resp: Response) : Promise<ModerationFlow>
 	{
 		let ret: ModerationFlow = { err: true, target: null,
 			role: null, channel: null };
 		
-		ret.channel = await this.findChannelByName(channelName);
+		ret.channel = await this.findChannelByName(channel);
 		if (!ret.channel) {
 			resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 			return ret;
 		}
 
-		ret.role = await this.getUserRoleInChannel(reqUserId, ret.channel.id);
+		ret.role = await this.getUserRoleInChannel(user, ret.channel.id);
 		if (ret.role !== UserRole.MODERATOR && ret.role !== UserRole.ADMIN) {
 			resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 			return ret;
 		}
 
-		ret.target = await this.usersService.findOneByLogin(targetLogin);
+		ret.target = await this.usersService.findOneByLogin(target);
 		if (!ret.target) {
 			resp.status(404).json({ error: RequestError.USER_NOT_FOUND });
 			return ret;
 		}
 
-		const joined: boolean = await this.isUserInChannel(
-				ret.target.id, ret.channel.id);
+		const joined: boolean = await this.isUserInChannel(ret.target.id, ret.channel.id);
 		if (!joined) {
 			resp.status(404).json({ error: RequestError.USER_NOT_IN_CHANNEL });
 			return ret;
@@ -261,12 +267,12 @@ export class ChatService {
 		await this.messagesRepository.save(msg);
 
 		/* Send message to all clients in channel */
-		this.server.to('#' + channel.id).emit('channel::message', {
-			channel: { id: channel.id, name: channel.name },
+		await this.sendEventToChannel(channel, 'channel::onMessage', {
 			message: {
 				user: user.login, content: msg.content,
 				announcement: false, timestamp: msg.timestamp,
-			}});
+			}
+		});
 	}
 
 	async wsJoinChannel(client: Socket, channel: Channel, firstTime: boolean) {
@@ -279,20 +285,14 @@ export class ChatService {
 			return this.wsFatalUserNotFound(client);
 
 		/* If first time, save channel join + tell you joined */
-		if (firstTime) {
-			await this.addUserToChannel(user.id, channel.id, UserRole.MEMBER);
-
-			await this.wsSendAnnouncementToChannel(channel, user.login + ' joined this channel.');
-		}
+		if (firstTime)
+			await this.addUserToChannel(user, channel, UserRole.MEMBER);
 
 		/* Make socket join channel */
 		client.join('#' + channel.id);
 
 		/* Send user success joined */
 		client.emit('channel::onJoin', { id: channel.id, name: channel.name });
-
-		/* Send user joined to whole channel */
-		await this.sendEventToChannel(channel, "channel::membersReload", {});
 	}
 
 	async wsLeaveChannel(client: Socket, channel: Channel) {
@@ -346,6 +346,10 @@ export class ChatService {
 		GETTERS
 	*/
 
+	async getUser(login: string): Promise<User> {
+		return this.usersService.findOneByLogin(login);
+	}
+
 	async getUserIdBySocket(client: Socket): Promise<number> {
 		/*
 			Resolve userID using global clients variable shared 
@@ -356,8 +360,13 @@ export class ChatService {
 	}
 
 	async getChannels(): Promise<Channel[]> {
-		return this.channelsRepository.find({ where: { tunnel: false },
-			select: [ 'id', 'name', 'private', 'owner_id', 'tunnel' ] });
+		return this.channelsRepository.query(`
+			SELECT channels.id, channels.name, channels.private, channels.tunnel,
+				channels.owner_id, users.login AS owner_login
+			FROM channels
+			INNER JOIN users ON channels.owner_id = users.id
+			WHERE channels.tunnel = false
+		`);
 	}
 
 	async getJoinedChannels(userID: number): Promise<Channel[]> {
@@ -437,9 +446,15 @@ export class ChatService {
 	*/
 
 	async findChannelByName(name: string): Promise<Channel> {
-		return this.channelsRepository.findOne({
-			where: { name: name },
-			select: [ 'id', 'name', 'private', 'tunnel', 'owner_id' ] });
+		const channels: Channel[] = await this.channelsRepository.query(`
+			SELECT channels.id, channels.name, channels.private, channels.tunnel,
+				channels.owner_id, users.login AS owner_login
+			FROM channels
+			LEFT JOIN users ON channels.owner_id = users.id
+			WHERE channels.name = '${name}';
+		`);
+
+		return channels.length > 0 ? channels[0] : null;
 	}
 
 	/*
@@ -463,7 +478,7 @@ export class ChatService {
 		CREATER
 	*/
 
-	async createChannel(data: CreateChannelDto, owner: number) : Promise<Channel> {
+	async createChannel(owner: User, data: CreateChannelDto) : Promise<Channel> {
 		const unique: boolean = await this.isUniqueChannelName(data.name);
 		if (!unique) return null;
 		
@@ -472,14 +487,38 @@ export class ChatService {
 		chan.name = data.name;
 		chan.password = data.password;
 		chan.tunnel = false;
-		chan.owner_id = owner;
+		chan.owner_id = owner.id;
 		chan.private = data.password.length > 0;
 
 		if (chan.private)
 			chan.password = createHash('md5').update(chan.password).digest('hex');
 
 		await this.channelsRepository.save(chan);
-		await this.addUserToChannel(owner, chan.id, UserRole.ADMIN);
+		await this.addUserToChannel(owner, chan, UserRole.ADMIN);
+
+		delete chan.password;
+		return chan;
+	}
+
+	async createDirectChannel(initiator: User, target: User) : Promise<Channel> {
+		const name1 = `DM-${initiator.login}-${target.login}`;
+		const name2 = `DM-${target.login}-${initiator.login}`;
+
+		if (!await this.isUniqueChannelName(name1) ||
+			!await this.isUniqueChannelName(name2))
+			return null;
+
+		let chan: Channel = new Channel();
+
+		chan.name = name1;
+		chan.password = '';
+		chan.tunnel = true;
+		chan.owner_id = 0;
+		chan.private = false;
+
+		await this.channelsRepository.save(chan);
+		await this.addUserToChannel(initiator, chan, UserRole.MEMBER);
+		await this.addUserToChannel(target, chan, UserRole.MEMBER);
 
 		delete chan.password;
 		return chan;
@@ -504,7 +543,7 @@ export class ChatService {
 		await this.userChannelRepository.delete({ channel_id: channel.id });
 		
 		/* Finally delete channel */
-		await this.channelsRepository.delete(channel);
+		await this.channelsRepository.delete(channel.id);
 	}
 
 	async deleteChannelPassword(channel: Channel): Promise<void> {
@@ -523,13 +562,17 @@ export class ChatService {
 		const user = await this.userChannelRepository.findOne({
 			where: { user_id: userID, channel_id: channelID } });
 
-		if (!user || user.role === UserRole.BANNED) return false;
+		if (!user)
+			return false;
 		return true;
 	}
 
 	async isUniqueChannelName(name: string): Promise<boolean> {
-		const channel = await this.channelsRepository.findOne({ where: { name: name } });
+		const forbiddenNames = [ 'admin', 'moderator', 'banned', 'muted', 'dm' ];
+		if (forbiddenNames.includes(name))
+			return false;
 
+		const channel = await this.channelsRepository.findOne({ where: { name: name } });
 		return !channel;
 	}
 }

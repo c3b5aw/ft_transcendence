@@ -11,6 +11,7 @@ export enum WsError {
 	CHANNEL_NOT_JOINED = 'channel not joined',
 	CHANNEL_NOT_MODERATOR = 'channel not moderator',
 	CHANNEL_NOT_SPECIFIED = 'channel not specified',
+	CHANNEL_IS_TUNNEL = 'channel is tunnel',
 	USER_NOT_FOUND = 'user not found',
 	UNABLE_TO_JOIN_CHANNEL = 'unable to join channel',
 	INVALID_PASSWORD = 'invalid password',

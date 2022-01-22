@@ -78,6 +78,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (await this.chatService.isUserInChannel(client_id, channel.id))
 			return await this.chatService.wsJoinChannel(client, channel, false);
 
+		if (channel.tunnel)
+			return client.emit('onError', { error: WsError.CHANNEL_IS_TUNNEL });
+
+
 		const hash = await this.chatService.getChannelPasswordHash(channel.id);
 		if (hash === undefined)
 			return client.emit('onError', { error: WsError.UNABLE_AUTH_CHANNEL });
@@ -130,16 +134,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (!channel)
 			return client.emit('onError', { error: WsError.CHANNEL_NOT_FOUND });
 
-		const chanName = `#${channel.id}`;
-		if (!client.rooms.has(chanName))
-			return client.emit('onError', { error: WsError.USER_NOT_IN_CHANNEL });
-
 		const client_id = await this.chatService.getUserIdBySocket(client);
 		if (!client_id || client_id === null)
 			return this.chatService.wsFatalUserNotFound(client);
 
 		if (!await this.chatService.isUserInChannel(client_id, channel.id))
 			return client.emit('onError', { error: WsError.USER_NOT_IN_CHANNEL });
+
+		const chanName = `#${channel.id}`;
+		if (!client.rooms.has(chanName))
+			client.join(chanName);
 
 		const role: UserRole = await this.chatService.getUserRoleInChannel(client_id, channel.id);
 		if (role === UserRole.BANNED)

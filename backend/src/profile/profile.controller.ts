@@ -83,7 +83,7 @@ export class ProfileController {
 	// https://docs.nestjs.com/techniques/file-upload
 	@Post('avatar')
 	@Header('Content-Type', 'application/json')
-	@UseInterceptors(FileInterceptor('file', {
+	@UseInterceptors(FileInterceptor('avatar', {
 		limits: { fileSize: 1024 * 1024 * 24 },  // ~24MB
 		storage: diskStorage({
 			destination: './public/uploads',
@@ -93,15 +93,15 @@ export class ProfileController {
 		}),
 	}))
 	@ApiOperation({ summary: 'Update your avatar' })
-	async setAvatar(@Req() req: any, @UploadedFile() file: Express.Multer.File,
-					@Res() resp: Response) {
+	async setAvatar(@UploadedFile() file: Express.Multer.File,
+		@Req() req: any, @Res() resp: Response)
+	{
 		if (!file)
 			return resp.status(400).json({ error: 'no file was uploaded.' });
 
-		if (file.mimetype !== 'image/jpeg') {
+		if (file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/jpg') {
 			unlink('./public/uploads/' + req.user.id + '.jpg', (err) => {
-				if (err)
-					console.log(err);
+				if (err) console.log(err);
 			});
 			return resp.status(400).json({ error: 'only jpeg images are accepted' });
 		}
@@ -111,8 +111,7 @@ export class ProfileController {
 			if (err) {
 				console.log(err);
 				unlink('./public/uploads/' + req.user.id + '.jpg', (err_fallback) => {
-					if (err_fallback)
-						console.log(err_fallback);
+					if (err_fallback) console.log(err_fallback);
 				});
 				return resp.status(500).json({ error: 'failed while processing the file' });
 			}
