@@ -73,153 +73,43 @@ export default function MyInfosUser(props: {me: User | undefined }) {
 			status1: boolean,
 			status2: ROLE,
 		) {
-		if (status1) {
-			try {
-				await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
-				enqueueSnackbar(`Reçu`, { 
-					variant: 'success',
-					autoHideDuration: 3000,
-				});
-				setStatus(!status1);
-				setReload(!reload);
+			if (status1) {
+				try {
+					await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
+					enqueueSnackbar(`Reçu`, { 
+						variant: 'success',
+						autoHideDuration: 3000,
+					});
+					setStatus(!status1);
+					setReload(!reload);
+				}
+				catch (err) {
+					enqueueSnackbar(`(${err})`, { 
+						variant: 'error',
+						autoHideDuration: 3000,
+					});
+				}
 			}
-			catch (err) {
-				enqueueSnackbar(`(${err})`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
+			else {
+				try {
+					await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
+					enqueueSnackbar(`Reçu`, { 
+						variant: 'success',
+						autoHideDuration: 3000,
+					});
+					setStatus(!status1);
+					setReload(!reload);
+				}
+				catch (err) {
+					enqueueSnackbar(`Impossible de bannir ${user.login} (${err})`, { 
+						variant: 'error',
+						autoHideDuration: 3000,
+					});
+				}
 			}
 		}
-		else {
-			try {
-				await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
-				enqueueSnackbar(`Reçu`, { 
-					variant: 'success',
-					autoHideDuration: 3000,
-				});
-				setStatus(!status1);
-				setReload(!reload);
-			}
-			catch (err) {
-				enqueueSnackbar(`Impossible de bannir ${user.login} (${err})`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
-			}
-		}
-	}
-
-		// const handleBanned = async () => {
-		// 	if (banned) {
-		// 		try {
-		// 			await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
-		// 			enqueueSnackbar(`${user.login} a été débanni`, { 
-		// 				variant: 'success',
-		// 				autoHideDuration: 3000,
-		// 			});
-		// 			setBanned(!banned);
-		// 		}
-		// 		catch (err) {
-		// 			enqueueSnackbar(`Impossible de débannir ${user.login} (${err})`, { 
-		// 				variant: 'error',
-		// 				autoHideDuration: 3000,
-		// 			});
-		// 		}
-		// 	}
-		// 	else {
-		// 		try {
-		// 			await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
-		// 			enqueueSnackbar(`${user.login} a été banni`, { 
-		// 				variant: 'success',
-		// 				autoHideDuration: 3000,
-		// 			});
-		// 			setBanned(!banned);
-		// 			setReload(!reload);
-		// 		}
-		// 		catch (err) {
-		// 			enqueueSnackbar(`Impossible de bannir ${user.login} (${err})`, { 
-		// 				variant: 'error',
-		// 				autoHideDuration: 3000,
-		// 			});
-		// 		}
-		// 	}
-		// }
 		const handleBanned = async () => {
 			changeStatus(user, setBanned, reload2, setReload2, banned, ROLE.BANNED);
-		}
-
-		const handleModo = async () => {
-			if (modo) {
-				try {
-					// await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
-					enqueueSnackbar(`${user.login} n'est plus modérateur`, { 
-						variant: 'success',
-						autoHideDuration: 3000,
-					});
-					setModo(!modo);
-					setReload(!reload);
-				}
-				catch (err) {
-					enqueueSnackbar(`Impossible de retirer le status de modérateur à ${user.login} (${err})`, { 
-						variant: 'error',
-						autoHideDuration: 3000,
-					});
-				}
-			}
-			else {
-				try {
-					// await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
-					enqueueSnackbar(`${user.login} est maintenant modérateur`, { 
-						variant: 'success',
-						autoHideDuration: 3000,
-					});
-					setModo(!modo);
-					setReload(!reload);
-				}
-				catch (err) {
-					enqueueSnackbar(`Impossible de donner le status de modérateur à ${user.login} (${err})`, { 
-						variant: 'error',
-						autoHideDuration: 3000,
-					});
-				}
-			}
-		}
-
-		const handleProprio = async () => {
-			if (proprio) {
-				try {
-					// await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
-					enqueueSnackbar(`${user.login} n'est plus propriétaire du site`, { 
-						variant: 'success',
-						autoHideDuration: 3000,
-					});
-					setProprio(!proprio);
-					setReload(!reload);
-				}
-				catch (err) {
-					enqueueSnackbar(`Impossible de retirer le status de propriétaire à ${user.login} (${err})`, { 
-						variant: 'error',
-						autoHideDuration: 3000,
-					});
-				}
-			}
-			else {
-				try {
-					// await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
-					enqueueSnackbar(`${user.login} est maintenant propriétaire`, { 
-						variant: 'success',
-						autoHideDuration: 3000,
-					});
-					setProprio(!proprio);
-					setReload(!reload);
-				}
-				catch (err) {
-					enqueueSnackbar(`Impossible de donner le status de propriétaire à ${user.login} (${err})`, { 
-						variant: 'error',
-						autoHideDuration: 3000,
-					});
-				}
-			}
 		}
 
 		return (
@@ -241,10 +131,10 @@ export default function MyInfosUser(props: {me: User | undefined }) {
 					}
 				</TableCell>
 				<TableCell align="center">
-					<Switch checked={modo} onChange={handleModo}/>
+					<Switch checked={modo} disabled/>
 				</TableCell>
 				<TableCell align="center">
-					<Switch checked={proprio} onChange={handleProprio}/>
+					<Switch checked={proprio} disabled/>
 				</TableCell>
 			</TableRow>
 		</React.Fragment>
@@ -279,6 +169,7 @@ export default function MyInfosUser(props: {me: User | undefined }) {
 				<TableCell>
 					<NumbersIcon style={{fontSize: '32px'}}></NumbersIcon>
 				</TableCell>
+				<TableCell>{channel.owner_login}</TableCell>
 				<TableCell>{channel.private ? "private" : "public"}</TableCell>
 				<TableCell align="center" onClick={() => navigate(`${apiChat}`)}>{channel.name}</TableCell>
 				<TableCell align="center">
@@ -321,6 +212,7 @@ export default function MyInfosUser(props: {me: User | undefined }) {
 						<TableHead sx={{backgroundColor: "orange"}}>
 							<TableRow>
 								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Channels</p></TableCell>
+								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Owner</p></TableCell>
 								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Private</p></TableCell>
 								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Name</TableCell>
 								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Delete</TableCell>

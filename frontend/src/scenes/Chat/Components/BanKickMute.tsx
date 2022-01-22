@@ -74,7 +74,7 @@ export default function BanKickMute(props: {
 	const handleMuteUser = async () => {
 		if (channel !== undefined) {
 			try {
-				await axios.post(`${api}${apiChannel}/${channel.name}${apiMute}/${user.login}/5`);
+				await axios.put(`${api}${apiChannel}/${channel.name}${apiMute}/${user.login}/5`);
 				enqueueSnackbar(`${user.login} a ete mute du channel ${channel.name}`, { 
 					variant: 'success',
 					autoHideDuration: 3000,
