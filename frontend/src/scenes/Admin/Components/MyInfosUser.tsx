@@ -17,9 +17,8 @@ import { Channel } from '../../Chat/Services/interface';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NumbersIcon from '@mui/icons-material/Numbers';
 
-export default function MyInfosUser(props: {me: User | undefined }) {
+export default function MyInfosUser() {
 
-	const { me } = props;
 	const [reload, setReload] = useState<boolean>(false);
 	const [reload2, setReload2] = useState<boolean>(false);
 	const [channels, setChannels] = useState<Channel[]>([]);
@@ -58,11 +57,11 @@ export default function MyInfosUser(props: {me: User | undefined }) {
 		fetchUsers();
 	}, [enqueueSnackbar, reload2]);
 
-	function RowUser(props: { user: User, me: User | undefined }) {
-		const { user, me } = props;
+	function RowUser(props: { user: User }) {
+		const { user } = props;
 		const [banned, setBanned] = useState<boolean>(user.role === ROLE.BANNED ? true : false);
-		const [modo, setModo] = useState<boolean>(user.role === ROLE.MODERATOR ? true : false);
-		const [proprio, setProprio] = useState<boolean>(user.role === ROLE.ADMIN ? true : false);
+		const modo = user.role === ROLE.MODERATOR ? true : false;
+		const proprio = user.role === ROLE.ADMIN ? true : false;
 		const navigate = useNavigate();
 
 		async function changeStatus(
@@ -114,7 +113,7 @@ export default function MyInfosUser(props: {me: User | undefined }) {
 
 		return (
 		<React.Fragment>
-			<TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: user.login === me?.login ? 'cyan' : 'white' }}>
+			<TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: 'white' }}>
 				<TableCell>
 					<Avatar
 						src={`http://127.0.0.1/api/users/${user.login}/avatar`}
@@ -174,7 +173,7 @@ export default function MyInfosUser(props: {me: User | undefined }) {
 				<TableCell align="center" onClick={() => navigate(`${apiChat}`)}>{channel.name}</TableCell>
 				<TableCell align="center">
 					<IconButton onClick={() => handleDeleteChannel()}>
-						<DeleteIcon />
+						<DeleteIcon style={{color: "#C0392B"}}/>
 					</IconButton>
 				</TableCell>
 			</TableRow>
@@ -200,7 +199,7 @@ export default function MyInfosUser(props: {me: User | undefined }) {
 						</TableHead>
 						<TableBody>
 							{users.map((user) => (
-							<RowUser key={user.id} user={user} me={me}/>
+							<RowUser key={user.id} user={user}/>
 							))}
 						</TableBody>
 					</Table>
@@ -213,7 +212,7 @@ export default function MyInfosUser(props: {me: User | undefined }) {
 							<TableRow>
 								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Channels</p></TableCell>
 								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Owner</p></TableCell>
-								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Private</p></TableCell>
+								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Status</p></TableCell>
 								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Name</TableCell>
 								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Delete</TableCell>
 							</TableRow>
