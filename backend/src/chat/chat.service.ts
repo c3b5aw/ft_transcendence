@@ -442,9 +442,15 @@ export class ChatService {
 	*/
 
 	async findChannelByName(name: string): Promise<Channel> {
-		return this.channelsRepository.findOne({
-			where: { name: name },
-			select: [ 'id', 'name', 'private', 'tunnel', 'owner_id' ] });
+		const channels: Channel[] = await this.channelsRepository.query(`
+			SELECT channels.id, channels.name, channels.private, channels.tunnel,
+				channels.owner_id, users.login AS owner_login
+			FROM channels
+			INNER JOIN users ON channels.owner_id = users.id
+			WHERE channels.name = '${name}';
+		`);
+
+		return channels.length > 0 ? channels[0] : null;
 	}
 
 	/*
