@@ -9,15 +9,13 @@ import BanKickMute from './BanKickMute';
 import { Channel } from '../Services/interface';
 import { useSnackbar } from 'notistack'
 
-// function Row(props: { row: UserProps }) {
-
-
-function MyListFriends(props : {me: User | undefined, url: string, isListUserChannel: boolean, channel?: Channel}) {
+function MyList(props : {me: User | undefined, url: string, isListUserChannel: boolean, channel?: Channel}) {
 	const { me, url, isListUserChannel, channel } = props;
 	const [users, setUsers] = useState<User[]>([]);
 	const [open, setOpen] = useState<boolean>(false);
 	const [userCurrent, setUserCurrent] = useState<User>();
 	const { enqueueSnackbar } = useSnackbar();
+	const [reload, setReload] = useState<boolean>(false);
 
 	const navigate = useNavigate();
 
@@ -38,7 +36,7 @@ function MyListFriends(props : {me: User | undefined, url: string, isListUserCha
 			}
 		}
 		fetchFriends();
-	}, [enqueueSnackbar, me, url])
+	}, [enqueueSnackbar, me, reload, url])
 
 	function handleOpenDialogBan(user: User) {
 		setUserCurrent(user);
@@ -55,7 +53,7 @@ function MyListFriends(props : {me: User | undefined, url: string, isListUserCha
 	}
 	return (
         <Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
-			{isListUserChannel && open && userCurrent !== undefined ? <BanKickMute user={userCurrent} setOpen={setOpen}/> : null}
+			{isListUserChannel && open && userCurrent !== undefined ? <BanKickMute user={userCurrent} setOpen={setOpen} channel={channel} reload={reload} setReload={setReload}/> : null}
 			<Stack sx={{width: 1, height: 1}} direction="column">
 				<Stack sx={{backgroundColor: "#1d3033", width: 1, height: 1}} direction="column">
 					<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#1d3033"}}>
@@ -73,12 +71,12 @@ function MyListFriends(props : {me: User | undefined, url: string, isListUserCha
 															user.status === USER_STATUS.IN_GAME ? "warning" : "error"}>
 															<Avatar
 																sx={{marginLeft: "10px",
-																	width: "40px",
-																	height: "40px",}}
+																	width: "32px",
+																	height: "32px",}}
 																src={`http://127.0.0.1/api/users/${user.login}/avatar`}>
 															</Avatar>
 														</Badge>
-														<h3 style={{color: "white"}}>{user.login}</h3>
+														<h4 style={{color: "white"}}>{user.login}</h4>
 													</Stack>
 												</Stack>
 											</ListItemButton>
@@ -100,4 +98,4 @@ function MyListFriends(props : {me: User | undefined, url: string, isListUserCha
     );
 }
 
-export default MyListFriends;
+export default MyList;
