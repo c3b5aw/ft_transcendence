@@ -104,7 +104,6 @@ const Stats = () => {
 	const isFriendPending = friendsPending.filter(function (friendPending) {
 		return (friendPending.login === user.login);
 	});
-	console.log(user);
 	return (
 		<Stack sx={{width: 1, height: 1}} direction="row" spacing={3}>
 			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">

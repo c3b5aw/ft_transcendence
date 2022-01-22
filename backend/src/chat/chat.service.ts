@@ -124,10 +124,8 @@ export class ChatService {
 		/* Find user in global clients, if exists, send event */
 		const userSocketID: string = Object.keys(global.clients).find( 
 			key => global.clients[key] === userID);
-		if (userSocketID) {
-			console.log(`Sending event ${event} to user ${userID}`, '\n', data, '\n');
+		if (userSocketID)
 			this.server.to(userSocketID).emit(event, data);
-		}
 	}
 
 	async sendEventToChannel(channel: Channel, event: string, data: any) {
@@ -135,8 +133,6 @@ export class ChatService {
 			id: channel.id,
 			name: channel.name,
 		}
-
-		console.log(`Sending event ${event} to channel ${channel.id}`, '\n', data, '\n');
 
 		this.server.to('#' + channel.id).emit(event,
 			data === {} ? { channel: channelSerialized }
@@ -265,7 +261,7 @@ export class ChatService {
 		await this.messagesRepository.save(msg);
 
 		/* Send message to all clients in channel */
-		await this.sendEventToChannel(channel, 'channel::message', {
+		await this.sendEventToChannel(channel, 'channel::onMessage', {
 			message: {
 				user: user.login, content: msg.content,
 				announcement: false, timestamp: msg.timestamp,
@@ -363,8 +359,13 @@ export class ChatService {
 	}
 
 	async getChannels(): Promise<Channel[]> {
-		return this.channelsRepository.find({ where: { tunnel: false },
-			select: [ 'id', 'name', 'private', 'owner_id', 'tunnel' ] });
+		return this.channelsRepository.query(`
+			SELECT channels.id, channels.name, channels.private, channels.tunnel,
+				channels.owner_id, users.login AS owner_login
+			FROM channels
+			INNER JOIN users ON channels.owner_id = users.id
+			WHERE channels.tunnel = false
+		`);
 	}
 
 	async getJoinedChannels(userID: number): Promise<Channel[]> {
@@ -444,9 +445,15 @@ export class ChatService {
 	*/
 
 	async findChannelByName(name: string): Promise<Channel> {
-		return this.channelsRepository.findOne({
-			where: { name: name },
-			select: [ 'id', 'name', 'private', 'tunnel', 'owner_id' ] });
+		const channels: Channel[] = await this.channelsRepository.query(`
+			SELECT channels.id, channels.name, channels.private, channels.tunnel,
+				channels.owner_id, users.login AS owner_login
+			FROM channels
+			INNER JOIN users ON channels.owner_id = users.id
+			WHERE channels.name = '${name}';
+		`);
+
+		return channels.length > 0 ? channels[0] : null;
 	}
 
 	/*

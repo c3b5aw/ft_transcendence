@@ -21,7 +21,7 @@ function Admin() {
 				<h2>Nombre de joueurs : {users.length}</h2>
 			</Stack>
 			<Stack sx={{ width: 0.78, height: "100vh"}} direction="column" alignItems="center" justifyContent="center">
-				<MyInfosUser me={me} users={users}/>
+				<MyInfosUser me={me}/>
 			</Stack>
 		</Stack>
 	);

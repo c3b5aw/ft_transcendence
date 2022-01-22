@@ -20,7 +20,7 @@
 
 ## Channel events
 
-- channel::message
+- channel::onMessage
 ```typescript
 /* New incoming message */
 {
