@@ -7,9 +7,9 @@
 
 ## Authors
 
-- [@eoliveir](https://github.com/Razgouls)
-- [@jtrauque](https://github.com/jtrauque)
-- [@c3b5aw](https://www.github.com/c3b5aw)
+- [@eoliveir](https://github.com/Razgouls) - Frontend
+- [@jtrauque](https://github.com/jtrauque) - Game logic
+- [@c3b5aw](https://www.github.com/c3b5aw) - Docker/Backend
 
 ## Tech Stack
 
