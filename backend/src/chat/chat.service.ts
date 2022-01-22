@@ -261,7 +261,7 @@ export class ChatService {
 		await this.messagesRepository.save(msg);
 
 		/* Send message to all clients in channel */
-		this.sendEventToChannel(channel, 'channel::onMessage', {
+		await this.sendEventToChannel(channel, 'channel::onMessage', {
 			message: {
 				user: user.login, content: msg.content,
 				announcement: false, timestamp: msg.timestamp,

@@ -133,7 +133,7 @@ export class UsersService {
 				ORDER BY stats.elo DESC, stats.victories DESC
 			) usr WHERE usr.id = ${id};
 		`);
-		return stats.length === 0 ? null : stats[0];
+		return stats.length > 0 ? stats[0] : null;
 	}
 
 	async getLadder() {
