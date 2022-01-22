@@ -356,8 +356,13 @@ export class ChatService {
 	}
 
 	async getChannels(): Promise<Channel[]> {
-		return this.channelsRepository.find({ where: { tunnel: false },
-			select: [ 'id', 'name', 'private', 'owner_id', 'tunnel' ] });
+		return this.channelsRepository.query(`
+			SELECT channels.id, channels.name, channels.private, channels.tunnel,
+				channels.owner_id, users.login AS owner_login
+			FROM channels
+			INNER JOIN users ON channels.owner_id = users.id
+			WHERE channels.tunnel = false
+		`);
 	}
 
 	async getJoinedChannels(userID: number): Promise<Channel[]> {
