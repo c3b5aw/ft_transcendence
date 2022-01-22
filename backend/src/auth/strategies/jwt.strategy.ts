@@ -40,6 +40,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		if (user.role === UserRole.BANNED)
 			throw new AuthBannedException();
 
-		return user;
+		if (!user.two_factor_auth)
+			return user;
+
+		if (payload.is_2fa_valid)
+			return user;
+		
+		throw new UnauthorizedException();
 	}
 }

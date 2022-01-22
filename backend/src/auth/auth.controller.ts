@@ -41,12 +41,8 @@ export class AuthController {
 	@UseGuards(Intra42Guard)
 	@ApiOperation({ summary: '42 Redirect endpoint' })
 	async callback_42(@Req() req: any, @Res({ passthrough: true }) resp: Response) {
-		if (req.user) {
-			const jwt = await this.authService.login(req.user);
-			resp.cookie('access_token', jwt.access_token, {
-				httpOnly: false,
-			});
-		}
+		if (req.user)
+			await this.authService.sendCookie(req, resp, false);
 		resp.status(302).redirect('/api/auth/redirect');
 	}
 
