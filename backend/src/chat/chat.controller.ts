@@ -31,7 +31,7 @@ export class ChannelController {
 	async createChannel(@Body() data: CreateChannelDto,
 						@Req() req: any, @Res() resp: Response)					
 	{
-		const channel: Channel = await this.chatService.createChannel(data, req.user.id);
+		const channel: Channel = await this.chatService.createChannel(req.user, data);
 		if (!channel || channel === null)
 			return resp.status(409).json({ error: RequestError.CHANNEL_ALREADY_EXIST });
 

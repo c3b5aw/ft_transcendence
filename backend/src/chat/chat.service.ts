@@ -481,7 +481,7 @@ export class ChatService {
 		CREATER
 	*/
 
-	async createChannel(data: CreateChannelDto, owner: User) : Promise<Channel> {
+	async createChannel(owner: User, data: CreateChannelDto) : Promise<Channel> {
 		const unique: boolean = await this.isUniqueChannelName(data.name);
 		if (!unique) return null;
 		
@@ -546,7 +546,7 @@ export class ChatService {
 		await this.userChannelRepository.delete({ channel_id: channel.id });
 		
 		/* Finally delete channel */
-		await this.channelsRepository.delete(channel);
+		await this.channelsRepository.delete(channel.id);
 	}
 
 	async deleteChannelPassword(channel: Channel): Promise<void> {
