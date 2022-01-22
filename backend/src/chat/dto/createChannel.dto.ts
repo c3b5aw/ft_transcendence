@@ -20,3 +20,14 @@ export class CreateChannelDto {
 	})
 	password: string;
 }
+
+export class CreateDirectChannelDto {
+	@IsString()
+	@MinLength(3)
+	@MaxLength(64)
+	@ApiProperty({
+		description: 'The user login you want to talk with',
+		minimum: 3,
+	})
+	login: string;
+}
