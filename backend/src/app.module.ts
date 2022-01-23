@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module'
 import { FriendsModule } from './friends/friends.module';
 import { LadderModule } from './ladder/ladder.module';
 import { MatchsModule } from './matchs/matchs.module';
+import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { ProfileModule } from './profile/profile.module';
 import { StatsModule } from './stats/stats.module';
 import { UsersModule } from './users/users.module';
@@ -44,6 +45,7 @@ import { TwoAuthFactorModule } from './2fa/2fa.module';
 		ChatModule,
 		FriendsModule,
 		LadderModule,
+		MatchmakingModule,
 		MatchsModule,
 		ProfileModule,
 		StatsModule,
