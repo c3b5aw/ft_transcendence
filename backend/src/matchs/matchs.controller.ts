@@ -25,7 +25,16 @@ export class MatchsController {
 		resp.send({ total });
 	}
 
-	@Get('/:id')
+	@Get('in-progress')
+	@UseGuards(JwtTwoFactorGuard)
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get all in progress matchs' })
+	async getInProgress(@Res() resp: Response) {
+		const matchs: Match[] = await this.matchsService.findAllInProgress();
+		resp.send(matchs);
+	}
+
+	@Get(':id')
 	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get match details' })

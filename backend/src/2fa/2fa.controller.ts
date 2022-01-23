@@ -1,5 +1,5 @@
 import { Controller, Get, Post, UseGuards, Body,
-		Res, Req, UnauthorizedException, Header, Delete } from '@nestjs/common';
+		Res, Req, UnauthorizedException, Header } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
