@@ -2,7 +2,9 @@
 # ft_transcendence
 
 42 School Project - Build a pong game
+
 **Score:** In progress
+
 **Time elapsed:** ...
 
 ## Authors
@@ -25,7 +27,7 @@
 ## Features
 
 - OAuth 42 intra
-- 2FA               -   (Planned)
+- 2FA
 - Pong Game         -   (In progress)
 - Friends
 - Chat
