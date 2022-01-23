@@ -7,7 +7,7 @@ up:
 
 .PHONY: build
 build:
-	@	docker-compose up -d --build
+	@	docker-compose up -d --build --no-deps
 
 .PHONY: down
 down:

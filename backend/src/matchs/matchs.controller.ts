@@ -3,11 +3,11 @@ import { Controller, Get, Res,
 import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
 import { Response } from 'express';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { AdminGuard } from 'src/admin/guards/admin.guard';
 
 import { Match } from './entities/match.entity';
 import { MatchsService } from './matchs.service';
+import { JwtTwoFactorGuard } from 'src/2fa/guards/2fa.guard';
 
 @ApiTags('matchs')
 @ApiCookieAuth()
@@ -26,7 +26,7 @@ export class MatchsController {
 	}
 
 	@Get('/:id')
-	@UseGuards(JwtGuard)
+	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get match details' })
 	async getMatch(@Param('id') id: number, @Res() resp: Response) {

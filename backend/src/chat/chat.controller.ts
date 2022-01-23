@@ -3,7 +3,7 @@ import { Controller, Delete, Get, UseGuards, Param,
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { JwtTwoFactorGuard } from 'src/2fa/guards/2fa.guard';
 
 import { User } from 'src/users/entities/user.entity';
 import { UserRole } from 'src/users/entities/roles.enum';
@@ -19,7 +19,7 @@ import { RequestError } from './dto/errors.enum';
 
 @ApiTags('channel')
 @ApiCookieAuth()
-@UseGuards(JwtGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('channel')
 export class ChannelController {
 
@@ -334,7 +334,7 @@ export class ChannelController {
 
 @ApiTags('channels')
 @ApiCookieAuth()
-@UseGuards(JwtGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('channels')
 export class ChannelsController {
 

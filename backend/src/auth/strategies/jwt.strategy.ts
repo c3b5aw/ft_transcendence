@@ -32,14 +32,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 	}
 
 	async validate(payload: any): Promise<User> {
-		const user: User = await this.userService.findOneByID(payload.sub);
-
-		if (!user)
-			throw new UnauthorizedException();
-
-		if (user.role === UserRole.BANNED)
+		const user: User = await this.userService.findOneByIDWithCreds(payload.sub);
+		if (!user || user.role === UserRole.BANNED)
 			throw new AuthBannedException();
 
+		delete user.two_factor_auth_secret;		
 		return user;
 	}
 }

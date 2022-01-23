@@ -52,6 +52,10 @@ export class UsersService {
 		- findOneByLogin
 	*/
 
+	async findOneByIDWithCreds(id: number) : Promise<User> {
+		return this.userRepository.findOne({ id });
+	}
+
 	async findOneByID(id: number) : Promise<User> {
 		const user: User = await this.userRepository.findOne({ id });
 		if (user) {
@@ -168,5 +172,17 @@ export class UsersService {
 				})
 			}
 		});
+	}
+
+	/*
+		SETTERS
+	*/
+
+	async setTwoFactorAuthenticationSecret(userId: number, secret: string) {
+		return this.userRepository.update({ id: userId }, { two_factor_auth_secret: secret });
+	}
+
+	async setTwoFactorAuthentication(userId: number, enabled: boolean) {
+		return this.userRepository.update({ id: userId }, { two_factor_auth: enabled });
 	}
 }

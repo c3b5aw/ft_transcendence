@@ -4,7 +4,7 @@ import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { JwtTwoFactorGuard } from 'src/2fa/guards/2fa.guard';
 import { AdminGuard } from 'src/admin/guards/admin.guard';
 
 import { AchievementsService } from 'src/achievements/achievements.service';
@@ -21,7 +21,7 @@ import { UserRole } from './entities/roles.enum';
 
 @ApiTags('users')
 @ApiCookieAuth()
-@UseGuards(JwtGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('users')
 export class UsersController {
 

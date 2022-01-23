@@ -7,7 +7,8 @@ import { Response } from 'express';
 import { diskStorage } from 'multer';
 import { rename, unlink } from 'fs';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { JwtTwoFactorGuard } from 'src/2fa/guards/2fa.guard';
+
 import { PostDisplayNameDto } from './dto/postDisplayName.dto';
 
 import { User } from 'src/users/entities/user.entity';
@@ -18,7 +19,7 @@ import { FriendsService } from 'src/friends/friends.service';
 
 @ApiTags('profile')
 @ApiCookieAuth()
-@UseGuards(JwtGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('profile')
 export class ProfileController {
 

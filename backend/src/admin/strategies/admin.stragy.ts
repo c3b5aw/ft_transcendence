@@ -37,6 +37,9 @@ export class AdminStrategy extends PassportStrategy(Strategy, 'admin') {
 		if (user.role !== UserRole.ADMIN)
 			throw new InsufficientPermissionsException();
 
-		return true;
+		if (user.two_factor_auth === false)
+			return true;
+		
+		return payload.is_2fa_valid;
 	}
 }
