@@ -34,4 +34,8 @@ export class AuthService {
 			httpOnly: false,
 		});
 	}
+
+	async verifyToken(token: string) {
+		return this.jwtService.verify(token, { ignoreExpiration: false });
+	}
 }

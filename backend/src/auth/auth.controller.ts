@@ -23,11 +23,18 @@ export class AuthController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get your auth status' })
-	status(@Req() req: any, @Res() resp: Response) {
-		resp.send({
-			isAuthenticated: true,
-			user: req.user,
-		})
+	async status(@Req() req: any, @Res() resp: Response) {
+		let isAuthenticated: boolean, isTwoFaAuthenticated: boolean = false;
+	
+		try {
+			if (req.cookies.access_token) {
+				let payload: any = await this.authService.verifyToken(req.cookies.access_token);
+
+				isTwoFaAuthenticated = req.user.two_factor_auth ? payload.is_2fa_valid : true;
+				isAuthenticated = true;
+			}
+		} catch (e) {}
+		resp.send({ isTwoFaAuthenticated, isAuthenticated, user: req.user });
 	}
 
 	@Get('/redirect')

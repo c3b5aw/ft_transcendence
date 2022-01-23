@@ -4,11 +4,12 @@ import { UsersModule } from 'src/users/users.module';
 import { TwoAuthFactorController } from './2fa.controller';
 
 import { TwoAuthFactorService } from './2fa.service';
+import { JwtTwoFactorStrategy } from './strategies/2fa.strategy';
 
 @Module({
 	imports: [ UsersModule, AuthModule ],
 	controllers: [ TwoAuthFactorController ],
-	providers: [ TwoAuthFactorService ],
+	providers: [ TwoAuthFactorService, JwtTwoFactorStrategy ],
 	exports: [ TwoAuthFactorService ]
 })
 

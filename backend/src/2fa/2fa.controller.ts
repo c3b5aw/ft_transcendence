@@ -49,7 +49,8 @@ export class TwoAuthFactorController {
 		if (!isCodeValid)
 			throw new UnauthorizedException('Wrong authentication code');
 
-		await this.authService.sendCookie(req, resp, true)
-		return req.user;
+		await this.authService.sendCookie(req, resp, true);
+
+		resp.send({ success: true });
 	}
 }
