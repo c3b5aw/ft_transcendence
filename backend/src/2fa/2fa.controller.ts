@@ -1,6 +1,6 @@
-import { Controller, Post, UseGuards, Body,
-		Res, Req, UnauthorizedException } from '@nestjs/common';
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, UseGuards, Body,
+		Res, Req, UnauthorizedException, Header, Delete } from '@nestjs/common';
+import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 
@@ -19,14 +19,17 @@ export class TwoAuthFactorController {
 		private readonly usersService: UsersService,
 		private readonly authService: AuthService) {}
 
-	@Post('generate')
-	async register(@Res() response: any, @Req() request: any) {
+	@Get('generate')
+	@ApiOperation({ summary: 'Generate a new 2FA qr-code' })
+	async register(@Res() resp: any, @Req() request: any) {
 		const { otpauthUrl } = await this.twoAuthFactorService.generateTwoFactorAuthenticationSecret(request.user);
 
-		return this.twoAuthFactorService.pipeQrCodeStream(response, otpauthUrl);
+		return this.twoAuthFactorService.pipeQrCodeStream(resp, otpauthUrl);
 	}
 
 	@Post('turn-on')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Turn on 2FA' })
 	async turnOnTwoFactorAuthentication(@Req() request: any, 
 		@Body() data: TwoFactorAuthenticationCodeDto) 
 	{
@@ -41,6 +44,8 @@ export class TwoAuthFactorController {
 	}
 
 	@Post('authenticate')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Authenticate user with 2fa code' })
 	public async authenticate(@Req() req: any, @Res() resp: Response,
 		@Body() data : TwoFactorAuthenticationCodeDto)
 	{
@@ -52,5 +57,13 @@ export class TwoAuthFactorController {
 		await this.authService.sendCookie(req, resp, true);
 
 		resp.send({ success: true });
+	}
+
+	@Get('turn-off')
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Turn off 2FA' })
+	async turnOffTwoFactorAuthentication(@Req() request: any, @Res() resp: Response) {
+		await this.usersService.setTwoFactorAuthentication(request.user.id, false);
+		resp.status(302).redirect('/api/auth/logout');
 	}
 }
