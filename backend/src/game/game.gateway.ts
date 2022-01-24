@@ -27,4 +27,34 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	async handleDisconnect(client: WSClient) {}
 
+	/*
+
+	- CLIENT SENDS:
+
+	game::join					- make socket join a room (might be spectator)
+	game::paddle::move::up		- player move paddle up
+	game::paddle::move::down	- player move paddle down
+	game::paddle::move::stop	- player stop paddle movement
+	game::paddle::power			- player use power
+	game::pause					- player request pause
+
+	- SERVER SENDS:
+
+	game::match::onStart	- server start match
+	game::match::onPause	- server pause match
+	game::match::onEnd		- server end match
+	game::match::onScore	- server update score
+	game::match::onReset 	- server reset ball with new speed.y
+
+	game::spectator::onJoin		- server add spectator to room
+	game::spectator::onLeave	- server remove spectator from room
+
+	game::ball::onCollide		- server update ball vector on collision
+
+	game::paddle::onMove::up	- server move paddle up
+	game::paddle::onMove::down	- server move paddle down
+	game::paddle::onMove::stop	- server stop paddle
+	game::paddle::onPower		- server power paddle
+
+	*/
 }
