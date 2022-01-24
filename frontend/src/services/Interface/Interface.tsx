@@ -10,7 +10,7 @@ export interface User {
 	elo: number
 	email: string
 	id: number
-	lastLogin: string
+	last_login: string
 	login: string
 	played: number
 	role: ROLE

@@ -26,11 +26,10 @@ const Settings = () => {
 
 	useEffect(() => {
 		const fetchMe = async () => {
-			console.log("RELOAD !");
 			try {
 				const reponse = await axios.get(`${api}${apiMe}`);
 				setMe(reponse.data);
-				return reponse;
+				return (reponse);
 			}
 			catch (err) {
 				enqueueSnackbar(`Impossible de recuperer les informations te concernant (${err})`, { 
@@ -41,7 +40,7 @@ const Settings = () => {
 		}
 		async function fetchCreated() {
 			const result = await fetchMe();
-			setEvent(new Date(result?.data.created))
+			setEvent(new Date(result?.data.created));
 		}
 		fetchCreated();
 	}, [enqueueSnackbar, reload, new_display]);
