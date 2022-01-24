@@ -4,7 +4,7 @@ import { OnGatewayConnection, OnGatewayDisconnect,
 		SubscribeMessage } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 
-import { WsGuard } from 'src/auth/guards/ws.guard';
+import { WsGuard } from 'src/ws/guards/ws.guard';
 import { WSClient } from 'src/ws/datastructures/wsclient.struct';
 import { MatchmakingService } from './matchmaking.service';
 

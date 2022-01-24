@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { Server } from 'socket.io';
 
-import { WsGuard } from 'src/auth/guards/ws.guard';
+import { WsGuard } from 'src/ws/guards/ws.guard';
 import { Match } from 'src/matchs/entities/match.entity';
 import { MatchType } from 'src/matchs/entities/types.enum';
 import { MatchsService } from 'src/matchs/matchs.service';
