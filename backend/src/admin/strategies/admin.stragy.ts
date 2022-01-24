@@ -28,8 +28,7 @@ export class AdminStrategy extends PassportStrategy(Strategy, 'admin') {
 	}
 
 	async validate(payload: any) : Promise<boolean> {
-		const user: User = await this.usersService.findOneByID( payload.sub );
-		
+		const user: User = await this.usersService.findOneByIDWithCreds(payload.sub);
 		if (!user)
 			throw new UnauthorizedException();
 		if (user.role === UserRole.BANNED)
