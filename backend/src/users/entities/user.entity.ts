@@ -57,5 +57,5 @@ export class User {
 
 	@CreateDateColumn({ update: true, default: () => 'CURRENT_TIMESTAMP', nullable: false  })
 	@ApiProperty({ description: "user last login date", example: "2020-01-01T00:00:00.000Z" })
-	lastLogin: Date;
+	last_login: Date;
 }
