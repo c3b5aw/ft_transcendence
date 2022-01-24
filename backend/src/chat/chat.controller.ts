@@ -309,7 +309,7 @@ export class ChannelController {
 
 		const futur: Date = new Date(new Date().getTime() + (duration * 1000));
 		await this.chatService.muteUserInChannel(flow.target, flow.channel, futur);
-		resp.send({ message: `${flow.target.login} muted for ${duration}` });
+		resp.send({ message: `${flow.target.login} muted for ${duration} seconds` });
 	}
 
 	@Delete('/:channelName/mute/:login')
