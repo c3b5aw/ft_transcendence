@@ -125,7 +125,20 @@
 ```typescript
 /* Match has been found */
 
-// ToDo Update
+{
+    match: {
+        hash: string,
+        player1: number,
+        player2: number,
+        date: string,
+        type: MatchType.enum,
+        finished: boolean,
+        id: number,
+        duration: number,
+        player1_score: number,
+        player2_score: number
+    }
+}
 ```
 
 - matchmaking::onLeave

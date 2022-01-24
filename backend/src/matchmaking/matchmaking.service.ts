@@ -93,15 +93,17 @@ export class MatchmakingService {
 		if (queue.length < 2)
 			return;
 
+		const [user1, user2] = queue.splice(0, 2);
+
 		const match_type: MatchType = room.startsWith('#MM-RANKED') ? MatchType.MATCH_RANKED : MatchType.MATCH_NORMAL;
-		const match: Match = await this.matchsService.create(queue[0].user.id, queue[1].user.id, match_type);
+		const match: Match = await this.matchsService.create(user1.user.id, user2.user.id, match_type);
 
 		// Send match to room
 		this.server.to(room).emit('matchmaking::onMatch', { match });
 
 		// remove from queue and clients
-		const [user1, user2] = queue;
-		global.queues[room] = [];
+		global.queues[room].splice(global.queues[room].indexOf(user1), 1);
+		global.queues[room].splice(global.queues[room].indexOf(user2), 1);
 
 		delete global.mm_clients[user1];
 		delete global.mm_clients[user2];
