@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-
 import { JwtModule } from '@nestjs/jwt';
 
 import { UsersModule } from 'src/users/users.module';
+
 import { MatchmakingGateway } from './matchmaking.gateway';
+import { MatchmakingService } from './matchmaking.service';
 
 @Module({
 	imports: [
@@ -16,7 +17,7 @@ import { MatchmakingGateway } from './matchmaking.gateway';
 		UsersModule,
 	],
 	controllers: [],
-	providers: [ MatchmakingGateway ],
+	providers: [ MatchmakingGateway, MatchmakingService ],
 	exports: [],
 })
 
