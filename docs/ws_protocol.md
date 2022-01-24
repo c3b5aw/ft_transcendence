@@ -140,7 +140,8 @@
 ```typescript
 /* Joined MM queue */
 {
-	message: string
+	room: string,
+	match_type: MatchType.enum
 }
 ```
 

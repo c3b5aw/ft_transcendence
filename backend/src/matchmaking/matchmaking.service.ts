@@ -41,7 +41,7 @@ export class MatchmakingService {
 
 		global.mm_clients[client.user.id] = room;
 		global.queues[room].push(client);
-		client.emit('matchmaking::onJoin', { message: `${queueType} queue joined` });
+		client.emit('matchmaking::onJoin', { room, match_type: queueType });
 	
 		this.queueUpdate(room);
 	}
