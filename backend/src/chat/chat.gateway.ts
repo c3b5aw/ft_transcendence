@@ -32,29 +32,25 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return;
 
 		for (const channel of channels) {
-			this.server.to('#' + channel.id).emit('channel::connect', {
-				channel: channel.id,
-				user: uid,
-			});
+			this.server.to('#' + channel.id).emit('channel::onMembersReload', {
+				channel: { id: channel.id }, user: { id: uid } });
 		}
 	}
 
 	async handleDisconnect(client: Socket) {
 		await this.chatService.wsLogout(client);
 
-		const client_id = await this.chatService.getUserIdBySocket(client);
-		if (!client_id || client_id === null)
+		const uid = await this.chatService.getUserIdBySocket(client);
+		if (!uid || uid === null)
 			return;
 
-		const channels = await this.chatService.getUserChannels(client_id);
+		const channels = await this.chatService.getUserChannels(uid);
 		if (!channels)
 			return;
 
 		for (const channel of channels) {
-			this.server.to('#' + channel.id).emit('channel::disconnect', {
-				channel: channel.id,
-				user: client_id,
-			});
+			this.server.to('#' + channel.id).emit('channel::onMembersReload', {
+				channel: { id: channel.id }, user: { id: uid } });
 		}
 	}
 
