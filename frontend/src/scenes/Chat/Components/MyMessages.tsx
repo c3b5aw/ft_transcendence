@@ -23,29 +23,30 @@ function MyMessages(props: {nameChannel: string}) {
 		navigate(`${apiStats}/${login}`)
 	}
 
-	const handleInviteAccepted = useCallback(() => {
-		setReload(true);
-	  }, []);
-
-	useEffect(() => {
-		socket.on("channel::onMessage", handleInviteAccepted);
-	}, [handleInviteAccepted, socket])
-
-	useEffect(() => {
-		const fetchMessagesChannel = async () => {
-			try {
-				const reponse = await axios.get(`${api}${apiChannel}/${nameChannel}${apiMessages}`);
-				setMessages(reponse.data);
-			}
-			catch (err) {
-				enqueueSnackbar(`Impossible de charger les messages du channel ${nameChannel} (${err})`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
-			}
+	const fetchMessagesChannel = async () => {
+		try {
+			const reponse = await axios.get(`${api}${apiChannel}/${nameChannel}${apiMessages}`);
+			setMessages(reponse.data);
 		}
+		catch (err) {
+			enqueueSnackbar(`Impossible de charger les messages du channel ${nameChannel} (${err})`, { 
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
+		}
+	}
+
+	useEffect(() => {
+		console.log("SETUP");
+		socket.on("channel::onMessage", () => {
+			console.log("IN");
+			fetchMessagesChannel();
+		});
+	}, [socket]);
+
+	useEffect(() => {
 		fetchMessagesChannel();
-	}, [enqueueSnackbar, nameChannel, reload])
+	}, [nameChannel]);
 
 	useEffect(() => {
 		const node = messageEl.current;

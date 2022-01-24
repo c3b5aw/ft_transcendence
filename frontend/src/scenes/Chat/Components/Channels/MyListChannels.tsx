@@ -23,7 +23,6 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 	const [openSettingsM, setOpenSettingsM] = useState<boolean>(false);
 	const [channelTmp, setChannelTmp] = useState<Channel>();
 	const [reload, setReload] = useState<boolean>(false);
-	const [reload2, setReload2] = useState<boolean>(false);
 	const { enqueueSnackbar } = useSnackbar();
 
 	const socket = useContext(SocketContext);
@@ -41,29 +40,51 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 		},
 	}
 
-	const handleJoinChannelWS = useCallback(() => {
-		setReload2(true);
-	  }, []);
-
-	useEffect(() => {
-		socket.on("channel::onJoin", handleJoinChannelWS);
-	}, [handleJoinChannelWS, socket])
-
 	useEffect(() => {
 		const fetchChannels = async () => {
 			try {
 				const reponse = await axios.get(`${api}${apiChannels}/joined`);
 				setChannels(reponse.data);
-				setReload2(false);
 			} catch (err) {
 				enqueueSnackbar(`Impossible de charger la liste des channels (${err})`, { 
 					variant: 'error',
 					autoHideDuration: 3000,
 				});
 			}
+			setReload(false);
 		}
 		fetchChannels();
-	}, [me, reload, reload2, enqueueSnackbar])
+		socket.on("channel::onJoin", () => {
+			fetchChannels();
+		});
+	
+		socket.on("channel::onListReload", () => {
+			fetchChannels();
+		});
+		return 
+	}, [me, reload, enqueueSnackbar, socket])
+
+	// socket.on("channel::onJoin", () => {
+	// 	if (isMounted)
+	// 		setReload(true)
+	// });
+
+	// socket.on("channel::onListReload", () => {
+	// 	if (isMounted)
+	// 		setReload(true);
+	// });
+
+	// useEffect(() => {
+	// 	socket.on("channel::onJoin", () => {
+	// 		setReload(true)
+	// 	});
+	// }, [socket])
+
+	// useEffect(() => {
+	// 	socket.on("channel::onListReload", () => {
+	// 		setReload(true);
+	// 	});
+	// }, [socket])
 
 	function handleCreateChannel() {
 		setOpen(!open);
@@ -73,18 +94,8 @@ function MyListChannels(props : {me: User, setChannel: Dispatch<SetStateAction<C
 		setOpenJoin(!openJoin);
 	}
 
-	async function HandleClickChannel(channel: Channel) {
-		const response = await axios.get(`${api}${apiChannel}/${channel.name}${apiUsers}`);
-		const res = (response.data.filter((user: { login: string; }) => user.login === me.login))
-		if (res.length > 0) {
-			setChannel(channel);
-		}
-		else {
-			enqueueSnackbar(`Impossible de consulter les messages car tu n'es pas dans le channel`, { 
-				variant: 'warning',
-				autoHideDuration: 3000,
-			});
-		}
+	function HandleClickChannel(channel: Channel) {
+		setChannel(channel);
 	}
 
 	function handleClickSettingsChannel(channel: Channel) {

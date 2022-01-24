@@ -29,7 +29,7 @@ function Chat() {
 	function handleSendMessage() {
 		if (channel !== undefined)
 		{
-			channelSend(channel, messageTmp);
+			channelSend(channel.name, messageTmp);
 			setMessageTmp("");
 		}
 	}

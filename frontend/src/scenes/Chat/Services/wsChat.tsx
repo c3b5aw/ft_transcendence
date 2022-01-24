@@ -14,9 +14,9 @@ export const channelLeave = (channel: Channel) => {
 	}));
 }
 
-export const channelSend = (channel: Channel, message: string) => {
+export const channelSend = (name: string, message: string) => {
 	socket.emit("channel::send", JSON.stringify({
-		channel: `${channel.name}`,
+		channel: `${name}`,
 		message: `${message}`,
 	}));
 }
