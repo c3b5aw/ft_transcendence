@@ -19,12 +19,14 @@ const Settings = () => {
 	const [new_display, setNewDisplay] = useState<string>("");
 	const [new_displayTmp, setNewDisplayTmp] = useState<string>("");
 	const [event, setEvent] = useState<Date>();
+	const [reload, setReload] = useState<boolean>(false);
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [img, setImg] = useState<File | null>();
 
 	useEffect(() => {
 		const fetchMe = async () => {
+			console.log("RELOAD !");
 			try {
 				const reponse = await axios.get(`${api}${apiMe}`);
 				setMe(reponse.data);
@@ -42,7 +44,7 @@ const Settings = () => {
 			setEvent(new Date(result?.data.created))
 		}
 		fetchCreated();
-	}, [enqueueSnackbar, new_display]);
+	}, [enqueueSnackbar, reload, new_display]);
 
 	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
 		setNewDisplayTmp(event.target.value);
@@ -83,16 +85,24 @@ const Settings = () => {
 	};
 
 	const uploadForm = async (formData: FormData) => {
-		await axios.post("/api/profile/avatar", formData, {
-			headers: {
-				"Content-Type": "multipart/form-data",
-			},
-		});
+		try {
+			await axios.post("/api/profile/avatar", formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			});
+			setReload(!reload);
+		} catch (err) {
+			enqueueSnackbar(`Impossible d'upload votre image (format : .jpeg / .jpg) (${err})`, { 
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
+		}
 	};
 	
 	const handleSubmit = async () => {
 		const formData = new FormData();
-		img && formData.append("image", img);
+		img && formData.append("avatar", img);
 		return (await uploadForm(formData));
 	};
 

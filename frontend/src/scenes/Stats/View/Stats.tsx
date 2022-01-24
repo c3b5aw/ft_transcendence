@@ -1,10 +1,10 @@
 import { Button, ButtonGroup, Stack } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MyAchievements from '../Components/MyAchievements';
 import MyHistory from '../Components/MyHistory';
-import { api, apiUsers } from '../../../Services/Api/Api';
+import { api, apiChannel, apiChat, apiDM, apiUsers } from '../../../Services/Api/Api';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/system';
@@ -16,6 +16,7 @@ import useUserStats from '../Services/useUserStats';
 import { sxButton, sxDiv } from '../Services/style';
 import { Friends } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
+import MessageIcon from '@mui/icons-material/Message';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -27,6 +28,7 @@ const Stats = () => {
 	const [successDelete, setSuccessDelete] = useState<boolean>(false);
 	const [friends, setFriends] = useState<Friends[]>([]);
 	const [friendsPending, setFriendsPending] = useState<Friends[]>([]);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchFriendsMe = async () => {
@@ -96,6 +98,23 @@ const Stats = () => {
 		}
 	}
 
+	async function handleSendMessage() {
+		if (login !== undefined) {
+			try {
+				await axios.post(`${api}${apiChannel}${apiDM}`, {
+					login: login,
+				})
+				navigate(`${apiChat}`)
+			}
+			catch (err) {
+				enqueueSnackbar(`Impossible d'envoyer un message à ${login} (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+			}
+		}
+	}
+
 	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined))
 		return (<MyChargingDataAlert />);
 	const isFriend = friends.filter(function (friend) {
@@ -108,6 +127,11 @@ const Stats = () => {
 		<Stack sx={{width: 1, height: 1}} direction="row" spacing={3}>
 			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
 				<MyAvatar user={user}/>
+				{user.login !== me.login ?
+					<Button onClick={() => handleSendMessage()} sx={sxButton} variant="contained" startIcon={<MessageIcon />}>
+						<div style={sxDiv}>Send message</div>
+					</Button> : null
+				}
 				<Stack sx={{ width: 1, height: 1/4, marginLeft: "30%" }} direction="column" justifyContent="center" spacing={4}>
 					<h2>Matchs joués : {user.played}</h2>
 					<h2>Classement : {user.rank}</h2>

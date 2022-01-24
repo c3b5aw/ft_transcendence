@@ -30,7 +30,6 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 		if (joinChannel !== undefined) {
 			channelJoin(joinChannel, passwordChannel);
 			handleClose();
-			// setChannel(joinChannel);
 		}
 	}
 

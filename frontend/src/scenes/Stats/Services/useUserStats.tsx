@@ -9,7 +9,7 @@ function useUserStats(login: string | undefined) {
     useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				const url = `http://127.0.0.1/api/users/${login}`;
+				const url = `http://127.0.0.1/api/users/${login}/stats`;
 				const reponse = await axios.get(url);
 				setUser(reponse.data);
 			} catch (err) {

@@ -91,7 +91,7 @@ export default function BanKickMute(props: {
 				});
 				handleClose();
 			}
-			console.log("Ban user");
+			console.log("Mute user");
 		}
 	}
 
@@ -113,7 +113,7 @@ export default function BanKickMute(props: {
 				});
 				handleClose();
 			}
-			console.log("UnBan user");
+			console.log("UnMute user");
 		}
 	}
 
@@ -136,7 +136,7 @@ export default function BanKickMute(props: {
 				});
 				handleClose();
 			}
-			console.log("UnBan user");
+			console.log("Kick user");
 		}
 	}
 	return (

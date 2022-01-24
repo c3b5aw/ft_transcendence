@@ -3,7 +3,7 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { ISearchBar, User } from "../../../../Services/Interface/Interface";
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
-import { api, apiChannel } from "../../../../Services/Api/Api";
+import { api, apiChannel, apiDM } from "../../../../Services/Api/Api";
 import { useSnackbar } from 'notistack'
 import MySearchBarChat from "../MySearchBarChat";
 import useFriends from "../../Services/useFriends";
@@ -33,7 +33,22 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 	}
 
 	const handleCreate = async () => {
-		if (nameChannel.length > 3 && nameChannel.length < 64) {
+		if (openDM) {
+			if (friend !== undefined) {
+				await axios.post(`${api}${apiChannel}${apiDM}`, {
+					login: friend.login,
+				})
+				handleClose();
+				setReload(!reload);
+			}
+			else {
+				enqueueSnackbar(`Veuillez selectionner un ami`, { 
+					variant: 'warning',
+					autoHideDuration: 3000,
+				});
+			}
+		}
+		else if (nameChannel.length > 3 && nameChannel.length < 64) {
 			try {
 				await axios.post(`${api}${apiChannel}`, {
 					name: nameChannel,
@@ -91,7 +106,8 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 			aria-describedby="alert-dialog-description">
 			<DialogTitle>New channel</DialogTitle>
 			<DialogContent>
-				<TextField
+				{!openDM ?
+					<TextField
 					autoFocus
 					margin="dense"
 					id="name"
@@ -100,8 +116,10 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 					fullWidth
 					variant="standard"
 					onChange={handleTextChangeName}
-				/>
-				<TextField
+				/> : null
+				}
+				{!openDM ?
+					<TextField
 					autoFocus
 					margin="dense"
 					id="password"
@@ -110,7 +128,8 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 					fullWidth
 					variant="standard"
 					onChange={handleTextChangePassword}
-				/>
+				/> : null
+				}
 				<div style={{marginTop: 10}}></div>
 				<FormControlLabel value="start" control={<Checkbox onChange={handleChange}/>} label="Do you want to create a DM channel ? " />
 				{openDM ? 

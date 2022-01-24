@@ -28,7 +28,7 @@ function MyMessages(props: {nameChannel: string}) {
 	  }, []);
 
 	useEffect(() => {
-		socket.on("channel::message", handleInviteAccepted);
+		socket.on("channel::onMessage", handleInviteAccepted);
 	}, [handleInviteAccepted, socket])
 
 	useEffect(() => {
