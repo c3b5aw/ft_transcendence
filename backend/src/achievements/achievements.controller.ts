@@ -1,9 +1,8 @@
 import { Controller, Get, UseGuards, Header, Param, Res } from '@nestjs/common';
 import { ApiCookieAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
-
 import { Response } from 'express';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { JwtTwoFactorGuard } from 'src/2fa/guards/2fa.guard';
 
 import { Achievement } from './entities/achievement.entity';
 
@@ -11,7 +10,7 @@ import { AchievementsService } from './achievements.service';
 
 @ApiTags('achievements')
 @ApiCookieAuth()
-@UseGuards(JwtGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('achievements')
 export class AchievementsController {
 

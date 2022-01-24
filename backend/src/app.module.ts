@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module'
 import { FriendsModule } from './friends/friends.module';
 import { LadderModule } from './ladder/ladder.module';
 import { MatchsModule } from './matchs/matchs.module';
+import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { ProfileModule } from './profile/profile.module';
 import { StatsModule } from './stats/stats.module';
 import { UsersModule } from './users/users.module';
@@ -21,6 +22,7 @@ import { Friend } from './friends/entities/friend.entity';
 import { Match } from './matchs/entities/match.entity';
 import { UserStats } from './stats/entities/stats.entity';
 import { User } from './users/entities/user.entity';
+import { TwoAuthFactorModule } from './2fa/2fa.module';
 
 @Module({
 	imports: [
@@ -43,10 +45,12 @@ import { User } from './users/entities/user.entity';
 		ChatModule,
 		FriendsModule,
 		LadderModule,
+		MatchmakingModule,
 		MatchsModule,
 		ProfileModule,
 		StatsModule,
 		UsersModule,
+		TwoAuthFactorModule,
 	],
 	controllers: [AppController],
 	providers: [],

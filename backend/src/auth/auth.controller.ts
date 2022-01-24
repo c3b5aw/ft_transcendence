@@ -23,11 +23,18 @@ export class AuthController {
 	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get your auth status' })
-	status(@Req() req: any, @Res() resp: Response) {
-		resp.send({
-			isAuthenticated: true,
-			user: req.user,
-		})
+	async status(@Req() req: any, @Res() resp: Response) {
+		let isAuthenticated: boolean, isTwoFaAuthenticated: boolean = false;
+	
+		try {
+			if (req.cookies.access_token) {
+				let payload: any = await this.authService.verifyToken(req.cookies.access_token);
+
+				isTwoFaAuthenticated = req.user.two_factor_auth ? payload.is_2fa_valid : true;
+				isAuthenticated = true;
+			}
+		} catch (e) {}
+		resp.send({ isTwoFaAuthenticated, isAuthenticated, user: req.user });
 	}
 
 	@Get('/redirect')
@@ -41,12 +48,8 @@ export class AuthController {
 	@UseGuards(Intra42Guard)
 	@ApiOperation({ summary: '42 Redirect endpoint' })
 	async callback_42(@Req() req: any, @Res({ passthrough: true }) resp: Response) {
-		if (req.user) {
-			const jwt = await this.authService.login(req.user);
-			resp.cookie('access_token', jwt.access_token, {
-				httpOnly: false,
-			});
-		}
+		if (req.user)
+			await this.authService.sendCookie(req, resp, false);
 		resp.status(302).redirect('/api/auth/redirect');
 	}
 

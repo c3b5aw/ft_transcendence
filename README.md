@@ -2,14 +2,16 @@
 # ft_transcendence
 
 42 School Project - Build a pong game
+
 **Score:** In progress
+
 **Time elapsed:** ...
 
 ## Authors
 
-- [@eoliveir](https://github.com/Razgouls)
-- [@jtrauque](https://github.com/jtrauque)
-- [@c3b5aw](https://www.github.com/c3b5aw)
+- [@eoliveir](https://github.com/Razgouls) - Frontend
+- [@jtrauque](https://github.com/jtrauque) - Game logic
+- [@c3b5aw](https://www.github.com/c3b5aw) - Docker/Backend
 
 ## Tech Stack
 
@@ -25,7 +27,7 @@
 ## Features
 
 - OAuth 42 intra
-- 2FA               -   (Planned)
+- 2FA
 - Pong Game         -   (In progress)
 - Friends
 - Chat

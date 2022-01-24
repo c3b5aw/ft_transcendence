@@ -1,14 +1,14 @@
 import { Controller, Get, Header, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
+import { JwtTwoFactorGuard } from 'src/2fa/guards/2fa.guard';
+
 @ApiTags('ladder')
 @ApiCookieAuth()
-@UseGuards(JwtGuard)
+@UseGuards(JwtTwoFactorGuard)
 @Controller('ladder')
 export class LadderController {
 	constructor(private readonly usersService: UsersService) {}
