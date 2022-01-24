@@ -14,7 +14,7 @@ import { WS_parse } from 'src/ws/parse';
 
 @UseGuards(WsGuard)
 @WebSocketGateway({ namespace: '/matchmaking', cors: { origin: '*'} })
-export class MatchmakingGateway implements OnGatewayConnection {
+export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@WebSocketServer() server: Server;
 	private logger: Logger = new Logger('MatchmakingGateway');
@@ -30,6 +30,13 @@ export class MatchmakingGateway implements OnGatewayConnection {
 		const user: User = await this.matchMakingService.verifyUser(client);
 		if (!user)
 			return;
+	}
+
+	async handleDisconnect(client: WSClient) {
+		if (!client.user)
+			return;
+
+		await this.matchMakingService.leaveQueue(client);
 	}
 
 	@SubscribeMessage('matchmaking::join')
