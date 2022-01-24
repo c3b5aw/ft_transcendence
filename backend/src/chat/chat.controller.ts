@@ -29,8 +29,11 @@ export class ChannelController {
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Create a channel' })
 	async createChannel(@Body() data: CreateChannelDto,
-						@Req() req: any, @Res() resp: Response)					
+						@Req() req: any, @Res() resp: Response)
 	{
+		if (data.name.startsWith('DM-'))
+			return resp.status(400).json({ error: RequestError.INVALID_CHANNEL_NAME });
+
 		const channel: Channel = await this.chatService.createChannel(req.user, data);
 		if (!channel || channel === null)
 			return resp.status(409).json({ error: RequestError.CHANNEL_ALREADY_EXIST });
@@ -348,7 +351,7 @@ export class ChannelsController {
 		return chans;
 	}
 
-	@Get('/joined')
+	@Get('joined')
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Return joined channels list' })
 	async getJoinedChannels(@Req() req: any) {
