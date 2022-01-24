@@ -110,6 +110,9 @@ export class ChatService {
 	*/
 
 	async addUserToChannel(user: User, channel: Channel, role: UserRole): Promise<ChannelUser> {
+		const joined: boolean = await this.isUserInChannel(user.id, channel.id);
+		if (joined) return null;
+		
 		const userChannel = new ChannelUser();
 		
 		userChannel.role = role;
@@ -500,13 +503,25 @@ export class ChatService {
 		return chan;
 	}
 
+	async joinDirectChannel(user1: User, user2: User, channel_name: string): Promise<Channel> {
+		const chan: Channel = await this.findChannelByName(channel_name);
+		if (!chan) return null;
+
+		await this.addUserToChannel(user1, chan, UserRole.MEMBER);
+		await this.addUserToChannel(user2, chan, UserRole.MEMBER);
+
+		return chan;
+	}
+
 	async createDirectChannel(initiator: User, target: User) : Promise<Channel> {
 		const name1 = `DM-${initiator.login}-${target.login}`;
 		const name2 = `DM-${target.login}-${initiator.login}`;
 
-		if (!await this.isUniqueChannelName(name1) ||
-			!await this.isUniqueChannelName(name2))
-			return null;
+		if (!await this.isUniqueChannelName(name1))
+			return this.joinDirectChannel(initiator, target, name1);
+
+		if	(!await this.isUniqueChannelName(name2))
+			return this.joinDirectChannel(target, initiator, name2);
 
 		let chan: Channel = new Channel();
 
@@ -517,11 +532,8 @@ export class ChatService {
 		chan.private = false;
 
 		await this.channelsRepository.save(chan);
-		await this.addUserToChannel(initiator, chan, UserRole.MEMBER);
-		await this.addUserToChannel(target, chan, UserRole.MEMBER);
 
-		delete chan.password;
-		return chan;
+		return this.joinDirectChannel(target, initiator, chan.name);
 	}
 
 	/*
