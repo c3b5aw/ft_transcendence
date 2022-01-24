@@ -38,6 +38,7 @@ export default function BanKickMute(props: {
 					autoHideDuration: 3000,
 				});
 				handleClose();
+				setReload(!reload);
 			}
 			catch (err) {
 				enqueueSnackbar(`Impossible de bannir ${user.login} du channel ${channel.name} (${err})`, { 
@@ -59,6 +60,7 @@ export default function BanKickMute(props: {
 					autoHideDuration: 3000,
 				});
 				handleClose();
+				setReload(!reload);
 			}
 			catch (err) {
 				enqueueSnackbar(`Impossible d'unbanned ${user.login} du channel ${channel.name} (${err})`, { 
@@ -74,12 +76,13 @@ export default function BanKickMute(props: {
 	const handleMuteUser = async () => {
 		if (channel !== undefined) {
 			try {
-				await axios.put(`${api}${apiChannel}/${channel.name}${apiMute}/${user.login}/5`);
+				await axios.put(`${api}${apiChannel}/${channel.name}${apiMute}/${user.login}/10`);
 				enqueueSnackbar(`${user.login} a ete mute du channel ${channel.name}`, { 
 					variant: 'success',
 					autoHideDuration: 3000,
 				});
 				handleClose();
+				setReload(!reload);
 			}
 			catch (err) {
 				enqueueSnackbar(`Impossible de mute ${user.login} du channel ${channel.name} (${err})`, { 
@@ -101,6 +104,7 @@ export default function BanKickMute(props: {
 					autoHideDuration: 3000,
 				});
 				handleClose();
+				setReload(!reload);
 			}
 			catch (err) {
 				enqueueSnackbar(`Impossible d'unbanned ${user.login} du channel ${channel.name} (${err})`, { 
@@ -123,6 +127,7 @@ export default function BanKickMute(props: {
 				});
 				setReload(!reload);
 				handleClose();
+				setReload(!reload);
 			}
 			catch (err) {
 				enqueueSnackbar(`Impossible de kick ${user.login} du channel ${channel.name} (${err})`, { 

@@ -12,12 +12,15 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Channel } from '../Services/interface';
 import { channelJoin, channelSend } from '../Services/wsChat';
+import { useNavigate } from 'react-router-dom';
+import { pageSettings } from '../../../Services/Routes/RoutePage';
 
 function Chat() {
 	const me = useMe();
 	const [channel, setChannel] = useState<Channel>();
 	const [messageTmp, setMessageTmp] = useState<string>("");
 	const classes = styleTextField();
+	const navigate = useNavigate();
 
 	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
 		setMessageTmp(event.target.value);
@@ -29,6 +32,10 @@ function Chat() {
 			channelSend(channel, messageTmp);
 			setMessageTmp("");
 		}
+	}
+
+	function handleLaunchParametres() {
+		navigate(`${pageSettings}`);
 	}
 
 	useEffect(() => {
@@ -46,7 +53,7 @@ function Chat() {
 			<Paper elevation={3} sx={{width: 1, height: 0.05, backgroundColor: '#394E51'}}>
 				<Stack direction="row" alignItems="center" sx={{width: 1}}>
 					<Stack sx={{width: 1.5/12}} direction="row" alignItems="center" justifyContent="space-between">
-						<Stack direction="row" alignItems="center">
+						<Stack direction="row" alignItems="center" onClick={() => handleLaunchParametres()}>
 							<Avatar
 								src={`http://127.0.0.1/api/profile/avatar`}
 								sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>

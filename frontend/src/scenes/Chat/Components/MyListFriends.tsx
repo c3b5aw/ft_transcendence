@@ -2,12 +2,13 @@ import { Avatar, Badge, CircularProgress, IconButton, List, ListItem, ListItemBu
 import { useNavigate } from 'react-router';
 import { apiStats } from '../../../Services/Api/Api';
 import { User, USER_STATUS } from '../../../Services/Interface/Interface';
-import { useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BanKickMute from './BanKickMute';
 import { Channel } from '../Services/interface';
 import { useSnackbar } from 'notistack'
+import { SocketContext } from '../../../Services/ws/utils';
 
 function MyList(props : {me: User | undefined, url: string, isListUserChannel: boolean, channel?: Channel}) {
 	const { me, url, isListUserChannel, channel } = props;
@@ -16,6 +17,7 @@ function MyList(props : {me: User | undefined, url: string, isListUserChannel: b
 	const [userCurrent, setUserCurrent] = useState<User>();
 	const { enqueueSnackbar } = useSnackbar();
 	const [reload, setReload] = useState<boolean>(false);
+	const socket = useContext(SocketContext);
 
 	const navigate = useNavigate();
 
@@ -23,13 +25,21 @@ function MyList(props : {me: User | undefined, url: string, isListUserChannel: b
 		navigate(`${apiStats}/${user.login}`)
 	}
 
+	const handleChangeListMember = useCallback(() => {
+		setReload(!reload);
+	  }, []);
+
+	useEffect(() => {
+		socket.on("channel::onMembersReload", handleChangeListMember);
+	}, [handleChangeListMember, socket])
+
 	useEffect(() => {
 		const fetchFriends = async () => {
 			try {
 				const reponse = await axios.get(`${url}`);
 				setUsers(reponse.data);
 			} catch (err) {
-				enqueueSnackbar(`Impossible de charger la liste amis (${err})`, { 
+				enqueueSnackbar(`Impossible de charger la liste (${err})`, { 
 					variant: 'error',
 					autoHideDuration: 3000,
 				});
