@@ -107,5 +107,8 @@ export class MatchmakingService {
 
 		delete global.mm_clients[user1];
 		delete global.mm_clients[user2];
+
+		// Risky but necessary to run into huge loads
+		this.queueUpdate(room);
 	}
 }
