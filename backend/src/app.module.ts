@@ -23,6 +23,7 @@ import { Match } from './matchs/entities/match.entity';
 import { UserStats } from './stats/entities/stats.entity';
 import { User } from './users/entities/user.entity';
 import { TwoAuthFactorModule } from './2fa/2fa.module';
+import { GameModule } from './game/game.module';
 
 @Module({
 	imports: [
@@ -39,14 +40,12 @@ import { TwoAuthFactorModule } from './2fa/2fa.module';
 						UserAchievement ],
 			synchronize: true,
 		}),
-		AchievementsModule,
-		AdminModule,
-		AuthModule,
+		AchievementsModule, AdminModule, AuthModule,
 		ChatModule,
 		FriendsModule,
+		GameModule,
 		LadderModule,
-		MatchmakingModule,
-		MatchsModule,
+		MatchmakingModule, MatchsModule,
 		ProfileModule,
 		StatsModule,
 		UsersModule,
