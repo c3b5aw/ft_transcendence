@@ -1,6 +1,6 @@
 import { Avatar, Badge, Box, Button, Stack, TextField } from "@mui/material";
 import axios from "axios";
-import { SetStateAction, useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import { api, apiMe } from "../../../Services/Api/Api";
 import { User, USER_STATUS } from "../../../Services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
@@ -92,7 +92,7 @@ const Settings = () => {
 			});
 			setReload(!reload);
 		} catch (err) {
-			enqueueSnackbar(`Impossible d'upload votre image (format : .jpeg / .jpg) (${err})`, { 
+			enqueueSnackbar(`Impossible de mettre a jour l'avatar (format : .jpeg / .jpg) (${err})`, { 
 				variant: 'error',
 				autoHideDuration: 3000,
 			});
@@ -105,23 +105,30 @@ const Settings = () => {
 		return (await uploadForm(formData));
 	};
 
+	const handleLogout = () => {
+		console.log("LOGOUT !");
+	}
+
 	return (
 		<Stack direction="row" sx={{width: "100%", height: "100vh"}}>
 			<Stack direction="column" sx={{width: 0.97, height: 1}} justifyContent="center" alignItems="center">
-				<Stack sx={{ width: 1, height: 1/6, marginLeft: 10}} direction="row" alignItems="center" spacing={3}>
-					<Stack>
-						<Avatar
-							sx={{ width: "126px", height: "126px" }}
-							src={`http://127.0.0.1/api/profile/avatar`}>
-						</Avatar>
-						<h3 style={{ color: 'grey' }}>{event?.toDateString()}</h3>
+				<Stack sx={{ width: 1, height: 1/6, marginLeft: 10}} direction="row" alignItems="center" justifyContent="space-between">
+					<Stack direction="row" alignItems="center" spacing={3}>
+						<Stack>
+							<Avatar
+								sx={{ width: "126px", height: "126px" }}
+								src={reload ? `http://127.0.0.1/api/profile/avatar` : `http://127.0.0.1/api/users/${me.login}/avatar`}>
+							</Avatar>
+							<h3 style={{ color: 'grey' }}>{event?.toDateString()}</h3>
+						</Stack>
+						<div style={{fontFamily: "Myriad Pro", marginBottom: 50, fontSize: "31px"}}>{me.display_name} ({me.role})
+							<Badge badgeContent={""} 
+								color={me.status === USER_STATUS.ONLINE ? "success" :
+								me.status === USER_STATUS.IN_GAME ? "warning" : "error"} style={{marginLeft: "21px"}}>
+							</Badge>
+						</div>
 					</Stack>
-					<div style={{fontFamily: "Myriad Pro", marginBottom: 50, fontSize: "31px"}}>{me.display_name} ({me.role})
-						<Badge badgeContent={""} 
-							color={me.status === USER_STATUS.ONLINE ? "success" :
-							me.status === USER_STATUS.IN_GAME ? "warning" : "error"} style={{marginLeft: "21px"}}>
-						</Badge>
-					</div>
+					<Button sx={sxButton} onClick={handleLogout}>Logout</Button>
 				</Stack>
 				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
 					<AddPhotoAlternateIcon sx={{ fontSize: 55 }} />
