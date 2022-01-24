@@ -2,6 +2,7 @@ import { Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ROLE } from "../Services/Api/Role";
 import { User } from "../Services/Interface/Interface";
+import { pageAdmin, pageChat, pageClassement, pageSettings, pageStat } from "../Services/Routes/RoutePage";
 
 export default function MyFooter(props : {me: User}) {
 	const { me } = props;
@@ -9,23 +10,23 @@ export default function MyFooter(props : {me: User}) {
 
 	function handleLaunchStats() {
 		if (me?.login !== undefined)
-			navigate(`/stats/${me?.login}`);
+			navigate(`${pageStat}/${me?.login}`);
 	}
 
 	function handleLaunchClassement() {
-		navigate('/classement');
+		navigate(`${pageClassement}`);
 	}
 
 	function handleLaunchParametres() {
-		navigate('/settings');
+		navigate(`${pageSettings}`);
 	}
 
 	function handleLaunchChat() {
-		navigate('/chat');
+		navigate(`${pageChat}`);
 	}
 
 	function handleLaunchAdminView() {
-		navigate('/admin');
+		navigate(`${pageAdmin}`);
 	}
 
 	const buttonStyle = {
