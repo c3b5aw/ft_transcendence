@@ -1,14 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { createHash } from 'crypto';
+
 import { Repository } from 'typeorm';
 
 import { Match } from './entities/match.entity';
+import { MatchType } from './entities/types.enum';
 
 @Injectable()
 export class MatchsService {
 
 	constructor(@InjectRepository(Match) private readonly matchRepository: Repository<Match>) {}
+
+	/*
+		CREATER
+	*/
+
+	async create(player1: number, player2: number, type: MatchType) : Promise<Match> {
+		const match = new Match();
+
+		match.hash = createHash('md5').update(Math.random().toString(36).substring(1, 16) + Math.random().toString(36).substring(1, 16)).digest('hex');
+		match.player1 = player1;
+		match.player2 = player2;
+		match.date = new Date();
+		match.type = type;
+		match.finished = false;
+
+		return this.matchRepository.save(match);
+	}
 
 	/*
 		FINDER
