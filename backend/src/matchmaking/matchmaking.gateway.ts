@@ -30,8 +30,6 @@ export class MatchmakingGateway implements OnGatewayConnection {
 		const user: User = await this.matchMakingService.verifyUser(client);
 		if (!user)
 			return;
-
-		client.emit('onSuccess', { message: 'welcome to the matchmaking server' });
 	}
 
 	@SubscribeMessage('matchmaking::join')
@@ -41,7 +39,7 @@ export class MatchmakingGateway implements OnGatewayConnection {
 		if (!match_type)
 			return client.emit('onError', `match_type is required`);
 		if (match_type === MatchType.MATCH_NORMAL && !room)
-			return client.emit('onError', `opponent is required`);
+			return client.emit('onError', `room is required`);
 
 		if (match_type === MatchType.MATCH_NORMAL) {
 			await this.matchMakingService.joinNormalQueue(client, room);

@@ -41,7 +41,7 @@ export class MatchmakingService {
 
 		global.mm_clients[client.user.id] = room;
 		global.queues[room].push(client);
-		client.emit('onSuccess', { message: `${queueType} queue joined` });
+		client.emit('matchmaking::onJoin', { message: `${queueType} queue joined` });
 	
 		this.queueUpdate(room);
 	}
@@ -55,7 +55,7 @@ export class MatchmakingService {
 		global.queues[queue].splice(global.queues[queue].indexOf(client), 1);
 		delete global.mm_clients[client.user.id];
 
-		return client.emit('onSuccess', { message: `queue left` });
+		return client.emit('matchmaking::onLeave', { message: `queue left` });
 	}
 
 	async joinNormalQueue(client: WSClient, queueName: string) {
@@ -91,7 +91,7 @@ export class MatchmakingService {
 		};
 
 		// Send match to room
-		this.server.to(room).emit('matchmaking::onFound', { match });
+		this.server.to(room).emit('matchmaking::onMatch', { match });
 
 		// remove from queue and clients
 		const [user1, user2] = queue;
