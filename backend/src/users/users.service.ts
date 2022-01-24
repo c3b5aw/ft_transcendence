@@ -103,14 +103,14 @@ export class UsersService {
 	}
 
 	async updateLastLogin(user: User) : Promise<User> {
-		user.lastLogin = new Date();
+		user.last_login = new Date();
 		return this.userRepository.save(user);
 	}
 
 	async updateUserConnect(user: User, state: UserStatus): Promise<User> {
 		user.status = state;
 		if (state === UserStatus.ONLINE)
-			user.lastLogin = new Date();
+			user.last_login = new Date();
 		return this.userRepository.save(user);
 	}
 
@@ -128,7 +128,7 @@ export class UsersService {
 	async getStatsById(id: number) {
 		const stats = await this.userRepository.query(`
 			SELECT * FROM (
-				SELECT users.login, users.status, stats.*,
+				SELECT users.login, users.status, stats.*, users.last_login, users.role,
 				ROW_NUMBER() over (ORDER BY stats.elo DESC, stats.victories DESC) as rank
 				FROM users
 				INNER JOIN users_stats
