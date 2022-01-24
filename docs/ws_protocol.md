@@ -119,8 +119,34 @@
 }
 ```
 
+## MatchMaking events
+
+- matchmaking::onMatch
+```typescript
+/* Match has been found */
+
+// ToDo Update
+```
+
+- matchmaking::onLeave
+```typescript
+/* Left MM queue */
+{
+	message: string
+}
+```
+
+- matchmaking::onJoin
+```typescript
+/* Joined MM queue */
+{
+	message: string
+}
+```
 
 # SEND / EMIT
+
+## Channel events
 
 - channel::join
 ```typescript
@@ -146,4 +172,22 @@
 {
 	channel: string
 }
+```
+
+## MatchMaking events
+
+- matchmaking::join
+```typescript
+/* Join matchmaking */
+{
+	match_type: MatchType.enum
+	room: string // [ optional, if match is a normal game ] , this is the room name
+}
+```
+
+- matchmaking::leave
+```typescript
+/* Leave matchmaking, (if in queue) */
+
+// - No payload
 ```
