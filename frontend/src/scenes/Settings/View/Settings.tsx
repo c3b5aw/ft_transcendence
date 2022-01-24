@@ -21,6 +21,8 @@ const Settings = () => {
 	const [event, setEvent] = useState<Date>();
 	const { enqueueSnackbar } = useSnackbar();
 
+	const [img, setImg] = useState<File | null>();
+
 	useEffect(() => {
 		const fetchMe = async () => {
 			try {
@@ -75,6 +77,25 @@ const Settings = () => {
 
 	if (me === undefined)
 		return (<MyChargingDataAlert />);
+
+	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setImg(event.target.files ? event.target.files[0] : null)
+	};
+
+	const uploadForm = async (formData: FormData) => {
+		await axios.post("/api/profile/avatar", formData, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		});
+	};
+	
+	const handleSubmit = async () => {
+		const formData = new FormData();
+		img && formData.append("image", img);
+		return (await uploadForm(formData));
+	};
+
 	return (
 		<Stack direction="row" sx={{width: "100%", height: "100vh"}}>
 			<Stack direction="column" sx={{width: 0.97, height: 1}} justifyContent="center" alignItems="center">
@@ -96,10 +117,19 @@ const Settings = () => {
 				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
 					<AddPhotoAlternateIcon sx={{ fontSize: 55 }} />
 					<Box alignItems='center' display='flex' justifyContent='center' flexDirection='column'>
-						<form action="/api/profile/avatar" encType="multipart/form-data" method="POST">
+						{/* <form action="/api/profile/avatar" encType="multipart/form-data" method="POST">
 							<input type="file" name="avatar" />
 							<input type="submit" value="Upload a file"/>
-						</form>
+						</form> */}
+						<Stack direction="row" spacing={3}>
+							<Button variant="contained" component="label">
+								{img?.name ?? "Choose file"}
+								<input onChange={handleImageChange} type="file" hidden />
+							</Button>
+							<Box marginY={3}>
+								<Button sx={{backgroundColor: "green", color: "white"}} onClick={handleSubmit}>Upload file</Button>
+							</Box>
+						</Stack>
 					</Box>
 				</Stack>
 				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
