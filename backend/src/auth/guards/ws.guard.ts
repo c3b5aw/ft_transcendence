@@ -20,15 +20,22 @@ export class WsGuard implements CanActivate {
 			const payload: any = this.jwtService.verify(
 				bearerToken, { ignoreExpiration: false });
 
-			return new Promise((resolve, reject) => {
-				return this.usersService.findOneByID(payload.id).then(user => {
-					if (user)
-						resolve(user);
-					else
-						reject(false);
-				});
-			});
+			const user = this.usersService.findOneByID(payload.id);
+			if (user)
+				return user;
+			
+			client.disconnect();
+			return false;
+			// return new Promise((resolve, reject) => {
+				// return this.usersService.findOneByID(payload.id).then(user => {
+					// if (user)
+						// resolve(user);
+					// else
+						// reject(false);
+				// });
+			// });
 		} catch (ex) {
+			client.disconnect();
 			return false;
 		}
 	}
