@@ -4,6 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import { Server } from 'socket.io';
 
 import { WsGuard } from 'src/auth/guards/ws.guard';
+import { Match } from 'src/matchs/entities/match.entity';
+import { MatchType } from 'src/matchs/entities/types.enum';
+import { MatchsService } from 'src/matchs/matchs.service';
 
 import { UsersService } from 'src/users/users.service';
 
@@ -13,6 +16,7 @@ import { WSClient } from 'src/ws/datastructures/wsclient.struct';
 export class MatchmakingService {
 
 	constructor(private readonly usersService: UsersService,
+		private readonly matchsService: MatchsService,
 		private readonly jwtService: JwtService)
 	{
 		global.mm_clients = {};
@@ -40,6 +44,10 @@ export class MatchmakingService {
 		client.join(room);
 
 		global.mm_clients[client.user.id] = room;
+		
+		if (!global.queues[room])
+			global.queues[room] = [];
+		
 		global.queues[room].push(client);
 		client.emit('matchmaking::onJoin', { room, match_type: queueType });
 	
@@ -47,7 +55,7 @@ export class MatchmakingService {
 	}
 
 	async leaveQueue(client: WSClient) {
-		const queue = global.client[client.user.id];
+		const queue = global.mm_clients[client.user.id];
 		if (!queue)
 			return client.emit('onError', { error: `not in a queue` });
 
@@ -85,17 +93,15 @@ export class MatchmakingService {
 		if (queue.length < 2)
 			return;
 
-		// ToDo: await create new Game 
-		const match = {
-			id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-		};
+		const match_type: MatchType = room.startsWith('#MM-RANKED') ? MatchType.MATCH_RANKED : MatchType.MATCH_NORMAL;
+		const match: Match = await this.matchsService.create(queue[0].user.id, queue[1].user.id, match_type);
 
 		// Send match to room
 		this.server.to(room).emit('matchmaking::onMatch', { match });
 
 		// remove from queue and clients
 		const [user1, user2] = queue;
-		global.queues[room] = {};
+		global.queues[room] = [];
 
 		delete global.mm_clients[user1];
 		delete global.mm_clients[user2];
