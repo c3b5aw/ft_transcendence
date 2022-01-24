@@ -4,6 +4,7 @@ export enum RequestError {
 	CHANNEL_NOT_FOUND = 'channel not found',
 	CHANNEL_ALREADY_EXIST = 'channel already exist',
 	NOT_ENOUGH_PERMISSIONS = 'not enough permissions',
+	INVALID_CHANNEL_NAME = 'invalid channel name',
 }
 
 export enum WsError {

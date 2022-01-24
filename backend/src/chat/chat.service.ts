@@ -110,6 +110,9 @@ export class ChatService {
 	*/
 
 	async addUserToChannel(user: User, channel: Channel, role: UserRole): Promise<ChannelUser> {
+		const joined: boolean = await this.isUserInChannel(user.id, channel.id);
+		if (joined) return null;
+		
 		const userChannel = new ChannelUser();
 		
 		userChannel.role = role;
@@ -305,16 +308,10 @@ export class ChatService {
 			return this.wsFatalUserNotFound(client);
 
 		/* Remove in database */
-		await this.removeUserFromChannel(user.id, channel.id);
+		await this.removeUserFromChannel(user, channel);
 
 		/* Leave socket room */
 		client.leave('#' + channel.id);
-
-		/* Stream left event to channel */
-		this.server.to('#' + channel.id).emit('channel:left', {
-			channel: channel,
-			login: user.login,
-		});
 
 		/* Stream message left to channel */
 		await this.wsSendAnnouncementToChannel(channel, user.login + ' left this channel.');
@@ -337,7 +334,7 @@ export class ChatService {
 		await this.messagesRepository.save(msg);
 		
 		/* Send message to all clients in channel */
-		await this.sendEventToChannel(channel, 'channel::message', { message: {
+		await this.sendEventToChannel(channel, 'channel::onMessage', { message: {
 			user: 'Server', content: msg.content,
 			announcement: msg.announcement, timestamp: msg.timestamp }});
 	}
@@ -500,13 +497,25 @@ export class ChatService {
 		return chan;
 	}
 
+	async joinDirectChannel(user1: User, user2: User, channel_name: string): Promise<Channel> {
+		const chan: Channel = await this.findChannelByName(channel_name);
+		if (!chan) return null;
+
+		await this.addUserToChannel(user1, chan, UserRole.MEMBER);
+		await this.addUserToChannel(user2, chan, UserRole.MEMBER);
+
+		return chan;
+	}
+
 	async createDirectChannel(initiator: User, target: User) : Promise<Channel> {
 		const name1 = `DM-${initiator.login}-${target.login}`;
 		const name2 = `DM-${target.login}-${initiator.login}`;
 
-		if (!await this.isUniqueChannelName(name1) ||
-			!await this.isUniqueChannelName(name2))
-			return null;
+		if (!await this.isUniqueChannelName(name1))
+			return this.joinDirectChannel(initiator, target, name1);
+
+		if	(!await this.isUniqueChannelName(name2))
+			return this.joinDirectChannel(target, initiator, name2);
 
 		let chan: Channel = new Channel();
 
@@ -517,11 +526,8 @@ export class ChatService {
 		chan.private = false;
 
 		await this.channelsRepository.save(chan);
-		await this.addUserToChannel(initiator, chan, UserRole.MEMBER);
-		await this.addUserToChannel(target, chan, UserRole.MEMBER);
 
-		delete chan.password;
-		return chan;
+		return this.joinDirectChannel(target, initiator, chan.name);
 	}
 
 	/*
@@ -529,12 +535,7 @@ export class ChatService {
 	*/
 
 	async deleteChannel(channel: Channel): Promise<void> {
-		/* Kick all users from channel */
-		const users = await this.getChannelUsers(channel.id);
-		for (let i = 0; i < users.length; i++) {
-			await this.sendEventToUser(users[i].id, 'channel::onKick', {
-				channel: { id: channel.id, name: channel.name } });
-		}
+		await this.sendEventToChannel(channel, "channel::onKick", {});
 
 		/* Delete messages that match channel.id */
 		await this.messagesRepository.delete({ channel_id: channel.id });
@@ -550,8 +551,13 @@ export class ChatService {
 		await this.channelsRepository.update(channel.id, { password: null, private: false });
 	}
 
-	async removeUserFromChannel(userID: number, channelID: number): Promise<void> {
-		await this.userChannelRepository.delete({ user_id: userID, channel_id: channelID });
+	async removeUserFromChannel(user: User, channel: Channel): Promise<void> {
+		await this.userChannelRepository.delete({ user_id: user.id, channel_id: channel.id });
+		
+		this.server.to('#' + channel.id).emit('channel:omMembersReload', {
+			channel: channel,
+			login: user.login,
+		});
 	}
 
 	/*
