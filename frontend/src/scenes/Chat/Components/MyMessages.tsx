@@ -60,7 +60,7 @@ function MyMessages(props: { messages: Message[]}) {
 								</div>
 							))}
 						</List>
-					</div> : null
+					</div> : <div style={{color: "grey", textAlign: "center", marginTop: "40%", fontFamily: "Myriad Pro", fontSize: "45px"}}>No message</div>
 					}
 				</Paper>
 			</Stack>

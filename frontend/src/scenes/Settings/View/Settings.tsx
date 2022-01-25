@@ -58,7 +58,7 @@ const Settings = () => {
 				setNewDisplay(new_displayTmp);
 				enqueueSnackbar(`Le dislay_name a été mis a jour`, { 
 					variant: 'success',
-					autoHideDuration: 3000,
+					autoHideDuration: 2000,
 				});
 			}
 			catch (err) {

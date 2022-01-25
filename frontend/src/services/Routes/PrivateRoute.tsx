@@ -24,7 +24,7 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 				if (body.isAuthenticated === true) {
 					enqueueSnackbar(`${body.user.login} est connecté`, { 
 						variant: 'success',
-						autoHideDuration: 3000,
+						autoHideDuration: 2000,
 					});
 					setLogged(true);	
 					socket.connect();
@@ -39,14 +39,14 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 					socket.on("onSuccess", (data) => {
 						enqueueSnackbar(`${data.message}`, { 
 							variant: 'success',
-							autoHideDuration: 3000,
+							autoHideDuration: 2000,
 						});
 					});
 
 					socket.on("channel::onJoin", (data) => {
 						enqueueSnackbar(`Join ${data.name}`, { 
 							variant: 'success',
-							autoHideDuration: 3000,
+							autoHideDuration: 2000,
 						});
 					});
 				}

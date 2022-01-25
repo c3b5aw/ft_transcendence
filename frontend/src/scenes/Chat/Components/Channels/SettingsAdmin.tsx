@@ -33,7 +33,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 				setModos(modos => [...modos, user]);
 				enqueueSnackbar(`${user.login} a été ajouté en tant que moderateur de ${mySettingsAdmin.channel.name}`, { 
 					variant: 'success',
-					autoHideDuration: 3000,
+					autoHideDuration: 2000,
 				});
 			}
 			catch (err: any) {
@@ -70,7 +70,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 			setModos(modos.filter(item => item.login !== user.login));
 			enqueueSnackbar(`${user.login} a été supprimé de la liste des moderateurs de ${mySettingsAdmin.channel.name}`, { 
 				variant: 'success',
-				autoHideDuration: 3000,
+				autoHideDuration: 2000,
 			});
 		}
 		catch (err: any) {
@@ -88,7 +88,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 			await axios.delete(`${api}${apiChannel}/${mySettingsAdmin.channel.name}`);
 			enqueueSnackbar(`Le channel ${mySettingsAdmin.channel.name} a été supprimé`, { 
 				variant: 'success',
-				autoHideDuration: 3000,
+				autoHideDuration: 2000,
 			});
 			handleClose();
 		}
@@ -105,7 +105,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 				});
 				enqueueSnackbar(`Le password du channel ${mySettingsAdmin.channel.name} a été modifié`, { 
 					variant: 'success',
-					autoHideDuration: 3000,
+					autoHideDuration: 2000,
 				});
 				handleClose();
 			}
@@ -120,7 +120,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 				});
 				enqueueSnackbar(`Le nom du channel a été modifié par ${nameChannel}`, { 
 					variant: 'success',
-					autoHideDuration: 3000,
+					autoHideDuration: 2000,
 				});
 				handleClose();
 			}

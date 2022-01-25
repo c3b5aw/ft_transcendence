@@ -5,8 +5,7 @@ import { styleTextField } from "../../../styles/Styles";
 import MyListChannels from "../Components/Channels/MyListChannels";
 import { Channel, IChannel, IListUser, Message } from "../Services/interface";
 import SendIcon from '@mui/icons-material/Send';
-import LockIcon from '@mui/icons-material/Lock';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
+import NumbersIcon from '@mui/icons-material/Numbers';
 import MyMessages from "../Components/MyMessages";
 import { User } from "../../../Services/Interface/Interface";
 import MyListUser from "../Components/MyListUser";
@@ -38,8 +37,8 @@ function Chat() {
 	const [usersChannel, setUsersChannel] = useState<User[]>([]);
 	const [friends, setFriends] = useState<User[]>([]);
 	const [channels, setChannels] = useState<Channel[]>([]);
-	const [nameChannel, setNameChannel] = useState<string>("public");
-	const [nameChannelDisplay, setNameChannelDisplay] = useState<string>("public");
+	const [nameChannel, setNameChannel] = useState<string>("");
+	const [nameChannelDisplay, setNameChannelDisplay] = useState<string>("");
 	const [reload, setReload] = useState<boolean>(false);
 
 	const [open, setOpen] = useState<boolean>(false);
@@ -172,7 +171,8 @@ function Chat() {
 				});
 			}
 		}
-		fetchChat();
+		if (nameChannel !== "")
+			fetchChat();
 	}, [enqueueSnackbar, nameChannel, upload])
 
 	useEffect(() => {
@@ -228,10 +228,12 @@ function Chat() {
 			</Stack>
 			<Stack direction="column" sx={{width: 0.7, height: 1}}>
 				<Stack direction="row" sx={{width: 1, height: 0.075}}>
-					<Stack direction="row" alignItems="center" spacing={1}>
-						{true ? <LockIcon style={{fontSize: "40px"}} color="warning"/> : <LockOpenIcon color="warning"/>}
-						<h2 style={{color: "white", fontFamily: "Myriad Pro"}}>{nameChannelDisplay}</h2>
-					</Stack>
+					{nameChannel !== "" ?
+						<Stack direction="row" alignItems="center" spacing={1}>
+							<NumbersIcon style={{fontSize: "40px"}} color="warning"/>
+							<h2 style={{color: "white", fontFamily: "Myriad Pro"}}>{nameChannelDisplay}</h2>
+						</Stack> : null
+					}
 				</Stack>
 				<Stack direction="row" sx={{width: 1, height: 0.8, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
 					<MyMessages messages={messages} />

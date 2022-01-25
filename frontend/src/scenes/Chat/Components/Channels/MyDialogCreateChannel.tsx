@@ -55,7 +55,7 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 				})
 				enqueueSnackbar(`Le channel ${nameChannel} a été crée`, { 
 					variant: 'success',
-					autoHideDuration: 3000,
+					autoHideDuration: 2000,
 				});
 				handleClose();
 				setReload(!reload);

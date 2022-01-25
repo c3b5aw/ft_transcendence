@@ -67,7 +67,7 @@ const Stats = () => {
 			await axios.put(`${api}${apiUsers}/${login}/friend`)
 			enqueueSnackbar(`Demande d'ami envoyé à ${login}`, { 
 				variant: 'success',
-				autoHideDuration: 3000,
+				autoHideDuration: 2000,
 			});
 			setSuccessDelete(false);
 			setSuccessAdd(true);

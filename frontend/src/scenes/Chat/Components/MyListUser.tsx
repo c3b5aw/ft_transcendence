@@ -56,28 +56,30 @@ function MyListUser(props : { myList: IListUser }) {
 			<Box sx={{backgroundColor: "#2E86C1"}}>
 				<h3 style={{textAlign: "center"}}>{myList.name_list}</h3>
 			</Box>
-			<List sx={{overflow: "auto"}}>
-				{myList.users.map(user => (
-					<Stack direction="row" key={user.id} alignItems="center">
-						<ListItemButton component="div" onClick={() => handleClick(user.login)}>
-							<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row" spacing={2}>
-								<Badge badgeContent={""} 
-									color={user.status === USER_STATUS.ONLINE ? "success" :
-									user.status === USER_STATUS.IN_GAME ? "warning" : "error"}>
-									<Avatar
-										sx={{marginLeft: "10px",
-											width: "32px",
-											height: "32px",}}
-										src={`http://127.0.0.1/api/users/${user.login}/avatar`}>
-									</Avatar>
-								</Badge>
-								<h4 style={{color: "white"}}>{user.login}</h4>
-							</Stack>
-						</ListItemButton>
-						{checkRoleMe() ? <DisplayOptionUser user={user}/> : null}
-					</Stack>
-				))}
-			</List>
+			{myList.users.length > 0 ?
+				<List sx={{overflow: "auto"}}>
+					{myList.users.map(user => (
+						<Stack direction="row" key={user.id} alignItems="center">
+							<ListItemButton component="div" onClick={() => handleClick(user.login)}>
+								<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row" spacing={2}>
+									<Badge badgeContent={""} 
+										color={user.status === USER_STATUS.ONLINE ? "success" :
+										user.status === USER_STATUS.IN_GAME ? "warning" : "error"}>
+										<Avatar
+											sx={{marginLeft: "10px",
+												width: "32px",
+												height: "32px",}}
+											src={`http://127.0.0.1/api/users/${user.login}/avatar`}>
+										</Avatar>
+									</Badge>
+									<h4 style={{color: "white"}}>{user.login}</h4>
+								</Stack>
+							</ListItemButton>
+							{checkRoleMe() ? <DisplayOptionUser user={user}/> : null}
+						</Stack>
+					))}
+				</List> : <div style={{color: "grey", textAlign: "center", marginTop: "50%", fontFamily: "Myriad Pro", fontSize: "25px"}}>No Users</div>
+			}
 			{myBanKickMute !== undefined && open ? <BanKickMute myBanKickMute={myBanKickMute} /> : null}
 		</Stack>
     );

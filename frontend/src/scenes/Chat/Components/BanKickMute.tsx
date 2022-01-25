@@ -33,7 +33,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 			await axios.put(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiBan}/${myBanKickMute.user.login}`);
 			enqueueSnackbar(`${myBanKickMute.user.login} a ete banni du channel ${myBanKickMute.name_channel}`, { 
 				variant: 'success',
-				autoHideDuration: 3000,
+				autoHideDuration: 2000,
 			});
 			handleClose();
 		}
@@ -47,7 +47,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 			await axios.delete(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiBan}/${myBanKickMute.user.login}`);
 			enqueueSnackbar(`${myBanKickMute.user.login} a ete unbanned du channel ${myBanKickMute.name_channel}`, { 
 				variant: 'success',
-				autoHideDuration: 3000,
+				autoHideDuration: 2000,
 			});
 			handleClose();
 		}
@@ -61,7 +61,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 			await axios.put(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiMute}/${myBanKickMute.user.login}/100`);
 			enqueueSnackbar(`${myBanKickMute.user.login} a ete mute du channel ${myBanKickMute.name_channel}`, { 
 				variant: 'success',
-				autoHideDuration: 3000,
+				autoHideDuration: 2000,
 			});
 			handleClose();
 		}
@@ -75,7 +75,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 			await axios.delete(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiMute}/${myBanKickMute.user.login}`);
 			enqueueSnackbar(`${myBanKickMute.user.login} a ete unmuted du channel ${myBanKickMute.name_channel}`, { 
 				variant: 'success',
-				autoHideDuration: 3000,
+				autoHideDuration: 2000,
 			});
 			handleClose();
 		}
@@ -89,7 +89,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 			await axios.put(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiKick}/${myBanKickMute.user.login}`);
 			enqueueSnackbar(`${myBanKickMute.user.login} a ete kick du channel ${myBanKickMute.name_channel}`, { 
 				variant: 'success',
-				autoHideDuration: 3000,
+				autoHideDuration: 2000,
 			});
 			handleClose();
 		}

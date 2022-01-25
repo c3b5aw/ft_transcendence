@@ -77,7 +77,7 @@ export default function MyInfosUser() {
 					await axios.delete(`${api}${apiAdmin}${apiBan}/${user.login}`);
 					enqueueSnackbar(`Reçu`, { 
 						variant: 'success',
-						autoHideDuration: 3000,
+						autoHideDuration: 2000,
 					});
 					setStatus(!status1);
 					setReload(!reload);
@@ -94,7 +94,7 @@ export default function MyInfosUser() {
 					await axios.put(`${api}${apiAdmin}${apiBan}/${user.login}`);
 					enqueueSnackbar(`Reçu`, { 
 						variant: 'success',
-						autoHideDuration: 3000,
+						autoHideDuration: 2000,
 					});
 					setStatus(!status1);
 					setReload(!reload);
@@ -150,7 +150,7 @@ export default function MyInfosUser() {
 				await axios.delete(`${api}${apiChannel}/${channel.name}`);
 				enqueueSnackbar(`Le channel ${channel.name} a été supprimé`, { 
 					variant: 'success',
-					autoHideDuration: 3000,
+					autoHideDuration: 2000,
 				});
 				setReload(!reload);
 			}

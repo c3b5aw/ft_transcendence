@@ -80,7 +80,7 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 								</ListItem>
 							</div>
 						))}
-					</List> : null
+					</List> : <div style={{color: "grey", textAlign: "center", marginTop: "40%", fontFamily: "Myriad Pro", fontSize: "25px"}}>No channel</div>
 					}
 				</Paper>
 			</Stack>
