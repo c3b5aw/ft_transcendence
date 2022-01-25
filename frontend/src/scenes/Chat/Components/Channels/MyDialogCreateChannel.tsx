@@ -8,9 +8,8 @@ import { useSnackbar } from 'notistack'
 import MySearchBarChat from "../MySearchBarChat";
 import useFriends from "../../Services/useFriends";
 
-function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetStateAction<boolean>>}) {
-	const { reload, setReload } = props;
-    const [open, setOpen] = React.useState(true);
+function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, setOpen: Dispatch<SetStateAction<boolean>>}) {
+	const { reload, setReload, setOpen } = props;
     const [openDM, setOpenDM] = React.useState(false);
 	const [friend, setFriend] = useState<User>();
 	const friends = useFriends();
@@ -94,7 +93,7 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 
     return (
         <Dialog
-			open={open}
+			open={true}
 			onClose={handleClose}
 			PaperProps={{
 				style: {

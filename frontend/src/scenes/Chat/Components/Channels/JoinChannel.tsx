@@ -28,7 +28,8 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 
 	const handleJoinChannel = () => {
 		if (joinChannel !== undefined) {
-			channelJoin(joinChannel, passwordChannel);
+			console.log(passwordChannel);
+			channelJoin(joinChannel.name, passwordChannel);
 			handleClose();
 		}
 	}
@@ -68,7 +69,7 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description">
 			<DialogTitle>
-				Join Channel
+				Join new channel
 			</DialogTitle>
 			<DialogContent>
 				{joinChannel !== undefined ? 

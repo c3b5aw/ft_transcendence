@@ -1,9 +1,9 @@
 import { socket } from "../../../Services/ws/utils";
 import { Channel } from "./interface";
 
-export const channelJoin = (channel: Channel, passwordChannel: string) => {
+export const channelJoin = (nameChannel: string, passwordChannel: string) => {
 	socket.emit("channel::join", JSON.stringify({
-		channel: `${channel.name}`,
+		channel: nameChannel,
 		password: passwordChannel,
 	}));
 }

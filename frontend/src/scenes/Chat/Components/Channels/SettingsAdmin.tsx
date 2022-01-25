@@ -1,40 +1,43 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { ISearchBar, User } from "../../../../Services/Interface/Interface";
 import MySearchBarChat from "../MySearchBarChat";
-import { Channel } from "../../Services/interface";
 import useUsersChannel from "../../Services/useUsersChannel";
 import { api, apiChannel, apiModos } from "../../../../Services/Api/Api";
 import axios from "axios";
 import { useSnackbar } from 'notistack'
+import { ISettingAdmin } from "../../Services/interface";
 
-function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetStateAction<boolean>>, reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, me: User}) {
+function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 	const { enqueueSnackbar } = useSnackbar();
-	const { channel, setOpenSettings, reload, setReload } = props;
-	const usersChannel = useUsersChannel(channel);
-    const [open, setOpen] = useState(true);
+	const { mySettingsAdmin } = props;
+	const usersChannel = useUsersChannel(mySettingsAdmin.channel);
 	const [modos, setModos] = useState<User[]>([]);
 
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
 
+	const printError = (err: any) => {
+		enqueueSnackbar(`Error : ${err.response.data.error}`, { 
+			variant: 'error',
+			autoHideDuration: 3000,
+		});
+	}
+
 	async function handleAddModo(user: User) {
 		const tmp = modos.filter(item => item.login === user.login)
 		if (tmp.length === 0) {
 			try {
-				await axios.put(`${api}${apiChannel}/${channel.name}/moderator/${user.login}`);
+				await axios.put(`${api}${apiChannel}/${mySettingsAdmin.channel.name}/moderator/${user.login}`);
 				setModos(modos => [...modos, user]);
-				enqueueSnackbar(`${user.login} a été ajouté en tant que moderateur de ${channel.name}`, { 
+				enqueueSnackbar(`${user.login} a été ajouté en tant que moderateur de ${mySettingsAdmin.channel.name}`, { 
 					variant: 'success',
 					autoHideDuration: 3000,
 				});
 			}
-			catch (err) {
-				enqueueSnackbar(`Impossible d'ajouter ${user.login} comme modérateur de ${channel.name} (${err})`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
+			catch (err: any) {
+				printError(err);
 			}
 		}
 		else {
@@ -48,7 +51,7 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 	useEffect(() => {
 		const fetchModosChannel = async () => {
 			try {
-				const response = await axios.get(`${api}${apiChannel}/${channel.name}${apiModos}`);
+				const response = await axios.get(`${api}${apiChannel}/${mySettingsAdmin.channel.name}${apiModos}`);
 				setModos(response.data);
 			}
 			catch (err) {
@@ -59,71 +62,60 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 			}
 		}
 		fetchModosChannel();
-	}, [channel.name, enqueueSnackbar]);
+	}, [mySettingsAdmin.channel.name, enqueueSnackbar]);
 
 	const handleRemoveModo = async (user: User) => {
 		try {
-			await axios.delete(`${api}${apiChannel}/${channel.name}/moderator/${user.login}`);
+			await axios.delete(`${api}${apiChannel}/${mySettingsAdmin.channel.name}/moderator/${user.login}`);
 			setModos(modos.filter(item => item.login !== user.login));
-			enqueueSnackbar(`${user.login} a été supprimé de la liste des moderateurs de ${channel.name}`, { 
+			enqueueSnackbar(`${user.login} a été supprimé de la liste des moderateurs de ${mySettingsAdmin.channel.name}`, { 
 				variant: 'success',
 				autoHideDuration: 3000,
 			});
 		}
-		catch (err) {
-			enqueueSnackbar(`Impossible de supprimer ${user.login} de la liste des modérateurs de ${channel.name} (${err})`, { 
-				variant: 'error',
-				autoHideDuration: 3000,
-			});
+		catch (err: any) {
+			printError(err);
 		}
 	}
 
 	const handleClose = () => {
-		setOpen(false);
-		setOpenSettings(false);
+		mySettingsAdmin.closeModal(!mySettingsAdmin.open);
+		mySettingsAdmin.updateListChannels();
 	};
 
 	const handleDeleteChannel = async () => {
 		try {
-			await axios.delete(`${api}${apiChannel}/${channel.name}`);
-			enqueueSnackbar(`Le channel ${channel.name} a été supprimé`, { 
+			await axios.delete(`${api}${apiChannel}/${mySettingsAdmin.channel.name}`);
+			enqueueSnackbar(`Le channel ${mySettingsAdmin.channel.name} a été supprimé`, { 
 				variant: 'success',
 				autoHideDuration: 3000,
 			});
 			handleClose();
-			setReload(!reload);
 		}
-		catch (err) {
-			enqueueSnackbar(`Le channel ${channel.name} n'a pas pu etre supprimé (${err})`, { 
-				variant: 'error',
-				autoHideDuration: 3000,
-			});
+		catch (err: any) {
+			printError(err);
 		}
 	}
 
 	const handleUpdate = async () => {
 		if (passwordChannel.length > 0) {
 			try {
-				await axios.post(`${api}${apiChannel}/${channel.name}/password`, {
+				await axios.post(`${api}${apiChannel}/${mySettingsAdmin.channel.name}/password`, {
 					password: passwordChannel
 				});
-				enqueueSnackbar(`Le password du channel ${channel.name} a été modifié`, { 
+				enqueueSnackbar(`Le password du channel ${mySettingsAdmin.channel.name} a été modifié`, { 
 					variant: 'success',
 					autoHideDuration: 3000,
 				});
 				handleClose();
 			}
-			catch (err) {
-				enqueueSnackbar(`Le password du channel ${channel.name} n'a pas pu etre modifié (${err})`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
-				console.log(err);
+			catch (err: any) {
+				printError(err);
 			}
 		}
 		if (nameChannel.length > 0) {
 			try {
-				await axios.post(`${api}${apiChannel}/${channel.name}/name`, {
+				await axios.post(`${api}${apiChannel}/${mySettingsAdmin.channel.name}/name`, {
 					name: nameChannel,
 				});
 				enqueueSnackbar(`Le nom du channel a été modifié par ${nameChannel}`, { 
@@ -131,14 +123,9 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 					autoHideDuration: 3000,
 				});
 				handleClose();
-				setReload(!reload);
 			}
-			catch (err) {
-				enqueueSnackbar(`Le nom du channel n'a pas pu etre modifié (${err})`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
-				console.log(err);
+			catch (err: any) {
+				printError(err);
 			}
 		}
 		else
@@ -156,10 +143,10 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 	const fSearchBar: ISearchBar = {
 		handleClickCell: handleAddModo
 	};
-	// console.log(modos);
+
 	return (
 		<Dialog
-			open={open}
+			open={true}
 			onClose={handleClose}
 			PaperProps={{
 				style: {
@@ -169,7 +156,7 @@ function SettingsAdmin(props: { channel: Channel, setOpenSettings: Dispatch<SetS
 			  }}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description">
-			<DialogTitle>Update channel {channel.name}</DialogTitle>
+			<DialogTitle>Update channel {mySettingsAdmin.channel.name}</DialogTitle>
 			<DialogContent>
 				<Box sx={{ flexGrow: 1, marginTop: 1}}>
 					<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>

@@ -1,127 +1,273 @@
-import { Avatar, Divider, FormControl, IconButton, Paper, Stack, TextField } from '@mui/material';
-import React, { SetStateAction, useEffect, useState } from 'react';
-import MyList from '../Components/MyListFriends';
-import { api, apiChannel, apiFriends, apiUsers } from '../../../Services/Api/Api';
+import { Avatar, Button, FormControl, IconButton, Stack, TextField } from "@mui/material";
+import { SetStateAction, useEffect, useState } from "react";
+import useMe from "../../../Services/Hooks/useMe";
+import { styleTextField } from "../../../styles/Styles";
+import MyListChannels from "../Components/Channels/MyListChannels";
+import { Channel, IChannel, IListUser, Message } from "../Services/interface";
 import SendIcon from '@mui/icons-material/Send';
-import { styleTextField } from '../../../styles/Styles';
-import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
-import useMe from '../../../Services/Hooks/useMe';
-import MyListChannels from '../Components/Channels/MyListChannels';
-import MyMessages from '../Components/MyMessages';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { Channel } from '../Services/interface';
-import { channelJoin, channelSend } from '../Services/wsChat';
-import { useNavigate } from 'react-router-dom';
-import { pageSettings } from '../../../Services/Routes/RoutePage';
+import MyMessages from "../Components/MyMessages";
+import { User } from "../../../Services/Interface/Interface";
+import MyListFriends from "../Components/MyListFriends";
+import axios from "axios";
+import { api, apiChannel, apiChannels, apiFriends, apiMessages, apiUsers } from "../../../Services/Api/Api";
+import { useSnackbar } from 'notistack'
+import { channelJoin, channelLeave, channelSend } from "../Services/wsChat";
+import { socket } from "../../../Services/ws/utils";
+import MyDialogCreateChannel from "../Components/Channels/MyDialogCreateChannel";
+import JoinChannel from "../Components/Channels/JoinChannel";
+
+export const fetchChannelsJoin = async () => {
+	let channelsJoined: Channel[] = [];
+	try {
+		const response = await axios.get(`${api}${apiChannels}/joined`);
+		channelsJoined = response.data;
+		return (channelsJoined);
+	}
+	catch (error) {
+		return (channelsJoined);
+	}
+}
 
 function Chat() {
 	const me = useMe();
-	const [channel, setChannel] = useState<Channel>();
-	const [messageTmp, setMessageTmp] = useState<string>("");
 	const classes = styleTextField();
-	const navigate = useNavigate();
+	const [messageTmp, setMessageTmp] = useState<string>("");
+	const [messages, setMessages] = useState<Message[]>([]);
+	const [usersChannel, setUsersChannel] = useState<User[]>([]);
+	const [friends, setFriends] = useState<User[]>([]);
+	const [channels, setChannels] = useState<Channel[]>([]);
+	const [nameChannel, setNameChannel] = useState<string>("public");
+	const [nameChannelDisplay, setNameChannelDisplay] = useState<string>("public");
+	const [reload, setReload] = useState<boolean>(false);
+
+	const [open, setOpen] = useState<boolean>(false);
+	const [openJoin, setOpenJoin] = useState<boolean>(false);
+
+	const [upload, setUpload] = useState(null)
+	const [uploadChannels, setUploadChannels] = useState(null)
+
+	const { enqueueSnackbar } = useSnackbar();
+
+	const handleJoinChannel = (nameChannel: string) => {
+		channelJoin(nameChannel, "");
+	}
+
+	const handleClickChannel = (channel: Channel) => {
+		setNameChannel(channel.name);
+		handleJoinChannel(channel.name);
+	}
+
+	const handleQuitChannel = (channel: Channel) => {
+		channelLeave(channel);
+		updateListChannels();
+	}
+
+	const handleEnterChannel = (channel: Channel, password: string) => {
+		channelJoin(channel.name, password);
+	}
+
+	function updateListChannels() {
+		setReload(!reload);
+	}
+
+	const myChannels: IChannel = {
+		channels: channels,
+		handleClickChannel: handleClickChannel,
+		handleEnterChannel: handleEnterChannel,
+		handleQuitChannel: handleQuitChannel,
+		updateListChannels: updateListChannels,
+	}
+
+	const handleLaunchParametres = () => {
+		console.log("GO TO PARAMS");
+	}
+
+	function HandleCreateChannel() {
+		return (
+			<Button variant="contained" 
+			sx={{backgroundColor: "white",
+				color: "black",
+				fontFamily: "Myriad Pro"
+			}} onClick={() => setOpen(true)}>
+			Create new channel</Button>
+		);
+	}
+
+	function HandleJoinChannel() {
+		return (
+			<Button variant="contained" 
+			sx={{backgroundColor: "white",
+				color: "black",
+				fontFamily: "Myriad Pro"
+			}} onClick={() => setOpenJoin(true)}>
+			Join new channel</Button>
+		);
+	}
 
 	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
 		setMessageTmp(event.target.value);
 	};
 
 	function handleSendMessage() {
-		if (channel !== undefined)
-		{
-			channelSend(channel.name, messageTmp);
-			setMessageTmp("");
-		}
-	}
-
-	function handleLaunchParametres() {
-		navigate(`${pageSettings}`);
+		channelSend(nameChannel, messageTmp);
+		setMessageTmp("");
 	}
 
 	useEffect(() => {
-		function channelJoinn() {
-			if (channel !== undefined)
-				channelJoin(channel, "");
-		}
-		channelJoinn();
-	}, [channel])
+		socket.on("channel::onJoin", (data) => {
+			setUploadChannels(data)
+		})
+	}, [])
 
-	if (me === undefined)
-		return (<MyChargingDataAlert />);
+	useEffect(() => {
+		socket.on("channel::onMembersReload", (data) => {
+			setUpload(data)
+		})
+	}, [])
+
+	useEffect(() => {
+		socket.on("channel::onMessage", (data) => {
+			setUpload(data)
+		})
+	}, [])
+
+	useEffect(() => {
+		socket.on("channel::onListReload", (data) => {
+			setUpload(data)
+		})
+	}, [])
+
+	useEffect(() => {
+		const fetchChannels = async () => {
+			try {
+				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
+				setChannels(response_channels_joined.data);
+			}
+			catch (err: any) {
+				enqueueSnackbar(`Error : ${err.response.data.error}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+			}
+		}
+		fetchChannels();
+	}, [enqueueSnackbar, uploadChannels, reload])
+
+	useEffect(() => {
+		const fetchChat = async () => {
+			try {
+				const response_users_channel = await axios.get(`${api}${apiChannel}/${nameChannel}${apiUsers}`)
+				setUsersChannel(response_users_channel.data);
+
+				const response_message = await axios.get(`${api}${apiChannel}/${nameChannel}${apiMessages}`)
+				setMessages(response_message.data);
+				setNameChannelDisplay(nameChannel);
+			}
+			catch (err: any) {
+				enqueueSnackbar(`Error : ${err.response.data.error}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+			}
+		}
+		fetchChat();
+	}, [enqueueSnackbar, nameChannel, upload])
+
+	useEffect(() => {
+		const fetchFriends = async () => {
+			try {
+				const response_friends = await axios.get(`${api}${apiUsers}/${me?.login}${apiFriends}`)
+				setFriends(response_friends.data);
+			}
+			catch (err: any) {
+				enqueueSnackbar(`Error : ${err.response.data.error}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+			}
+		}
+		if (me !== undefined)
+			fetchFriends();
+	}, [enqueueSnackbar, me])
+
+	var myListFriends: IListUser = {
+		users: friends,
+		name_list: "List Friends",
+		isListChannel: false,
+		name_channel: nameChannel,
+	}
+
+	var myListUsersChannel: IListUser = {
+		users: usersChannel,
+		name_list: "List Users Channel",
+		isListChannel: true,
+		name_channel: nameChannel,
+	}
+
 	return (
-		<Stack direction="column" sx={{width: 1, height: "100vh"}}>
-			<Paper elevation={3} sx={{width: 1, height: 0.05, backgroundColor: '#394E51'}}>
-				<Stack direction="row" alignItems="center" sx={{width: 1}}>
-					<Stack sx={{width: 1.5/12}} direction="row" alignItems="center" justifyContent="space-between">
-						<Stack direction="row" alignItems="center" onClick={() => handleLaunchParametres()}>
-							<Avatar
-								src={`http://127.0.0.1/api/profile/avatar`}
-								sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
-							</Avatar>
-							<h3 style={{color: "white"}}>{me?.login}</h3>
-						</Stack>
+		<Stack direction="row" sx={{width: 1, height: "100vh"}}>
+			<Stack direction="column" sx={{width: 0.15, height: 1}}>
+				<Stack direction="row" sx={{width: 1, height: 0.075}}>
+					<Stack direction="row" alignItems="center" onClick={() => handleLaunchParametres()}>
+						<Avatar
+							src={`http://127.0.0.1/api/profile/avatar`}
+							sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
+						</Avatar>
+						<h3 style={{color: "white"}}>{me?.login}</h3>
 					</Stack>
-					<Divider orientation="vertical" flexItem />
-					{channel !== undefined ?
-						<Stack sx={{width: 9/12}} direction="row" alignItems="center">
-							{channel.private ? <LockIcon color="warning"/> : <LockOpenIcon color="warning"/>}
-							<h3 style={{color: "white", fontFamily: "Myriad Pro", marginLeft: "10px"}}>{channel.name}</h3>
-						</Stack> : null
-					}
-					<Divider orientation="vertical" flexItem />
-					{channel !== undefined ?
-					<Stack sx={{width: 1.5/12}} direction="row" alignItems="center">
-						<h3 style={{color: "white", marginLeft: "10px"}}>Users in {channel.name}</h3>
-					</Stack> : null
-					}
 				</Stack>
-			</Paper>
-			<Stack direction="row" sx={{width: 1, height: 0.95}}>
-				<MyListChannels me={me} setChannel={setChannel}/>
-				<Stack direction="column" sx={{width: 9/12, height: 1}} alignItems="center">
-					{channel !== undefined ? 
-						<React.Fragment>
-							{/* load messages */}
-							<MyMessages nameChannel={channel.name} />
-							<Stack direction="row" sx={{width: 1, height: 0.1, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
-								<Stack direction="row" sx={{width: 1, marginTop: 3}}>
-									<FormControl sx={{ width: 0.95, marginLeft: 4}}>
-										<TextField
-											className={classes.styleTextField}
-											placeholder="Message"
-											variant="outlined"
-											fullWidth
-											multiline
-											maxRows={3}
-											value={messageTmp}
-											onChange={handleTextInputChange}
-											InputProps={{
-												style: {
-													backgroundColor: "#737373",
-													color: "white",
-												}
-											}}
-										/>
-									</FormControl>
-									<IconButton aria-label="send" size="large" sx={{color: "white"}} onClick={() => handleSendMessage()}>
-										<SendIcon fontSize="large" />
-									</IconButton>
-								</Stack>
-							</Stack>
-						</React.Fragment> : null
-					}
+				<Stack direction="column" sx={{width: 1, height: 0.8}}>
+					{me !== undefined ? <MyListChannels myChannel={myChannels} me={me}/> : null}
 				</Stack>
-				<Stack direction="column" sx={{width: 1.5/12, height: 1}}>
-					{/* load user in channel */}
-					{me !== undefined && channel !== undefined ? 
-						<MyList me={me} url={`${api}${apiChannel}/${channel?.name}${apiUsers}`} isListUserChannel={true} channel={channel}/>
-						: null}
-					<h3 style={{fontFamily: "Myriad Pro", textAlign: "center"}}>My friends</h3>
-					{me !== undefined ?
-						<MyList me={me} url={`${api}${apiUsers}/${me?.login}${apiFriends}`} isListUserChannel={false}/>
-						: null}
+				<Stack direction="row" sx={{width: 1, height: 0.125 }} spacing={2} alignItems="center">
+					<HandleCreateChannel />
+					<HandleJoinChannel />
 				</Stack>
 			</Stack>
+			<Stack direction="column" sx={{width: 0.7, height: 1}}>
+				<Stack direction="row" sx={{width: 1, height: 0.075}}>
+					<Stack direction="row" alignItems="center" spacing={1}>
+						{true ? <LockIcon style={{fontSize: "40px"}} color="warning"/> : <LockOpenIcon color="warning"/>}
+						<h2 style={{color: "white", fontFamily: "Myriad Pro"}}>{nameChannelDisplay}</h2>
+					</Stack>
+				</Stack>
+				<Stack direction="row" sx={{width: 1, height: 0.8, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
+					<MyMessages messages={messages} />
+				</Stack>
+				<Stack direction="row" sx={{width: 1, height: 0.125, backgroundColor: "#304649"}} spacing={2} alignItems="center" justifyContent="space-between">
+					<Stack direction="row" sx={{width: 1, marginTop: 3}}>
+						<FormControl sx={{ width: 0.95, marginLeft: 4}}>
+							<TextField
+								className={classes.styleTextField}
+								placeholder="Message"
+								variant="outlined"
+								fullWidth
+								multiline
+								maxRows={3}
+								value={messageTmp}
+								onChange={handleTextInputChange}
+								InputProps={{
+									style: {
+										backgroundColor: "#737373",
+										color: "white",
+									}
+								}}
+							/>
+						</FormControl>
+						<IconButton aria-label="send" size="large" sx={{color: "white"}} onClick={() => handleSendMessage()}>
+							<SendIcon fontSize="large" />
+						</IconButton>
+					</Stack>
+				</Stack>
+			</Stack>
+			<Stack direction="column" sx={{width: 0.15, height: 1}}>
+				<MyListFriends myList={myListUsersChannel}/>
+				<MyListFriends myList={myListFriends}/>
+			</Stack>
+			{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} setOpen={setOpen}/> : null}
+			{openJoin ? <JoinChannel setOpen={setOpenJoin}/> : null}
 		</Stack>
 	);
 }

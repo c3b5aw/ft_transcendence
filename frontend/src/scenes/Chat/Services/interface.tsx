@@ -1,3 +1,5 @@
+import { User } from "../../../Services/Interface/Interface";
+
 export interface Message {
     id: number,
     user_id: number,
@@ -15,4 +17,43 @@ export interface Channel {
     owner_login: string,
     private: boolean,
     tunnel: boolean,
+}
+
+export interface IChannel {
+	channels: Channel[],
+	handleClickChannel: (channel: Channel) => void,
+	handleQuitChannel: (channel: Channel) => void,
+	handleEnterChannel: (channel: Channel, password: string) => void,
+	updateListChannels: () => void,
+}
+
+export interface IListUser {
+	users: User[],
+	name_list: string,
+	isListChannel: boolean,
+	name_channel: string,
+}
+
+export interface IBanKickMute {
+	name_channel: string,
+	user: User,
+	open: boolean,
+	closeModal: (open: boolean) => void,
+}
+
+export interface ISettingM {
+	channel: Channel,
+	open: boolean,
+	isAdmin: boolean,
+	closeModal: (open: boolean) => void,
+	handleQuitChannel: (channel: Channel) => void,
+	handleEnterChannel: (channel: Channel, password: string) => void,
+}
+
+export interface ISettingAdmin {
+	channel: Channel,
+	open: boolean,
+	isAdmin: boolean,
+	closeModal: (open: boolean) => void,
+	updateListChannels: () => void,
 }

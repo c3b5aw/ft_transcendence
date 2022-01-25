@@ -1,111 +1,75 @@
-import { Avatar, Badge, CircularProgress, IconButton, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
-import { useNavigate } from 'react-router';
+import { Avatar, Badge, Box, IconButton, List, ListItemButton, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { apiStats } from '../../../Services/Api/Api';
 import { User, USER_STATUS } from '../../../Services/Interface/Interface';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useState } from 'react';
 import BanKickMute from './BanKickMute';
-import { Channel } from '../Services/interface';
-import { useSnackbar } from 'notistack'
-import { SocketContext } from '../../../Services/ws/utils';
+import { IBanKickMute, IListUser } from '../Services/interface';
 
-function MyList(props : {me: User | undefined, url: string, isListUserChannel: boolean, channel?: Channel}) {
-	const { me, url, isListUserChannel, channel } = props;
-	const [users, setUsers] = useState<User[]>([]);
-	const [open, setOpen] = useState<boolean>(false);
-	const [userCurrent, setUserCurrent] = useState<User>();
-	const { enqueueSnackbar } = useSnackbar();
-	const [reload, setReload] = useState<boolean>(false);
-	const socket = useContext(SocketContext);
-
+function MyListUser(props : { myList: IListUser }) {
+	const { myList } = props;
 	const navigate = useNavigate();
+	const [open, setOpen] = useState<boolean>(true);
+	const [myBanKickMute, setMyBanKickMute] = useState<IBanKickMute>();
 
-	const handleClick = (user: User) => {
-		navigate(`${apiStats}/${user.login}`)
+	const handleClick = (login: string) => {
+		navigate(`${apiStats}/${login}`)
 	}
 
-	const handleChangeListMember = useCallback(() => {
-		setReload(!reload);
-	  }, []);
-
-	useEffect(() => {
-		socket.on("channel::onMembersReload", handleChangeListMember);
-	}, [handleChangeListMember, socket])
-
-	useEffect(() => {
-		const fetchFriends = async () => {
-			try {
-				const reponse = await axios.get(`${url}`);
-				setUsers(reponse.data);
-			} catch (err) {
-				enqueueSnackbar(`Impossible de charger la liste (${err})`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
-			}
+	function handleClickOptionUser(user: User) {
+		const myBanKickMute: IBanKickMute = {
+			name_channel: myList.name_channel,
+			user: user,
+			open: true,
+			closeModal: setOpen,
 		}
-		fetchFriends();
-	}, [enqueueSnackbar, me, reload, url])
-
-	function handleOpenDialogBan(user: User) {
-		setUserCurrent(user);
-		setOpen(!open);
+		setOpen(true);
+		setMyBanKickMute(myBanKickMute);
 	}
 
-	if (me === undefined)
-	{
-		return (
-			<Stack direction="column" sx={{width: 1, height: "100vh"}} alignItems="center" justifyContent="center">
-				<CircularProgress sx={{color: "white"}} />
-			</Stack>
-		);
+	function DisplayOptionUser(props: {user: User}) {
+		const { user } = props;
+		if (myList.isListChannel) {
+			return (
+				<IconButton onClick={() => handleClickOptionUser(user)}>
+					<MoreVertIcon style={{color: "white"}}/>
+				</IconButton>
+			);
+		}
+		return (null);
 	}
+
 	return (
-        <Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}} alignItems="center">
-			{isListUserChannel && open && userCurrent !== undefined ? <BanKickMute user={userCurrent} setOpen={setOpen} channel={channel} reload={reload} setReload={setReload}/> : null}
-			<Stack sx={{width: 1, height: 1}} direction="column">
-				<Stack sx={{backgroundColor: "#1d3033", width: 1, height: 1}} direction="column">
-					<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#1d3033"}}>
-						{users.length > 0 ?
-						<List>
-							{users.map(user => (
-								<div key={user.id}>
-									<ListItem component="div" disablePadding>
-										<Stack direction="row" alignItems="center" sx={{width: 1}}>
-											<ListItemButton onClick={() => handleClick(user)}>
-												<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row">
-													<Stack sx={{ width: "85%", height: 1}} alignItems="center" spacing={2} direction="row">
-														<Badge badgeContent={""} 
-															color={user.status === USER_STATUS.ONLINE ? "success" :
-															user.status === USER_STATUS.IN_GAME ? "warning" : "error"}>
-															<Avatar
-																sx={{marginLeft: "10px",
-																	width: "32px",
-																	height: "32px",}}
-																src={`http://127.0.0.1/api/users/${user.login}/avatar`}>
-															</Avatar>
-														</Badge>
-														<h4 style={{color: "white"}}>{user.login}</h4>
-													</Stack>
-												</Stack>
-											</ListItemButton>
-											{isListUserChannel && channel !== undefined && channel.owner_id === me.id ?
-												<IconButton onClick={() => handleOpenDialogBan(user)}>
-													<MoreVertIcon sx={{fontSize: "24px", color: "white", marginRight: "3%"}}></MoreVertIcon>
-												</IconButton> : null
-											}
-										</Stack>
-									</ListItem>
-								</div>
-							))}
-						</List> : null
-						}
-					</Paper>
-				</Stack>
-			</Stack>
+        <Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}}>
+			<Box sx={{backgroundColor: "#2E86C1"}}>
+				<h3 style={{textAlign: "center"}}>{myList.name_list}</h3>
+			</Box>
+			<List sx={{overflow: "auto"}}>
+				{myList.users.map(user => (
+					<Stack direction="row" key={user.id} alignItems="center">
+						<ListItemButton component="div" onClick={() => handleClick(user.login)}>
+							<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row" spacing={2}>
+								<Badge badgeContent={""} 
+									color={user.status === USER_STATUS.ONLINE ? "success" :
+									user.status === USER_STATUS.IN_GAME ? "warning" : "error"}>
+									<Avatar
+										sx={{marginLeft: "10px",
+											width: "32px",
+											height: "32px",}}
+										src={`http://127.0.0.1/api/users/${user.login}/avatar`}>
+									</Avatar>
+								</Badge>
+								<h4 style={{color: "white"}}>{user.login}</h4>
+							</Stack>
+						</ListItemButton>
+						<DisplayOptionUser user={user}/>
+					</Stack>
+				))}
+			</List>
+			{myBanKickMute !== undefined && open ? <BanKickMute myBanKickMute={myBanKickMute} /> : null}
 		</Stack>
     );
 }
 
-export default MyList;
+export default MyListUser;
