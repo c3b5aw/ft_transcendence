@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useSnackbar } from 'notistack'
 import { ROLE } from '../../../Services/Api/Role';
 import { IBanKickMute } from '../Services/interface';
+import { isMute } from '../Services/utils';
 
 export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 	const { myBanKickMute } = props;
@@ -99,10 +100,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 	}
 
 	function HandleMuteUser() {
-		const date_now = new Date();
-		const date_muted_user = new Date(myBanKickMute.user.muted);
-		const isMute = date_muted_user > date_now;
-		if (isMute)
+		if (isMute(myBanKickMute.user))
 			return <Button sx={sxButton} onClick={handleUnMuteUser}>UnMute {myBanKickMute.user.login}</Button>
 		return <Button sx={sxButton} onClick={handleMuteUser}>Mute {myBanKickMute.user.login}</Button>
 	}

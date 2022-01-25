@@ -16,18 +16,8 @@ import { channelJoin, channelLeave, channelSend } from "../Services/wsChat";
 import { socket } from "../../../Services/ws/utils";
 import MyDialogCreateChannel from "../Components/Channels/MyDialogCreateChannel";
 import JoinChannel from "../Components/Channels/JoinChannel";
-
-export const fetchChannelsJoin = async () => {
-	let channelsJoined: Channel[] = [];
-	try {
-		const response = await axios.get(`${api}${apiChannels}/joined`);
-		channelsJoined = response.data;
-		return (channelsJoined);
-	}
-	catch (error) {
-		return (channelsJoined);
-	}
-}
+import { ROLE } from "../../../Services/Api/Role";
+import { isMuteSendMessage } from "../Services/utils";
 
 function Chat() {
 	const me = useMe();
@@ -236,12 +226,16 @@ function Chat() {
 					}
 				</Stack>
 				<Stack direction="row" sx={{width: 1, height: 0.8, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
-					<MyMessages messages={messages} />
+					{me !== undefined && me.role !== ROLE.BANNED ?
+						<MyMessages messages={messages} /> : 
+						<div style={{color: "grey", textAlign: "center", marginTop: "40%", fontFamily: "Myriad Pro", fontSize: "45px"}}>You have been banned</div>
+					}
 				</Stack>
 				<Stack direction="row" sx={{width: 1, height: 0.125, backgroundColor: "#304649"}} spacing={2} alignItems="center" justifyContent="space-between">
 					<Stack direction="row" sx={{width: 1, marginTop: 3}}>
 						<FormControl sx={{ width: 0.95, marginLeft: 4}}>
 							<TextField
+								disabled={me !== undefined && isMuteSendMessage(usersChannel, me, messageTmp) ? true : false}
 								className={classes.styleTextField}
 								placeholder="Message"
 								variant="outlined"
