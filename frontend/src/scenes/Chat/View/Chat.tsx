@@ -9,7 +9,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import MyMessages from "../Components/MyMessages";
 import { User } from "../../../Services/Interface/Interface";
-import MyListFriends from "../Components/MyListFriends";
+import MyListUser from "../Components/MyListUser";
 import axios from "axios";
 import { api, apiChannel, apiChannels, apiFriends, apiMessages, apiUsers } from "../../../Services/Api/Api";
 import { useSnackbar } from 'notistack'
@@ -263,8 +263,8 @@ function Chat() {
 				</Stack>
 			</Stack>
 			<Stack direction="column" sx={{width: 0.15, height: 1}}>
-				<MyListFriends myList={myListUsersChannel}/>
-				<MyListFriends myList={myListFriends}/>
+				<MyListUser myList={myListUsersChannel}/>
+				<MyListUser myList={myListFriends}/>
 			</Stack>
 			{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} setOpen={setOpen}/> : null}
 			{openJoin ? <JoinChannel setOpen={setOpenJoin}/> : null}

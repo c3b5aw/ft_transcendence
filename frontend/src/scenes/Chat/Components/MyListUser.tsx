@@ -6,12 +6,16 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
 import BanKickMute from './BanKickMute';
 import { IBanKickMute, IListUser } from '../Services/interface';
+import { ROLE } from '../../../Services/Api/Role';
+import useMe from '../../../Services/Hooks/useMe';
 
 function MyListUser(props : { myList: IListUser }) {
 	const { myList } = props;
 	const navigate = useNavigate();
 	const [open, setOpen] = useState<boolean>(true);
 	const [myBanKickMute, setMyBanKickMute] = useState<IBanKickMute>();
+	const me = useMe();
+	const user: User[] = myList.users.filter(item => item.login === me?.login);
 
 	const handleClick = (login: string) => {
 		navigate(`${apiStats}/${login}`)
@@ -26,6 +30,13 @@ function MyListUser(props : { myList: IListUser }) {
 		}
 		setOpen(true);
 		setMyBanKickMute(myBanKickMute);
+	}
+
+	const checkRoleMe = () => {
+		if (me !== undefined && myList.isListChannel) {
+			return (user[0].role === ROLE.ADMIN || user[0].role === ROLE.MODERATOR);
+		}
+		return (false);
 	}
 
 	function DisplayOptionUser(props: {user: User}) {
@@ -63,7 +74,7 @@ function MyListUser(props : { myList: IListUser }) {
 								<h4 style={{color: "white"}}>{user.login}</h4>
 							</Stack>
 						</ListItemButton>
-						<DisplayOptionUser user={user}/>
+						{checkRoleMe() ? <DisplayOptionUser user={user}/> : null}
 					</Stack>
 				))}
 			</List>

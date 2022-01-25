@@ -97,6 +97,13 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 			printError(err);
 		}
 	}
+
+	function HandleMuteUser() {
+		return (
+			<Button sx={sxButton} onClick={handleMuteUser}>Mute {myBanKickMute.user.login}</Button>
+		);
+	}
+
 	return (
 		<div>
 			<Dialog onClose={handleClose} open={myBanKickMute.open}>
@@ -105,7 +112,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 					<div style={{marginTop: 20}}></div>
 					<Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
 						<VolumeOffIcon style={{color: "white", fontSize: "40px"}}/>
-						<Button sx={sxButton} onClick={handleMuteUser}>Mute {myBanKickMute.user.login}</Button>
+						<HandleMuteUser />
 					</Stack>
 					<div style={{marginTop: 20}}></div>
 					<Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
