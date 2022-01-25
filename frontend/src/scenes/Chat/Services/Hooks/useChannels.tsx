@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { api, apiChannels } from "../../../Services/Api/Api";
-import { Channel } from "./interface";
+import { api, apiChannels } from "../../../../Services/Api/Api";
+import { Channel } from "../interface";
 import { useSnackbar } from 'notistack'
 
 function useChannels() {

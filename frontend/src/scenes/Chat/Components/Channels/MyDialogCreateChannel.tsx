@@ -6,7 +6,7 @@ import axios from "axios";
 import { api, apiChannel, apiDM } from "../../../../Services/Api/Api";
 import { useSnackbar } from 'notistack'
 import MySearchBarChat from "../MySearchBarChat";
-import useFriends from "../../Services/useFriends";
+import useFriends from "../../Services/Hooks/useFriends";
 
 function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { reload, setReload, setOpen } = props;

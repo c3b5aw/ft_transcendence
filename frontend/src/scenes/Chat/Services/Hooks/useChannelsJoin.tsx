@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { api, apiChannels } from "../../../Services/Api/Api";
-import { Channel } from "./interface";
 import { useSnackbar } from 'notistack'
+import { api, apiChannels } from "../../../../Services/Api/Api";
+import { Channel } from "../interface";
 
 function useChannelsJoin() {
 	const { enqueueSnackbar } = useSnackbar();

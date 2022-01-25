@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { api, apiFriends, apiMe } from "../../../Services/Api/Api";
 import { useSnackbar } from 'notistack'
-import { User } from "../../../Services/Interface/Interface";
+import { User } from "../../../../Services/Interface/Interface";
+import { api, apiFriends, apiMe } from "../../../../Services/Api/Api";
 
 function useFriends() {
 	const { enqueueSnackbar } = useSnackbar();

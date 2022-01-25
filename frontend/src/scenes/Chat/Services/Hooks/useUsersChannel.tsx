@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { api, apiChannel, apiUsers } from "../../../Services/Api/Api";
-import { User } from "../../../Services/Interface/Interface";
-import { Channel } from "./interface";
 import { useSnackbar } from 'notistack'
+import { Channel } from "../interface";
+import { User } from "../../../../Services/Interface/Interface";
+import { api, apiChannel, apiUsers } from "../../../../Services/Api/Api";
 
 function useUsersChannel(channel: Channel) {
 	const { enqueueSnackbar } = useSnackbar();

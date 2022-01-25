@@ -4,11 +4,11 @@ import { ISearchBarChannel } from "../../../../Services/Interface/Interface";
 import { useSnackbar } from 'notistack'
 import CloseIcon from '@mui/icons-material/Close';
 import { Channel } from "../../Services/interface";
-import useChannels from "../../Services/useChannels";
+import useChannels from "../../Services/Hooks/useChannels";
 import MySearchBarChannels from "../MySearchBarChannels";
 import LockIcon from '@mui/icons-material/Lock';
-import useChannelsJoin from "../../Services/useChannelsJoin";
 import { channelJoin } from "../../Services/wsChat";
+import useChannelsJoin from "../../Services/Hooks/useChannelsJoin";
 
 function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 	const { setOpen } = props;
