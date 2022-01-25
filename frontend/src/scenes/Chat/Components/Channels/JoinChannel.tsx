@@ -28,8 +28,12 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 
 	const handleJoinChannel = () => {
 		if (joinChannel !== undefined) {
-			console.log(passwordChannel);
-			channelJoin(joinChannel.name, passwordChannel);
+			if (!joinChannel.private) {
+				console.log(joinChannel);
+				channelJoin(joinChannel.name, "");
+			}
+			else
+				channelJoin(joinChannel.name, passwordChannel);
 			handleClose();
 		}
 	}

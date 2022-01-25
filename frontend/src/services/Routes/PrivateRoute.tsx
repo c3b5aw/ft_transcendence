@@ -49,13 +49,6 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 							autoHideDuration: 3000,
 						});
 					});
-
-					socket.on("channel::onReload", async (data) => {
-						enqueueSnackbar(`Join ${data.name}`, { 
-							variant: 'success',
-							autoHideDuration: 3000,
-						});
-					});
 				}
 			}		
 		}

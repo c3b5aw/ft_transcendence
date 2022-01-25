@@ -135,7 +135,7 @@ function Chat() {
 
 	useEffect(() => {
 		socket.on("channel::onListReload", (data) => {
-			setUpload(data)
+			setUploadChannels(data)
 		})
 	}, [])
 

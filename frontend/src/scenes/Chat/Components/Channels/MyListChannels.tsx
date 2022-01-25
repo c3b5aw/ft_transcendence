@@ -45,7 +45,7 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 
 	function DisplaySettings(props: {channel: Channel}) {
 		const { channel } = props;
-		if (channel.owner_id === me.id) {
+		if (channel.owner_id === me.id && !channel.tunnel) {
 			return (
 				<IconButton onClick={() => handleClickSettingsChannelAdmin(channel)} sx={{fontSize: "24px", color: "green", marginRight: "3%"}} aria-label="delete">
 					<SettingsIcon style={{color: "#B8D2E5"}}/>
