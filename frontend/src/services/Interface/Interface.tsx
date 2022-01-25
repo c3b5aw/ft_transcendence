@@ -16,6 +16,7 @@ export interface User {
 	role: ROLE
 	rank: number
 	victories: number
+	muted: string
 }
 
 export interface Match {

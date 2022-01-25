@@ -58,7 +58,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 
 	const handleMuteUser = async () => {
 		try {
-			await axios.put(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiMute}/${myBanKickMute.user.login}/10`);
+			await axios.put(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiMute}/${myBanKickMute.user.login}/100`);
 			enqueueSnackbar(`${myBanKickMute.user.login} a ete mute du channel ${myBanKickMute.name_channel}`, { 
 				variant: 'success',
 				autoHideDuration: 3000,
@@ -72,8 +72,8 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 
 	const handleUnMuteUser = async () => {
 		try {
-			await axios.delete(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiBan}/${myBanKickMute.user.login}`);
-			enqueueSnackbar(`${myBanKickMute.user.login} a ete unbanned du channel ${myBanKickMute.name_channel}`, { 
+			await axios.delete(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiMute}/${myBanKickMute.user.login}`);
+			enqueueSnackbar(`${myBanKickMute.user.login} a ete unmuted du channel ${myBanKickMute.name_channel}`, { 
 				variant: 'success',
 				autoHideDuration: 3000,
 			});
@@ -99,9 +99,12 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 	}
 
 	function HandleMuteUser() {
-		return (
-			<Button sx={sxButton} onClick={handleMuteUser}>Mute {myBanKickMute.user.login}</Button>
-		);
+		const date_now = new Date();
+		const date_muted_user = new Date(myBanKickMute.user.muted);
+		const isMute = date_muted_user > date_now;
+		if (isMute)
+			return <Button sx={sxButton} onClick={handleUnMuteUser}>UnMute {myBanKickMute.user.login}</Button>
+		return <Button sx={sxButton} onClick={handleMuteUser}>Mute {myBanKickMute.user.login}</Button>
 	}
 
 	return (
