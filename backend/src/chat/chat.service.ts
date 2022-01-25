@@ -18,7 +18,7 @@ import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
 
 import { RequestError, WsError } from './dto/errors.enum';
-import { CreateChannelDto, CreateDirectChannelDto } from './dto/createChannel.dto';
+import { CreateChannelDto } from './dto/createChannel.dto';
 import { ModerationFlow } from './dto/moderationFlow.interface';
 @Injectable()
 export class ChatService {

@@ -13,6 +13,10 @@ export class Match {
 		MATCH DATA
 	*/
 
+	@Column({ type: 'varchar', length: 32, nullable: false, unique: true })
+	@ApiProperty({ description: "match md5 hash", example: "hshf..." })
+	hash: string;
+	
 	@CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', nullable: false })
 	@ApiProperty({ description: "date started", example: "2020-01-01T00:00:00.000Z" })
 	date: Date;

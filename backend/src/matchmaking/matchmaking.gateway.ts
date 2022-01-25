@@ -2,10 +2,15 @@ import { Logger, UseGuards } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayDisconnect,
 		WebSocketGateway, WebSocketServer,
 		SubscribeMessage } from '@nestjs/websockets';
+import { Server } from 'socket.io';
 
-import { Server, Socket } from 'socket.io';
-import { JwtTwoFactorGuard } from 'src/2fa/guards/2fa.guard';
-import { WsGuard } from 'src/auth/guards/ws.guard';
+import { WsGuard } from 'src/ws/guards/ws.guard';
+import { WSClient } from 'src/ws/datastructures/wsclient.struct';
+import { MatchmakingService } from './matchmaking.service';
+
+import { User } from 'src/users/entities/user.entity';
+import { MatchType } from 'src/matchs/entities/types.enum';
+import { WS_parse } from 'src/ws/parse';
 
 @UseGuards(WsGuard)
 @WebSocketGateway({ namespace: '/matchmaking', cors: { origin: '*'} })
@@ -14,39 +19,44 @@ export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconn
 	@WebSocketServer() server: Server;
 	private logger: Logger = new Logger('MatchmakingGateway');
 
-	constructor() {}
+	constructor(private readonly matchMakingService: MatchmakingService) {}
 
 	afterInit() {
 		this.logger.log('MatchmakingGateway initialized');
+		this.matchMakingService.setServer(this.server);
 	}
 
-	async handleConnection(client: Socket) {
-		// verify TK
-		// check user status
-		// add in matchmaking
+	async handleConnection(client: WSClient) {
+		const user: User = await this.matchMakingService.verifyUser(client);
+		if (!user)
+			return;
 	}
 
-	async handleDisconnect(client: Socket) {
-		// remove from matchmaking		
+	async handleDisconnect(client: WSClient) {
+		if (!client.user)
+			return;
+
+		await this.matchMakingService.leaveQueue(client);
 	}
 
-	@SubscribeMessage('matchmaking::request')
-	async matchmakingRequest(client: Socket, data: any) {
-		console.log(client);
-		// verify JSON
+	@SubscribeMessage('matchmaking::join')
+	async matchmakingJoin(client: WSClient, body: string) {
+		const { match_type, room } = await WS_parse(body);
 
-		// check match type
-		// add in queue
-		client.emit('ok', "message");
+		if (!match_type)
+			return client.emit('onError', `match_type is required`);
+		if (match_type === MatchType.MATCH_NORMAL && !room)
+			return client.emit('onError', `room is required`);
+
+		if (match_type === MatchType.MATCH_NORMAL) {
+			await this.matchMakingService.joinNormalQueue(client, room);
+		} else if (match_type === MatchType.MATCH_RANKED) {
+			await this.matchMakingService.joinRankedQueue(client);
+		}
 	}
 
-	@SubscribeMessage('matchmaking::cancel')
-	async matchmakingCancel(client: Socket, data: any) {
-		// remove from queue
-	}
-
-	@SubscribeMessage('matchmaking::accept')
-	async matchmakingAccept(client: Socket, data: any) {
-		// remove from queue and redirect to game
+	@SubscribeMessage('matchmaking::leave')
+	async matchmakingLeave(client: WSClient) {
+		await this.matchMakingService.leaveQueue(client);
 	}
 }

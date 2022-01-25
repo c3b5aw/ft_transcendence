@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { MatchsModule } from 'src/matchs/matchs.module';
 
 import { UsersModule } from 'src/users/users.module';
 
-import { MatchmakingGateway } from './matchmaking.gateway';
-import { MatchmakingService } from './matchmaking.service';
+import { GameService } from './game.service';
 
 @Module({
 	imports: [
@@ -15,11 +13,11 @@ import { MatchmakingService } from './matchmaking.service';
 				expiresIn: Number(process.env.JWT_EXPIRATION) 
 			},
 		}),
-		UsersModule, MatchsModule
+		UsersModule
 	],
 	controllers: [],
-	providers: [ MatchmakingGateway, MatchmakingService ],
+	providers: [ GameService ],
 	exports: [],
 })
 
-export class MatchmakingModule {}
+export class GameModule {}
