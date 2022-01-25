@@ -79,9 +79,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return client.emit('onError', { error: WsError.CHANNEL_IS_TUNNEL });
 
 		const hash = await this.chatService.getChannelPasswordHash(channel.id);
-		if (hash === undefined)
+		if (hash === undefined || hash === null)
 			return client.emit('onError', { error: WsError.UNABLE_AUTH_CHANNEL });
-		else if (hash === null)
+		else if (hash === "")
 			return await this.chatService.wsJoinChannel(client, channel, true);
 
 		const pwd = createHash('md5').update(payload.password).digest('hex');
