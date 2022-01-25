@@ -67,7 +67,11 @@ export class UsersService {
 	}
 
 	async findMe(id: number) : Promise<User> {
-		return this.userRepository.findOne({ id });
+		const user: User = await this.userRepository.findOne({ id });
+		if (user) {
+			delete user.two_factor_auth_secret;
+		}
+		return user;
 	}
 
 	async findAll(adminRights: boolean) : Promise<User[]> {
