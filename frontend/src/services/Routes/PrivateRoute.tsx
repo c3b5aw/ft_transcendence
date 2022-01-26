@@ -84,7 +84,7 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 			fetchMe();
 	}, [enqueueSnackbar, status])
 
-	if (status !== undefined && status.isAuthenticated !== undefined && me !== undefined && roles.includes(me.role)) {
+	if (status !== undefined && status.isAuthenticated && me !== undefined && roles.includes(me.role)) {
 		if (!status.isTwoFaAuthenticated) {
 			return (<MyFactorAuth setOpenQrcode={setOpenQrcode} turnon={false}/>);
 		}

@@ -22,7 +22,6 @@ const Settings = () => {
 	const [event, setEvent] = useState<Date>();
 	const [reload, setReload] = useState<boolean>(false);
 	const { enqueueSnackbar } = useSnackbar();
-	const [checked, setChecked] = useState(false);
 	const [openQrcode, setOpenQrcode] = useState(false);
 
 	const [img, setImg] = useState<File | null>();
@@ -46,7 +45,7 @@ const Settings = () => {
 			setEvent(new Date(result?.data.created));
 		}
 		fetchCreated();
-	}, [enqueueSnackbar, reload, new_display]);
+	}, [enqueueSnackbar, reload, new_display, openQrcode]);
 
 	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
 		setNewDisplayTmp(event.target.value);
@@ -113,8 +112,7 @@ const Settings = () => {
 	}
 
 	const handleChange = async () => {
-		setChecked(!checked);
-		if (!checked) {
+		if (!me.two_factor_auth) {
 			setOpenQrcode(true);
 		}
 		else {
@@ -185,7 +183,7 @@ const Settings = () => {
 					<KeyIcon sx={{ fontSize: 55 }} />
 					<FormControlLabel control={
 						<Switch
-      						checked={checked}
+      						checked={me.two_factor_auth}
       						onChange={handleChange}
       						inputProps={{ 'aria-label': 'controlled' }}
     					/>} label="Active 2fa" />
