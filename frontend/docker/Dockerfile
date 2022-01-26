@@ -15,7 +15,6 @@ RUN		npm install --legacy-peer-deps
 
 COPY	. .
 RUN		npm run build
-RUN		npm prune --production
 
 #
 #	NGINX WORKER CONTAINER
