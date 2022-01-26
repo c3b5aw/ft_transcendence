@@ -1,68 +1,111 @@
-import React, { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 
-function Home() {
+import { pageAdmin, pageChat, pageClassement, pageGame, pageHome, pageSettings, pageStats } from './Services/Routes/RoutePage';
+import "./scenes/App.css";
+import PrivateRoute from './Services/Routes/PrivateRoute';
+import Stats from './scenes/Stats/View/Stats';
+// import MeProvider from './MeProvider';
+import MyMissing from './components/MyMissing';
+import Home from './scenes/Home/View/Home';
+import Settings from './scenes/Settings/View/Settings';
+import Classement from './scenes/Ladder/View/Classement';
+import React from 'react';
+import Chat from './scenes/Chat/View/Chat';
+import Admin from './scenes/Admin/View/Admin';
+import { ROLE } from './Services/Api/Role';
+import { SnackbarProvider } from 'notistack';
+import Game from './scenes/game/Game';
+import { socket, SocketContext } from './Services/ws/utils';
 
-	const [ logged, setLogged ] = useState(false);
-	const [ login, setLogin ] = useState("");
+const useStyles = makeStyles({
+	theme: {
+		backgroundColor: "#1d3033",
+		minHeight: 1,
+		minWidth: 1,
+		color: "white",
+	},
+});
 
-	useEffect(() => {
-		(async () => {
-			const response = await fetch('/api/auth/status');
-			const body = await response.json();
-			console.log(body);
-
-			if (body.isAuthenticated === true) {
-				console.log("logged in");
-
-				setLogged(true);
-				setLogin(body.user.login);
-			}
-		})();
-	}, [])
+function ManageRouter() {
+	const classes = useStyles();
 
 	return (
-		<div>
-			<h1>Home</h1>
-			{
-				logged ? (
-					<div>
-						<p>Logged as { login }</p>
-
-						<button>
-							<a href="/api/auth/logout">
-								Logout
-							</a>
-						</button>
-					</div>
-				) : (
-					<button>
-						<a href="/api/auth/login">Status</a>
-					</button>
-				)
-			}
-		
-		</div>
-	)
-}
-
-function App() {
-	return (
-		<div>
+		<div className={classes.theme}>
 			<Router>
 				<Routes>
-					<Route path='/' element={<Home />} />
+					<Route path='*' element={ <MyMissing />} />
+					<Route
+						path={pageHome}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Home />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageSettings}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Settings />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageClassement}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Classement />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageStats}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Stats />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageChat}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Chat />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageAdmin}
+						element={
+							<PrivateRoute roles={[ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Admin />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageGame}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Game />
+							</PrivateRoute>
+						}
+					/>
 				</Routes>
 			</Router>
 		</div>
-	)
+	);
 }
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+	<SocketContext.Provider value={socket}>
+		<SnackbarProvider maxSnack={3}>
+			<React.StrictMode>
+				<ManageRouter/>
+			</React.StrictMode>
+		</SnackbarProvider>
+	</SocketContext.Provider>,
+	document.getElementById('root')
 );

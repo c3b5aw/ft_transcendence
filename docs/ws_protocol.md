@@ -119,8 +119,48 @@
 }
 ```
 
+## MatchMaking events
+
+- matchmaking::onMatch
+```typescript
+/* Match has been found */
+
+{
+    match: {
+        hash: string,
+        player1: number,
+        player2: number,
+        date: string,
+        type: MatchType.enum,
+        finished: boolean,
+        id: number,
+        duration: number,
+        player1_score: number,
+        player2_score: number
+    }
+}
+```
+
+- matchmaking::onLeave
+```typescript
+/* Left MM queue */
+{
+	message: string
+}
+```
+
+- matchmaking::onJoin
+```typescript
+/* Joined MM queue */
+{
+	room: string,
+	match_type: MatchType.enum
+}
+```
 
 # SEND / EMIT
+
+## Channel events
 
 - channel::join
 ```typescript
@@ -146,4 +186,22 @@
 {
 	channel: string
 }
+```
+
+## MatchMaking events
+
+- matchmaking::join
+```typescript
+/* Join matchmaking */
+{
+	match_type: MatchType.enum
+	room: string // [ optional, if match is a normal game ] , this is the room name
+}
+```
+
+- matchmaking::leave
+```typescript
+/* Leave matchmaking, (if in queue) */
+
+// - No payload
 ```

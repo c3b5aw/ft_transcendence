@@ -24,10 +24,12 @@ export class TwoAuthFactorService {
 	}
 
 	public async isTwoFactorAuthenticationCodeValid(twoFaCode: string, user: User) {
+		console.log(user);
+		console.log(twoFaCode);
 		const usr: User = await this.usersService.findOneByIDWithCreds(user.id);
+		console.log(usr);
 		if (!usr || usr.two_factor_auth_secret === undefined)
 			return false;
-
 		return authenticator.verify({
 			token: twoFaCode, secret: usr.two_factor_auth_secret });
 	}

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, UseGuards, Body,
-		Res, Req, UnauthorizedException, Header, Delete } from '@nestjs/common';
+		Res, Req, UnauthorizedException, Header } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
@@ -30,17 +30,18 @@ export class TwoAuthFactorController {
 	@Post('turn-on')
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Turn on 2FA' })
-	async turnOnTwoFactorAuthentication(@Req() request: any, 
+	async turnOnTwoFactorAuthentication(@Req() req: any,  @Res() resp: any,
 		@Body() data: TwoFactorAuthenticationCodeDto) 
 	{
 		const isCodeValid = await this.twoAuthFactorService.isTwoFactorAuthenticationCodeValid(
-			data.twoFactorAuthenticationCode, request.user
+			data.twoFactorAuthenticationCode, req.user
 		);
 		if (!isCodeValid)
 			throw new UnauthorizedException('Wrong authentication code');
-		await this.usersService.setTwoFactorAuthentication(request.user.id, true);
 
-		return { success: true };
+		await this.usersService.setTwoFactorAuthentication(req.user.id, true);
+		await this.authService.sendCookie(req, resp, true);
+		resp.send({ success: true });
 	}
 
 	@Post('authenticate')
@@ -64,6 +65,8 @@ export class TwoAuthFactorController {
 	@ApiOperation({ summary: 'Turn off 2FA' })
 	async turnOffTwoFactorAuthentication(@Req() request: any, @Res() resp: Response) {
 		await this.usersService.setTwoFactorAuthentication(request.user.id, false);
-		resp.status(302).redirect('/api/auth/logout');
+		await this.authService.sendCookie(request, resp, false);
+
+		resp.send({ success: true });
 	}
 }

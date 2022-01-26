@@ -32,34 +32,31 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return;
 
 		for (const channel of channels) {
-			this.server.to('#' + channel.id).emit('channel::connect', {
-				channel: channel.id,
-				user: uid,
-			});
+			this.server.to('#' + channel.id).emit('channel::onMembersReload', {
+				channel: { id: channel.id }, user: { id: uid } });
 		}
 	}
 
 	async handleDisconnect(client: Socket) {
 		await this.chatService.wsLogout(client);
 
-		const client_id = await this.chatService.getUserIdBySocket(client);
-		if (!client_id || client_id === null)
+		const uid = await this.chatService.getUserIdBySocket(client);
+		if (!uid || uid === null)
 			return;
 
-		const channels = await this.chatService.getUserChannels(client_id);
+		const channels = await this.chatService.getUserChannels(uid);
 		if (!channels)
 			return;
 
 		for (const channel of channels) {
-			this.server.to('#' + channel.id).emit('channel::disconnect', {
-				channel: channel.id,
-				user: client_id,
-			});
+			this.server.to('#' + channel.id).emit('channel::onMembersReload', {
+				channel: { id: channel.id }, user: { id: uid } });
 		}
 	}
 
 	@SubscribeMessage('channel::join')
 	async joinChannel(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+		console.log("JOIN CALL");
 		const payload: any = await this.chatService.wsParseJSON(client, data);
 		if (!payload)
 			return;
@@ -82,9 +79,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return client.emit('onError', { error: WsError.CHANNEL_IS_TUNNEL });
 
 		const hash = await this.chatService.getChannelPasswordHash(channel.id);
-		if (hash === undefined)
+		if (hash === undefined || hash === null)
 			return client.emit('onError', { error: WsError.UNABLE_AUTH_CHANNEL });
-		else if (hash === null)
+		else if (hash === "")
 			return await this.chatService.wsJoinChannel(client, channel, true);
 
 		const pwd = createHash('md5').update(payload.password).digest('hex');

@@ -1,0 +1,14 @@
+body {
+	margin: 0;
+}
+
+.msg {
+	border: 1px solid #ddd;
+	padding: 7px 15px;
+	border-radius: 20px;
+	font-size: 13px;
+	background: #dfe6e9;
+	margin-bottom: 20px;
+	width: 80%;
+	float: left;
+}

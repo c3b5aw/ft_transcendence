@@ -18,7 +18,7 @@ import { Channel, ChannelUser } from './entities/channel.entity';
 import { ChatMessage } from './entities/message.entity';
 
 import { RequestError, WsError } from './dto/errors.enum';
-import { CreateChannelDto, CreateDirectChannelDto } from './dto/createChannel.dto';
+import { CreateChannelDto } from './dto/createChannel.dto';
 import { ModerationFlow } from './dto/moderationFlow.interface';
 @Injectable()
 export class ChatService {
@@ -198,7 +198,9 @@ export class ChatService {
 		await this.sendEventToUser(user.id, 'channel::onMute', {
 			channel: { id: channel.id, name: channel.name }, 'until': until });
 
-		await this.wsSendAnnouncementToChannel(channel, `${user.login} has been muted`);
+		const dateStart: Date = new Date(0);
+		await this.wsSendAnnouncementToChannel(channel, `${user.login} has been ${ 
+			until.getTime() === dateStart.getTime() ? 'unmuted' : 'muted' }`);
 	}
 
 	async moderationFlow(user: number, target: string,

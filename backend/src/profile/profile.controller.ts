@@ -7,6 +7,7 @@ import { Response } from 'express';
 import { diskStorage } from 'multer';
 import { rename, unlink } from 'fs';
 
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { JwtTwoFactorGuard } from 'src/2fa/guards/2fa.guard';
 
 import { PostDisplayNameDto } from './dto/postDisplayName.dto';
@@ -19,7 +20,6 @@ import { FriendsService } from 'src/friends/friends.service';
 
 @ApiTags('profile')
 @ApiCookieAuth()
-@UseGuards(JwtTwoFactorGuard)
 @Controller('profile')
 export class ProfileController {
 
@@ -27,6 +27,7 @@ export class ProfileController {
 		private readonly friendsService: FriendsService) {}
 
 	@Get()
+	@UseGuards(JwtGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get yours details' })
 	async getMyself(@Req() req: any) : Promise<User> {
@@ -34,6 +35,7 @@ export class ProfileController {
 	}
 
 	@Get('avatar')
+	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'image/jpg')
 	@ApiOperation({ summary: 'Get your avatar as jpg' })
 	async getAvatar(@Req() req: any, 
@@ -41,8 +43,8 @@ export class ProfileController {
 		return await this.usersService.sendAvatar( req.user.id, resp );
 	}
 
-
 	@Get('stats')
+	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get yours stats' })
 	async getStats(@Req() req: any, @Res() resp: Response) {
@@ -51,6 +53,7 @@ export class ProfileController {
 	}
 
 	@Get('friends')
+	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get yours accepted friends' })
 	async getMyselfFriends(@Req() req: any) : Promise<Friend[]> {
@@ -58,6 +61,7 @@ export class ProfileController {
 	}
 
 	@Get('friends/pending')
+	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get your pending friendship' })
 	async getMyselfPendingFriendsRequest(@Req() req: any) : Promise<Friend[]> {
@@ -65,6 +69,7 @@ export class ProfileController {
 	}
 
 	@Post('display_name')
+	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Update your display name' })
 	async setDisplayName(@Req() req: any, @Body() data: PostDisplayNameDto,
@@ -83,6 +88,7 @@ export class ProfileController {
   
 	// https://docs.nestjs.com/techniques/file-upload
 	@Post('avatar')
+	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
 	@UseInterceptors(FileInterceptor('avatar', {
 		limits: { fileSize: 1024 * 1024 * 24 },  // ~24MB

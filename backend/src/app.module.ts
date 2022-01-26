@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module'
 import { FriendsModule } from './friends/friends.module';
 import { LadderModule } from './ladder/ladder.module';
 import { MatchsModule } from './matchs/matchs.module';
+import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { ProfileModule } from './profile/profile.module';
 import { StatsModule } from './stats/stats.module';
 import { UsersModule } from './users/users.module';
@@ -22,6 +23,7 @@ import { Match } from './matchs/entities/match.entity';
 import { UserStats } from './stats/entities/stats.entity';
 import { User } from './users/entities/user.entity';
 import { TwoAuthFactorModule } from './2fa/2fa.module';
+import { GameModule } from './game/game.module';
 
 @Module({
 	imports: [
@@ -38,13 +40,12 @@ import { TwoAuthFactorModule } from './2fa/2fa.module';
 						UserAchievement ],
 			synchronize: true,
 		}),
-		AchievementsModule,
-		AdminModule,
-		AuthModule,
+		AchievementsModule, AdminModule, AuthModule,
 		ChatModule,
 		FriendsModule,
+		GameModule,
 		LadderModule,
-		MatchsModule,
+		MatchmakingModule, MatchsModule,
 		ProfileModule,
 		StatsModule,
 		UsersModule,
