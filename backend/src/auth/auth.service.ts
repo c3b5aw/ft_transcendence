@@ -21,7 +21,9 @@ export class AuthService {
 	}
 
 	/* https://docs.nestjs.com/security/authentication#jwt-functionality */
-	async buildToken(user: User, is2FaValid: boolean) : Promise<any> {
+	async buildToken(curUser: User, is2FaValid: boolean) : Promise<any> {
+		const user: User = await this.usersService.findOneByIDWithCreds(curUser.id);
+
 		const payload = { login: user.login, sub: user.id, is_2fa_valid: is2FaValid };
 
 		this.usersService.updateLastLogin(user);

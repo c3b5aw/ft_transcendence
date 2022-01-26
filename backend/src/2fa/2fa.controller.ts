@@ -30,17 +30,18 @@ export class TwoAuthFactorController {
 	@Post('turn-on')
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Turn on 2FA' })
-	async turnOnTwoFactorAuthentication(@Req() request: any, 
+	async turnOnTwoFactorAuthentication(@Req() req: any,  @Res() resp: any,
 		@Body() data: TwoFactorAuthenticationCodeDto) 
 	{
 		const isCodeValid = await this.twoAuthFactorService.isTwoFactorAuthenticationCodeValid(
-			data.twoFactorAuthenticationCode, request.user
+			data.twoFactorAuthenticationCode, req.user
 		);
 		if (!isCodeValid)
 			throw new UnauthorizedException('Wrong authentication code');
-		await this.usersService.setTwoFactorAuthentication(request.user.id, true);
 
-		return { success: true };
+		await this.usersService.setTwoFactorAuthentication(req.user.id, true);
+		await this.authService.sendCookie(req, resp, true);
+		resp.send({ success: true });
 	}
 
 	@Post('authenticate')
