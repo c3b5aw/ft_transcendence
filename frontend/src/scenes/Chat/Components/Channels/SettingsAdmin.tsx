@@ -1,13 +1,13 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
-import CloseIcon from '@mui/icons-material/Close';
 import { ISearchBar, User } from "../../../../Services/Interface/Interface";
-import MySearchBarChat from "../MySearchBarChat";
 import { api, apiChannel, apiModos } from "../../../../Services/Api/Api";
 import axios from "axios";
 import { useSnackbar } from 'notistack'
 import { ISettingAdmin } from "../../Services/interface";
 import useUsersChannel from "../../Services/Hooks/useUsersChannel";
+import CloseIcon from '@mui/icons-material/Close';
+import MySearchBarChat from "../MySearchBarChat";
 
 function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 	const { enqueueSnackbar } = useSnackbar();

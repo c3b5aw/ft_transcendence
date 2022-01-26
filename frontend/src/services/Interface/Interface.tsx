@@ -17,6 +17,7 @@ export interface User {
 	rank: number
 	victories: number
 	muted: string
+	two_factor_auth: boolean
 }
 
 export interface Match {
@@ -47,6 +48,11 @@ export interface Friends {
 	status: string,
 }
 
+export interface Status {
+	isAuthenticated: boolean,
+	isTwoFaAuthenticated: boolean,
+}
+
 export interface ISearchBar {
 	handleClickCell: (row: User) => void
 }
@@ -54,7 +60,6 @@ export interface ISearchBar {
 export interface ISearchBarChannel {
 	handleClickCell: (row: Channel) => void
 }
-
 
 export enum STATUS {
 	PENDING = "PENDING",

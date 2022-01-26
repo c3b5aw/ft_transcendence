@@ -11,6 +11,8 @@ export const apiConnection = "http://localhost/api/auth/login"
 export const apiAdmin = "/admin"
 export const apiBan = "/ban"
 export const apiModos = "/moderators"
+export const api2fa = "/2fa"
+export const apiAuth = "/auth"
 
 /*
 ** CHAT

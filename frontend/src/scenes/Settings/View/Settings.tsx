@@ -1,7 +1,7 @@
-import { Avatar, Badge, Box, Button, Stack, TextField } from "@mui/material";
+import { Avatar, Badge, Box, Button, FormControlLabel, FormGroup, Stack, Switch, TextField } from "@mui/material";
 import axios from "axios";
 import React, { SetStateAction, useEffect, useState } from "react";
-import { api, apiMe } from "../../../Services/Api/Api";
+import { api, api2fa, apiAuth, apiMe } from "../../../Services/Api/Api";
 import { User, USER_STATUS } from "../../../Services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
@@ -11,6 +11,7 @@ import { styleTextField } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import { styleStack, sxButton } from "../Services/style";
 import { useSnackbar } from 'notistack'
+import MyFactorAuth from "../../../components/MyFactorAuth";
 
 const Settings = () => {
 	const [me, setMe] = useState<User>();
@@ -21,6 +22,8 @@ const Settings = () => {
 	const [event, setEvent] = useState<Date>();
 	const [reload, setReload] = useState<boolean>(false);
 	const { enqueueSnackbar } = useSnackbar();
+	const [checked, setChecked] = useState(false);
+	const [openQrcode, setOpenQrcode] = useState(false);
 
 	const [img, setImg] = useState<File | null>();
 
@@ -105,9 +108,19 @@ const Settings = () => {
 		return (await uploadForm(formData));
 	};
 
-	const handleLogout = () => {
-		console.log("LOGOUT !");
+	const handleLogout = async () => {
+		window.location.href = `${api}${apiAuth}/logout`
 	}
+
+	const handleChange = async () => {
+		setChecked(!checked);
+		if (!checked) {
+			setOpenQrcode(true);
+		}
+		else {
+			await axios.get(`${api}${api2fa}/turn-off`);
+		}
+	};
 
 	return (
 		<Stack direction="row" sx={{width: "100%", height: "100vh"}}>
@@ -170,12 +183,18 @@ const Settings = () => {
 				</Stack>
 				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
 					<KeyIcon sx={{ fontSize: 55 }} />
-					<Button sx={sxButton}>Remove / Setup</Button>
+					<FormControlLabel control={
+						<Switch
+      						checked={checked}
+      						onChange={handleChange}
+      						inputProps={{ 'aria-label': 'controlled' }}
+    					/>} label="Active 2fa" />
 				</Stack>
 				<Stack direction="row" sx={{width: 1, height: 0.08}}>
 					<MyFooter me={me}/>
 				</Stack>
 			</Stack>
+			{openQrcode ? <MyFactorAuth setOpenQrcode={setOpenQrcode} turnon={true}/> : null}
 		</Stack>
 	);
 }
