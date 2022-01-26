@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, Stack, TextField } from "
 import axios from "axios";
 import { Dispatch, SetStateAction, useState } from "react";
 import { sxButton } from "../scenes/Settings/Services/style";
-import { api, api2fa } from "../Services/Api/Api";
+import { api, api2fa, apiConnection } from "../Services/Api/Api";
 import { styleTextField } from "../styles/Styles";
 
 function MyFactorAuth(props: {setOpenQrcode: Dispatch<SetStateAction<boolean>>, turnon: boolean}) {
@@ -30,13 +30,13 @@ function MyFactorAuth(props: {setOpenQrcode: Dispatch<SetStateAction<boolean>>, 
 
 	const handleAuthenticated = async () => {
 		try {
-			const response = await axios.post(`${api}${api2fa}/autenticate`, { 
+			const response = await axios.post(`${api}${api2fa}/authenticate`, { 
 				twoFactorAuthenticationCode: password,
 			})
-			console.log(response.data);
+			window.location.href = window.location.href;
 		}
 		catch (err) {
-			console.log(err);
+			window.location.href = `${apiConnection}`;
 		}
 	}
 
