@@ -11,7 +11,7 @@ ENV		PATH /app/nodes_modules/.bin:$PATH
 RUN		npm install -g npm@8.3.0 --silent
 
 COPY	package.json ./
-RUN		npm install --silent
+RUN		npm install --legacy-peer-deps
 
 COPY	. .
 RUN		npm run build
