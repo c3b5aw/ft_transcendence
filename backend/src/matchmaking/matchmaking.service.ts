@@ -105,8 +105,8 @@ export class MatchmakingService {
 		global.queues[room].splice(global.queues[room].indexOf(user1), 1);
 		global.queues[room].splice(global.queues[room].indexOf(user2), 1);
 
-		delete global.mm_clients[user1];
-		delete global.mm_clients[user2];
+		delete global.mm_clients[user1.user.id];
+		delete global.mm_clients[user2.user.id];
 
 		// Risky but necessary to run into huge loads
 		this.queueUpdate(room);

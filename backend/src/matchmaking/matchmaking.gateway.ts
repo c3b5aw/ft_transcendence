@@ -41,7 +41,11 @@ export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconn
 
 	@SubscribeMessage('matchmaking::join')
 	async matchmakingJoin(client: WSClient, body: string) {
-		const { match_type, room } = await WS_parse(body);
+		const json = await WS_parse(body);
+		if (!json)
+			return client.emit('onError', { error: 'invalid body' });
+
+		const { match_type, room } = json;
 
 		if (!match_type)
 			return client.emit('onError', `match_type is required`);

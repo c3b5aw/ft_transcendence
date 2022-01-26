@@ -64,6 +64,8 @@ export class TwoAuthFactorController {
 	@ApiOperation({ summary: 'Turn off 2FA' })
 	async turnOffTwoFactorAuthentication(@Req() request: any, @Res() resp: Response) {
 		await this.usersService.setTwoFactorAuthentication(request.user.id, false);
-		resp.status(302).redirect('/api/auth/logout');
+		await this.authService.sendCookie(request, resp, false);
+
+		resp.send({ success: true });
 	}
 }
