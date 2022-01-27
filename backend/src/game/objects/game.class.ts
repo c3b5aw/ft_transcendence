@@ -15,14 +15,18 @@ export class Game {
 	public players: GamePlayer[];
 	private ball: GameBall;
 	public pause: GamePause;
+
 	public ended: boolean;
+	public inTreatment: boolean;
 
 	private intervalID: any;
 
 	constructor(id: number, hash: string, socket: any) {
 		this.hash = hash;
 		this.id = id;
+
 		this.ended = false;
+		this.inTreatment = false;
 
 		this.socket = socket;
 		this.players[0] = null;

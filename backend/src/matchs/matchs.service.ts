@@ -121,4 +121,12 @@ export class MatchsService {
 	async countAll() : Promise<number> {
 		return this.matchRepository.count();
 	}
+
+	/*
+		UPDATE
+	*/
+
+	async update(match: Match) : Promise<Match> {
+		return this.matchRepository.save(match);
+	}
 }

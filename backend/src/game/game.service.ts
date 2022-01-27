@@ -10,6 +10,7 @@ import { MatchsService } from 'src/matchs/matchs.service';
 import { Match } from 'src/matchs/entities/match.entity';
 
 import { Game, GameMoves } from './objects/game';
+import { StatsService } from 'src/stats/stats.service';
 
 @Injectable()
 export class GameService {
@@ -18,7 +19,8 @@ export class GameService {
 
 	constructor(private readonly usersService: UsersService,
 		private readonly matchsService: MatchsService,
-		private readonly jwtService: JwtService)
+		private readonly jwtService: JwtService,
+		private readonly statsService: StatsService)
 	{
 		global.users_game = {}
 		global.games = {};
@@ -84,6 +86,27 @@ export class GameService {
 		this.logger.log('Game started: ' + match.hash);
 	}
 
+	private async postGame(game: Game) {
+		if (game.inTreatment)
+			return false;
+
+		game.inTreatment = true;
+		this.logger.log('Game ended: ' + game.hash);
+
+		let match: Match = await this.matchsService.findOneById(game.id);
+		if (!match)
+			return this.logger.error(`Game ended: match not found: ${game.hash}`);
+		match.finished = true;
+		match.duration = new Date().getTime() - match.date.getTime();
+		match.player1_score = game.players.find(p => p.id == match.player1).score;
+		match.player2_score = game.players.find(p => p.id == match.player2).score;
+
+		match = await this.matchsService.update(match);
+		await this.statsService.updateFromMatch(match);
+
+		delete global.games[game.hash];
+	}
+
 	/*
 		GAME HANDLERS
 	*/
@@ -137,6 +160,11 @@ export class GameService {
 			client.emit('onError', { error: '`findRunningGame`: no match found' });
 			return null;
 		}
-		return global.games[match.hash];
+		const game: Game = global.games[match.hash];
+		if (game.ended) {
+			this.postGame(game);
+			return null;
+		}
+		return game;
 	}
 }
