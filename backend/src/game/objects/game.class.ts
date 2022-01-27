@@ -43,7 +43,6 @@ export class Game {
 
 	private onTick() {
 		if (this.ended) return ;
-		console.log(`game.object::onTick: `, Date.now());
 
 		if (this.pause.paused) return this.streamPause();
 

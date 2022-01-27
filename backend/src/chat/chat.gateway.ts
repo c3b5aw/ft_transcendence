@@ -56,7 +56,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage('channel::join')
 	async joinChannel(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
-		console.log("JOIN CALL");
 		const payload: any = await this.chatService.wsParseJSON(client, data);
 		if (!payload)
 			return;
