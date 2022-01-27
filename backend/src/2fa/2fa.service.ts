@@ -30,7 +30,6 @@ export class TwoAuthFactorService {
 		console.log(usr);
 		if (!usr || usr.two_factor_auth_secret === undefined)
 			return false;
-		return authenticator.verify({
-			token: twoFaCode, secret: usr.two_factor_auth_secret });
+		return authenticator.verify({ token: twoFaCode, secret: usr.two_factor_auth_secret });
 	}
 }
