@@ -19,7 +19,7 @@ const GAME_BALL_START_X: number = GAME_CANVAS_WIDTH / 2;
 const GAME_BALL_START_Y: number = GAME_CANVAS_HEIGHT / 2;
 const GAME_BALL_RADIUS: number = 5;
 const GAME_BALL_MAX_SPEED: number = 12;
-const GAME_BALL_SPEED_INCREASE = 1.2;
+const GAME_BALL_SPEED_INCREASE = 1.1; 						// ToDo: Redefine value
 
 // GAME PLAYER
 const GAME_PLAYER_HEIGHT: number = 100;
