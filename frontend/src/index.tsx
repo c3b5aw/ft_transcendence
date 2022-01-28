@@ -19,15 +19,19 @@ import { ROLE } from './Services/Api/Role';
 import { SnackbarProvider } from 'notistack';
 import Game from './scenes/game/Game';
 import { socket, SocketContext } from './Services/ws/utils';
+import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
 
 const useStyles = makeStyles({
 	theme: {
 		backgroundColor: "#1d3033",
-		minHeight: 1,
+		minHeight: "100vh",
 		minWidth: 1,
 		color: "white",
 	},
 });
+
+let theme = createTheme();
+theme = responsiveFontSizes(theme);
 
 function ManageRouter() {
 	const classes = useStyles();
@@ -103,7 +107,9 @@ ReactDOM.render(
 	<SocketContext.Provider value={socket}>
 		<SnackbarProvider maxSnack={3}>
 			<React.StrictMode>
-				<ManageRouter/>
+				<ThemeProvider theme={theme}>
+					<ManageRouter/>
+				</ThemeProvider>
 			</React.StrictMode>
 		</SnackbarProvider>
 	</SocketContext.Provider>,

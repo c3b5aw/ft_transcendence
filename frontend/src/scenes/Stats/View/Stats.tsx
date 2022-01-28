@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,16 +7,16 @@ import MyHistory from '../Components/MyHistory';
 import { api, apiChannel, apiChat, apiDM, apiUsers } from '../../../Services/Api/Api';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box } from '@mui/system';
 import MyAvatar from '../../../components/MyAvatar';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../Services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
-import { sxButton, sxDiv } from '../Services/style';
+import { sxButton } from '../Services/style';
 import { Friends } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
 import MessageIcon from '@mui/icons-material/Message';
+import MyFooter from '../../../components/MyFooter';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -124,47 +124,50 @@ const Stats = () => {
 		return (friendPending.login === user.login);
 	});
 	return (
-		<Stack sx={{width: 1, height: 1}} direction="row" spacing={3}>
-			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
-				<MyAvatar user={user}/>
-				{user.login !== me.login ?
-					<Button onClick={() => handleSendMessage()} sx={sxButton} variant="contained" startIcon={<MessageIcon />}>
-						<div style={sxDiv}>Send message</div>
-					</Button> : null
-				}
-				<Stack sx={{ width: 1, height: 1/4, marginLeft: "30%" }} direction="column" justifyContent="center" spacing={4}>
-					<h2>Matchs joués : {user.played}</h2>
-					<h2>Classement : {user.rank}</h2>
-					<h2 style={{color: '#079200'}}>Victoires : {user.victories}</h2>
-					<h2 style={{color: '#C70039'}}>Défaites : {user.defeats}</h2>
-				</Stack>
-				<MyAchievements user={user}/>
-			</Stack>
-			<Stack sx={{width: 0.775, height: "100vh"}} direction="column" justifyContent="center" alignItems="center">
-				<Stack sx={{width: 1, height: 2/12}} direction="row" alignItems="flex-end" justifyContent="space-between" spacing={4}>
-					<h1 style={{fontFamily: 'Myriad Pro'}}>Historique</h1>
+		<Stack direction="column">
+			<MyFooter me={me}/>
+			<div style={{marginTop: 10}} />
+			<Stack sx={{width: 1, height: "93%"}} direction="row" spacing={3}>
+				<Stack sx={{ width: {xs: 0.50, sm: 0.40, md: 0.30, lg: 0.2}, marginLeft: "1%" }} direction="column" spacing={3}>
+					<MyAvatar user={user}/>
+					<div style={{marginTop: "25%"}}></div>
 					{user.login !== me.login ?
-					<Box>
-						{isFriend.length === 0 && isFriendPending.length === 0 ?
-							<Button onClick={() => handleAddFriend()} sx={sxButton} variant="contained" startIcon={<PersonAddIcon />}>
-								<div style={sxDiv}>Add friend</div>
-							</Button> : isFriendPending.length !== 0 && isFriend.length === 0 ? 
-							<ButtonGroup>
-								<Button disabled sx={sxButton} variant="contained" startIcon={<AccessTimeIcon />}>
-									<div style={sxDiv}>Pending</div>
-								</Button> 
-								<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
-									<div style={sxDiv}>Delete friend</div>
-								</Button>
-							</ButtonGroup> :
-							<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
-								<div style={sxDiv}>Delete friend</div>
-							</Button>
-						}
-					</Box> : null
+						<Button onClick={() => handleSendMessage()} sx={sxButton} variant="contained" startIcon={<MessageIcon />}>
+							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Send message</Typography>
+						</Button> : null
 					}
+					<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Matchs joués : {user.played}</Typography>
+					<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Classement : {user.rank}</Typography>
+					<Typography variant="h5" style={{color: '#079200', fontFamily: "Myriad Pro", textAlign: "center"}}>Victoires : {user.victories}</Typography>
+					<Typography variant="h5" style={{color: '#C70039', fontFamily: "Myriad Pro", textAlign: "center"}}>Défaites : {user.defeats}</Typography>
+					<MyAchievements user={user}/>
 				</Stack>
-				<MyHistory user={user}/>
+				<Stack sx={{width: 0.775, height: "auto"}} direction="column" justifyContent="center" alignItems="center">
+					<Stack sx={{width: 1, height: 2/12}} direction="row" alignItems="flex-end" justifyContent="space-between" spacing={4}>
+						<Typography variant="h4" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Historique</Typography>
+						{user.login !== me.login ?
+						<Stack direction={{xs: "column", sm: "column", md: "column", lg: "column"}}>
+							{isFriend.length === 0 && isFriendPending.length === 0 ?
+								<Button onClick={() => handleAddFriend()} sx={sxButton} variant="contained" startIcon={<PersonAddIcon />}>
+									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Add friend</Typography>
+								</Button> : isFriendPending.length !== 0 && isFriend.length === 0 ? 
+								<Stack direction={{xs: "column", sm: "column", md: "column", lg: "row"}} spacing={3}>
+									<Button disabled sx={sxButton} variant="contained" startIcon={<AccessTimeIcon />}>
+										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Pending</Typography>
+									</Button> 
+									<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
+										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
+									</Button>
+								</Stack> :
+								<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
+									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
+								</Button>
+							}
+						</Stack> : null
+						}
+					</Stack>
+					<MyHistory user={user}/>
+				</Stack>
 			</Stack>
 		</Stack>
 	);

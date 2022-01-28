@@ -52,9 +52,9 @@ function MyListUser(props : { myList: IListUser }) {
 	}
 
 	return (
-        <Stack direction="column" sx={{width: 1, height: "100vh", boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}}>
-			<Box sx={{backgroundColor: "#2E86C1"}}>
-				<h3 style={{textAlign: "center"}}>{myList.name_list}</h3>
+        <Stack direction="column" sx={{width: 1, boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}}>
+			<Box sx={{backgroundColor: "#D68910"}}>
+				<h3 style={{textAlign: "start", paddingLeft: "15px", paddingRight: "15px"}}>{myList.name_list}</h3>
 			</Box>
 			{myList.users.length > 0 ?
 				<List sx={{overflow: "auto"}}>
@@ -78,7 +78,7 @@ function MyListUser(props : { myList: IListUser }) {
 							{checkRoleMe() ? <DisplayOptionUser user={user}/> : null}
 						</Stack>
 					))}
-				</List> : <div style={{color: "grey", textAlign: "center", marginTop: "50%", fontFamily: "Myriad Pro", fontSize: "25px"}}>No Users</div>
+				</List> : <div style={{color: "grey", textAlign: "center", margin: 20, fontFamily: "Myriad Pro", fontSize: "25px"}}>No Users</div>
 			}
 			{myBanKickMute !== undefined && open ? <BanKickMute myBanKickMute={myBanKickMute} /> : null}
 		</Stack>

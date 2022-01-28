@@ -1,4 +1,4 @@
-import { Avatar, Badge, Box, Button, FormControlLabel, FormGroup, Stack, Switch, TextField } from "@mui/material";
+import { Avatar, Badge, Box, Button, createTheme, FormControlLabel, FormGroup, responsiveFontSizes, Stack, Switch, TextField, ThemeProvider } from "@mui/material";
 import axios from "axios";
 import React, { SetStateAction, useEffect, useState } from "react";
 import { api, api2fa, apiAuth, apiMe } from "../../../Services/Api/Api";
@@ -7,11 +7,12 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
 import KeyIcon from '@mui/icons-material/Key';
 import MyFooter from "../../../components/MyFooter";
-import { styleTextField } from "../../../styles/Styles";
+import { buttonStyle, styleTextField } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import { styleStack, sxButton } from "../Services/style";
 import { useSnackbar } from 'notistack'
 import MyFactorAuth from "../../../components/MyFactorAuth";
+import Typography from '@mui/material/Typography';
 
 const Settings = () => {
 	const [me, setMe] = useState<User>();
@@ -120,80 +121,81 @@ const Settings = () => {
 		}
 	};
 
+	let theme = createTheme();
+	theme = responsiveFontSizes(theme);
+
 	return (
-		<Stack direction="row" sx={{width: "100%", height: "100vh"}}>
-			<Stack direction="column" sx={{width: 0.97, height: 1}} justifyContent="center" alignItems="center">
-				<Stack sx={{ width: 1, height: 1/6, marginLeft: 10}} direction="row" alignItems="center" justifyContent="space-between">
-					<Stack direction="row" alignItems="center" spacing={3}>
-						<Stack>
+		<ThemeProvider theme={theme}>
+			<MyFooter me={me}/>
+			<Stack direction="row" sx={{width: "100%", height: "100%"}}>
+				<Stack direction="column" sx={{width: 0.97, height: 1}} justifyContent="center" alignItems="center">
+					<Stack sx={{ width: 0.9, height: "15em"}} direction="row" alignItems="center" justifyContent="space-between">
+						<Stack direction="row" alignItems="center" spacing={3}>
 							<Avatar
-								sx={{ width: "126px", height: "126px" }}
+								sx={{ width: {xs: "96px", sm: "96px", md: "96px", lg: "128px"}, height: {xs: "96px", sm: "96px", md: "96px", lg: "128px"} }}
 								src={reload ? `http://127.0.0.1/api/profile/avatar` : `http://127.0.0.1/api/users/${me.login}/avatar`}>
 							</Avatar>
-							<h3 style={{ color: 'grey' }}>{event?.toDateString()}</h3>
+							<Stack>
+								<Typography variant="h4" style={{fontFamily: "Myriad Pro"}}>{me.display_name} ({me.role})</Typography>
+								<Typography variant="h5" style={{color: 'grey'}}>{event?.toDateString()}</Typography>
+							</Stack>
 						</Stack>
-						<div style={{fontFamily: "Myriad Pro", marginBottom: 50, fontSize: "31px"}}>{me.display_name} ({me.role})
-							<Badge badgeContent={""} 
-								color={me.status === USER_STATUS.ONLINE ? "success" :
-								me.status === USER_STATUS.IN_GAME ? "warning" : "error"} style={{marginLeft: "21px"}}>
-							</Badge>
-						</div>
+						<Button variant="contained" sx={{color: "white"}} onClick={handleLogout}>
+							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Logout</Typography>
+						</Button>
 					</Stack>
-					<Button sx={sxButton} onClick={handleLogout}>Logout</Button>
+					<Stack direction="row" spacing={3} sx={{ width: 1, height: "15em"}} className={classes2.root}>
+						<AddPhotoAlternateIcon sx={{ width: {xs: "48px", sm: "64px", md: "64px", lg: "64px"}, height: {xs: "48px", sm: "64px", md: "64px", lg: "64px"} }} />
+						<Box alignItems='center' display='flex' justifyContent='center' flexDirection='column'>
+							<Stack direction="row" spacing={3}>
+								<Button variant="contained" component="label">
+									<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>{img?.name ?? "Choose file"}</Typography>
+									<input onChange={handleImageChange} type="file" hidden />
+								</Button>
+								<Box marginY={3}>
+									<Button sx={{backgroundColor: "green", color: "white"}} onClick={handleSubmit}>
+										<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Upload file</Typography>
+									</Button>
+								</Box>
+							</Stack>
+						</Box>
+					</Stack>
+					<Stack direction="row" spacing={3} sx={{ width: 1, height: "15em"}} className={classes2.root}>
+						<EditIcon sx={{ width: {xs: "48px", sm: "64px", md: "64px", lg: "64px"}, height: {xs: "48px", sm: "64px", md: "64px", lg: "64px"} }} />
+						<TextField
+							className={classes.styleTextField}
+							sx={{width: {xs: "200px", sm: "200px", md: "300px", lg: "400px"}}}
+							required
+							id="outlined-required"
+							label={`${me.display_name}`}
+							defaultValue=""
+							onChange= {handleTextInputChange}
+							InputProps={{
+								style: {
+									color: "white",
+								}
+							}}
+							InputLabelProps={{
+								style: { color: '#ADADAD' },
+							}}
+						/>
+						<Button sx={{backgroundColor: "green", color: "white", fontSize: "0.7rem"}} onClick={handleSendNewDisplayName}>
+							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Valider</Typography>
+						</Button>
+					</Stack>
+					<Stack direction="row" spacing={{xs: 1, sm: 2, md: 3}} sx={{ width: 1, height: "15em"}} className={classes2.root}>
+						<KeyIcon sx={{ width: {xs: "48px", sm: "64px", md: "64px", lg: "64px"}, height: {xs: "48px", sm: "64px", md: "64px", lg: "64px"} }} />
+						<FormControlLabel control={
+							<Switch
+								checked={me.two_factor_auth}
+								onChange={handleChange}
+								inputProps={{ 'aria-label': 'controlled' }}
+							/>} label="Active 2fa" />
+					</Stack>
 				</Stack>
-				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
-					<AddPhotoAlternateIcon sx={{ fontSize: 55 }} />
-					<Box alignItems='center' display='flex' justifyContent='center' flexDirection='column'>
-						{/* <form action="/api/profile/avatar" encType="multipart/form-data" method="POST">
-							<input type="file" name="avatar" />
-							<input type="submit" value="Upload a file"/>
-						</form> */}
-						<Stack direction="row" spacing={3}>
-							<Button variant="contained" component="label">
-								{img?.name ?? "Choose file"}
-								<input onChange={handleImageChange} type="file" hidden />
-							</Button>
-							<Box marginY={3}>
-								<Button sx={{backgroundColor: "green", color: "white"}} onClick={handleSubmit}>Upload file</Button>
-							</Box>
-						</Stack>
-					</Box>
-				</Stack>
-				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
-					<EditIcon sx={{ fontSize: 55 }} />
-					<TextField
-						className={classes.styleTextField}
-						required
-						id="outlined-required"
-						label={`${me.display_name}`}
-						defaultValue=""
-						onChange= {handleTextInputChange}
-						InputProps={{
-							style: {
-								color: "white",
-							}
-						}}
-						InputLabelProps={{
-							style: { color: '#ADADAD' },
-						  }}
-					/>
-					<Button sx={sxButton} onClick={() => handleSendNewDisplayName()}>Valider</Button>
-				</Stack>
-				<Stack direction="row" spacing={3} sx={{ width: 1, height: 1/5}} className={classes2.root}>
-					<KeyIcon sx={{ fontSize: 55 }} />
-					<FormControlLabel control={
-						<Switch
-      						checked={me.two_factor_auth}
-      						onChange={handleChange}
-      						inputProps={{ 'aria-label': 'controlled' }}
-    					/>} label="Active 2fa" />
-				</Stack>
-				<Stack direction="row" sx={{width: 1, height: 0.08}}>
-					<MyFooter me={me}/>
-				</Stack>
+				{openQrcode ? <MyFactorAuth setOpenQrcode={setOpenQrcode} turnon={true}/> : null}
 			</Stack>
-			{openQrcode ? <MyFactorAuth setOpenQrcode={setOpenQrcode} turnon={true}/> : null}
-		</Stack>
+		</ThemeProvider>
 	);
 }
 

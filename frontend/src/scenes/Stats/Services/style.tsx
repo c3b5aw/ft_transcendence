@@ -1,11 +1,8 @@
 export const sxDiv = {
-	margin: "5px",
-	padding: "3px",
 	fontFamily: "Myriad Pro",
-	fontSize: "16px"
+	fontSize: "1vmax"
 }
 
 export const sxButton = {
 	borderRadius: 2,
-	marginRight: "30px"
 }

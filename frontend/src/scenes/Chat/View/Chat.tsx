@@ -1,4 +1,4 @@
-import { Avatar, Button, FormControl, IconButton, Stack, TextField } from "@mui/material";
+import { Avatar, Box, Button, FormControl, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
 import useMe from "../../../Services/Hooks/useMe";
 import { styleTextField } from "../../../styles/Styles";
@@ -18,6 +18,10 @@ import MyDialogCreateChannel from "../Components/Channels/MyDialogCreateChannel"
 import JoinChannel from "../Components/Channels/JoinChannel";
 import { ROLE } from "../../../Services/Api/Role";
 import { isMuteSendMessage } from "../Services/utils";
+import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
+import MyFooter from "../../../components/MyFooter";
+import MyDialogListUser from "../Components/MyDialogListUser";
+import MyDialogListFriend from "../Components/MyDialogListFriend";
 
 function Chat() {
 	const me = useMe();
@@ -33,6 +37,8 @@ function Chat() {
 
 	const [open, setOpen] = useState<boolean>(false);
 	const [openJoin, setOpenJoin] = useState<boolean>(false);
+	const [openUserChannel, setOpenUserChannel] = useState<boolean>(false);
+	const [openFriend, setOpenFriend] = useState<boolean>(false);
 
 	const [upload, setUpload] = useState(null)
 	const [uploadChannels, setUploadChannels] = useState(null)
@@ -76,22 +82,23 @@ function Chat() {
 	function HandleCreateChannel() {
 		return (
 			<Button variant="contained" 
-			sx={{backgroundColor: "white",
-				color: "black",
-				fontFamily: "Myriad Pro"
-			}} onClick={() => setOpen(true)}>
-			Create new channel</Button>
+				sx={{backgroundColor: "green",
+					color: "white",
+					fontFamily: "Myriad Pro"
+				}} onClick={() => setOpen(true)}>
+				<Typography variant="body1" style={{fontFamily: "Myriad Pro"}}>Create</Typography>
+			</Button>
 		);
 	}
 
 	function HandleJoinChannel() {
 		return (
 			<Button variant="contained" 
-			sx={{backgroundColor: "white",
-				color: "black",
-				fontFamily: "Myriad Pro"
-			}} onClick={() => setOpenJoin(true)}>
-			Join new channel</Button>
+				sx={{color: "white",
+					fontFamily: "Myriad Pro"
+				}} onClick={() => setOpenJoin(true)}>
+				<Typography variant="body1" style={{fontFamily: "Myriad Pro"}}>Join</Typography>
+			</Button>
 		);
 	}
 
@@ -195,76 +202,103 @@ function Chat() {
 		isListChannel: true,
 		name_channel: nameChannel,
 	}
-
+	if (me === undefined) {
+		return (<MyChargingDataAlert />);
+	}
 	return (
-		<Stack direction="row" sx={{width: 1, height: "100vh"}}>
-			<Stack direction="column" sx={{width: 0.15, height: 1}}>
-				<Stack direction="row" sx={{width: 1, height: 0.075}}>
-					<Stack direction="row" alignItems="center" onClick={() => handleLaunchParametres()}>
-						<Avatar
-							src={`http://127.0.0.1/api/profile/avatar`}
-							sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
-						</Avatar>
-						<h3 style={{color: "white"}}>{me?.login}</h3>
+		<Box sx={{flexDirection: "column",  height: "100vh", justifyContent: 'space-between'}}>
+			<MyFooter me={me}/>
+			<Box sx={{flexDirection: "row", height: "95vh", display: "flex"}}>
+				<Box sx={{ flexGrow: 1, marginTop: 2, height: 1, alignItems: "center"}}>
+					<Stack direction="row" sx={{width: 1, height: 0.075}} justifyContent={{xs: "center"}}>
+						<Stack direction="row" alignItems="center" onClick={() => handleLaunchParametres()}>
+							<Avatar
+								src={`http://127.0.0.1/api/profile/avatar`}
+								sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
+							</Avatar>
+							<Box sx={{display: { xs: 'none', md: 'flex'}}}>
+								<h3 style={{color: "white"}}>{me?.login}</h3>
+							</Box>
+						</Stack>
+					</Stack>
+					<Stack direction="column" sx={{width: 1, height: 0.73}}>
+						{me !== undefined ? <MyListChannels myChannel={myChannels} me={me}/> : null}
+					</Stack>
+					<Stack direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }} sx={{width: 1, height: 0.125 }} spacing={2} alignItems="center" justifyContent="center">
+						<HandleCreateChannel />
+						<HandleJoinChannel />
+					</Stack>
+				</Box>
+				<Stack direction="column" sx={{minWidth: "75vw", maxWidth: "65vw", height: 1}}>
+					<Stack direction="row" sx={{width: 1, height: 0.075}} spacing={3}>
+						{nameChannel !== "" ?
+							<Stack direction="row" alignItems="center" spacing={3}>
+								<NumbersIcon style={{fontSize: "40px"}} color="warning"/>
+								<Typography variant="h4" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{nameChannelDisplay}</Typography>
+								<Button sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}} variant="contained" onClick={() => setOpenUserChannel(true)}>
+									<Typography variant="subtitle1" style={{fontFamily: "Myriad Pro"}}>Users channel</Typography>
+								</Button>
+							</Stack> : null
+						}
+						<Stack direction="row" alignItems="center" spacing={3}>
+							<Button sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}} variant="contained" onClick={() => setOpenFriend(true)}>
+								<Typography variant="subtitle1" style={{fontFamily: "Myriad Pro"}}>Friends</Typography>
+							</Button>
+						</Stack>
+					</Stack>
+					<Stack direction="row" sx={{width: 1, height: 0.73, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
+						{me !== undefined && me.role !== ROLE.BANNED ?
+							<MyMessages messages={messages} /> : 
+							<div style={{color: "grey", textAlign: "center", marginTop: "40%", fontFamily: "Myriad Pro", fontSize: "45px"}}>You have been banned</div>
+						}
+					</Stack>
+					<Stack direction="row" sx={{width: 1, height: 0.125, backgroundColor: "#304649"}} spacing={2} alignItems="center" justifyContent="space-between">
+						<Stack direction="row" sx={{width: 1, marginTop: 3}}>
+							<FormControl sx={{ width: 0.95, marginLeft: 4}}>
+								<TextField
+									disabled={me !== undefined && isMuteSendMessage(usersChannel, me, messageTmp) ? true : false}
+									className={classes.styleTextField}
+									placeholder="Message"
+									variant="outlined"
+									fullWidth
+									multiline
+									maxRows={3}
+									value={messageTmp}
+									onChange={handleTextInputChange}
+									InputProps={{
+										style: {
+											backgroundColor: "#737373",
+											color: "white",
+										}
+									}}
+								/>
+							</FormControl>
+							<IconButton aria-label="send" size="large" sx={{color: "white"}} onClick={() => handleSendMessage()}>
+								<SendIcon fontSize="large" />
+							</IconButton>
+						</Stack>
 					</Stack>
 				</Stack>
-				<Stack direction="column" sx={{width: 1, height: 0.8}}>
-					{me !== undefined ? <MyListChannels myChannel={myChannels} me={me}/> : null}
-				</Stack>
-				<Stack direction="row" sx={{width: 1, height: 0.125 }} spacing={2} alignItems="center">
-					<HandleCreateChannel />
-					<HandleJoinChannel />
-				</Stack>
-			</Stack>
-			<Stack direction="column" sx={{width: 0.7, height: 1}}>
-				<Stack direction="row" sx={{width: 1, height: 0.075}}>
-					{nameChannel !== "" ?
-						<Stack direction="row" alignItems="center" spacing={1}>
-							<NumbersIcon style={{fontSize: "40px"}} color="warning"/>
-							<h2 style={{color: "white", fontFamily: "Myriad Pro"}}>{nameChannelDisplay}</h2>
-						</Stack> : null
-					}
-				</Stack>
-				<Stack direction="row" sx={{width: 1, height: 0.8, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
-					{me !== undefined && me.role !== ROLE.BANNED ?
-						<MyMessages messages={messages} /> : 
-						<div style={{color: "grey", textAlign: "center", marginTop: "40%", fontFamily: "Myriad Pro", fontSize: "45px"}}>You have been banned</div>
-					}
-				</Stack>
-				<Stack direction="row" sx={{width: 1, height: 0.125, backgroundColor: "#304649"}} spacing={2} alignItems="center" justifyContent="space-between">
-					<Stack direction="row" sx={{width: 1, marginTop: 3}}>
-						<FormControl sx={{ width: 0.95, marginLeft: 4}}>
-							<TextField
-								disabled={me !== undefined && isMuteSendMessage(usersChannel, me, messageTmp) ? true : false}
-								className={classes.styleTextField}
-								placeholder="Message"
-								variant="outlined"
-								fullWidth
-								multiline
-								maxRows={3}
-								value={messageTmp}
-								onChange={handleTextInputChange}
-								InputProps={{
-									style: {
-										backgroundColor: "#737373",
-										color: "white",
-									}
-								}}
-							/>
-						</FormControl>
-						<IconButton aria-label="send" size="large" sx={{color: "white"}} onClick={() => handleSendMessage()}>
-							<SendIcon fontSize="large" />
-						</IconButton>
-					</Stack>
-				</Stack>
-			</Stack>
-			<Stack direction="column" sx={{width: 0.15, height: 1}}>
-				<MyListUser myList={myListUsersChannel}/>
-				<MyListUser myList={myListFriends}/>
-			</Stack>
-			{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} setOpen={setOpen}/> : null}
-			{openJoin ? <JoinChannel setOpen={setOpenJoin}/> : null}
-		</Stack>
+				<Box
+					display={{xs: "none", sm: "none", md: "none", lg: "none", xl: "flex"}}
+					mb={2}
+					flexDirection="column"
+					height="93vh"
+					width="15vw"
+					style={{
+						overflow: "hidden",
+						overflowY: "scroll"
+					}}
+				>
+					<MyListUser myList={myListUsersChannel}/>
+					<MyListUser myList={myListFriends}/>
+				</Box>
+				{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} setOpen={setOpen}/> : null}
+				{openJoin ? <JoinChannel setOpen={setOpenJoin}/> : null}
+				{openUserChannel ? <MyDialogListUser setOpen={setOpenUserChannel} myListUsersChannel={myListUsersChannel}/> : null}
+				{openFriend ? <MyDialogListFriend setOpen={setOpenFriend} myListFriends={myListFriends}/> : null}
+			</Box>
+		</Box>
 	);
 }
 

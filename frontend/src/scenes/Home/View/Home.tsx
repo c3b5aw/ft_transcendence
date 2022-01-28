@@ -1,20 +1,17 @@
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/system';
 import Button from '@mui/material/Button';
 import MyFooter from '../../../components/MyFooter';
-import { boxStyle, StyleH1, useStyles } from '../../../styles/Styles';
 import MySearchBar from '../Components/MySearchBar';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import useUsers from '../../../Services/Hooks/useUsers';
 import useMe from '../../../Services/Hooks/useMe';
+import { Typography } from '@mui/material';
 
 export default function Home() {
 	const users = useUsers();
 	const me = useMe();
 
-	const classes = useStyles();
-	const styleH1 = StyleH1();
 	const navigate = useNavigate();
   
 	function handleLaunchGame() {
@@ -25,37 +22,30 @@ export default function Home() {
 		return (<MyChargingDataAlert />);
 
 	return (
-		<Stack direction="row" sx={{width: 1, minHeight: "100vh"}}>
-			<Stack direction="column" sx={{width: 1}}>
-				<Stack direction="column" sx={{width: 1, height: 0.85}}>
-					<Box className={classes.box} sx={boxStyle}>
-						<MySearchBar users={users}/>
-					</Box>
-					<Box className={classes.box} sx={boxStyle}>
-						<h1 className={styleH1.root}>ft_transcendance</h1>
-					</Box>
-					<Box className={classes.box} sx={boxStyle}>
-						<Button sx={{
-							background: 'white',
-							color: '#000000',
-							'&:hover': {
-								backgroundColor: '#D5D5D5',
-								color: '#000000',
-							},
-							width: '25%',
-							borderRadius: 5,
-							border: 5,
-							fontSize: '20px',
-						}}
-							onClick={() => handleLaunchGame()}>
-							<h1>Start Game</h1>
-							</Button>
-					</Box>
-				</Stack>
-				<Stack direction="row" sx={{width: 1, height: 0.08}}>
-					<MyFooter me={me}/>
-				</Stack>
-				</Stack>
-		 </Stack>
+		<Stack direction="column" sx={{width: 1, height: "100%"}}>
+			<MyFooter me={me}/>
+			<Stack sx={{alignItems: "center", justifyContent: "center", height: "15em"}}>
+				<MySearchBar users={users}/>
+			</Stack>
+			<Stack sx={{alignItems: "center", justifyContent: "center", height: "15em"}}>
+				<Typography variant="h1" style={{fontFamily: "Myriad Pro"}}>ft_transcendance</Typography>
+			</Stack>
+			<Stack sx={{alignItems: "center", justifyContent: "center", height: "35em"}}>
+				<Button sx={{
+					background: 'white',
+					color: '#000000',
+					'&:hover': {
+						backgroundColor: '#D5D5D5',
+						color: '#000000',
+					},
+					padding: {xs: 1, sm: 2, md: 3, lg: 4},
+					borderRadius: {xs: 4, sm: 4, md: 4, lg: 4},
+					border: 5,
+				}}
+					onClick={() => handleLaunchGame()}>
+					<Typography variant="h2" style={{fontFamily: "Myriad Pro"}}>Start Game</Typography>
+				</Button>
+			</Stack>
+		</Stack>
 	);
 }

@@ -10,12 +10,15 @@ import { useNavigate } from 'react-router';
 import { api, apiAdmin, apiBan, apiChannel, apiChannels, apiChat, apiStats, apiUsers } from "../../../Services/Api/Api";
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { User } from '../../../Services/Interface/Interface';
-import { Avatar, IconButton, Stack, Switch } from '@mui/material';
+import { Avatar, IconButton, Stack, Switch, Typography } from '@mui/material';
 import { ROLE } from '../../../Services/Api/Role';
 import { useSnackbar } from 'notistack'
 import { Channel } from '../../Chat/Services/interface';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NumbersIcon from '@mui/icons-material/Numbers';
+import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
+import useUsers from '../../../Services/Hooks/useUsers';
+import useCountMatchs from '../Services/useCountMatchs';
 
 export default function MyInfosUser() {
 
@@ -181,9 +184,13 @@ export default function MyInfosUser() {
 		);
 	}
 
+	const countMatchs = useCountMatchs();
+
+	if (users === undefined || countMatchs === undefined)
+		return (<MyChargingDataAlert />);
 	return (
-		<Stack sx={{width: 1, height: 0.94}} direction="column" spacing={5}>
-			<Stack sx={{backgroundColor: "white", width: 1, height: 0.47, borderRadius: 5}}>
+		<Stack sx={{width: 1, height: "100vh"}} direction="column" spacing={5}>
+			<Stack sx={{backgroundColor: "white", width: 1, height: 0.5, borderRadius: 5}}>
 				<TableContainer sx={{borderRadius: 5}}>
 					<Table aria-label="collapsible table">
 						<TableHead sx={{backgroundColor: "green"}}>
@@ -205,7 +212,7 @@ export default function MyInfosUser() {
 					</Table>
 				</TableContainer>
 			</Stack>
-			<Stack sx={{backgroundColor: "white", width: 1, height: 0.47, borderRadius: 5}}>
+			<Stack sx={{backgroundColor: "white", width: 1, height: 0.5, borderRadius: 5}}>
 				<TableContainer sx={{borderRadius: 5}}>
 					<Table aria-label="collapsible table">
 						<TableHead sx={{backgroundColor: "orange"}}>
@@ -224,6 +231,10 @@ export default function MyInfosUser() {
 						</TableBody>
 					</Table>
 				</TableContainer>
+			</Stack>
+			<Stack sx={{width: 0.5}} direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
+				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de matchs : {countMatchs}</Typography>
+				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de joueurs : {users.length}</Typography>
 			</Stack>
 		</Stack>
 	);

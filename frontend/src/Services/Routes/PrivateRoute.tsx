@@ -13,7 +13,7 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 	const [status, setStatus] = useState<Status>();
 	const { enqueueSnackbar } = useSnackbar();
 	const socket = useContext(SocketContext);
-	const [openQrcode, setOpenQrcode] = useState<boolean>(true);
+	const [, setOpenQrcode] = useState<boolean>(true);
 
 	useEffect(() => {
 		const fetchConnected = async () => {

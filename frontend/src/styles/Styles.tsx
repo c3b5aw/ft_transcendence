@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export const StyleH1 = makeStyles({
 	root: {
-		fontSize: "120px",
+		fontSize: "12vw",
 		fontFamily: "Myriad Pro",
 		textAlign: "center",
 	},
@@ -10,7 +10,6 @@ export const StyleH1 = makeStyles({
 
 export const boxStyle = {
 	display: "flex",
-	height: "23vh",
 };
 
 export const buttonStyle = {
@@ -23,9 +22,8 @@ export const buttonStyle = {
 	"&:disabled": {
 		backgroundColor: "grey"
 	},
-	width: '12%',
-	borderRadius: 5,
-	border: 5,
+	borderRadius: {xs: 1, sm: 2, md: 3, lg: 4},
+	border: {xs: 1, sm: 2, md: 3, lg: 4},
 	marginRight: {xs: 2, sm: 5, md: 10, lg: 21},
 };
 
@@ -37,7 +35,6 @@ export const useStyles = makeStyles({
 	paper: {
 		width: '50%',
 		borderRadius: 15,
-		// marginTop: "5rem",
 	},
 	searchBar: {
 		borderRadius: 10,
@@ -57,8 +54,8 @@ export const useStyles = makeStyles({
 
 export const avatarStyle = {
 	marginLeft: "10px",
-	width: "56px",
-	height: "56px",
+	width: {xs: "48px", sm: "48px", md: "48px", lg: "64px"},
+	height: {xs: "48px", sm: "48px", md: "48px", lg: "64px"},
 };
 
 export const avatarStyleIconList = {
@@ -69,7 +66,7 @@ export const avatarStyleIconList = {
 
 export const styleTextField = makeStyles(theme => ({
 	styleTextField: {
-		width: "200px",
+		width: "12.%",
 		margin: "0 0 0 0",
 		float: "right",
 		'&:hover': {
