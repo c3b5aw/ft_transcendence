@@ -41,8 +41,8 @@ export default function Game() {
 
 		context.strokeStyle = 'white';
 		context.beginPath();
-		context.moveTo(canvas.width / 2, 0); //depart de la ligne
-		context.lineTo(canvas.width / 2, canvas.height); //longueur de la ligne
+		context.moveTo(canvas.width / 2, 0 + 10); //depart de la ligne
+		context.lineTo(canvas.width / 2, canvas.height - 10); //longueur de la ligne
 		context.stroke(); //trace
 
 		//player
