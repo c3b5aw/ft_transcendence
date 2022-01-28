@@ -6,6 +6,8 @@ import GameButtons from './GameButtons';
 import GameScoreBoard from './GameScoreBoard';
 import GameModifiers from './GameModifiers';
 
+import { RandomRGB } from './GameUtils';
+
 const PLAYER_HEIGHT = 100.0;
 const PLAYER_WIDTH = 5;
 const MAX_SPEED = 12;
@@ -58,9 +60,9 @@ export default function Game() {
 		context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false); // permet de tracet un cercle
 		context.fill(); //rempli le chemin courant avec la derniere couleur donnee
 		} else if (print === 1) {
-			context.fillStyle = 'white';
-			context.font = '48px serif';
-			context.fillText("Error : window's too small", 20 , canvas.height / 2);
+			// context.fillStyle = 'white';
+			// context.font = '48px serif';
+			// context.fillText("Error : window's too small", 20 , canvas.height / 2);
 		} else if (print === 2) {
 			context.fillStyle = 'white';
 			context.font = 'bold 100px verdana, sans-serif';
@@ -223,10 +225,11 @@ export default function Game() {
 		const height = window.innerHeight|| document.documentElement.clientHeight||
 		document.body.clientHeight;
 		console.log(width, height, "WIDTH & HEIGHT");
-		if (width < 1000 || height < 1100) {
-			console.log(width, height, "ERROR");
-			print = 1;
-		} else if (print === 1) {
+		// if (width < 1000 || height < 1100) {
+			// console.log(width, height, "ERROR");
+			// print = 1;
+		// } else
+		if (print === 1) {
 			console.log(width, height, "NO ERROR");
 			print = 0;
 		}
@@ -326,17 +329,13 @@ export default function Game() {
 	const	handleBoost = () => { boost = !boost; }
 
 	const	handleBackground = () => {
-		console.log("Random Button");
 		random = !random;
-		if (random === true) {
-			let i = Math.random() * 10;
-			if (Math.round(i) % 2)
-				canvas.style.background = "#5367B8";
-			else
-				canvas.style.background = "#DBE070";
-
+		if (random) {
+			const [ x, y, z ] = RandomRGB();
+			const bgColor = "rgb(" + x + "," + y + "," + z + ")";
+			canvas.style.background = bgColor;
 		} else {
-			canvas.style.background = "black";
+			canvas.style.background = 'black';
 		}
 	}
 	
