@@ -46,13 +46,6 @@ h1, h2, p {
     justify-content: center;
 }
 
-/* .normalBody{ */
-/* } */
-
-/* .randomBody{ */
-/* 	background-color: #3D52A4 !important ; */
-/* } */
-
 .MuiSlider-root {
 	padding-left: 5em !important;
 }
@@ -70,16 +63,6 @@ p {
 	position: relative;
 }
 
-.btn1 {
-	float: left;
-	background-color: #80CA32 !important;
-}
-.btn2 {
-}
-.btn3 {
-	float: right;
-	background-color: #80CA32 !important;
-}
 input {
 	background-color: $white;
 	font-size: 15px;
@@ -88,17 +71,6 @@ input {
 	border: 1px solid $white;
 	border-radius: $brad;
 }
-
-/* .emoji-container { */
-/* 	height: 40vh; */
-/* 	overflow-y: scroll; */
-/* 	background-color: $white; */
-/* 	width: 50%; */
-/* 	margin: 0 auto; */
-/* 	border-radius: $brad; */
-/* 	margin-top: 5vh; */
-/* 	padding: 25px; */
-/* } */
 
 .MuiButton-root {
 	border: 1px solid green;
@@ -148,10 +120,6 @@ ul {
 	word-spacing: 48em;
 	padding: 1em;
 	text-align: center;
-}
-
-svg {
-
 }
 
 li {

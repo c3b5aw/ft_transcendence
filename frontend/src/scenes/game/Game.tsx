@@ -1,8 +1,6 @@
-import { Button, Stack } from "@mui/material";
-import React, {useEffect} from 'react';
+import { useEffect } from 'react';
 import './Game.css';
-import {Container, Switch, FormControlLabel, FormGroup, Slider} from '@mui/material';
-// var log;
+
 const PLAYER_HEIGHT = 100.0;
 const PLAYER_WIDTH = 5;
 const MAX_SPEED = 12;
@@ -11,15 +9,15 @@ const MAX_SPEED = 12;
 // const myaudiopong = require('./audio/pong.wav');
 // const myimg = require('./lol.png');
 
-function Game() {
-var canvas:any;
-var game:any;
-var anim:any;
-var on:number = 0;
-var print:number = 0;
-var boost:boolean, random:boolean = false;
-var up:boolean, down:boolean, space:boolean = false;
-var is_play:boolean = false;
+export default function Game() {
+	var canvas: any;
+	var game: any;
+	var anim: any;
+	var on: number = 0;
+	var print: number = 0;
+	var boost: boolean, random: boolean = false;
+	var up: boolean, down: boolean, space: boolean = false;
+	var is_play: boolean = false;
 
 	const	botGame = false;
 
@@ -258,7 +256,6 @@ var is_play:boolean = false;
 		console.log(canvas.width, canvas.height, game.ball.x, game.ball.y, game.player.y, game.computer.y,  "SET UP CANVAS FROM ");
     }
 
-	// document.addEventListener('DOMContentLoaded', function() {
 	useEffect(()=> {
 		canvas = document.getElementById('canvas');
 		game = {
@@ -281,33 +278,25 @@ var is_play:boolean = false;
 		}
 		checkWindow();
 		reset();
-		/* canvas.addEventListener('mousemove', playerMove); // permet les mouvements du joueurs avec la souris */ 
-		document.addEventListener("keydown", function(e){
-			console.log("keydown", e.keyCode);
-			if (e.keyCode === 83 || e.which === 83) //s
-				down = true;
-			if (e.keyCode === 40 || e.which === 40) //down
-				down = true;
-			if (e.keyCode === 87 || e.which === 87) //w
-				up = true;
-			if (e.keyCode === 38 || e.which === 38) //up
-				up = true;
-			if (e.keyCode === 32 || e.which === 32) //spacebar
-				space = true;
-			if (e.keyCode === 16 || e.which === 16) //shift right
-				space = true;
+
+		document.addEventListener("keydown", function(e) {
+			switch (e.key) {
+				case "ArrowUp" || "KeyW":
+					up = true; break
+				case "ArrowDown" || "KeyS":
+					down = true; break
+				case " " || "Shift":
+					space = true; break
+			}
 		});
 
 		document.addEventListener("keyup", function(e){
-			console.log("keyup");
-			if (e.keyCode === 83 || e.which === 83) //s
-				down = false;
-			if (e.keyCode === 40 || e.which === 40) //down
-				down = false;
-			if (e.keyCode === 87 || e.which === 87) //w
-				up = false;
-			if (e.keyCode === 38 || e.which === 38) //up
-				up = false;
+			switch (e.key) {
+				case "ArrowUp" || "KeyW":
+					up = false; break
+				case "ArrowDown" || "KeyS":
+					down = false; break
+			}
 		});
 
 		window.addEventListener('resize', () => {
@@ -382,13 +371,3 @@ var is_play:boolean = false;
 		</Container>
 	);
 }
-
-function Ga2me() {
-	return (<h1>{GGame()}</h1>);
-}
-
-const GGame = () : number => {
-	return (3)
-}
-
-export default Game
