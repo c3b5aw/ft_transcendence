@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
-import './Game.css';
+import { Paper, Grid } from "@mui/material";
+
+import GameCanvas from './GameCanvas';
+import GameButtons from './GameButtons';
+import GameScoreBoard from './GameScoreBoard';
+import GameModifiers from './GameModifiers';
 
 const PLAYER_HEIGHT = 100.0;
 const PLAYER_WIDTH = 5;
 const MAX_SPEED = 12;
-
-// const myaudio = require('./audio/applause7.wav');
-// const myaudiopong = require('./audio/pong.wav');
-// const myimg = require('./lol.png');
 
 export default function Game() {
 	var canvas: any;
@@ -18,8 +19,6 @@ export default function Game() {
 	var boost: boolean, random: boolean = false;
 	var up: boolean, down: boolean, space: boolean = false;
 	var is_play: boolean = false;
-
-	const	botGame = false;
 
 	const draw = () => {
 		var context = canvas.getContext('2d');
@@ -68,8 +67,6 @@ export default function Game() {
 			// console.log(game.player.score, "vs", game.computer.score )
 			if (game.player.score > game.computer.score) {
 				stopGame();
-				// var audio = new Audio(myaudio)
-				// audio.play();
 				context.fillText("VICTORY !", canvas.width / 2 - 200, canvas.height / 2);
 			} else {
 				stopGame();
@@ -257,7 +254,7 @@ export default function Game() {
     }
 
 	useEffect(()=> {
-		canvas = document.getElementById('canvas');
+		canvas = document.getElementById('game-Canvas');
 		game = {
 			player: {
 				y: canvas.height / 2 - PLAYER_HEIGHT / 2,
@@ -323,16 +320,12 @@ export default function Game() {
 			if (game.player.y + PLAYER_HEIGHT > canvas.height - 20)
 				game.player.y = canvas.height - 20 - PLAYER_HEIGHT;
 			document.getElementById('player')!.style.top = game.player.y + 'px';
-		}, 1000/60)
+		}, 1000 / 60)
 	}, []);
 
-	const	handleChangeOne = (event:any) => {
-		console.log("Boost Button");
-		boost = !boost;
-		console.log(boost);
-	}
+	const	handleBoost = () => { boost = !boost; }
 
-	const	handleChangeTwo = (event:any) => {
+	const	handleBackground = () => {
 		console.log("Random Button");
 		random = !random;
 		if (random === true) {
@@ -346,28 +339,20 @@ export default function Game() {
 			canvas.style.background = "black";
 		}
 	}
-
 	
 	return (
-		<Container>
-		<h1> Welcome to the best Pong on earth </h1>
-		<main  >
-			<p>Player 1 : <em id="player-score">0</em> - The Machine : <em id="computer-score">0</em> </p>
-			<div id="player"></div>
-			<FormGroup>
-				<FormControlLabel control={<Switch onChange={handleChangeOne}/>} label="Boost" />
-				<FormControlLabel control={<Switch onChange={handleChangeTwo}/>} label="Random Background" />
-			</FormGroup>
-			<ul>
-				<Button className="btn1" variant="contained" color="success" onClick = {() => play() }> Start</Button>
-				<Button className="btn3" variant="contained" color="success" onClick = {() => stopGame() }> Stop</Button>
-				<Button className="btn2" variant="contained" color="primary" onClick = {() => pause() }> Pause</Button>
-			</ul>
-		<div id="test">
-			<canvas width="1000" height="600" id="canvas">
-			</canvas>
-		</div>
-		</main>
-		</Container>
+		<Grid container
+			direction="column" alignItems="center" justifyContent="center"
+			style={{ minHeight: '100vh' }}
+		>
+			<Grid item xs={3}>
+				<Paper>
+					<GameScoreBoard />
+					<GameModifiers boostCallback={ handleBoost } backgroundCallback={ handleBackground } />
+					<GameButtons startGame={ play } stopGame= { stopGame } pauseGame={ pause } />
+					<GameCanvas />
+				</Paper>
+			</Grid>
+		</Grid>
 	);
 }
