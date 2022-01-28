@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Header, Param, Post, Req, Res,
-		UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+		UploadedFile, UseGuards, UseInterceptors, Logger } from '@nestjs/common';
 import { ApiTags, ApiCookieAuth, ApiOperation } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
@@ -22,6 +22,7 @@ import { FriendsService } from 'src/friends/friends.service';
 @ApiCookieAuth()
 @Controller('profile')
 export class ProfileController {
+	private logger: Logger = new Logger('ProfileController');
 
 	constructor(private readonly usersService: UsersService,
 		private readonly friendsService: FriendsService) {}
@@ -108,7 +109,7 @@ export class ProfileController {
 
 		if (file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/jpg') {
 			unlink('./public/uploads/' + req.user.id + '.jpg', (err) => {
-				if (err) console.log(err);
+				if (err) this.logger.error(err);
 			});
 			return resp.status(400).json({ error: 'only jpeg images are accepted' });
 		}
@@ -116,9 +117,9 @@ export class ProfileController {
 		rename('./public/uploads/' + req.user.id + '.jpg', 
 				'./public/avatars/' + req.user.id + '.jpg', (err) => {
 			if (err) {
-				console.log(err);
+				this.logger.error(err);
 				unlink('./public/uploads/' + req.user.id + '.jpg', (err_fallback) => {
-					if (err_fallback) console.log(err_fallback);
+					if (err_fallback) this.logger.error(err_fallback);
 				});
 				return resp.status(500).json({ error: 'failed while processing the file' });
 			}
