@@ -127,12 +127,24 @@ const Stats = () => {
 		<Stack direction="column">
 			<MyFooter me={me}/>
 			<div style={{marginTop: 10}} />
-			<Stack sx={{width: 1, height: "93%"}} direction="row" spacing={3}>
-				<Stack sx={{ width: {xs: 0.50, sm: 0.40, md: 0.30, lg: 0.2}, marginLeft: "1%" }} direction="column" spacing={3}>
+			<Stack
+				sx={{width: 1, height: "93%"}}
+				direction="row"
+				spacing={3}
+			>
+				<Stack
+					sx={{ width: {xs: 0.50, sm: 0.40, md: 0.30, lg: 0.2}, marginLeft: "1%" }}
+					direction="column"
+					spacing={3}
+				>
 					<MyAvatar user={user}/>
 					<div style={{marginTop: "25%"}}></div>
 					{user.login !== me.login ?
-						<Button onClick={() => handleSendMessage()} sx={sxButton} variant="contained" startIcon={<MessageIcon />}>
+						<Button
+							onClick={() => handleSendMessage()}
+							sx={sxButton} variant="contained"
+							startIcon={<MessageIcon />}
+						>
 							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Send message</Typography>
 						</Button> : null
 					}
@@ -142,24 +154,57 @@ const Stats = () => {
 					<Typography variant="h5" style={{color: '#C70039', fontFamily: "Myriad Pro", textAlign: "center"}}>Défaites : {user.defeats}</Typography>
 					<MyAchievements user={user}/>
 				</Stack>
-				<Stack sx={{width: 0.775, height: "auto"}} direction="column" justifyContent="center" alignItems="center">
-					<Stack sx={{width: 1, height: 2/12}} direction="row" alignItems="flex-end" justifyContent="space-between" spacing={4}>
+				<Stack	
+					sx={{width: 0.775, height: "auto"}}
+					direction="column"
+					justifyContent="center"
+					alignItems="center"
+				>
+					<Stack
+						sx={{width: 1, height: 2/12}}
+						direction="row"
+						alignItems="flex-end"
+						justifyContent="space-between"
+						spacing={4}
+					>
 						<Typography variant="h4" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Historique</Typography>
 						{user.login !== me.login ?
 						<Stack direction={{xs: "column", sm: "column", md: "column", lg: "column"}}>
-							{isFriend.length === 0 && isFriendPending.length === 0 ?
-								<Button onClick={() => handleAddFriend()} sx={sxButton} variant="contained" startIcon={<PersonAddIcon />}>
+							{isFriend.length === 0 && isFriendPending.length === 0
+								?
+								<Button
+									onClick={() => handleAddFriend()}
+									sx={sxButton}
+									variant="contained"
+									startIcon={<PersonAddIcon />}
+								>
 									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Add friend</Typography>
-								</Button> : isFriendPending.length !== 0 && isFriend.length === 0 ? 
+								</Button>
+								:
+								isFriendPending.length !== 0 && isFriend.length === 0
+								? 
 								<Stack direction={{xs: "column", sm: "column", md: "column", lg: "row"}} spacing={3}>
-									<Button disabled sx={sxButton} variant="contained" startIcon={<AccessTimeIcon />}>
+									<Button
+										disabled
+										sx={sxButton}
+										variant="contained"
+										startIcon={<AccessTimeIcon />}
+									>
 										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Pending</Typography>
 									</Button> 
-									<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
+									<Button
+										onClick={() => handleDeleteFriend()}
+										sx={sxButton} variant="contained"
+										startIcon={<DeleteIcon />}
+									>
 										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
 									</Button>
 								</Stack> :
-								<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
+								<Button
+									onClick={() => handleDeleteFriend()}
+									sx={sxButton} variant="contained"
+									startIcon={<DeleteIcon />}
+								>
 									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
 								</Button>
 							}

@@ -11,10 +11,25 @@ const MyAchievements = (props: {user: User}) => {
 	if (achievements === undefined)
 		return (<MyChargingDataAlert />);
 	return (
-		<Stack sx={{ width: "auto", height: 0.4, backgroundColor: 'white', borderRadius: {xs: 1, sm: 2, md: 3, lg: 4}}} direction="column">
-			<Typography variant="h5" style={{fontFamily: "Myriad Pro", color:'black', margin: "5%"}}>Achievements</Typography>
+		<Stack sx={{
+				width: "auto",
+				height: 0.4,
+				backgroundColor: 'white',
+				borderRadius: {xs: 1, sm: 2, md: 3, lg: 4}
+			}}
+			direction="column"
+		>
+			<Typography
+				variant="h5"
+				style={{fontFamily: "Myriad Pro", color:'black', margin: "5%"}}
+			>
+				Achievements
+			</Typography>
 			<Divider />
-			<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto'}} elevation={0}>
+			<Paper
+				style={{minHeight: 1, minWidth: 1, overflow: 'auto'}}
+				elevation={0}
+			>
 				{ achievements.length > 0 ?
 					<List>
 						{achievements.map(achievement => (

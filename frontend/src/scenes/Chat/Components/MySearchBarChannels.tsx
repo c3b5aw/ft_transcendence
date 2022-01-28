@@ -48,8 +48,14 @@ function MySearchBarChannels(props : {channels: Channel[], fSearchBarChannel: IS
                     <Table>
                         <TableBody>
                             {rows.map((row) => (
-                            <TableRow key={row.name} hover>
-                                <TableCell scope="row" onClick={() => handleClick(row)}>
+                            <TableRow
+                                key={row.name}
+                                hover
+                            >
+                                <TableCell
+                                    scope="row"
+                                    onClick={() => handleClick(row)}
+                                >
                                     {row.name}
                                 </TableCell>
                             </TableRow>

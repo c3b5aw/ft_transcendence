@@ -22,7 +22,10 @@ export default function Home() {
 		return (<MyChargingDataAlert />);
 
 	return (
-		<Stack direction="column" sx={{width: 1, height: "100%"}}>
+		<Stack
+			direction="column"
+			sx={{width: 1, height: "100%"}}
+		>
 			<MyFooter me={me}/>
 			<Stack sx={{alignItems: "center", justifyContent: "center", height: "15em"}}>
 				<MySearchBar users={users}/>

@@ -17,7 +17,6 @@ import { Channel } from '../../Chat/Services/interface';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NumbersIcon from '@mui/icons-material/Numbers';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
-import useUsers from '../../../Services/Hooks/useUsers';
 import useCountMatchs from '../Services/useCountMatchs';
 
 export default function MyInfosUser() {
@@ -123,9 +122,23 @@ export default function MyInfosUser() {
 						sx={{ width: "48px", height: "48px" }}>
 					</Avatar>
 				</TableCell>
-				<TableCell onClick={() => navigate(`${apiStats}/${user.login}`)} component="th" scope="row">{user.id}</TableCell>
-				<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{user.login} ({user.role})</TableCell>
-				<TableCell align="center">{user.email}</TableCell>
+				<TableCell
+					onClick={() => navigate(`${apiStats}/${user.login}`)}
+					component="th" scope="row"
+				>
+					{user.id}
+				</TableCell>
+				<TableCell
+					align="center"
+					sx={{color: '#C70039', fontFamily: "Myriad Pro"}}
+				>
+					{user.login} ({user.role})
+				</TableCell>
+				<TableCell
+					align="center"
+				>
+					{user.email}
+				</TableCell>
 				<TableCell align="center">
 					{user.role !== ROLE.ADMIN ?
 						<Switch checked={banned} onChange={handleBanned}/> :
@@ -173,7 +186,12 @@ export default function MyInfosUser() {
 				</TableCell>
 				<TableCell>{channel.owner_login}</TableCell>
 				<TableCell>{channel.private ? "private" : "public"}</TableCell>
-				<TableCell align="center" onClick={() => navigate(`${apiChat}`)}>{channel.name}</TableCell>
+				<TableCell
+					align="center"
+					onClick={() => navigate(`${apiChat}`)}
+				>
+					{channel.name}
+				</TableCell>
 				<TableCell align="center">
 					<IconButton onClick={() => handleDeleteChannel()}>
 						<DeleteIcon style={{color: "#C0392B"}}/>
@@ -189,7 +207,7 @@ export default function MyInfosUser() {
 	if (users === undefined || countMatchs === undefined)
 		return (<MyChargingDataAlert />);
 	return (
-		<Stack sx={{width: 1, height: "100vh"}} direction="column" spacing={5}>
+		<Stack sx={{width: 1, height: "93vh"}} direction="column" spacing={5}>
 			<Stack sx={{backgroundColor: "white", width: 1, height: 0.5, borderRadius: 5}}>
 				<TableContainer sx={{borderRadius: 5}}>
 					<Table aria-label="collapsible table">

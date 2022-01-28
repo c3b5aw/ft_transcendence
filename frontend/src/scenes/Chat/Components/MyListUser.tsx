@@ -52,16 +52,31 @@ function MyListUser(props : { myList: IListUser }) {
 	}
 
 	return (
-        <Stack direction="column" sx={{width: 1, boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}}>
+        <Stack
+			direction="column"
+			sx={{width: 1, boxShadow: 3, borderTopLeftRadius: 11, borderTopRightRadius: 11}}
+		>
 			<Box sx={{backgroundColor: "#D68910"}}>
 				<h3 style={{textAlign: "start", paddingLeft: "15px", paddingRight: "15px"}}>{myList.name_list}</h3>
 			</Box>
 			{myList.users.length > 0 ?
 				<List sx={{overflow: "auto"}}>
 					{myList.users.map(user => (
-						<Stack direction="row" key={user.id} alignItems="center">
-							<ListItemButton component="div" onClick={() => handleClick(user.login)}>
-								<Stack sx={{ width: 1, height: 1}} alignItems="center" direction="row" spacing={2}>
+						<Stack
+							direction="row"
+							key={user.id}
+							alignItems="center"
+						>
+							<ListItemButton
+								component="div"
+								onClick={() => handleClick(user.login)}
+							>
+								<Stack
+									sx={{ width: 1, height: 1}}
+									alignItems="center"
+									direction="row"
+									spacing={2}
+								>
 									<Badge badgeContent={""} 
 										color={user.status === USER_STATUS.ONLINE ? "success" :
 										user.status === USER_STATUS.IN_GAME ? "warning" : "error"}>

@@ -206,12 +206,33 @@ function Chat() {
 		return (<MyChargingDataAlert />);
 	}
 	return (
-		<Box sx={{flexDirection: "column",  height: "100vh", justifyContent: 'space-between'}}>
+		<Box sx={{
+			flexDirection: "column",
+			height: "100vh",
+			justifyContent: 'space-between'}}
+		>
 			<MyFooter me={me}/>
-			<Box sx={{flexDirection: "row", height: "95vh", display: "flex"}}>
-				<Box sx={{ flexGrow: 1, marginTop: 2, height: 1, alignItems: "center"}}>
-					<Stack direction="row" sx={{width: 1, height: 0.075}} justifyContent={{xs: "center"}}>
-						<Stack direction="row" alignItems="center" onClick={() => handleLaunchParametres()}>
+			<Box sx={{
+				flexDirection: "row",
+				height: "95vh",
+				display: "flex"}}
+			>
+				<Box sx={{
+					flexGrow: 1,
+					marginTop: 2,
+					height: 1,
+					alignItems: "center"}}
+				>
+					<Stack
+						direction="row"
+						sx={{width: 1, height: 0.075}}
+						justifyContent={{xs: "center"}}
+					>
+						<Stack
+							direction="row"
+							alignItems="center"
+							onClick={() => handleLaunchParametres()}
+						>
 							<Avatar
 								src={`http://127.0.0.1/api/profile/avatar`}
 								sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
@@ -221,39 +242,109 @@ function Chat() {
 							</Box>
 						</Stack>
 					</Stack>
-					<Stack direction="column" sx={{width: 1, height: 0.73}}>
+					<Stack
+						direction="column"
+						sx={{width: 1, height: 0.73}}
+					>
 						{me !== undefined ? <MyListChannels myChannel={myChannels} me={me}/> : null}
 					</Stack>
-					<Stack direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }} sx={{width: 1, height: 0.125 }} spacing={2} alignItems="center" justifyContent="center">
+					<Stack
+						direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }}
+						sx={{width: 1, height: 0.125 }}
+						spacing={2}
+						alignItems="center"
+						justifyContent="center"
+					>
 						<HandleCreateChannel />
 						<HandleJoinChannel />
 					</Stack>
 				</Box>
-				<Stack direction="column" sx={{minWidth: "75vw", maxWidth: "65vw", height: 1}}>
-					<Stack direction="row" sx={{width: 1, height: 0.075}} spacing={3}>
+				<Stack
+					direction="column"
+					sx={{minWidth: "75vw", maxWidth: "65vw", height: 1}}
+				>
+					<Stack
+						direction="row"
+						sx={{width: 1, height: 0.075}}
+						spacing={3}
+					>
 						{nameChannel !== "" ?
-							<Stack direction="row" alignItems="center" spacing={3}>
+							<Stack
+								direction="row"
+								alignItems="center"
+								spacing={3}
+							>
 								<NumbersIcon style={{fontSize: "40px"}} color="warning"/>
-								<Typography variant="h4" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{nameChannelDisplay}</Typography>
-								<Button sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}} variant="contained" onClick={() => setOpenUserChannel(true)}>
-									<Typography variant="subtitle1" style={{fontFamily: "Myriad Pro"}}>Users channel</Typography>
+								<Typography
+									variant="h4"
+									style={{fontFamily: "Myriad Pro", textAlign: "center"}}
+									>
+										{nameChannelDisplay}
+									</Typography>
+								<Button
+									sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}}
+									variant="contained"
+									onClick={() => setOpenUserChannel(true)}
+								>
+									<Typography
+										variant="subtitle1"
+										style={{fontFamily: "Myriad Pro"}}
+									>
+											Users channel
+									</Typography>
 								</Button>
 							</Stack> : null
 						}
-						<Stack direction="row" alignItems="center" spacing={3}>
-							<Button sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}} variant="contained" onClick={() => setOpenFriend(true)}>
-								<Typography variant="subtitle1" style={{fontFamily: "Myriad Pro"}}>Friends</Typography>
+						<Stack
+							direction="row"
+							alignItems="center"
+							spacing={3}
+						>
+							<Button
+								sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}}
+								variant="contained"
+								onClick={() => setOpenFriend(true)}
+							>
+								<Typography
+									variant="subtitle1"
+									style={{fontFamily: "Myriad Pro"}}
+								>
+									Friends
+								</Typography>
 							</Button>
 						</Stack>
 					</Stack>
-					<Stack direction="row" sx={{width: 1, height: 0.73, backgroundColor: "#304649"}} spacing={2} alignItems="flex-start" justifyContent="space-between">
+					<Stack
+						direction="row"
+						sx={{width: 1, height: 0.73, backgroundColor: "#304649"}}
+						spacing={2}
+						alignItems="flex-start"
+						justifyContent="space-between"
+					>
 						{me !== undefined && me.role !== ROLE.BANNED ?
 							<MyMessages messages={messages} /> : 
-							<div style={{color: "grey", textAlign: "center", marginTop: "40%", fontFamily: "Myriad Pro", fontSize: "45px"}}>You have been banned</div>
+							<div style={{
+								color: "grey",
+								textAlign: "center",
+								marginTop: "40%",
+								fontFamily: "Myriad Pro",
+								fontSize: "45px"}}
+							>
+								You have been banned
+							</div>
 						}
 					</Stack>
-					<Stack direction="row" sx={{width: 1, height: 0.125, backgroundColor: "#304649"}} spacing={2} alignItems="center" justifyContent="space-between">
-						<Stack direction="row" sx={{width: 1, marginTop: 3}}>
+					<Stack
+						direction="row"
+						sx={{width: 1, height: 0.125, backgroundColor: "#304649"}}
+						spacing={2}
+						alignItems="center"
+						justifyContent="space-between"
+					>
+						<Stack
+							direction="row"
+							sx={{width: 1, marginTop: 3}}
+						>
 							<FormControl sx={{ width: 0.95, marginLeft: 4}}>
 								<TextField
 									disabled={me !== undefined && isMuteSendMessage(usersChannel, me, messageTmp) ? true : false}
@@ -273,7 +364,12 @@ function Chat() {
 									}}
 								/>
 							</FormControl>
-							<IconButton aria-label="send" size="large" sx={{color: "white"}} onClick={() => handleSendMessage()}>
+							<IconButton
+								aria-label="send"
+								size="large"
+								sx={{color: "white"}}
+								onClick={() => handleSendMessage()}
+							>
 								<SendIcon fontSize="large" />
 							</IconButton>
 						</Stack>

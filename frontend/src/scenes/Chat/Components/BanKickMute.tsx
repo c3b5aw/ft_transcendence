@@ -100,28 +100,62 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 	}
 
 	function HandleMuteUser() {
-		if (isMute(myBanKickMute.user))
-			return <Button sx={sxButton} onClick={handleUnMuteUser}>UnMute {myBanKickMute.user.login}</Button>
-		return <Button sx={sxButton} onClick={handleMuteUser}>Mute {myBanKickMute.user.login}</Button>
+		if (isMute(myBanKickMute.user)) {
+			return (<Button
+				sx={sxButton}
+				onClick={handleUnMuteUser}
+			>
+				UnMute {myBanKickMute.user.login}
+			</Button>
+			);
+		}
+		return (
+			<Button
+				sx={sxButton}
+				onClick={handleMuteUser}
+			>
+				Mute {myBanKickMute.user.login}
+			</Button>
+		);
 	}
 
 	return (
 		<div>
-			<Dialog onClose={handleClose} open={myBanKickMute.open}>
-				<DialogTitle sx={{fontFamily: "Myriad Pro"}}>Ban / Kick / Mute</DialogTitle>
+			<Dialog
+				onClose={handleClose}
+				open={myBanKickMute.open}
+			>
+				<DialogTitle sx={{fontFamily: "Myriad Pro"}}>
+					Ban / Kick / Mute
+				</DialogTitle>
 				<DialogContent sx={{backgroundColor: "#1d3033"}}>
 					<div style={{marginTop: 20}}></div>
-					<Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+					<Stack
+						direction="row"
+						alignItems="center"
+						justifyContent="center"
+						spacing={2}
+					>
 						<VolumeOffIcon style={{color: "white", fontSize: "40px"}}/>
 						<HandleMuteUser />
 					</Stack>
 					<div style={{marginTop: 20}}></div>
-					<Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+					<Stack
+						direction="row"
+						alignItems="center"
+						justifyContent="center"
+						spacing={2}
+					>
 						<ExitToAppIcon style={{color: "white", fontSize: "40px"}}/>
 						<Button sx={sxButton} onClick={handleKickUser}>Kick {myBanKickMute.user.login}</Button>
 					</Stack>
 					<div style={{marginTop: 20}}></div>
-					<Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+					<Stack
+						direction="row"
+						alignItems="center"
+						justifyContent="center"
+						spacing={2}
+					>
 						<RemoveCircleIcon style={{color: "white", fontSize: "40px"}}/>
 						{myBanKickMute.user.role !== ROLE.BANNED ?
 							<Button sx={sxButton} onClick={handleBanUser}>Ban {myBanKickMute.user.login}</Button> :

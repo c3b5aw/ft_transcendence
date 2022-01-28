@@ -30,9 +30,10 @@ function MyFactorAuth(props: {setOpenQrcode: Dispatch<SetStateAction<boolean>>, 
 
 	const handleAuthenticated = async () => {
 		try {
-			const response = await axios.post(`${api}${api2fa}/authenticate`, { 
+			await axios.post(`${api}${api2fa}/authenticate`, { 
 				twoFactorAuthenticationCode: password,
 			})
+			// eslint-disable-next-line no-self-assign
 			window.location.href = window.location.href;
 		}
 		catch (err) {
@@ -66,7 +67,13 @@ function MyFactorAuth(props: {setOpenQrcode: Dispatch<SetStateAction<boolean>>, 
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description">
 			<DialogContent>
-				<Stack direction="column" spacing={2} margin={7} alignItems="center" justifyContent="center">
+				<Stack
+					direction="column"
+					spacing={2}
+					margin={7}
+					alignItems="center"
+					justifyContent="center"
+				>
 					{turnon ? <h1 style={{color: 'white'}}>Generate qrcode...</h1> :
 					<h1 style={{color: 'white'}}>Enter Code</h1>}
 					{turnon ? <img src="http://127.0.0.1/api/2fa/generate" alt="qrcode"></img> : null}
@@ -89,8 +96,18 @@ function MyFactorAuth(props: {setOpenQrcode: Dispatch<SetStateAction<boolean>>, 
 				</Stack>
 			</DialogContent>
 			<DialogActions>
-				<Button sx={sxButton} onClick={handleClose}>Cancel</Button>
-				<Button sx={sxButton} onClick={handleConnection}>Connection</Button>
+				<Button
+					sx={sxButton}
+					onClick={handleClose}
+				>
+					Cancel
+				</Button>
+				<Button
+					sx={sxButton}
+					onClick={handleConnection}
+				>
+					Connection
+				</Button>
 			</DialogActions>
 		</Dialog>
 	);

@@ -18,11 +18,25 @@ function Admin() {
 		<Stack direction="column">
 			<MyFooter me={me}/>
 			<div style={{margin: 10}} />
-			<Stack sx={{width: 1, height: 1}} direction="row" justifyContent="center">
-				<Stack direction="column" sx={{width: 0.2, height: "50%"}} spacing={5} justifyContent="space-between">
+			<Stack
+				sx={{width: 1, height: 1}}
+				direction="row"
+				justifyContent="center"
+			>
+				<Stack
+					direction="column"
+					sx={{width: 0.2, height: "50%"}}
+					spacing={5}
+					justifyContent="space-between"
+				>
 					<MyAvatar user={me}/>
 				</Stack>
-				<Stack sx={{ width: 0.78, height: "100%"}} direction="column" alignItems="center" justifyContent="center">
+				<Stack
+					sx={{ width: 0.78, height: "100%"}}
+					direction="column"
+					alignItems="center"
+					justifyContent="center"
+				>
 					<MyInfosUser />
 				</Stack>
 			</Stack>

@@ -1,15 +1,15 @@
-import { Avatar, Badge, Box, Button, createTheme, FormControlLabel, FormGroup, responsiveFontSizes, Stack, Switch, TextField, ThemeProvider } from "@mui/material";
+import { Avatar, Box, Button, createTheme, FormControlLabel, responsiveFontSizes, Stack, Switch, TextField, ThemeProvider } from "@mui/material";
 import axios from "axios";
 import React, { SetStateAction, useEffect, useState } from "react";
 import { api, api2fa, apiAuth, apiMe } from "../../../Services/Api/Api";
-import { User, USER_STATUS } from "../../../Services/Interface/Interface";
+import { User } from "../../../Services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
 import KeyIcon from '@mui/icons-material/Key';
 import MyFooter from "../../../components/MyFooter";
-import { buttonStyle, styleTextField } from "../../../styles/Styles";
+import { styleTextField } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
-import { styleStack, sxButton } from "../Services/style";
+import { styleStack } from "../Services/style";
 import { useSnackbar } from 'notistack'
 import MyFactorAuth from "../../../components/MyFactorAuth";
 import Typography from '@mui/material/Typography';
@@ -127,10 +127,27 @@ const Settings = () => {
 	return (
 		<ThemeProvider theme={theme}>
 			<MyFooter me={me}/>
-			<Stack direction="row" sx={{width: "100%", height: "100%"}}>
-				<Stack direction="column" sx={{width: 0.97, height: 1}} justifyContent="center" alignItems="center">
-					<Stack sx={{ width: 0.9, height: "15em"}} direction="row" alignItems="center" justifyContent="space-between">
-						<Stack direction="row" alignItems="center" spacing={3}>
+			<Stack
+				direction="row"
+				sx={{width: "100%", height: "100%"}}
+			>
+				<Stack
+					direction="column"
+					sx={{width: 0.97, height: 1}}
+					justifyContent="center"
+					alignItems="center"
+				>
+					<Stack
+						sx={{ width: 0.9, height: "15em"}}
+						direction="row"
+						alignItems="center"
+						justifyContent="space-between"
+					>
+						<Stack
+							direction="row"
+							alignItems="center"
+							spacing={3}
+						>
 							<Avatar
 								sx={{ width: {xs: "96px", sm: "96px", md: "96px", lg: "128px"}, height: {xs: "96px", sm: "96px", md: "96px", lg: "128px"} }}
 								src={reload ? `http://127.0.0.1/api/profile/avatar` : `http://127.0.0.1/api/users/${me.login}/avatar`}>
@@ -140,27 +157,54 @@ const Settings = () => {
 								<Typography variant="h5" style={{color: 'grey'}}>{event?.toDateString()}</Typography>
 							</Stack>
 						</Stack>
-						<Button variant="contained" sx={{color: "white"}} onClick={handleLogout}>
+						<Button
+							variant="contained"
+							sx={{color: "white"}}
+							onClick={handleLogout}
+						>
 							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Logout</Typography>
 						</Button>
 					</Stack>
-					<Stack direction="row" spacing={3} sx={{ width: 1, height: "15em"}} className={classes2.root}>
+					<Stack
+						direction="row"
+						spacing={3}
+						sx={{ width: 1, height: "15em"}}
+						className={classes2.root}
+					>
 						<AddPhotoAlternateIcon sx={{ width: {xs: "48px", sm: "64px", md: "64px", lg: "64px"}, height: {xs: "48px", sm: "64px", md: "64px", lg: "64px"} }} />
-						<Box alignItems='center' display='flex' justifyContent='center' flexDirection='column'>
-							<Stack direction="row" spacing={3}>
-								<Button variant="contained" component="label">
+						<Box
+							alignItems='center'
+							display='flex'
+							justifyContent='center'
+							flexDirection='column'
+						>
+							<Stack
+								direction="row"
+								spacing={3}
+							>
+								<Button
+									variant="contained"
+									component="label"
+								>
 									<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>{img?.name ?? "Choose file"}</Typography>
 									<input onChange={handleImageChange} type="file" hidden />
 								</Button>
 								<Box marginY={3}>
-									<Button sx={{backgroundColor: "green", color: "white"}} onClick={handleSubmit}>
+									<Button
+										sx={{backgroundColor: "green", color: "white"}}
+										onClick={handleSubmit}>
 										<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Upload file</Typography>
 									</Button>
 								</Box>
 							</Stack>
 						</Box>
 					</Stack>
-					<Stack direction="row" spacing={3} sx={{ width: 1, height: "15em"}} className={classes2.root}>
+					<Stack
+						direction="row"
+						spacing={3}
+						sx={{ width: 1, height: "15em"}}
+						className={classes2.root}
+					>
 						<EditIcon sx={{ width: {xs: "48px", sm: "64px", md: "64px", lg: "64px"}, height: {xs: "48px", sm: "64px", md: "64px", lg: "64px"} }} />
 						<TextField
 							className={classes.styleTextField}
@@ -179,11 +223,19 @@ const Settings = () => {
 								style: { color: '#ADADAD' },
 							}}
 						/>
-						<Button sx={{backgroundColor: "green", color: "white", fontSize: "0.7rem"}} onClick={handleSendNewDisplayName}>
+						<Button
+							sx={{backgroundColor: "green", color: "white", fontSize: "0.7rem"}}
+							onClick={handleSendNewDisplayName}
+						>
 							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Valider</Typography>
 						</Button>
 					</Stack>
-					<Stack direction="row" spacing={{xs: 1, sm: 2, md: 3}} sx={{ width: 1, height: "15em"}} className={classes2.root}>
+					<Stack
+						direction="row"
+						spacing={{xs: 1, sm: 2, md: 3}}
+						sx={{ width: 1, height: "15em"}}
+						className={classes2.root}
+					>
 						<KeyIcon sx={{ width: {xs: "48px", sm: "64px", md: "64px", lg: "64px"}, height: {xs: "48px", sm: "64px", md: "64px", lg: "64px"} }} />
 						<FormControlLabel control={
 							<Switch

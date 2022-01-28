@@ -130,13 +130,27 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 				/> : null
 				}
 				<div style={{marginTop: 10}}></div>
-				<FormControlLabel value="start" control={<Checkbox onChange={handleChange}/>} label="Do you want to create a DM channel ? " />
+				<FormControlLabel
+					value="start"
+					control={<Checkbox onChange={handleChange}/>}
+					label="Do you want to create a DM channel ? "
+				/>
 				{openDM ? 
 					<React.Fragment>
-						<MySearchBarChat users={friends} fSearchBar={fSearchBar} nameBar="Search your friend..." />
+						<MySearchBarChat
+							users={friends}
+							fSearchBar={fSearchBar}
+							nameBar="Search your friend..."
+						/>
 						<div style={{marginTop: 10}}></div>
 						{friend !== undefined ? 
-							<Button onClick={() => handleRemoveFriend(friend)} key={friend.login} size="small" variant="contained" endIcon={<CloseIcon />}>
+							<Button 
+								onClick={() => handleRemoveFriend(friend)}
+								key={friend.login}
+								size="small"
+								variant="contained"
+								endIcon={<CloseIcon />}
+							>
 								{friend.login}
 							</Button> : null}
 						</React.Fragment> : null

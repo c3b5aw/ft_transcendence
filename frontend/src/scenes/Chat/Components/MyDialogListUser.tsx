@@ -1,5 +1,5 @@
 import { AppBar, Button, Dialog, IconButton, Toolbar } from "@mui/material";
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { IListUser } from "../Services/interface";
 import MyListUser from "./MyListUser";
 import CloseIcon from '@mui/icons-material/Close';

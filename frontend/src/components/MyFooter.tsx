@@ -106,40 +106,80 @@ export default function MyFooter(props : {me: User}) {
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
-			<AppBar position="sticky" sx={{ top: '0', bottom: 'auto' }}>
+			<AppBar
+				position="sticky"
+				sx={{ top: '0', bottom: 'auto' }}
+			>
 				<Toolbar sx={{justifyContent: 'space-between'}}>
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'}, justifyContent: 'space-between'}}>
 						<Button variant="contained" disableElevation
 							onClick={() => handleLaunchHome()}>
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Home</Typography>
+							<Typography
+								variant="h6"
+								style={{fontFamily: "Myriad Pro"}}
+							>
+								Home
+							</Typography>
 						</Button>
 						<Button variant="contained" disableElevation
 							onClick={() => handleLaunchStats()}>
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Statistiques</Typography>
+							<Typography
+								variant="h6"
+								style={{fontFamily: "Myriad Pro"}}
+							>
+								Statistiques
+							</Typography>
 						</Button>
 						<Button variant="contained" disableElevation
 							onClick={() => handleLaunchClassement()}>
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Classement</Typography>
+							<Typography
+								variant="h6"
+								style={{fontFamily: "Myriad Pro"}}
+							>
+								Classement
+							</Typography>
 						</Button>
 						<Button variant="contained" disableElevation
 							onClick={() => handleLaunchParametres()}>
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Paramètres</Typography>
+							<Typography
+								variant="h6"
+								style={{fontFamily: "Myriad Pro"}}
+							>
+								Paramètres
+							</Typography>
 						</Button>
 						<Button variant="contained" disableElevation
 							onClick={() => handleLaunchChat()}>
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Chat</Typography>
+							<Typography
+								variant="h6"
+								style={{fontFamily: "Myriad Pro"}}
+							>
+								Chat
+							</Typography>
 						</Button>
 						{me?.role === ROLE.ADMIN ?
 							<Button variant="contained" disableElevation
 								onClick={() => handleLaunchAdminView()}>
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Admin View</Typography>
+							<Typography
+								variant="h6"
+								style={{fontFamily: "Myriad Pro"}}
+							>
+								Admin View
+							</Typography>
 							</Button> : null
 						}
 					</Box>
 					<Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "flex", md: "none", lg: "none" }, justifyContent: 'space-between'}}>
-						<Button variant="contained" disableElevation
+						<Button
+							variant="contained"
+							disableElevation
 							onClick={() => handleLaunchChat()}>
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Home</Typography>
+							<Typography
+								variant="h6"
+								style={{fontFamily: "Myriad Pro"}}
+							>
+								Home
+							</Typography>
 						</Button>
 					</Box>
 					<Box sx={{ display: { xs: 'flex', md: 'none' } }}>

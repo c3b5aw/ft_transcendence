@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import MyAvatar from '../../../components/MyAvatar';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import MyLadder from '../Components/MyLadder';
@@ -16,7 +16,11 @@ function Classement() {
 			<Stack alignItems="flex-start">
 				<MyAvatar user={me} />
 			</Stack>
-			<Stack direction="column" alignItems="center" spacing={5}>
+			<Stack
+				direction="column"
+				alignItems="center"
+				spacing={5}
+			>
 				<Typography variant="h3" style={{fontFamily: "Myriad Pro"}}>Classement</Typography>
 				<MyLadder me={me}/>
 			</Stack>
