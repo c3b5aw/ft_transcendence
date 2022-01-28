@@ -34,7 +34,6 @@ export default function Game() {
 			context.fillRect(0, 0, canvas.width, canvas.height); //dessine des rectangles
 		} else {
 			context.clearRect(0, 0, canvas.width, canvas.height);
-			// context.drawImage(myimg, 1000, 600);
 		}
 		if (print === 0) {
 		context.lineWidth = 2;
@@ -73,7 +72,7 @@ export default function Game() {
 			} else {
 				stopGame();
 				context.fillStyle = 'red';
-				context.fillText("DEFEATE !", canvas.width / 2 - 200, canvas.height / 2);
+				context.fillText("DEFEAT !", canvas.width / 2 - 200, canvas.height / 2);
 			}
 		}
 	}
@@ -88,9 +87,8 @@ export default function Game() {
 	}
 
 	const game_loop = () => {
-		if (!is_play) {
+		if (!is_play)
 			return;
-		}
 		draw();
 
 		computerMove();
@@ -118,8 +116,7 @@ export default function Game() {
 	}
 
 	const computerMove = () => { // suis la balle a un peu moins que la vitesse de la balle
-		let i: number;
-		i = 1;
+		let i: number = 1;
 		game.computer.y += game.ball.speed * Math.sin(game.ball.direction * Math.PI / 180) * i; //* 0.85;
 		if (game.computer.y <= 20)
 			game.computer.y = 20;
@@ -129,16 +126,14 @@ export default function Game() {
 
 	const ballMove = () => {
 		// on fait en sorte que la balle rebondisse en haut et en bas
-		if (game.ball.y > canvas.height - 20 || game.ball.y - 20 < 20) {
+		if (game.ball.y > canvas.height - 20 || game.ball.y - 20 < 20)
 			game.ball.direction *= -1;
-		}
 
 		// le rebond quand la balle touche un joueur
-		if (game.ball.x > canvas.width - PLAYER_WIDTH - 20) {
+		if (game.ball.x > canvas.width - PLAYER_WIDTH - 20)
 			collide(game.computer);
-		} else if (game.ball.x < PLAYER_WIDTH + 20) {
+		else if (game.ball.x < PLAYER_WIDTH + 20)
 			collide(game.player);
-		}
 
 		game.ball.x += game.ball.speed * Math.cos(game.ball.direction * Math.PI / 180);
 		game.ball.y += game.ball.speed * Math.sin(game.ball.direction * Math.PI / 180);
@@ -170,13 +165,12 @@ export default function Game() {
 				game.player.score++;
 				document.querySelector('#player-score')!.textContent = game.player.score;
 			}
-			if (game.player.score === 1 || game.computer.score === 1) {
+
+			if (game.player.score === 1 || game.computer.score === 1)
 				print = 2;
-			}
+
 		} else {
 			// si il la touche la vitesse augmente
-			// var audio = new Audio(myaudiopong)
-			// audio.play();
 			changeDirection(player.y, player);
 			if (Math.abs(game.ball.speed) < MAX_SPEED && !on) {
 				console.log("NORMAL");
@@ -198,24 +192,23 @@ export default function Game() {
 	const changeDirection = (playerPosition:number, player:typeof game) => {
 		console.log("ball.y = ", game.ball.y);
 		console.log("Player .y = ", playerPosition);
-		let impact = game.ball.y - playerPosition - PLAYER_HEIGHT / 2.0;
-		if (impact < 0) {
+		let impact: number = game.ball.y - playerPosition - PLAYER_HEIGHT / 2.0;
+		if (impact < 0)
 			impact += game.ball.r;
-		} else {
+		else
 			impact -= game.ball.r;
-		}
 	
 		const ratio = 100.0 / (PLAYER_HEIGHT / 2.0);
 		console.log("height  ", PLAYER_HEIGHT );
 		console.log("ratio ", ratio);
 
 		//a une valeur entre -10 et 10 en fonction du point d impact
-		const num:number = Math.round(impact * ratio / 10);
-		if (player === game.computer) {
+		const num: number = Math.round(impact * ratio / 10);
+		if (player === game.computer)
 			game.ball.direction = 180 + num * 8;
-		} else  {
+		else
 			game.ball.direction = num * 8;
-		}
+
 		console.log(" Ball touch at ", num, " got this direction " , game.ball.direction);
 	}
  	
