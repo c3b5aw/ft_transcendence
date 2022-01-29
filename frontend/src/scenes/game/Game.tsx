@@ -6,7 +6,7 @@ import GameButtons from './GameButtons';
 import GameScoreBoard from './GameScoreBoard';
 import GameModifiers from './GameModifiers';
 
-import { RandomRGB } from './GameUtils';
+import { RandomBG } from './GameUtils';
 
 const PLAYER_HEIGHT = 100.0;
 const PLAYER_WIDTH = 5;
@@ -151,7 +151,7 @@ export default function Game() {
 		game.ball.direction = Math.random() * 160 - 80; //pour que la direction de depart differe
 	}
 
-	const collide = (player:typeof game) => {
+	const collide = (player: typeof game) => {
 		if (game.ball.y + game.ball.r < player.y || game.ball.y - game.ball.r > player.y + PLAYER_HEIGHT) {
 			// is_play = false
 			console.log("ball at ", game.ball.y)
@@ -229,7 +229,7 @@ export default function Game() {
 		setUpCanvas(width);
 	}
 
-    const setUpCanvas = (width:number) => {
+    const setUpCanvas = (width: number) => {
     	// Feed the size back to the canvas.
 		const oldWidth = canvas.width;
 		const oldHeight = canvas.height;
@@ -274,21 +274,31 @@ export default function Game() {
 
 		document.addEventListener("keydown", function(e) {
 			switch (e.key) {
-				case "ArrowUp" || "KeyW":
-					up = true; break
-				case "ArrowDown" || "KeyS":
-					down = true; break
-				case " " || "Shift":
-					space = true; break
+				case "ArrowUp":
+				case "w":
+					up = true;
+					break
+				case "ArrowDown":
+				case "s":
+					down = true;
+					break
+				case " ":
+				case "Shift":
+					space = true;
+					break
 			}
 		});
 
 		document.addEventListener("keyup", function(e){
 			switch (e.key) {
-				case "ArrowUp" || "KeyW":
-					up = false; break
-				case "ArrowDown" || "KeyS":
-					down = false; break
+				case "ArrowUp":
+				case "w":
+					up = false;
+					break
+				case "ArrowDown":
+				case "s":
+					down = false;
+					break
 			}
 		});
 
@@ -315,7 +325,7 @@ export default function Game() {
 				game.player.y = 20;
 			if (game.player.y + PLAYER_HEIGHT > canvas.height - 20)
 				game.player.y = canvas.height - 20 - PLAYER_HEIGHT;
-			document.getElementById('player')!.style.top = game.player.y + 'px';
+			// document.getElementById('player')!.style.top = game.player.y + 'px';
 		}, 1000 / 60)
 	}, []);
 
@@ -323,13 +333,7 @@ export default function Game() {
 
 	const	handleBackground = () => {
 		random = !random;
-		if (random) {
-			const [ x, y, z ] = RandomRGB();
-			const bgColor = "rgb(" + x + "," + y + "," + z + ")";
-			canvas.style.background = bgColor;
-		} else {
-			canvas.style.background = 'black';
-		}
+		canvas.style.background = random ? RandomBG() : 'black';
 	}
 	
 	return (
