@@ -17,6 +17,7 @@ import { Friends } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
 import MessageIcon from '@mui/icons-material/Message';
 import MyFooter from '../../../components/MyFooter';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -115,6 +116,10 @@ const Stats = () => {
 		}
 	}
 
+	const handleSendDuelGame = () => {
+		console.log("send duel game");
+	}
+
 	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined))
 		return (<MyChargingDataAlert />);
 	const isFriend = friends.filter(function (friend) {
@@ -146,6 +151,15 @@ const Stats = () => {
 							startIcon={<MessageIcon />}
 						>
 							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Send message</Typography>
+						</Button> : null
+					}
+					{user.login !== me.login && isFriend.length > 0 ?
+						<Button
+							onClick={() => handleSendDuelGame()}
+							sx={sxButton} variant="contained"
+							startIcon={<SportsEsportsIcon />}
+						>
+							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Duel</Typography>
 						</Button> : null
 					}
 					<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Matchs joués : {user.played}</Typography>
