@@ -4,6 +4,7 @@ import MyChargingDataAlert from "../../components/MyChargingDataAlert";
 import MyFooter from "../../components/MyFooter";
 import useMe from "../../Services/Hooks/useMe";
 import MatchMaking from "./MatchMaking";
+import MatchProgress from "./MatchsProgress";
 
 function MenuGame() {
 	const [openMatchMaking, setOpenMatchMaking] = useState<boolean>(false);
@@ -40,7 +41,7 @@ function MenuGame() {
 				>
 					<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Afficher les matchs en cours</Typography>
 				</Button>
-				{openMatchMaking ? <MatchMaking setOpen={setOpenMatchMaking} /> : null}
+				{openMatchMaking ? <MatchProgress setOpen={setOpenMatchMaking} /> : null}
 				{openViewMatchs ? <MatchMaking setOpen={setOpenViewMatchs} /> : null}
 			</Stack>
 		</Stack>

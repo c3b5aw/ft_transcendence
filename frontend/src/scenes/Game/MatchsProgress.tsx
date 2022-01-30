@@ -25,7 +25,7 @@ function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 		>
 			<MyAppBarClose setOpen={setOpen} />
 			<DialogContent>
-				<h1>MATCHS PROGRESS</h1>
+				<h1>Match making : </h1>
 			</DialogContent>
 		</Dialog>
 	);
