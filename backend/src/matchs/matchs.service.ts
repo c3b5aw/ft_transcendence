@@ -90,6 +90,28 @@ export class MatchsService {
 		`);
 	}
 
+	async findPendingMatch(playerID: number): Promise<Match> {
+		const matchs: Match[] = await this.matchRepository.query(`
+			SELECT matchs.*,
+				p1.login AS player1_login,
+				p2.login AS player2_login
+			FROM matchs
+			INNER JOIN users
+				AS p1
+				ON p1.id = matchs.player1
+			INNER JOIN users
+				AS p2
+				ON p2.id = matchs.player2
+			WHERE matchs.finished = false AND (
+				matchs.player1 = ${playerID}
+				OR matchs.player2 = ${playerID}
+			)
+			LIMIT 1;
+		`);
+		
+		return matchs.length > 0 ? matchs[0] : null;
+	}
+
 	/*
 		COUNT
 
@@ -98,5 +120,13 @@ export class MatchsService {
 
 	async countAll() : Promise<number> {
 		return this.matchRepository.count();
+	}
+
+	/*
+		UPDATE
+	*/
+
+	async update(match: Match) : Promise<Match> {
+		return this.matchRepository.save(match);
 	}
 }

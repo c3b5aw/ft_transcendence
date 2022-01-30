@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { Response } from 'express';
@@ -13,6 +13,8 @@ import { UserStatus } from './entities/status.enum';
 
 @Injectable()
 export class UsersService {
+	private logger: Logger = new Logger('UsersService');
+	
 	/*
 		view https://docs.nestjs.com/techniques/database#custom-repository
 	*/
@@ -22,7 +24,7 @@ export class UsersService {
 		const writer = createWriteStream( `./public/avatars/${userDetails.id}.jpg` )
 			.on('error', (err) => {
 				if (err)
-					console.log(err);
+					this.logger.error(err);
 			})
 
 		const hash = createHash('md5').update(userDetails.email).digest('hex');

@@ -1,13 +1,15 @@
 import { Logger, UseGuards } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayDisconnect, 
-		WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+		SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 
 import { Server } from 'socket.io';
 
-import { WsGuard } from 'src/ws/guards/ws.guard';
-import { WSClient } from 'src/ws/datastructures/wsclient.struct';
+import { WS_parse, WsGuard, WSClient } from 'src/ws';
+
+import { User } from 'src/users/entities/user.entity';
 
 import { GameService } from './game.service';
+import { GameMoves } from './objects/moves.enums';
 
 @UseGuards(WsGuard)
 @WebSocketGateway({ namespace: '/game', cors: { origin: '*'} })
@@ -23,38 +25,48 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.gameService.setServer(this.server);
 	}
 
-	async handleConnection(client: WSClient) {}
+	async handleConnection(client: WSClient) {
+		const user: User = await this.gameService.verifyUser(client);
+		if (!user)
+			return;
+		
+		await this.gameService.reconnectToGame(client);
+	}
 
-	async handleDisconnect(client: WSClient) {}
+	async handleDisconnect(client: WSClient) {
+		if (!client.user)
+			return;
 
-	/*
+		await this.gameService.disconnectFromGame(client);
+	}
 
-	- CLIENT SENDS:
+	@SubscribeMessage('game::join')
+	async gameJoin(client: WSClient, body: string) {
+		const json = await WS_parse(body);
+		if (!json)
+			return client.emit('onError', { error: 'invalid body' });
 
-	game::join					- make socket join a room (might be spectator)
-	game::paddle::move::up		- player move paddle up
-	game::paddle::move::down	- player move paddle down
-	game::paddle::move::stop	- player stop paddle movement
-	game::paddle::power			- player use power
-	game::pause					- player request pause
+		const { game_hash } = json;
+		this.gameService.connectToGame(client, game_hash);
+	}
 
-	- SERVER SENDS:
+	@SubscribeMessage('game::pause')
+	async gamePause(client: WSClient,) {
+		await this.gameService.handleGamePause(client);
+	}
 
-	game::match::onStart	- server start match
-	game::match::onPause	- server pause match
-	game::match::onEnd		- server end match
-	game::match::onScore	- server update score
-	game::match::onReset 	- server reset ball with new speed.y
+	@SubscribeMessage('game::paddle::move::up')
+	async gamePaddleMoveUp(client: WSClient) {
+		await this.gameService.handlePaddleMove(client, GameMoves.MOVE_UP);
+	}
 
-	game::spectator::onJoin		- server add spectator to room
-	game::spectator::onLeave	- server remove spectator from room
+	@SubscribeMessage('game::paddle::move::down')
+	async gamePaddleMoveDown(client: WSClient) {
+		await this.gameService.handlePaddleMove(client, GameMoves.MOVE_DOWN);
+	}
 
-	game::ball::onCollide		- server update ball vector on collision
-
-	game::paddle::onMove::up	- server move paddle up
-	game::paddle::onMove::down	- server move paddle down
-	game::paddle::onMove::stop	- server stop paddle
-	game::paddle::onPower		- server power paddle
-
-	*/
+	@SubscribeMessage('game::paddle::move::stop')
+	async gamePaddleMoveStop(client: WSClient) {
+		await this.gameService.handlePaddleMove(client, GameMoves.MOVE_STOP);
+	}
 }
