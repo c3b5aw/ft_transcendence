@@ -2,7 +2,7 @@ import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } 
 import { useNavigate } from "react-router-dom";
 import { ROLE } from "../Services/Api/Role";
 import { User } from "../Services/Interface/Interface";
-import { pageAdmin, pageChat, pageClassement, pageHome, pageSettings, pageStat } from "../Services/Routes/RoutePage";
+import { pageAdmin, pageChat, pageClassement, pageGame, pageHome, pageSettings, pageStat } from "../Services/Routes/RoutePage";
 import MoreIcon from '@mui/icons-material/MoreVert';
 import React from "react";
 
@@ -11,6 +11,7 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 
 export default function MyFooter(props : {me: User}) {
 	const { me } = props;
@@ -54,6 +55,10 @@ export default function MyFooter(props : {me: User}) {
 		navigate(`${pageAdmin}`);
 	}
 
+	function handleLaunchMenuGame() {
+		navigate(`${pageGame}`);
+	}
+
 	const mobileMenuId = 'primary-search-account-menu-mobile';
 	const renderMobileMenu = (
 		<Menu
@@ -94,6 +99,12 @@ export default function MyFooter(props : {me: User}) {
 				<ChatIcon />
 			</IconButton>
 			<p>Chat</p>
+		</MenuItem>
+		<MenuItem onClick={handleLaunchMenuGame}>
+			<IconButton>
+				<SportsEsportsIcon />
+			</IconButton>
+			<p>Game</p>
 		</MenuItem>
 		<MenuItem onClick={handleLaunchAdminView}>
 			<IconButton>
@@ -155,6 +166,15 @@ export default function MyFooter(props : {me: User}) {
 								style={{fontFamily: "Myriad Pro"}}
 							>
 								Chat
+							</Typography>
+						</Button>
+						<Button variant="contained" disableElevation
+							onClick={() => handleLaunchMenuGame()}>
+							<Typography
+								variant="h6"
+								style={{fontFamily: "Myriad Pro"}}
+							>
+								Game
 							</Typography>
 						</Button>
 						{me?.role === ROLE.ADMIN ?

@@ -17,9 +17,9 @@ import Chat from './scenes/Chat/View/Chat';
 import Admin from './scenes/Admin/View/Admin';
 import { ROLE } from './Services/Api/Role';
 import { SnackbarProvider } from 'notistack';
-import Game from './scenes/game/Game';
 import { socket, SocketContext } from './Services/ws/utils';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
+import MenuGame from './scenes/Game/MenuGame';
 
 const useStyles = makeStyles({
 	theme: {
@@ -93,7 +93,7 @@ function ManageRouter() {
 						path={pageGame}
 						element={
 							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-								<Game />
+								<MenuGame />
 							</PrivateRoute>
 						}
 					/>
