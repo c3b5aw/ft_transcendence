@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
+import { Stack, Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import SearchBar from "material-ui-search-bar";
 import { useState } from "react";
@@ -36,28 +36,30 @@ export default function MySearchBar(props : {users: User[]}) {
 
 	return (
 		<Paper className={classes.paper}>
-			<SearchBar className={classes.searchBar}
-				placeholder="Search users..."
-				value={searched}
-				onChange={(searchVal) => requestSearch(searchVal)}
-				onCancelSearch={() => cancelSearch()}
-				cancelOnEscape={true}
-			/>
-			<Paper className={classes.paper} style={{top: '14%', position: 'absolute'}}>
-				<TableContainer sx={{maxHeight: 200}}>
-					<Table>
-						<TableBody>
-							{rows.map((row) => (
-							<TableRow key={row.login} hover>
-								<TableCell component="th" scope="row" onClick={() => handleClickCell(row.login)}>
-									{row.login}
-								</TableCell>
-							</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</Paper>
+			<Stack direction="column" spacing={7}>
+				<SearchBar className={classes.searchBar}
+					placeholder="Search users..."
+					value={searched}
+					onChange={(searchVal) => requestSearch(searchVal)}
+					onCancelSearch={() => cancelSearch()}
+					cancelOnEscape={true}
+				/>
+				<Paper className={classes.paper} style={{position: 'absolute'}}>
+					<TableContainer sx={{maxHeight: 200}}>
+						<Table>
+							<TableBody>
+								{rows.map((row) => (
+								<TableRow key={row.login} hover>
+									<TableCell component="th" scope="row" onClick={() => handleClickCell(row.login)}>
+										{row.login}
+									</TableCell>
+								</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+				</Paper>
+			</Stack>
 		</Paper>
 	);
 }

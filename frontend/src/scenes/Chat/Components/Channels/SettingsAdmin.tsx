@@ -159,10 +159,24 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 			<DialogTitle>Update channel {mySettingsAdmin.channel.name}</DialogTitle>
 			<DialogContent>
 				<Box sx={{ flexGrow: 1, marginTop: 1}}>
-					<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+					<Grid
+						container
+						rowSpacing={1}
+						columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+					>
 						{modos.map((modo) => (
-						<Grid item xs={3.5} key={modo.id}>
-							<Button onClick={() => handleRemoveModo(modo)} key={modo.id} size="small" variant="contained" endIcon={<CloseIcon />}>
+						<Grid
+							item
+							xs={3.5}
+							key={modo.id}
+						>
+							<Button
+								onClick={() => handleRemoveModo(modo)}
+								key={modo.id}
+								size="small"
+								variant="contained"
+								endIcon={<CloseIcon />}
+							>
 								{modo.login}
 					 		</Button>
 						</Grid>

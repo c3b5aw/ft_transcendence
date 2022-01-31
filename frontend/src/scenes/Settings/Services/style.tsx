@@ -7,7 +7,7 @@ export const sxButton = {
     fontFamily: "Myriad Pro",
     padding: "15px",
     backgroundColor: "white",
-    fontSize: "17px",
+    fontSize: "0.7vmax",
     '&:hover': {
         backgroundColor: '#D5D5D5',
         color: '#000000',

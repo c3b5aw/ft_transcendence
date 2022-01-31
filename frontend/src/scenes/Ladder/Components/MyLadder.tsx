@@ -57,37 +57,65 @@ function Row(props: { user: User, me: User}) {
 				{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
 			</IconButton>
 			</TableCell>
-			<TableCell onClick={() => navigate(`${apiStats}/${user.login}`)} component="th" scope="row">{user.login}</TableCell>
-			<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{user.elo}</TableCell>
-			<TableCell align="center">{user.victories}</TableCell>
-			<TableCell align="center">{user.defeats}</TableCell>
-			<TableCell align="center">{user.victories + user.defeats}</TableCell>
+			<TableCell onClick={() => navigate(`${apiStats}/${user.login}`)} component="th" scope="row">
+				<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>{user.login}</Typography>
+			</TableCell>
+			<TableCell align="center" sx={{color: '#C70039'}}>
+				<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>{user.elo}</Typography>
+			</TableCell>
+			<TableCell align="center">
+				<Typography variant="h6">{user.victories}</Typography>
+			</TableCell>
+			<TableCell align="center">
+				<Typography variant="h6">{user.defeats}</Typography>
+			</TableCell>
+			<TableCell align="center">
+				<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>{user.victories + user.defeats}</Typography>
+			</TableCell>
 		</TableRow>
 		<TableRow>
 			<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
 			<Collapse in={open} timeout="auto" unmountOnExit>
 				<Box sx={{ margin: 1 }}>
 				<Typography variant="h6" gutterBottom component="div">
-					<p style={{fontFamily: 'Myriad Pro'}}>Historique Matchs</p>
+					<p style={{fontFamily: 'Myriad Pro', fontSize:"19px"}}>Historique Matchs</p>
 				</Typography>
 				<Table size="small" aria-label="purchases">
 					<TableHead>
 					<TableRow>
-						<TableCell align="center" sx={{fontFamily: 'Myriad Pro', fontSize: "17px"}}>Login</TableCell>
-						<TableCell align="center" sx={{fontFamily: 'Myriad Pro', fontSize: "17px"}}>Score 1</TableCell>
-						<TableCell align="center" sx={{fontFamily: 'Myriad Pro', fontSize: "17px"}}></TableCell>
-						<TableCell align="center" sx={{fontFamily: 'Myriad Pro', fontSize: "17px"}}>Score 2</TableCell>
-						<TableCell align="center" sx={{fontFamily: 'Myriad Pro', fontSize: "17px"}}>Login</TableCell>
+						<TableCell align="center">
+							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Login</Typography>
+						</TableCell>
+						<TableCell align="center">
+							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Score 1</Typography>
+						</TableCell>
+						<TableCell align="center"></TableCell>
+						<TableCell align="center">
+							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Score 2</Typography>
+						</TableCell>
+						<TableCell align="center">
+							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Login</Typography>
+						</TableCell>
 					</TableRow>
 					</TableHead>
 					<TableBody>
 					{matchs.map((match) => (
 						<TableRow key={match.id}>
-						<TableCell component="th" scope="row" align="center">{match.player1_login}</TableCell>
-						<TableCell align="center" sx={{color: match.player1_score > match.player2_score ? "green" : match.player1_score < match.player2_score ? "#C70039" : "black"}}>{match.player1_score}</TableCell>
-						<TableCell align="center" sx={{fontFamily: 'Myriad Pro', fontSize: "27px", alignContent: "center"}}>-</TableCell>
-						<TableCell align="center" sx={{color: match.player2_score > match.player1_score ? "green" : match.player2_score < match.player1_score ? "#C70039" : "black"}}>{match.player2_score}</TableCell>
-						<TableCell align="center">{match.player2_login}</TableCell>
+						<TableCell component="th" scope="row" align="center">
+							<Typography variant="h6">{match.player1_login}</Typography>
+						</TableCell>
+						<TableCell align="center">
+							<Typography variant="h6" style={{color: match.player1_score > match.player2_score ? "green" : match.player1_score < match.player2_score ? "#C70039" : "black"}}>{match.player1_score}</Typography>
+						</TableCell>
+						<TableCell align="center">
+							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>-</Typography>
+						</TableCell>
+						<TableCell align="center">
+							<Typography variant="h6" style={{color: match.player2_score > match.player1_score ? "green" : match.player2_score < match.player1_score ? "#C70039" : "black", fontFamily: "Myriad Pro"}}>{match.player2_score}</Typography>
+						</TableCell>
+						<TableCell align="center">
+							<Typography variant="h6">{match.player2_login}</Typography>
+						</TableCell>
 						</TableRow>
 					))}
 					</TableBody>
@@ -125,18 +153,27 @@ export default function MyLadder(props: {me: User}) {
 	if (users === undefined)
 		return (<MyChargingDataAlert />);
 	return (
-		<Stack sx={{backgroundColor: "white", width: 1, height: 0.82, borderRadius: 5}} direction="column">
+		<Stack sx={{backgroundColor: "white", width: 0.95, minHeight:"auto", borderRadius: 5}} direction="column">
 			<TableContainer>
 				<Table aria-label="collapsible table">
 					<TableHead>
 						<TableRow>
 							<TableCell />
-							<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Classement</p></TableCell>
-							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Elo</TableCell>
-							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Victoires</TableCell>
-							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Défaites</TableCell>
-							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}>Total</TableCell>
-							<TableCell align="center" sx={{fontFamily: "Myriad Pro"}}></TableCell>
+							<TableCell>
+								<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Login</Typography>
+							</TableCell>
+							<TableCell align="center">
+								<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Elo</Typography>
+							</TableCell>
+							<TableCell align="center">
+								<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Victoires</Typography>
+							</TableCell>
+							<TableCell align="center">
+								<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Défaites</Typography>
+							</TableCell>
+							<TableCell align="center">
+								<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Total</Typography>
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
