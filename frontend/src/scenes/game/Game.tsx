@@ -342,7 +342,11 @@ export default function Game() {
 			style={{ minHeight: '100vh' }}
 		>
 			<Grid item xs={3}>
-				<Paper>
+				<Paper elevation={ 4 }
+					sx={{
+						borderRadius: '0px',
+					}}
+				>
 					<GameScoreBoard />
 					<GameModifiers boostCallback={ handleBoost } backgroundCallback={ handleBackground } />
 					<GameButtons startGame={ play } stopGame= { stopGame } pauseGame={ pause } />
