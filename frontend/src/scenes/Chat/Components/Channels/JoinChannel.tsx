@@ -100,8 +100,20 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 				<MySearchBarChannels channels={allChannels} fSearchBarChannel={ISearchBarChannel} nameBar="Search channels..."/>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={handleClose} variant="contained" color="error">Cancel</Button>
-				<Button onClick={handleJoinChannel} variant="contained" color="success">Join</Button>
+				<Button
+					onClick={handleClose}
+					variant="contained"
+					color="error"
+				>
+					Cancel
+				</Button>
+				<Button
+					onClick={handleJoinChannel}
+					variant="contained"
+					color="success"
+				>
+					Join
+				</Button>
 			</DialogActions>
 		</Dialog>
 	);

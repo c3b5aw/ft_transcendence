@@ -31,8 +31,20 @@ function SettingsM(props: { mySettingsM: ISettingM }) {
 				</Stack>
 			</DialogTitle>
 			<DialogActions>
-				<Button onClick={handleClose} variant="contained" color="error">Cancel</Button>
-				<Button onClick={handleQuitChannel} variant="contained" color="success">Quitter</Button>
+				<Button
+					onClick={handleClose}
+					variant="contained"
+					color="error"
+				>
+					Cancel
+				</Button>
+				<Button
+					onClick={handleQuitChannel}
+					variant="contained"
+					color="success"
+				>
+					Quitter
+				</Button>
 			</DialogActions>
 		</Dialog>
 	);

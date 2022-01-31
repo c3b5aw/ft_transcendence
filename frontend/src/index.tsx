@@ -17,17 +17,21 @@ import Chat from './scenes/Chat/View/Chat';
 import Admin from './scenes/Admin/View/Admin';
 import { ROLE } from './Services/Api/Role';
 import { SnackbarProvider } from 'notistack';
-import Game from './scenes/game/Game';
 import { socket, SocketContext } from './Services/ws/utils';
+import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
+import MenuGame from './scenes/Game/MenuGame';
 
 const useStyles = makeStyles({
 	theme: {
 		backgroundColor: "#1d3033",
-		minHeight: 1,
-		minWidth: 1,
+		minHeight: "100vh",
+		minWidth: "100vw",
 		color: "white",
 	},
 });
+
+let theme = createTheme();
+theme = responsiveFontSizes(theme);
 
 function ManageRouter() {
 	const classes = useStyles();
@@ -89,7 +93,7 @@ function ManageRouter() {
 						path={pageGame}
 						element={
 							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-								<Game />
+								<MenuGame />
 							</PrivateRoute>
 						}
 					/>
@@ -103,7 +107,9 @@ ReactDOM.render(
 	<SocketContext.Provider value={socket}>
 		<SnackbarProvider maxSnack={3}>
 			<React.StrictMode>
-				<ManageRouter/>
+				<ThemeProvider theme={theme}>
+					<ManageRouter/>
+				</ThemeProvider>
 			</React.StrictMode>
 		</SnackbarProvider>
 	</SocketContext.Provider>,

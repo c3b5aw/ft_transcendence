@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Stack } from '@mui/material';
+import { Box, Button, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,16 +7,20 @@ import MyHistory from '../Components/MyHistory';
 import { api, apiChannel, apiChat, apiDM, apiUsers } from '../../../Services/Api/Api';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box } from '@mui/system';
 import MyAvatar from '../../../components/MyAvatar';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../Services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
-import { sxButton, sxDiv } from '../Services/style';
+import { sxButton } from '../Services/style';
 import { Friends } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
 import MessageIcon from '@mui/icons-material/Message';
+import MyFooter from '../../../components/MyFooter';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import React from 'react';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -29,11 +33,12 @@ const Stats = () => {
 	const [friends, setFriends] = useState<Friends[]>([]);
 	const [friendsPending, setFriendsPending] = useState<Friends[]>([]);
 	const navigate = useNavigate();
+	const [openAchievements, setOpenAchievements] = useState<boolean>(false);
 
 	useEffect(() => {
 		const fetchFriendsMe = async () => {
 			try {
-				const url = `http://127.0.0.1/api/profile/friends`;
+				const url = `/api/profile/friends`;
 				const reponse = await axios.get(url);
 				setFriends(reponse.data);
 			} catch (err) {
@@ -49,7 +54,7 @@ const Stats = () => {
 	useEffect(() => {
 		const fetchFriendsMePending = async () => {
 			try {
-				const url = `http://127.0.0.1/api/profile/friends/pending`;
+				const url = `/api/profile/friends/pending`;
 				const reponse = await axios.get(url);
 				setFriendsPending(reponse.data);
 			} catch (err) {
@@ -115,6 +120,23 @@ const Stats = () => {
 		}
 	}
 
+	const handleSendDuelGame = () => {
+		console.log("send duel game");
+	}
+
+	const handleAchievementMenuClose = () => {
+		setAchievementMoreAnchorEl(null);
+	};
+
+	const handleAchievementMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setAchievementMoreAnchorEl(event.currentTarget);
+	};
+
+	const [AchievementMoreAnchorEl, setAchievementMoreAnchorEl] =
+		React.useState<null | HTMLElement>(null);
+
+	const isAchievementMenuOpen = Boolean(AchievementMoreAnchorEl);
+
 	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined))
 		return (<MyChargingDataAlert />);
 	const isFriend = friends.filter(function (friend) {
@@ -123,49 +145,138 @@ const Stats = () => {
 	const isFriendPending = friendsPending.filter(function (friendPending) {
 		return (friendPending.login === user.login);
 	});
+
+	const renderAchievementMenu = (
+		<Menu
+			anchorEl={AchievementMoreAnchorEl}
+			anchorOrigin={{
+				vertical: 'top',
+				horizontal: 'right',
+			}}
+			id="menu-achievements"
+			keepMounted
+			transformOrigin={{
+				vertical: 'top',
+				horizontal: 'right',
+			}}
+			open={isAchievementMenuOpen}
+			onClose={handleAchievementMenuClose}
+		>
+			{user.login !== me.login ?
+				<MenuItem onClick={handleSendMessage}>
+					<IconButton>
+						<MessageIcon />
+					</IconButton>
+					<p>Send message</p>
+				</MenuItem> : null}
+			{user.login !== me.login && isFriend.length > 0 ?
+				<MenuItem onClick={handleSendDuelGame}>
+					<IconButton>
+						<SportsEsportsIcon />
+					</IconButton>
+					<p>Duel</p>
+				</MenuItem> : null}
+			<MenuItem onClick={() => setOpenAchievements(true)}>
+				<IconButton>
+					<EmojiEventsIcon />
+				</IconButton>
+				<p>Achievements</p>
+			</MenuItem>
+		</Menu>
+	);
+
 	return (
-		<Stack sx={{width: 1, height: 1}} direction="row" spacing={3}>
-			<Stack sx={{ width: 0.2, height: "100vh" }} direction="column" alignItems="center">
+		<Stack direction="column" spacing={4}>
+			<MyFooter me={me}/>
+			<div style={{marginTop: 10}} />
+			<Stack direction="row" justifyContent="space-between" alignItems="center">
 				<MyAvatar user={user}/>
-				{user.login !== me.login ?
-					<Button onClick={() => handleSendMessage()} sx={sxButton} variant="contained" startIcon={<MessageIcon />}>
-						<div style={sxDiv}>Send message</div>
-					</Button> : null
-				}
-				<Stack sx={{ width: 1, height: 1/4, marginLeft: "30%" }} direction="column" justifyContent="center" spacing={4}>
-					<h2>Matchs joués : {user.played}</h2>
-					<h2>Classement : {user.rank}</h2>
-					<h2 style={{color: '#079200'}}>Victoires : {user.victories}</h2>
-					<h2 style={{color: '#C70039'}}>Défaites : {user.defeats}</h2>
-				</Stack>
-				<MyAchievements user={user}/>
+				<Box>
+					<IconButton
+						aria-label="show more"
+						aria-controls="menu-achievements"
+						aria-haspopup="true"
+						onClick={handleAchievementMenuOpen}
+						color="inherit"
+					>
+						<MoreIcon sx={{fontSize: "40px"}}/>
+					</IconButton>
+				</Box>
 			</Stack>
-			<Stack sx={{width: 0.775, height: "100vh"}} direction="column" justifyContent="center" alignItems="center">
-				<Stack sx={{width: 1, height: 2/12}} direction="row" alignItems="flex-end" justifyContent="space-between" spacing={4}>
-					<h1 style={{fontFamily: 'Myriad Pro'}}>Historique</h1>
-					{user.login !== me.login ?
-					<Box>
-						{isFriend.length === 0 && isFriendPending.length === 0 ?
-							<Button onClick={() => handleAddFriend()} sx={sxButton} variant="contained" startIcon={<PersonAddIcon />}>
-								<div style={sxDiv}>Add friend</div>
-							</Button> : isFriendPending.length !== 0 && isFriend.length === 0 ? 
-							<ButtonGroup>
-								<Button disabled sx={sxButton} variant="contained" startIcon={<AccessTimeIcon />}>
-									<div style={sxDiv}>Pending</div>
-								</Button> 
-								<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
-									<div style={sxDiv}>Delete friend</div>
+			<Stack
+				sx={{width: 1, height: "90%"}}
+				direction="row"
+				justifyContent="center"
+			>
+				<Stack	
+					sx={{width: 0.9, height: 0.8}}
+					direction="column"
+					spacing={4}
+					>
+					<Stack
+						sx={{height: 2/12}}
+						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
+						alignItems="flex-end"
+						justifyContent="space-between"
+					>
+						<Typography variant="h4" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Historique</Typography>
+						{user.login !== me.login ?
+						<Stack direction={{xs: "column", sm: "column", md: "column", lg: "column"}}>
+							{isFriend.length === 0 && isFriendPending.length === 0
+								?
+								<Button
+									onClick={() => handleAddFriend()}
+									sx={sxButton}
+									variant="contained"
+									startIcon={<PersonAddIcon />}
+								>
+									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Add friend</Typography>
 								</Button>
-							</ButtonGroup> :
-							<Button onClick={() => handleDeleteFriend()} sx={sxButton} variant="contained" startIcon={<DeleteIcon />}>
-								<div style={sxDiv}>Delete friend</div>
-							</Button>
+								:
+								isFriendPending.length !== 0 && isFriend.length === 0
+								? 
+								<Stack direction={{xs: "column", sm: "column", md: "column", lg: "row"}} spacing={3}>
+									<Button
+										disabled
+										sx={sxButton}
+										variant="contained"
+										startIcon={<AccessTimeIcon />}
+									>
+										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Pending</Typography>
+									</Button> 
+									<Button
+										onClick={() => handleDeleteFriend()}
+										sx={sxButton} variant="contained"
+										startIcon={<DeleteIcon />}
+									>
+										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
+									</Button>
+								</Stack> :
+								<Button
+									onClick={() => handleDeleteFriend()}
+									sx={sxButton} variant="contained"
+									startIcon={<DeleteIcon />}
+								>
+									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
+								</Button>
+							}
+						</Stack> : null
 						}
-					</Box> : null
-					}
+					</Stack>
+					<MyHistory user={user}/>
+					<Stack
+						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
+						justifyContent="space-evenly"
+					>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Matchs joués : {user.played}</Typography>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Classement : {user.rank}</Typography>
+						<Typography variant="h5" style={{color: '#079200', fontFamily: "Myriad Pro", textAlign: "center"}}>Victoires : {user.victories}</Typography>
+						<Typography variant="h5" style={{color: '#C70039', fontFamily: "Myriad Pro", textAlign: "center"}}>Défaites : {user.defeats}</Typography>
+					</Stack>
 				</Stack>
-				<MyHistory user={user}/>
 			</Stack>
+			{openAchievements ? <MyAchievements user={user} setOpen={setOpenAchievements}/> : null}
+			{renderAchievementMenu}
 		</Stack>
 	);
 }

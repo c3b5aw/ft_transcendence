@@ -2,17 +2,16 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Button from '../Components/MyButton';
-import { StyleH1 } from '../../../styles/Styles';
 import { apiConnection } from '../../../Services/Api/Api';
 import { sxAvatar, sxBox } from '../Services/style';
+import { Typography } from '@mui/material';
 
 function Connection()
 {
-	const styleH1 = StyleH1();
 	return (
 		<Stack>
 			<Box sx={sxBox}>
-				<h1 className={styleH1.root}>ft_transcendance</h1>
+				<Typography variant="h1" style={{textAlign: "center", fontFamily: "Myriad Pro"}}>ft_transcendence</Typography>
 			</Box>
 			<Box sx={sxBox}>
 				<Button 

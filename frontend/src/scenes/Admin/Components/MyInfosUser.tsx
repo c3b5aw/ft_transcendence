@@ -10,12 +10,14 @@ import { useNavigate } from 'react-router';
 import { api, apiAdmin, apiBan, apiChannel, apiChannels, apiChat, apiStats, apiUsers } from "../../../Services/Api/Api";
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { User } from '../../../Services/Interface/Interface';
-import { Avatar, IconButton, Stack, Switch } from '@mui/material';
+import { Avatar, IconButton, Stack, Switch, Typography } from '@mui/material';
 import { ROLE } from '../../../Services/Api/Role';
 import { useSnackbar } from 'notistack'
 import { Channel } from '../../Chat/Services/interface';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NumbersIcon from '@mui/icons-material/Numbers';
+import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
+import useCountMatchs from '../Services/useCountMatchs';
 
 export default function MyInfosUser() {
 
@@ -116,13 +118,27 @@ export default function MyInfosUser() {
 			<TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: 'white' }}>
 				<TableCell>
 					<Avatar
-						src={`http://127.0.0.1/api/users/${user.login}/avatar`}
+						src={`/api/users/${user.login}/avatar`}
 						sx={{ width: "48px", height: "48px" }}>
 					</Avatar>
 				</TableCell>
-				<TableCell onClick={() => navigate(`${apiStats}/${user.login}`)} component="th" scope="row">{user.id}</TableCell>
-				<TableCell align="center" sx={{color: '#C70039', fontFamily: "Myriad Pro"}}>{user.login} ({user.role})</TableCell>
-				<TableCell align="center">{user.email}</TableCell>
+				<TableCell
+					onClick={() => navigate(`${apiStats}/${user.login}`)}
+					component="th" scope="row"
+				>
+					{user.id}
+				</TableCell>
+				<TableCell
+					align="center"
+					sx={{color: '#C70039', fontFamily: "Myriad Pro"}}
+				>
+					{user.login} ({user.role})
+				</TableCell>
+				<TableCell
+					align="center"
+				>
+					{user.email}
+				</TableCell>
 				<TableCell align="center">
 					{user.role !== ROLE.ADMIN ?
 						<Switch checked={banned} onChange={handleBanned}/> :
@@ -170,7 +186,12 @@ export default function MyInfosUser() {
 				</TableCell>
 				<TableCell>{channel.owner_login}</TableCell>
 				<TableCell>{channel.private ? "private" : "public"}</TableCell>
-				<TableCell align="center" onClick={() => navigate(`${apiChat}`)}>{channel.name}</TableCell>
+				<TableCell
+					align="center"
+					onClick={() => navigate(`${apiChat}`)}
+				>
+					{channel.name}
+				</TableCell>
 				<TableCell align="center">
 					<IconButton onClick={() => handleDeleteChannel()}>
 						<DeleteIcon style={{color: "#C0392B"}}/>
@@ -181,9 +202,13 @@ export default function MyInfosUser() {
 		);
 	}
 
+	const countMatchs = useCountMatchs();
+
+	if (users === undefined || countMatchs === undefined)
+		return (<MyChargingDataAlert />);
 	return (
-		<Stack sx={{width: 1, height: 0.94}} direction="column" spacing={5}>
-			<Stack sx={{backgroundColor: "white", width: 1, height: 0.47, borderRadius: 5}}>
+		<Stack sx={{width: 1}} direction="column" spacing={5}>
+			<Stack sx={{backgroundColor: "white", width: 1, height: 0.5, borderRadius: 5}}>
 				<TableContainer sx={{borderRadius: 5}}>
 					<Table aria-label="collapsible table">
 						<TableHead sx={{backgroundColor: "green"}}>
@@ -205,7 +230,7 @@ export default function MyInfosUser() {
 					</Table>
 				</TableContainer>
 			</Stack>
-			<Stack sx={{backgroundColor: "white", width: 1, height: 0.47, borderRadius: 5}}>
+			<Stack sx={{backgroundColor: "white", width: 1, height: 0.5, borderRadius: 5}}>
 				<TableContainer sx={{borderRadius: 5}}>
 					<Table aria-label="collapsible table">
 						<TableHead sx={{backgroundColor: "orange"}}>
@@ -224,6 +249,10 @@ export default function MyInfosUser() {
 						</TableBody>
 					</Table>
 				</TableContainer>
+			</Stack>
+			<Stack sx={{width: 1}} direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
+				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de matchs : {countMatchs}</Typography>
+				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de joueurs : {users.length}</Typography>
 			</Stack>
 		</Stack>
 	);
