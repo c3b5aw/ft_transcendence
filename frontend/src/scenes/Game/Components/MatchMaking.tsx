@@ -1,13 +1,15 @@
 import { Dialog, DialogContent, Stack, Typography } from "@mui/material";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import MyAppBarClose from "../../../components/MyAppBarClose";
+import { apiGame } from "../../../Services/Api/Api";
 import { socketMatchmaking } from "../../../Services/ws/utils";
 import { MATCHTYPE } from "../Services/utils";
 import { matchJoin, matchLeave } from "../Services/wsGame";
 
 function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { setOpen } = props;
-	const [findMatch, setFindMatch] = useState(null);
+	const navigate = useNavigate();
 
 	const handleClose = () => {
 		matchLeave();
@@ -16,7 +18,7 @@ function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 
 	useEffect(() => {
 		socketMatchmaking.on("matchmaking::onMatch", (data) => {
-			setFindMatch(data)
+			navigate(`${apiGame}/${data.match.hash}`);
 		})
 	}, [])
 
