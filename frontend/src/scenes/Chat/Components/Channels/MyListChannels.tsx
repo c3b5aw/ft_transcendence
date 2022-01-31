@@ -1,4 +1,4 @@
-import { Box, IconButton, List, ListItem, ListItemButton, Paper, Stack } from '@mui/material';
+import { Box, IconButton, List, ListItem, ListItemButton, Paper, Stack, Tooltip } from '@mui/material';
 import { User } from '../../../../Services/Interface/Interface';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LockIcon from '@mui/icons-material/Lock';
@@ -90,8 +90,10 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 											alignItems="center" spacing={2}
 											direction="row"
 										>
-											{channel.private ? <LockIcon color="warning"/> : <LockOpenIcon color="warning"/>}
-											<Box sx={{display: { xs: 'flex', sm: "flex"}}}>
+											<Tooltip title={`${channel.name}`}>
+												{channel.private ? <LockIcon color="warning"/> : <LockOpenIcon color="warning"/>}
+											</Tooltip>
+											<Box sx={{display: { xs: 'none', sm: "flex" } }}>
 												<h4 style={{color: "white"}}>{channel.name}</h4>
 											</Box>
 										</Stack>

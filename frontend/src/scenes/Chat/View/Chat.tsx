@@ -5,7 +5,6 @@ import { styleTextField } from "../../../styles/Styles";
 import MyListChannels from "../Components/Channels/MyListChannels";
 import { Channel, IChannel, IListUser, Message } from "../Services/interface";
 import SendIcon from '@mui/icons-material/Send';
-import NumbersIcon from '@mui/icons-material/Numbers';
 import MyMessages from "../Components/MyMessages";
 import { User } from "../../../Services/Interface/Interface";
 import MyListUser from "../Components/MyListUser";
@@ -214,19 +213,18 @@ function Chat() {
 			<MyFooter me={me}/>
 			<Box sx={{
 				flexDirection: "row",
-				height: "95vh",
+				height: "90vh",
 				display: "flex"}}
 			>
-				<Box sx={{
-					flexGrow: 1,
-					marginTop: 2,
+				<Stack sx={{
 					height: 1,
+					width: 0.25,
 					alignItems: "center"}}
 				>
 					<Stack
 						direction="row"
 						sx={{width: 1, height: 0.075}}
-						justifyContent={{xs: "center"}}
+						justifyContent={{xs: "center", sm: "flex-start"}}
 					>
 						<Stack
 							direction="row"
@@ -237,7 +235,7 @@ function Chat() {
 								src={`http://127.0.0.1/api/profile/avatar`}
 								sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
 							</Avatar>
-							<Box sx={{display: { xs: 'none', md: 'flex'}}}>
+							<Box sx={{display: { xs: 'none', sm: 'flex'}}}>
 								<h3 style={{color: "white"}}>{me?.login}</h3>
 							</Box>
 						</Stack>
@@ -251,17 +249,16 @@ function Chat() {
 					<Stack
 						direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }}
 						sx={{width: 1, height: 0.125 }}
-						spacing={2}
 						alignItems="center"
-						justifyContent="center"
+						justifyContent="space-around"
 					>
 						<HandleCreateChannel />
 						<HandleJoinChannel />
 					</Stack>
-				</Box>
+				</Stack>
 				<Stack
 					direction="column"
-					sx={{minWidth: "75vw", maxWidth: "65vw", height: 1}}
+					sx={{minWidth: 0.7, maxWidth: 0.7, height: 1}}
 				>
 					<Stack
 						direction="row"
@@ -274,15 +271,14 @@ function Chat() {
 								alignItems="center"
 								spacing={3}
 							>
-								<NumbersIcon style={{fontSize: "40px"}} color="warning"/>
 								<Typography
-									variant="h4"
+									variant="h5"
 									style={{fontFamily: "Myriad Pro", textAlign: "center"}}
 									>
 										{nameChannelDisplay}
 									</Typography>
 								<Button
-									sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}}
+									sx={{display: {lg: "flex", xl: "none"}}}
 									variant="contained"
 									onClick={() => setOpenUserChannel(true)}
 								>
@@ -290,7 +286,7 @@ function Chat() {
 										variant="subtitle1"
 										style={{fontFamily: "Myriad Pro"}}
 									>
-											Users channel
+											Users
 									</Typography>
 								</Button>
 							</Stack> : null
@@ -353,7 +349,7 @@ function Chat() {
 									variant="outlined"
 									fullWidth
 									multiline
-									maxRows={3}
+									maxRows={2}
 									value={messageTmp}
 									onChange={handleTextInputChange}
 									InputProps={{
@@ -379,7 +375,7 @@ function Chat() {
 					display={{xs: "none", sm: "none", md: "none", lg: "none", xl: "flex"}}
 					mb={2}
 					flexDirection="column"
-					height="93vh"
+					height="90vh"
 					width="15vw"
 					style={{
 						overflow: "hidden",

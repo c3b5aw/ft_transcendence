@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from '@mui/material';
+import { Box, Button, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -18,6 +18,9 @@ import { useSnackbar } from 'notistack'
 import MessageIcon from '@mui/icons-material/Message';
 import MyFooter from '../../../components/MyFooter';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import React from 'react';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -30,6 +33,7 @@ const Stats = () => {
 	const [friends, setFriends] = useState<Friends[]>([]);
 	const [friendsPending, setFriendsPending] = useState<Friends[]>([]);
 	const navigate = useNavigate();
+	const [openAchievements, setOpenAchievements] = useState<boolean>(false);
 
 	useEffect(() => {
 		const fetchFriendsMe = async () => {
@@ -120,6 +124,19 @@ const Stats = () => {
 		console.log("send duel game");
 	}
 
+	const handleAchievementMenuClose = () => {
+		setAchievementMoreAnchorEl(null);
+	};
+
+	const handleAchievementMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setAchievementMoreAnchorEl(event.currentTarget);
+	};
+
+	const [AchievementMoreAnchorEl, setAchievementMoreAnchorEl] =
+		React.useState<null | HTMLElement>(null);
+
+	const isAchievementMenuOpen = Boolean(AchievementMoreAnchorEl);
+
 	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined))
 		return (<MyChargingDataAlert />);
 	const isFriend = friends.filter(function (friend) {
@@ -128,58 +145,79 @@ const Stats = () => {
 	const isFriendPending = friendsPending.filter(function (friendPending) {
 		return (friendPending.login === user.login);
 	});
+
+	const renderAchievementMenu = (
+		<Menu
+			anchorEl={AchievementMoreAnchorEl}
+			anchorOrigin={{
+				vertical: 'top',
+				horizontal: 'right',
+			}}
+			id="menu-achievements"
+			keepMounted
+			transformOrigin={{
+				vertical: 'top',
+				horizontal: 'right',
+			}}
+			open={isAchievementMenuOpen}
+			onClose={handleAchievementMenuClose}
+		>
+			{user.login !== me.login ?
+				<MenuItem onClick={handleSendMessage}>
+					<IconButton>
+						<MessageIcon />
+					</IconButton>
+					<p>Send message</p>
+				</MenuItem> : null}
+			{user.login !== me.login && isFriend.length > 0 ?
+				<MenuItem onClick={handleSendDuelGame}>
+					<IconButton>
+						<SportsEsportsIcon />
+					</IconButton>
+					<p>Duel</p>
+				</MenuItem> : null}
+			<MenuItem onClick={() => setOpenAchievements(true)}>
+				<IconButton>
+					<EmojiEventsIcon />
+				</IconButton>
+				<p>Achievements</p>
+			</MenuItem>
+		</Menu>
+	);
+
 	return (
-		<Stack direction="column">
+		<Stack direction="column" spacing={4}>
 			<MyFooter me={me}/>
 			<div style={{marginTop: 10}} />
+			<Stack direction="row" justifyContent="space-between" alignItems="center">
+				<MyAvatar user={user}/>
+				<Box>
+					<IconButton
+						aria-label="show more"
+						aria-controls="menu-achievements"
+						aria-haspopup="true"
+						onClick={handleAchievementMenuOpen}
+						color="inherit"
+					>
+						<MoreIcon sx={{fontSize: "40px"}}/>
+					</IconButton>
+				</Box>
+			</Stack>
 			<Stack
-				sx={{width: 1, height: "93%"}}
+				sx={{width: 1, height: "90%"}}
 				direction="row"
-				spacing={3}
+				justifyContent="center"
 			>
-				<Stack
-					sx={{ width: {xs: 0.50, sm: 0.40, md: 0.30, lg: 0.2}, marginLeft: "1%" }}
-					direction="column"
-					spacing={3}
-				>
-					<MyAvatar user={user}/>
-					<div style={{marginTop: "25%"}}></div>
-					{user.login !== me.login ?
-						<Button
-							onClick={() => handleSendMessage()}
-							sx={sxButton} variant="contained"
-							startIcon={<MessageIcon />}
-						>
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Send message</Typography>
-						</Button> : null
-					}
-					{user.login !== me.login && isFriend.length > 0 ?
-						<Button
-							onClick={() => handleSendDuelGame()}
-							sx={sxButton} variant="contained"
-							startIcon={<SportsEsportsIcon />}
-						>
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Duel</Typography>
-						</Button> : null
-					}
-					<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Matchs joués : {user.played}</Typography>
-					<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Classement : {user.rank}</Typography>
-					<Typography variant="h5" style={{color: '#079200', fontFamily: "Myriad Pro", textAlign: "center"}}>Victoires : {user.victories}</Typography>
-					<Typography variant="h5" style={{color: '#C70039', fontFamily: "Myriad Pro", textAlign: "center"}}>Défaites : {user.defeats}</Typography>
-					<MyAchievements user={user}/>
-				</Stack>
 				<Stack	
-					sx={{width: 0.775, height: "auto"}}
+					sx={{width: 0.9, height: 0.8}}
 					direction="column"
-					justifyContent="center"
-					alignItems="center"
-				>
+					spacing={4}
+					>
 					<Stack
-						sx={{width: 1, height: 2/12}}
-						direction="row"
+						sx={{height: 2/12}}
+						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
 						alignItems="flex-end"
 						justifyContent="space-between"
-						spacing={4}
 					>
 						<Typography variant="h4" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Historique</Typography>
 						{user.login !== me.login ?
@@ -226,8 +264,19 @@ const Stats = () => {
 						}
 					</Stack>
 					<MyHistory user={user}/>
+					<Stack
+						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
+						justifyContent="space-evenly"
+					>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Matchs joués : {user.played}</Typography>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Classement : {user.rank}</Typography>
+						<Typography variant="h5" style={{color: '#079200', fontFamily: "Myriad Pro", textAlign: "center"}}>Victoires : {user.victories}</Typography>
+						<Typography variant="h5" style={{color: '#C70039', fontFamily: "Myriad Pro", textAlign: "center"}}>Défaites : {user.defeats}</Typography>
+					</Stack>
 				</Stack>
 			</Stack>
+			{openAchievements ? <MyAchievements user={user} setOpen={setOpenAchievements}/> : null}
+			{renderAchievementMenu}
 		</Stack>
 	);
 }

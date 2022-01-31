@@ -207,7 +207,7 @@ export default function MyInfosUser() {
 	if (users === undefined || countMatchs === undefined)
 		return (<MyChargingDataAlert />);
 	return (
-		<Stack sx={{width: 1, height: "93vh"}} direction="column" spacing={5}>
+		<Stack sx={{width: 1}} direction="column" spacing={5}>
 			<Stack sx={{backgroundColor: "white", width: 1, height: 0.5, borderRadius: 5}}>
 				<TableContainer sx={{borderRadius: 5}}>
 					<Table aria-label="collapsible table">
@@ -250,7 +250,7 @@ export default function MyInfosUser() {
 					</Table>
 				</TableContainer>
 			</Stack>
-			<Stack sx={{width: 0.5}} direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
+			<Stack sx={{width: 1}} direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
 				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de matchs : {countMatchs}</Typography>
 				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de joueurs : {users.length}</Typography>
 			</Stack>

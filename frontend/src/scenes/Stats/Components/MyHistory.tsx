@@ -1,4 +1,4 @@
-import { Avatar, Divider, List, ListItem, Paper, Stack, Typography } from "@mui/material"
+import { Avatar, Box, Divider, List, ListItem, Paper, Stack, Typography } from "@mui/material"
 import { User } from "../../../Services/Interface/Interface";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import useMatchs from "../Services/useMatchs";
@@ -11,11 +11,10 @@ const MyHistory = (props: {user: User}) => {
 		return (<MyChargingDataAlert />);
 	return (
 		<Stack
-			sx={{width: 1, minHeight: "auto", height: "100vh"}}
+			sx={{width: 1, height: 1}}
 			direction="column"
 			alignItems="center"
 			justifyContent="center"
-			spacing={5}
 		>
 			<Stack
 				direction="column"
@@ -41,13 +40,16 @@ const MyHistory = (props: {user: User}) => {
 												<Stack
 													direction="row"
 													sx={{width: 1/2}}
-													alignItems="center" spacing={2}
+													alignItems="center"
+													spacing={2}
 												>
 													<Avatar
 														sx={{width: "2.5vmax", height: "2.5vmax"}}
 														src={`http://127.0.0.1/api/users/${match.player1_login}/avatar`}>
 													</Avatar>
-													<Typography variant="h6" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{match.player1_login}</Typography>
+													<Box sx={{display: {xs: "none", sm: "flex", md: "flex"}}}>
+														<Typography variant="h6" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{match.player1_login}</Typography>
+													</Box>
 												</Stack>
 												<Stack
 													direction="row"
@@ -75,6 +77,7 @@ const MyHistory = (props: {user: User}) => {
 												direction="row"
 												sx={{width: 5.95/12, padding: '20px'}}
 												alignItems="center"
+												spacing={2}
 											>
 												<Stack
 													direction="row"
@@ -96,7 +99,9 @@ const MyHistory = (props: {user: User}) => {
 													justifyContent="flex-end"
 													spacing={2}
 												>
-													<Typography variant="h6" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{match.player2_login}</Typography>
+													<Box sx={{display: {xs: "none", sm: "flex", md: "flex"}}}>
+														<Typography variant="h6" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{match.player2_login}</Typography>
+													</Box>
 													<Avatar
 														sx={{width: "2.5vmax", height: "2.5vmax"}}
 														src={`http://127.0.0.1/api/users/${match.player2_login}/avatar`}>

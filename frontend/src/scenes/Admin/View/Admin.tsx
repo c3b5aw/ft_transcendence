@@ -1,5 +1,4 @@
-import { Stack } from "@mui/material";
-import MyAvatar from "../../../components/MyAvatar";
+import { Stack, Typography } from "@mui/material";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyInfosUser from "../Components/MyInfosUser";
 import useMe from "../../../Services/Hooks/useMe";
@@ -15,24 +14,19 @@ function Admin() {
 	if ((me === undefined || users === undefined || countMatchs === undefined))
 		return (<MyChargingDataAlert />);
 	return (
-		<Stack direction="column">
+		<Stack
+			direction="column"
+			spacing={5}
+		>
 			<MyFooter me={me}/>
-			<div style={{margin: 10}} />
+			<Typography variant="h3" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: 'center'}}>Admin View</Typography>
 			<Stack
 				sx={{width: 1, height: 1}}
 				direction="row"
 				justifyContent="center"
 			>
 				<Stack
-					direction="column"
-					sx={{width: 0.2, height: "50%"}}
-					spacing={5}
-					justifyContent="space-between"
-				>
-					<MyAvatar user={me}/>
-				</Stack>
-				<Stack
-					sx={{ width: 0.78, height: "100%"}}
+					sx={{ width: 0.9, height: 1 }}
 					direction="column"
 					alignItems="center"
 					justifyContent="center"
