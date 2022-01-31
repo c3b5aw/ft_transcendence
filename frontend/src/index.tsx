@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 
-import { pageAdmin, pageChat, pageClassement, pageGame, pageHome, pageSettings, pageStats } from './Services/Routes/RoutePage';
+import { pageAdmin, pageChat, pageClassement,
+		pageGame, pageGameHash,
+		pageHome, pageSettings, pageStats } from './Services/Routes/RoutePage';
 import "./scenes/App.css";
 import PrivateRoute from './Services/Routes/PrivateRoute';
 import Stats from './scenes/Stats/View/Stats';
@@ -20,6 +22,7 @@ import { SnackbarProvider } from 'notistack';
 import { socket, SocketContext } from './Services/ws/utils';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
 import MenuGame from './scenes/Game/Components/MenuGame';
+import Game from './scenes/Game/Game';
 
 const useStyles = makeStyles({
 	theme: {
@@ -94,6 +97,14 @@ function ManageRouter() {
 						element={
 							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
 								<MenuGame />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageGameHash}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Game />
 							</PrivateRoute>
 						}
 					/>
