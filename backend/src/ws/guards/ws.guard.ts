@@ -25,6 +25,7 @@ export class WsGuard implements CanActivate {
 			client.user = user;
 			return true;
 		} catch (ex) {
+			console.log(ex);
 			client.emit('onError', { error: 'invalid authentication token' });
 			client.disconnect();
 
@@ -40,6 +41,7 @@ export class WsGuard implements CanActivate {
 			client.user = user;
 			return user;
 		} catch (ex) {
+			console.log(ex);
 			client.emit('onError', { error: 'invalid authentication token' });
 			client.disconnect();
 

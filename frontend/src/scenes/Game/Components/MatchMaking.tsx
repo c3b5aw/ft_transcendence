@@ -3,25 +3,25 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 import { socketMatchmaking } from "../../../Services/ws/utils";
 import { MATCHTYPE } from "../Services/utils";
-import { matchOnJoin } from "../Services/wsGame";
+import { matchJoin, matchLeave } from "../Services/wsGame";
 
 function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { setOpen } = props;
 	const [findMatch, setFindMatch] = useState(null);
 
 	const handleClose = () => {
+		matchLeave();
 		setOpen(false);
 	}
 
 	useEffect(() => {
 		socketMatchmaking.on("matchmaking::onMatch", (data) => {
-			console.log(data);
 			setFindMatch(data)
 		})
 	}, [])
 
 	useEffect(() => {
-		matchOnJoin(MATCHTYPE.MATCH_RANKED);
+		matchJoin(MATCHTYPE.MATCH_RANKED);
 	}, [])
 
 	return (
@@ -38,7 +38,7 @@ function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-            <MyAppBarClose setOpen={setOpen} />
+            <MyAppBarClose setOpen={handleClose} />
 			<DialogContent>
 				<Stack sx={{height: 1, alignItems: "center", justifyContent: "center"}}>
 					<Typography
