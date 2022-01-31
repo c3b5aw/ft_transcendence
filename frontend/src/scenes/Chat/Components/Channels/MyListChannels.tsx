@@ -12,7 +12,8 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 	const { myChannel, me } = props;
 	const [mySettingsM, setMySettingsM] = useState<ISettingM>();
 	const [mySettingsAdmin, setMySettingsAdmin] = useState<ISettingAdmin>();
-	const [open, setOpen] = useState<boolean>(false);
+	const [openAdmin, setOpenAdmin] = useState<boolean>(false);
+	const [openM, setOpenM] = useState<boolean>(false);
 
 	const handleClickChannel = (channel: Channel) => {
 		myChannel.handleClickChannel(channel);
@@ -23,11 +24,12 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 			channel: channel,
 			open: true,
 			isAdmin: false,
-			closeModal: setOpen,
+			closeModal: setOpenM,
 			handleEnterChannel: myChannel.handleEnterChannel,
 			handleQuitChannel: myChannel.handleQuitChannel,
 		};
-		setOpen(true);
+		setOpenAdmin(false);
+		setOpenM(true);
 		setMySettingsM(mySettingsM);
 	}
 
@@ -36,10 +38,11 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 			channel: channel,
 			open: true,
 			isAdmin: true,
-			closeModal: setOpen,
+			closeModal: setOpenAdmin,
 			updateListChannels: myChannel.updateListChannels,
 		};
-		setOpen(true);
+		setOpenM(false);
+		setOpenAdmin(true);
 		setMySettingsAdmin(mySettingsAdmin);
 	}
 
@@ -108,8 +111,8 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 					}
 				</Paper>
 			</Stack>
-			{mySettingsM !== undefined && open && !mySettingsM.isAdmin ? <SettingsM mySettingsM={mySettingsM} /> :
-			mySettingsAdmin !== undefined && open && mySettingsAdmin.isAdmin ? <SettingsAdmin mySettingsAdmin={mySettingsAdmin} /> : null
+			{	mySettingsM !== undefined && openM && !mySettingsM.isAdmin ? <SettingsM mySettingsM={mySettingsM} /> :
+				mySettingsAdmin !== undefined && openAdmin && mySettingsAdmin.isAdmin ? <SettingsAdmin mySettingsAdmin={mySettingsAdmin} /> : null
 			}
 		</Stack>
 	);

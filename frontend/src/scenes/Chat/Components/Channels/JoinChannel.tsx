@@ -29,7 +29,6 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 	const handleJoinChannel = () => {
 		if (joinChannel !== undefined) {
 			if (!joinChannel.private) {
-				console.log(joinChannel);
 				channelJoin(joinChannel.name, "");
 			}
 			else

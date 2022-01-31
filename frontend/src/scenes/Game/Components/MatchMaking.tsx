@@ -1,6 +1,6 @@
-import { Dialog, DialogContent } from "@mui/material";
+import { Dialog, DialogContent, Stack, Typography } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
-import MyAppBarClose from "../../components/MyAppBarClose";
+import MyAppBarClose from "../../../components/MyAppBarClose";
 
 function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { setOpen } = props;
@@ -25,7 +25,14 @@ function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 		>
             <MyAppBarClose setOpen={setOpen} />
 			<DialogContent>
-				<h1>Matchs en cours :</h1>
+				<Stack sx={{height: 1, alignItems: "center", justifyContent: "center"}}>
+					<Typography
+						variant="h3"
+						style={{color: 'grey', fontFamily: "Myriad Pro"}}
+					>
+						Veuillez patienter, nous recherchons un joueur...
+					</Typography>
+				</Stack>
 			</DialogContent>
 		</Dialog>
 	);

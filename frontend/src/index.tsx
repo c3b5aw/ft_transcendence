@@ -19,7 +19,7 @@ import { ROLE } from './Services/Api/Role';
 import { SnackbarProvider } from 'notistack';
 import { socket, SocketContext } from './Services/ws/utils';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
-import MenuGame from './scenes/Game/MenuGame';
+import MenuGame from './scenes/Game/Components/MenuGame';
 
 const useStyles = makeStyles({
 	theme: {

@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
-import MyAppBarClose from "../../components/MyAppBarClose";
+import MyAppBarClose from "../../../components/MyAppBarClose";
 
 function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { setOpen } = props;
@@ -25,7 +25,7 @@ function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 		>
 			<MyAppBarClose setOpen={setOpen} />
 			<DialogContent>
-				<h1>Match making : </h1>
+				<h1>Match en cours : </h1>
 			</DialogContent>
 		</Dialog>
 	);

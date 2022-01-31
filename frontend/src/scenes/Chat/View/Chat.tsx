@@ -74,10 +74,6 @@ function Chat() {
 		updateListChannels: updateListChannels,
 	}
 
-	const handleLaunchParametres = () => {
-		console.log("GO TO PARAMS");
-	}
-
 	function HandleCreateChannel() {
 		return (
 			<Button variant="contained" 
@@ -229,7 +225,6 @@ function Chat() {
 						<Stack
 							direction="row"
 							alignItems="center"
-							onClick={() => handleLaunchParametres()}
 						>
 							<Avatar
 								src={`/api/profile/avatar`}

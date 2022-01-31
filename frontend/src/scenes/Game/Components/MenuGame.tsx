@@ -1,8 +1,8 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import MyChargingDataAlert from "../../components/MyChargingDataAlert";
-import MyFooter from "../../components/MyFooter";
-import useMe from "../../Services/Hooks/useMe";
+import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
+import MyFooter from "../../../components/MyFooter";
+import useMe from "../../../Services/Hooks/useMe";
 import MatchMaking from "./MatchMaking";
 import MatchProgress from "./MatchsProgress";
 
@@ -41,8 +41,8 @@ function MenuGame() {
 				>
 					<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Afficher les matchs en cours</Typography>
 				</Button>
-				{openMatchMaking ? <MatchProgress setOpen={setOpenMatchMaking} /> : null}
-				{openViewMatchs ? <MatchMaking setOpen={setOpenViewMatchs} /> : null}
+				{openMatchMaking ? <MatchMaking setOpen={setOpenMatchMaking} /> : null}
+				{openViewMatchs ? <MatchProgress setOpen={setOpenViewMatchs} /> : null}
 			</Stack>
 		</Stack>
 	);
