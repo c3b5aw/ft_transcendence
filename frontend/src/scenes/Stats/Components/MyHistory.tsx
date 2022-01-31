@@ -45,7 +45,7 @@ const MyHistory = (props: {user: User}) => {
 												>
 													<Avatar
 														sx={{width: "2.5vmax", height: "2.5vmax"}}
-														src={`http://127.0.0.1/api/users/${match.player1_login}/avatar`}>
+														src={`/api/users/${match.player1_login}/avatar`}>
 													</Avatar>
 													<Box sx={{display: {xs: "none", sm: "flex", md: "flex"}}}>
 														<Typography variant="h6" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{match.player1_login}</Typography>
@@ -104,7 +104,7 @@ const MyHistory = (props: {user: User}) => {
 													</Box>
 													<Avatar
 														sx={{width: "2.5vmax", height: "2.5vmax"}}
-														src={`http://127.0.0.1/api/users/${match.player2_login}/avatar`}>
+														src={`/api/users/${match.player2_login}/avatar`}>
 													</Avatar>
 												</Stack>
 											</Stack>

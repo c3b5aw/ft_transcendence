@@ -59,7 +59,7 @@ function MyMessages(props: { messages: Message[]}) {
 											</React.Fragment> :
 											<React.Fragment>
 												<Avatar
-													src={`http://127.0.0.1/api/users/${message.login}/avatar`}
+													src={`/api/users/${message.login}/avatar`}
 													sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}
 													onClick={() => handleClick(message.login)}
 													>

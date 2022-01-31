@@ -13,7 +13,7 @@ function MyAvatar(props: {user: User}) {
 		>
 			<Avatar
 				sx={{ width: {xs: "64px", sm: "96px", md: "96px", lg: "128px"},height: {xs: "64px", sm: "96px", md: "96px", lg: "128px"} }}
-				src={`http://127.0.0.1/api/users/${user.login}/avatar`}>
+				src={`/api/users/${user.login}/avatar`}>
 			</Avatar>
 			<Stack alignItems="center">
 				<Typography 

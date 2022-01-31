@@ -76,7 +76,7 @@ function MyFactorAuth(props: {setOpenQrcode: Dispatch<SetStateAction<boolean>>, 
 				>
 					{turnon ? <h1 style={{color: 'white'}}>Generate qrcode...</h1> :
 					<h1 style={{color: 'white'}}>Enter Code</h1>}
-					{turnon ? <img src="http://127.0.0.1/api/2fa/generate" alt="qrcode"></img> : null}
+					{turnon ? <img src="/api/2fa/generate" alt="qrcode"></img> : null}
 					<TextField
 						className={classes.styleTextField}
 						required

@@ -150,7 +150,7 @@ const Settings = () => {
 						>
 							<Avatar
 								sx={{ width: {xs: "96px", sm: "96px", md: "96px", lg: "128px"}, height: {xs: "96px", sm: "96px", md: "96px", lg: "128px"} }}
-								src={reload ? `http://127.0.0.1/api/profile/avatar` : `http://127.0.0.1/api/users/${me.login}/avatar`}>
+								src={reload ? `/api/profile/avatar` : `/api/users/${me.login}/avatar`}>
 							</Avatar>
 							<Stack>
 								<Typography variant="h4" style={{fontFamily: "Myriad Pro"}}>{me.display_name} ({me.role})</Typography>

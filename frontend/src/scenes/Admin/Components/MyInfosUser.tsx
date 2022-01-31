@@ -118,7 +118,7 @@ export default function MyInfosUser() {
 			<TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: 'white' }}>
 				<TableCell>
 					<Avatar
-						src={`http://127.0.0.1/api/users/${user.login}/avatar`}
+						src={`/api/users/${user.login}/avatar`}
 						sx={{ width: "48px", height: "48px" }}>
 					</Avatar>
 				</TableCell>

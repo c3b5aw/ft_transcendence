@@ -232,7 +232,7 @@ function Chat() {
 							onClick={() => handleLaunchParametres()}
 						>
 							<Avatar
-								src={`http://127.0.0.1/api/profile/avatar`}
+								src={`/api/profile/avatar`}
 								sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
 							</Avatar>
 							<Box sx={{display: { xs: 'none', sm: 'flex'}}}>
