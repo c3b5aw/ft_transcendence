@@ -6,6 +6,7 @@ import { UsersModule } from 'src/users/users.module';
 
 import { MatchmakingGateway } from './matchmaking.gateway';
 import { MatchmakingService } from './matchmaking.service';
+import { MatchmakingController } from './matchmaking.controller';
 
 @Module({
 	imports: [
@@ -17,7 +18,7 @@ import { MatchmakingService } from './matchmaking.service';
 		}),
 		UsersModule, MatchsModule
 	],
-	controllers: [],
+	controllers: [ MatchmakingController ],
 	providers: [ MatchmakingGateway, MatchmakingService ],
 	exports: [],
 })

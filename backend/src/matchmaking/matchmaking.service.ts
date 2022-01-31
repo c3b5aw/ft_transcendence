@@ -3,14 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 
 import { Server } from 'socket.io';
 
-import { WsGuard } from 'src/ws/guards/ws.guard';
+import { WsGuard, WSClient } from 'src/ws';
+
 import { Match } from 'src/matchs/entities/match.entity';
 import { MatchType } from 'src/matchs/entities/types.enum';
 import { MatchsService } from 'src/matchs/matchs.service';
 
 import { UsersService } from 'src/users/users.service';
-
-import { WSClient } from 'src/ws/datastructures/wsclient.struct';
+import { UserStatus } from 'src/users/entities/status.enum';
 
 @Injectable()
 export class MatchmakingService {
@@ -37,7 +37,20 @@ export class MatchmakingService {
 		QUEUES
 	*/
 
+	async getRooms() {
+		let rooms = {};
+
+		for (let room in global.queues) {
+			if (room.startsWith('#MM-NORMAL-'))
+				rooms[room.substring(11)] = global.queues[room][0].user.login;
+		}
+		return rooms;
+	}
+
 	async joinQueue(client: WSClient, room: string, queueType: string = 'NORMAL') {
+		if (client.user.status === UserStatus.IN_GAME)
+			return client.emit('onError', {  error: `already in a game` });
+
 		if (global.mm_clients[client.user.id])
 			return client.emit('onError', { error: `already in a queue` });
 
@@ -68,7 +81,6 @@ export class MatchmakingService {
 
 	async joinNormalQueue(client: WSClient, queueName: string) {
 		const room: string = `#MM-NORMAL-${queueName}`;
-
 		return this.joinQueue(client, room);
 	}
 
@@ -104,6 +116,9 @@ export class MatchmakingService {
 		// remove from queue and clients
 		global.queues[room].splice(global.queues[room].indexOf(user1), 1);
 		global.queues[room].splice(global.queues[room].indexOf(user2), 1);
+
+		await this.usersService.updateStatus(user1.user.id, UserStatus.IN_GAME);
+		await this.usersService.updateStatus(user2.user.id, UserStatus.IN_GAME);
 
 		delete global.mm_clients[user1.user.id];
 		delete global.mm_clients[user2.user.id];

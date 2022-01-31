@@ -52,10 +52,13 @@ export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconn
 		if (match_type === MatchType.MATCH_NORMAL && !room)
 			return client.emit('onError', `room is required`);
 
-		if (match_type === MatchType.MATCH_NORMAL) {
-			await this.matchMakingService.joinNormalQueue(client, room);
-		} else if (match_type === MatchType.MATCH_RANKED) {
-			await this.matchMakingService.joinRankedQueue(client);
+		switch (match_type) {
+			case MatchType.MATCH_NORMAL:
+				await this.matchMakingService.joinNormalQueue(client, room); break;
+			case MatchType.MATCH_RANKED:
+				await this.matchMakingService.joinRankedQueue(client); break;
+			default:
+				return client.emit('onError', `match_type is invalid`);
 		}
 	}
 
