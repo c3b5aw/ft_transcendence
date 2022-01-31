@@ -343,9 +343,7 @@ export default function Game() {
 		>
 			<Grid item xs={3}>
 				<Paper elevation={ 4 }
-					sx={{
-						borderRadius: '0px',
-					}}
+					sx={{ borderRadius: '0px' }}
 				>
 					<GameScoreBoard />
 					<GameModifiers boostCallback={ handleBoost } backgroundCallback={ handleBackground } />

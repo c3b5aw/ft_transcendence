@@ -9,4 +9,5 @@ export const pageChat = "/chat"
 export const pageAdmin = "/admin"
 export const pageClassement = "/classement"
 export const pageLogin = "/login"
-export const pageGame = "/game";
+export const pageGame = "/game"
+export const pageGameHash = "/game/:hash"
