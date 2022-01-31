@@ -119,14 +119,14 @@ function Chat() {
 	}, [])
 
 	useEffect(() => {
-		socket.on("channel::onMessage", (data) => {
-			setUpload(data)
+		socket.on("channel::onListReload", (data) => {
+			setUploadChannels(data)
 		})
 	}, [])
 
 	useEffect(() => {
-		socket.on("channel::onListReload", (data) => {
-			setUploadChannels(data)
+		socket.on("channel::onMessage", (data) => {
+			setUpload(data)
 		})
 	}, [])
 

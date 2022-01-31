@@ -1,13 +1,28 @@
 import { Dialog, DialogContent, Stack, Typography } from "@mui/material";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
+import { socket } from "../../../Services/ws/utils";
+import { MATCHTYPE } from "../Services/utils";
+import { matchOnJoin } from "../Services/wsGame";
 
 function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { setOpen } = props;
+	const [findMatch, setFindMatch] = useState(null);
 
 	const handleClose = () => {
 		setOpen(false);
 	}
+
+	useEffect(() => {
+		socket.on("matchmaking::onMatch", (data) => {
+			console.log(data);
+			setFindMatch(data)
+		})
+	}, [])
+
+	useEffect(() => {
+		matchOnJoin(MATCHTYPE.MATCH_RANKED);
+	}, [])
 
 	return (
 		<Dialog
