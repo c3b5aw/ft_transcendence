@@ -38,11 +38,18 @@ export class MatchmakingService {
 	*/
 
 	async getRooms() {
-		let rooms = {};
+		let rooms = [];
 
 		for (let room in global.queues) {
-			if (room.startsWith('#MM-NORMAL-'))
-				rooms[room.substring(11)] = global.queues[room][0].user.login;
+			if (room.startsWith('#MM-NORMAL-')) {
+				rooms.push({
+					room: { name: room },
+					owner: {
+						id: global.queues[room][0].user.id,
+						login: global.queues[room][0].user.login
+					}
+				});
+			}
 		}
 		return rooms;
 	}
