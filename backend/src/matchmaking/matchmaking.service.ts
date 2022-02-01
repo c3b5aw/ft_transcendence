@@ -121,7 +121,7 @@ export class MatchmakingService {
 	async joinDuelQueue(client: WSClient, room: string, duel_login: string) {
 		if (duel_login)
 			return this.createDuelQueue(client, duel_login);
-		return this.joinQueue(client, room, 'DUEL');
+		return this.joinQueue(client, `#MM-DUEL-${room}`, 'DUEL');
 	}
 
 	async joinRankedQueue(client: WSClient) {
