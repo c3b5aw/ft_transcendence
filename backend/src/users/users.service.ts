@@ -103,6 +103,10 @@ export class UsersService {
 		- updateDisplayName
 	*/
 
+	async updateStatus(id: number, status: UserStatus) {
+		return this.userRepository.update({ id: id }, { status: status });
+	}
+
 	async updateUserBan(id: number, banned: boolean) : Promise<any> {
 		return this.userRepository.update({ id: id }, 
 			{ role: banned ? UserRole.BANNED : UserRole.MEMBER });
