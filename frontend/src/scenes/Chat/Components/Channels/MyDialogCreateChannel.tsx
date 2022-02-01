@@ -107,27 +107,27 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 			<DialogContent>
 				{!openDM ?
 					<TextField
-					autoFocus
-					margin="dense"
-					id="name"
-					label="Channel name"
-					type="text"
-					fullWidth
-					variant="standard"
-					onChange={handleTextChangeName}
-				/> : null
+						autoFocus
+						margin="dense"
+						id="name"
+						label="Channel name"
+						type="text"
+						fullWidth
+						variant="standard"
+						onChange={handleTextChangeName}
+					/> : null
 				}
 				{!openDM ?
 					<TextField
-					autoFocus
-					margin="dense"
-					id="password"
-					label="Channel password"
-					type="password"
-					fullWidth
-					variant="standard"
-					onChange={handleTextChangePassword}
-				/> : null
+						autoFocus
+						margin="dense"
+						id="password"
+						label="Channel password"
+						type="password"
+						fullWidth
+						variant="standard"
+						onChange={handleTextChangePassword}
+					/> : null
 				}
 				<div style={{marginTop: 10}}></div>
 				<FormControlLabel

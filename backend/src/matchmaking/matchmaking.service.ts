@@ -38,7 +38,7 @@ export class MatchmakingService {
 		QUEUES
 	*/
 
-	async roomBuilder(room: any, user: any, normal: boolean) {
+	roomBuilder(room: any, user: any, normal: boolean) {
 		const roomName = normal ? room.substring(11) : room.substring(9);
 		const owner = { id: user.id, login: user.login };
 
@@ -58,7 +58,10 @@ export class MatchmakingService {
 			if (room.startsWith('#MM-NORMAL-')
 				|| (room.startsWith('#MM-DUEL-') && room.includes(user.login)))
 			{
-				rooms.push(this.roomBuilder(room, user, room.startsWith('#MM-NORMAL-')));
+				const users = global.queues[room];
+				if (users.length > 0) {
+					rooms.push(this.roomBuilder(room, users[0].user, room.startsWith('#MM-NORMAL-')));
+				}
 			}
 		}
 		return rooms;
@@ -157,13 +160,13 @@ export class MatchmakingService {
 		global.queues[room].splice(global.queues[room].indexOf(user1), 1);
 		global.queues[room].splice(global.queues[room].indexOf(user2), 1);
 
+		if (global.queues[room].length === 0)
+			delete global.queues[room];
+
 		await this.usersService.updateStatus(user1.user.id, UserStatus.IN_GAME);
 		await this.usersService.updateStatus(user2.user.id, UserStatus.IN_GAME);
 
 		delete global.mm_clients[user1.user.id];
 		delete global.mm_clients[user2.user.id];
-
-		// Risky but necessary to run into huge loads
-		this.queueUpdate(room);
 	}
 }

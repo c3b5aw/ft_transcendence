@@ -4,6 +4,7 @@ export enum MATCHTYPE {
 	MATCH_BOT = 'BOT',
 	MATCH_NORMAL = 'NORMAL',
 	MATCH_RANKED = 'RANKED',
+	MATCH_DUEL = 'DUEL',
 }
 
 export interface Room {

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import MyAchievements from '../Components/MyAchievements';
 import MyHistory from '../Components/MyHistory';
-import { api, apiChannel, apiChat, apiDM, apiUsers } from '../../../Services/Api/Api';
+import { api, apiChannel, apiChat, apiDM, apiGame, apiUsers } from '../../../Services/Api/Api';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MyAvatar from '../../../components/MyAvatar';
@@ -21,6 +21,8 @@ import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import React from 'react';
+import { matchJoinDuel } from '../../Game/Services/wsGame';
+import { MATCHTYPE } from '../../Game/Services/utils';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -120,10 +122,6 @@ const Stats = () => {
 		}
 	}
 
-	const handleSendDuelGame = () => {
-		console.log("send duel game");
-	}
-
 	const handleAchievementMenuClose = () => {
 		setAchievementMoreAnchorEl(null);
 	};
@@ -145,6 +143,11 @@ const Stats = () => {
 	const isFriendPending = friendsPending.filter(function (friendPending) {
 		return (friendPending.login === user.login);
 	});
+
+	const handleSendDuelGame = () => {
+		matchJoinDuel(MATCHTYPE.MATCH_DUEL, user.login);
+		navigate(`${apiGame}/roomview`)
+	}
 
 	const renderAchievementMenu = (
 		<Menu

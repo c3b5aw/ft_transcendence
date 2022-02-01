@@ -1,17 +1,25 @@
 import { Button, Dialog, DialogContent, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import axios from "axios";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 import { api, apiMatchmaking, apiRooms } from "../../../Services/Api/Api";
-import { RoomV } from "../Services/utils";
+import { MATCHTYPE, RoomV } from "../Services/utils";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CreateRoom from "./CreateRoom";
+import DeleteIcon from '@mui/icons-material/Delete';
+import useMe from "../../../Services/Hooks/useMe";
+import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
+import { matchJoinNormal, matchLeave } from "../Services/wsGame";
+import { useNavigate } from "react-router-dom";
 
-function RoomsView(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
-	const { setOpen } = props;
+function RoomsView() {
 	const [rooms, setRooms] = useState<RoomV[]>([]);
+	const [openCreateRoom, setOpenCreateRoom] = useState<boolean>(false);
+	const me = useMe();
+	const navigate = useNavigate();
 
 	const handleClose = () => {
-		setOpen(false);
+		navigate(-1);
 	}
 
 	useEffect(() => {
@@ -24,13 +32,26 @@ function RoomsView(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 				console.log(err);
 			}
 		}
-		// const interval = setInterval(() =>{
-		// 	fetchRooms();
-		// }, 1000)
+		const interval = setInterval(() =>{
+			fetchRooms();
+		}, 1000)
 		fetchRooms();
-		// return () => clearInterval(interval);
+		return () => clearInterval(interval);
 	}, [])
 
+	const handleJoinRoom = (room: RoomV) => {
+		matchJoinNormal(MATCHTYPE.MATCH_NORMAL, room.room.name);
+	}
+
+	const handleDeleteRoom = () => {
+		matchLeave();
+	}
+
+	if (me === undefined) {
+		return (
+			<MyChargingDataAlert />
+		);
+	}
 	return (
 		<Dialog
 			open={true}
@@ -54,7 +75,7 @@ function RoomsView(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 					alignItems="center"
 				>
 					<Typography variant="h4" style={{fontFamily: "Myriad Pro", color: "white"}}>Rooms</Typography>
-					<Button variant="contained" onClick={() => console.log("CREATE NEW ROOM")}>
+					<Button variant="contained" onClick={() => setOpenCreateRoom(true)}>
 						<Typography variant="h6" style={{fontFamily: "Myriad Pro", color: "white"}}>Create new room</Typography>
 					</Button>
 				</Stack>
@@ -70,7 +91,7 @@ function RoomsView(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 										<Typography style={{fontFamily: "Myriad Pro"}}>Login</Typography>
 									</TableCell>
 									<TableCell align="center">
-										<Typography style={{fontFamily: "Myriad Pro"}}>Join</Typography>
+										<Typography style={{fontFamily: "Myriad Pro"}}>Action</Typography>
 									</TableCell>
 								</TableRow>
 							</TableHead>
@@ -84,9 +105,19 @@ function RoomsView(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 										<Typography>{room.owner.login}</Typography>
 										</TableCell>
 										<TableCell align="center">
-											<IconButton onClick={() => console.log("JOIN ROOM")}>
-												<ArrowForwardIcon />
-											</IconButton>
+											{room.owner.id !== me.id ?
+												<IconButton
+													onClick={() => handleJoinRoom(room)}
+												>
+													<ArrowForwardIcon />
+												</IconButton> :
+												<IconButton
+													onClick={() => handleDeleteRoom()}
+													color="error"
+												>
+													<DeleteIcon />
+												</IconButton>
+											}
 										</TableCell>
 									</TableRow>
 								))}
@@ -95,6 +126,7 @@ function RoomsView(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 					</TableContainer>
 				</Stack>
 			</DialogContent>
+			{openCreateRoom ? <CreateRoom me={me} setOpen={setOpenCreateRoom} /> : null}
 		</Dialog>
 	);
 }

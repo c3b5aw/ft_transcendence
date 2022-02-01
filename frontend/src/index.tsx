@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { pageAdmin, pageChat, pageClassement,
 		pageGame, pageGameHash,
-		pageHome, pageSettings, pageStats } from './Services/Routes/RoutePage';
+		pageHome, pageRoomView, pageSettings, pageStats } from './Services/Routes/RoutePage';
 import "./scenes/App.css";
 import PrivateRoute from './Services/Routes/PrivateRoute';
 import Stats from './scenes/Stats/View/Stats';
@@ -23,6 +23,7 @@ import { socket, SocketContext } from './Services/ws/utils';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
 import MenuGame from './scenes/Game/Components/MenuGame';
 import Game from './scenes/Game/Game';
+import RoomsView from './scenes/Game/Components/RoomsView';
 
 const useStyles = makeStyles({
 	theme: {
@@ -108,6 +109,22 @@ function ManageRouter() {
 							</PrivateRoute>
 						}
 					/>
+					<Route
+						path={pageRoomView}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<RoomsView />
+							</PrivateRoute>
+						}
+					/>
+					{/* <Route
+						path={pageMatchProgess}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Game />
+							</PrivateRoute>
+						}
+					/> */}
 				</Routes>
 			</Router>
 		</div>

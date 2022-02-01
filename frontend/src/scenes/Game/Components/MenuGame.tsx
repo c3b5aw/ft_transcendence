@@ -1,19 +1,20 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyFooter from "../../../components/MyFooter";
+import { apiGame } from "../../../Services/Api/Api";
 import useMe from "../../../Services/Hooks/useMe";
 import { socketMatchmaking } from "../../../Services/ws/utils";
 import MatchMaking from "./MatchMaking";
 import MatchProgress from "./MatchsProgress";
-import RoomsView from "./RoomsView";
 
 function MenuGame() {
 	const [openMatchMaking, setOpenMatchMaking] = useState<boolean>(false);
 	const [openViewMatchs, setOpenViewMatchs] = useState<boolean>(false);
-	const [openRooms, setOpenRooms] = useState<boolean>(false);
 	const [successJoin, setSuccessJoin] = useState<boolean>(false);
 	const me = useMe();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		socketMatchmaking.on("matchmaking::onJoin", (data) => {
@@ -56,7 +57,7 @@ function MenuGame() {
 				</Button>
 				<Button
 					variant="contained"
-					onClick={() => setOpenRooms(true)}
+					onClick={() => navigate(`${apiGame}/roomview`)}
 					sx={{padding: 4, borderRadius: 4}}
 				>
 					<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Rejoindre une partie</Typography>
@@ -70,7 +71,6 @@ function MenuGame() {
 				</Button>
 				{openMatchMaking ? <MatchMaking setOpen={setOpenMatchMaking} /> : null}
 				{openViewMatchs ? <MatchProgress setOpen={setOpenViewMatchs} /> : null}
-				{openRooms ? <RoomsView setOpen={setOpenRooms} /> : null}
 			</Stack>
 		</Stack>
 	);

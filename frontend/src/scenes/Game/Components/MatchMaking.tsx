@@ -5,7 +5,7 @@ import MyAppBarClose from "../../../components/MyAppBarClose";
 import { apiGame } from "../../../Services/Api/Api";
 import { socketMatchmaking } from "../../../Services/ws/utils";
 import { MATCHTYPE } from "../Services/utils";
-import { matchJoin, matchLeave } from "../Services/wsGame";
+import { matchJoinRanked, matchLeave } from "../Services/wsGame";
 
 function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { setOpen } = props;
@@ -20,11 +20,11 @@ function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 		socketMatchmaking.on("matchmaking::onMatch", (data) => {
 			navigate(`${apiGame}/${data.match.hash}`);
 		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
-		// matchJoin(MATCHTYPE.MATCH_NORMAL);
-		matchJoin(MATCHTYPE.MATCH_RANKED);
+		matchJoinRanked(MATCHTYPE.MATCH_RANKED);
 	}, [])
 
 	return (
