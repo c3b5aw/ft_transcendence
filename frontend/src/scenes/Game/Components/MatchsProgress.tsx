@@ -26,7 +26,11 @@ function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 				console.log(err);
 			}
 		}
+		const interval = setInterval(() => {
+			fetchMatchProgress();
+		}, 1000)
 		fetchMatchProgress();
+		return () => clearInterval(interval);
 	}, [])
 
 	function HandleTimeMatch(props: {match: Match}) {

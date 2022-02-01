@@ -1,3 +1,5 @@
+import { User } from "../../../Services/Interface/Interface";
+
 export enum MATCHTYPE {
 	MATCH_BOT = 'BOT',
 	MATCH_NORMAL = 'NORMAL',
@@ -5,6 +7,10 @@ export enum MATCHTYPE {
 }
 
 export interface Room {
-	roomName: string,
-	login: string,
+	name: string;
+}
+
+export interface RoomV {
+	owner: User;
+	room: Room;
 }

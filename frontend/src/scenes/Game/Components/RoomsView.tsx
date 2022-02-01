@@ -3,32 +3,33 @@ import axios from "axios";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 import { api, apiMatchmaking, apiRooms } from "../../../Services/Api/Api";
-import { Room } from "../Services/utils";
+import { RoomV } from "../Services/utils";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 function RoomsView(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { setOpen } = props;
-	const [rooms, setRooms] = useState<Room[]>([]);
+	const [rooms, setRooms] = useState<RoomV[]>([]);
 
 	const handleClose = () => {
 		setOpen(false);
 	}
 
-	// useEffect(() => {
-	// 	const fetchRooms = async () => {
-	// 		try {
-	// 			const response = await axios.get(`${api}${apiMatchmaking}${apiRooms}`)
-	// 			// if (response.data.length > 0) {
-	// 				setRooms(response.data);
-	// 			// }
-	// 		}
-	// 		catch (err) {
-	// 			console.log(err);
-	// 		}
-	// 	}
-	// 	fetchRooms();
-	// }, [])
-
+	useEffect(() => {
+		const fetchRooms = async () => {
+			try {
+				const response = await axios.get(`${api}${apiMatchmaking}${apiRooms}`)
+				setRooms(response.data);
+			}
+			catch (err) {
+				console.log(err);
+			}
+		}
+		// const interval = setInterval(() =>{
+		// 	fetchRooms();
+		// }, 1000)
+		fetchRooms();
+		// return () => clearInterval(interval);
+	}, [])
 
 	return (
 		<Dialog
@@ -75,12 +76,12 @@ function RoomsView(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 							</TableHead>
 							<TableBody>
 								{rooms.map((room) => (
-									<TableRow key={room.roomName}>
+									<TableRow key={room.owner.id}>
 										<TableCell align="center">
-											<Typography>{room.roomName}</Typography>
+											<Typography>{room.room.name}</Typography>
 										</TableCell>
 										<TableCell align="center">
-										<Typography>{room.login}</Typography>
+										<Typography>{room.owner.login}</Typography>
 										</TableCell>
 										<TableCell align="center">
 											<IconButton onClick={() => console.log("JOIN ROOM")}>
