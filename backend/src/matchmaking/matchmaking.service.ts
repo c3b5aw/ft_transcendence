@@ -38,27 +38,27 @@ export class MatchmakingService {
 		QUEUES
 	*/
 
+	async roomBuilder(room: any, user: any, normal: boolean) {
+		const roomName = normal ? room.substring(11) : room.substring(9);
+		const owner = { id: user.id, login: user.login };
+
+		return {
+			room: {
+				name: roomName,
+				type: normal ? MatchType.MATCH_NORMAL : MatchType.MATCH_DUEL,
+			},
+			owner
+		}
+	}
+
 	async getRooms(user: User) {
 		let rooms = [];
 
 		for (let room in global.queues) {
-			if (room.startsWith('#MM-NORMAL-')) {
-				rooms.push({
-					room: { name: room.substring(11), type: MatchType.MATCH_NORMAL },
-					owner: {
-						id: global.queues[room][0].user.id,
-						login: global.queues[room][0].user.login
-					}
-				});
-			}
-			if (room.startsWith('#MM-DUEL-') && room.includes(user.login)) {
-				rooms.push({
-					room: { name: room.substring(9), type: MatchType.MATCH_DUEL },
-					owner: {
-						id: global.queues[room][0].user.id,
-						login: global.queues[room][0].user.login
-					}
-				});
+			if (room.startsWith('#MM-NORMAL-')
+				|| (room.startsWith('#MM-DUEL-') && room.includes(user.login)))
+			{
+				rooms.push(this.roomBuilder(room, user, room.startsWith('#MM-NORMAL-')));
 			}
 		}
 		return rooms;
