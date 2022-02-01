@@ -2,11 +2,10 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import { DialogActions, DialogContent, Stack } from '@mui/material';
+import { DialogActions, DialogContent, Stack, Typography } from '@mui/material';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { sxButton } from '../../Settings/Services/style';
 import { api, apiBan, apiChannel, apiKick, apiMute } from '../../../Services/Api/Api';
 import axios from 'axios';
 import { useSnackbar } from 'notistack'
@@ -102,19 +101,19 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 	function HandleMuteUser() {
 		if (isMute(myBanKickMute.user)) {
 			return (<Button
-				sx={sxButton}
+				variant="contained"
 				onClick={handleUnMuteUser}
 			>
-				UnMute {myBanKickMute.user.login}
+				<Typography>UnMute {myBanKickMute.user.login}</Typography>
 			</Button>
 			);
 		}
 		return (
 			<Button
-				sx={sxButton}
+				variant="contained"
 				onClick={handleMuteUser}
 			>
-				Mute {myBanKickMute.user.login}
+				<Typography>Mute {myBanKickMute.user.login}</Typography>
 			</Button>
 		);
 	}
@@ -147,7 +146,9 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 						spacing={2}
 					>
 						<ExitToAppIcon style={{color: "white", fontSize: "40px"}}/>
-						<Button sx={sxButton} onClick={handleKickUser}>Kick {myBanKickMute.user.login}</Button>
+						<Button variant="contained" onClick={handleKickUser}>
+							<Typography>Kick {myBanKickMute.user.login}</Typography>
+						</Button>
 					</Stack>
 					<div style={{marginTop: 20}}></div>
 					<Stack
@@ -158,8 +159,12 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 					>
 						<RemoveCircleIcon style={{color: "white", fontSize: "40px"}}/>
 						{myBanKickMute.user.role !== ROLE.BANNED ?
-							<Button sx={sxButton} onClick={handleBanUser}>Ban {myBanKickMute.user.login}</Button> :
-							<Button sx={sxButton} onClick={handleUnBanUser}>UnBan {myBanKickMute.user.login}</Button>
+							<Button variant="contained" onClick={handleBanUser}>
+								<Typography>Ban {myBanKickMute.user.login}</Typography>
+							</Button> :
+							<Button variant="contained" onClick={handleUnBanUser}>
+								<Typography>UnBan {myBanKickMute.user.login}</Typography>
+							</Button>
 						}
 					</Stack>
 				</DialogContent>
