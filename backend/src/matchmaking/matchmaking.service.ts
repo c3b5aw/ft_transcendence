@@ -6,9 +6,10 @@ import { Server } from 'socket.io';
 import { WsGuard, WSClient } from 'src/ws';
 
 import { Match } from 'src/matchs/entities/match.entity';
-import { MatchType } from 'src/matchs/entities/types.enum';
 import { MatchsService } from 'src/matchs/matchs.service';
+import { MatchType } from 'src/matchs/entities/types.enum';
 
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { UserStatus } from 'src/users/entities/status.enum';
 
@@ -37,13 +38,22 @@ export class MatchmakingService {
 		QUEUES
 	*/
 
-	async getRooms() {
+	async getRooms(user: User) {
 		let rooms = [];
 
 		for (let room in global.queues) {
 			if (room.startsWith('#MM-NORMAL-')) {
 				rooms.push({
-					room: { name: room },
+					room: { name: room.substring(11), type: MatchType.MATCH_NORMAL },
+					owner: {
+						id: global.queues[room][0].user.id,
+						login: global.queues[room][0].user.login
+					}
+				});
+			}
+			if (room.startsWith('#MM-DUEL-') && room.includes(user.login)) {
+				rooms.push({
+					room: { name: room.substring(9), type: MatchType.MATCH_DUEL },
 					owner: {
 						id: global.queues[room][0].user.id,
 						login: global.queues[room][0].user.login
@@ -83,12 +93,35 @@ export class MatchmakingService {
 		global.queues[queue].splice(global.queues[queue].indexOf(client), 1);
 		delete global.mm_clients[client.user.id];
 
+		if (global.queues[queue].length === 0)
+			delete global.queues[queue];
+
 		return client.emit('matchmaking::onLeave', { message: `queue left` });
 	}
 
 	async joinNormalQueue(client: WSClient, queueName: string) {
 		const room: string = `#MM-NORMAL-${queueName}`;
 		return this.joinQueue(client, room);
+	}
+
+	// DUEL QUEUE
+
+	async createDuelQueue(client: WSClient, duel_login: string) {
+		const user: User = await this.usersService.findOneByLogin(duel_login);
+		if (!user)
+			return client.emit('onError', { error: `duel_login: not found` });
+
+		const room = `#MM-DUEL-${client.user.login}-${duel_login}`;
+		if (global.queues[room])
+			return client.emit('onError', { error: `duel: queue exists` });
+
+		return this.joinQueue(client, room, 'DUEL');
+	}
+
+	async joinDuelQueue(client: WSClient, room: string, duel_login: string) {
+		if (duel_login)
+			return this.createDuelQueue(client, duel_login);
+		return this.joinQueue(client, room, 'DUEL');
 	}
 
 	async joinRankedQueue(client: WSClient) {

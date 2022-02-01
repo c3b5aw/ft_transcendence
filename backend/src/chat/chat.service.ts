@@ -324,7 +324,7 @@ export class ChatService {
 		})
 	}
 
-	async wsSendAnnouncementToChannel(channel: Channel, message: string) {
+	async wsSendAnnouncementToChannel(channel: Channel, message: string, sender: string = 'Server') {
 		/* Save message to database */
 		const msg: ChatMessage = new ChatMessage();
 		msg.user_id = 0;
@@ -337,7 +337,7 @@ export class ChatService {
 		
 		/* Send message to all clients in channel */
 		await this.sendEventToChannel(channel, 'channel::onMessage', { message: {
-			user: 'Server', content: msg.content,
+			user: sender, content: msg.content,
 			announcement: msg.announcement, timestamp: msg.timestamp }});
 	}
 
