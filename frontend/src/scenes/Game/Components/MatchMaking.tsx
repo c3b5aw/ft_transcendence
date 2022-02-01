@@ -23,7 +23,7 @@ function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	}, [])
 
 	useEffect(() => {
-		matchJoin(MATCHTYPE.MATCH_NORMAL);
+		matchJoin(MATCHTYPE.MATCH_RANKED);
 	}, [])
 
 	return (
