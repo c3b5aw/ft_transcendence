@@ -45,18 +45,22 @@ export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconn
 		if (!json)
 			return client.emit('onError', { error: 'invalid body' });
 
-		const { match_type, room } = json;
+		const { match_type, room, duel_login } = json;
 
 		if (!match_type)
 			return client.emit('onError', `match_type is required`);
 		if (match_type === MatchType.MATCH_NORMAL && !room)
 			return client.emit('onError', `room is required`);
+		if (match_type === MatchType.MATCH_DUEL && (!room && !duel_login))
+			return client.emit('onError', `duel_login or room are required`);
 
 		switch (match_type) {
 			case MatchType.MATCH_NORMAL:
 				await this.matchMakingService.joinNormalQueue(client, room); break;
 			case MatchType.MATCH_RANKED:
 				await this.matchMakingService.joinRankedQueue(client); break;
+			case MatchType.MATCH_DUEL:
+				await this.matchMakingService.joinDuelQueue(client, room, duel_login); break;
 			default:
 				return client.emit('onError', `match_type is invalid`);
 		}

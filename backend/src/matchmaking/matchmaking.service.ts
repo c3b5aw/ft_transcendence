@@ -6,9 +6,10 @@ import { Server } from 'socket.io';
 import { WsGuard, WSClient } from 'src/ws';
 
 import { Match } from 'src/matchs/entities/match.entity';
-import { MatchType } from 'src/matchs/entities/types.enum';
 import { MatchsService } from 'src/matchs/matchs.service';
+import { MatchType } from 'src/matchs/entities/types.enum';
 
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { UserStatus } from 'src/users/entities/status.enum';
 
@@ -37,18 +38,30 @@ export class MatchmakingService {
 		QUEUES
 	*/
 
-	async getRooms() {
+	roomBuilder(room: any, user: any, normal: boolean) {
+		const roomName = normal ? room.substring(11) : room.substring(9);
+		const owner = { id: user.id, login: user.login };
+
+		return {
+			room: {
+				name: roomName,
+				type: normal ? MatchType.MATCH_NORMAL : MatchType.MATCH_DUEL,
+			},
+			owner
+		}
+	}
+
+	async getRooms(user: User) {
 		let rooms = [];
 
 		for (let room in global.queues) {
-			if (room.startsWith('#MM-NORMAL-')) {
-				rooms.push({
-					room: { name: room },
-					owner: {
-						id: global.queues[room][0].user.id,
-						login: global.queues[room][0].user.login
-					}
-				});
+			if (room.startsWith('#MM-NORMAL-')
+				|| (room.startsWith('#MM-DUEL-') && room.includes(user.login)))
+			{
+				const users = global.queues[room];
+				if (users.length > 0) {
+					rooms.push(this.roomBuilder(room, users[0].user, room.startsWith('#MM-NORMAL-')));
+				}
 			}
 		}
 		return rooms;
@@ -83,12 +96,35 @@ export class MatchmakingService {
 		global.queues[queue].splice(global.queues[queue].indexOf(client), 1);
 		delete global.mm_clients[client.user.id];
 
+		if (global.queues[queue].length === 0)
+			delete global.queues[queue];
+
 		return client.emit('matchmaking::onLeave', { message: `queue left` });
 	}
 
 	async joinNormalQueue(client: WSClient, queueName: string) {
 		const room: string = `#MM-NORMAL-${queueName}`;
 		return this.joinQueue(client, room);
+	}
+
+	// DUEL QUEUE
+
+	async createDuelQueue(client: WSClient, duel_login: string) {
+		const user: User = await this.usersService.findOneByLogin(duel_login);
+		if (!user)
+			return client.emit('onError', { error: `duel_login: not found` });
+
+		const room = `#MM-DUEL-${client.user.login}-${duel_login}`;
+		if (global.queues[room])
+			return client.emit('onError', { error: `duel: queue exists` });
+
+		return this.joinQueue(client, room, 'DUEL');
+	}
+
+	async joinDuelQueue(client: WSClient, room: string, duel_login: string) {
+		if (duel_login)
+			return this.createDuelQueue(client, duel_login);
+		return this.joinQueue(client, `#MM-DUEL-${room}`, 'DUEL');
 	}
 
 	async joinRankedQueue(client: WSClient) {
@@ -124,13 +160,13 @@ export class MatchmakingService {
 		global.queues[room].splice(global.queues[room].indexOf(user1), 1);
 		global.queues[room].splice(global.queues[room].indexOf(user2), 1);
 
+		if (global.queues[room].length === 0)
+			delete global.queues[room];
+
 		await this.usersService.updateStatus(user1.user.id, UserStatus.IN_GAME);
 		await this.usersService.updateStatus(user2.user.id, UserStatus.IN_GAME);
 
 		delete global.mm_clients[user1.user.id];
 		delete global.mm_clients[user2.user.id];
-
-		// Risky but necessary to run into huge loads
-		this.queueUpdate(room);
 	}
 }
