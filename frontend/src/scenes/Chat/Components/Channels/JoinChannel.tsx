@@ -37,7 +37,7 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 		}
 	}
 
-	function handleAddChannel(channel: Channel) {
+	const handleAddChannel = (channel: Channel) => {
 		if (!joinChannels.some(item => item.name === channel.name))
 			setJoinChannel(channel);
 		else {
@@ -48,7 +48,7 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 		}
 	}
 
-	function handleRemoveChannel(channel: Channel) {
+	const handleRemoveChannel = (channel: Channel) => {
 		setJoinChannel(undefined);
 	}
 	const ISearchBarChannel: ISearchBarChannel = {
