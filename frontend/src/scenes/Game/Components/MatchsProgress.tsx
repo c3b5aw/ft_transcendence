@@ -3,12 +3,14 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import axios from "axios";
-import { api, apiMatch } from "../../../Services/Api/Api";
+import { api, apiGame, apiMatch } from "../../../Services/Api/Api";
 import { Match } from "../../../Services/Interface/Interface";
+import { useNavigate } from "react-router-dom";
 
 function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { setOpen } = props;
 	const [matchsProgress, setMatchsProgress] = useState<Match[]>([])
+	const navigate = useNavigate();
 
 	const handleClose = () => {
 		setOpen(false);
@@ -60,6 +62,10 @@ function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 		return (
 			<Typography>{res}</Typography>
 		);
+	}
+
+	const handleViewMatch = (match: Match) => {
+		navigate(`${apiGame}/${match.hash}`);
 	}
 
 	return (
@@ -117,7 +123,7 @@ function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 											<Typography>{match.player2_login}</Typography>
 										</TableCell>
 										<TableCell align="center">
-											<IconButton onClick={() => console.log("VIEW MATCH")}>
+											<IconButton onClick={() => handleViewMatch(match)}>
 												<RemoveRedEyeIcon />
 											</IconButton>
 										</TableCell>

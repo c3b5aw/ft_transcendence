@@ -22,32 +22,35 @@ export default function Home() {
 		return (<MyChargingDataAlert />);
 
 	return (
-		<Stack
-			direction="column"
-			sx={{width: 1, height: "100%"}}
-		>
+		<Stack direction="column" sx={{height: "100vh", width: 1}}>
 			<MyFooter me={me}/>
-			<Stack sx={{alignItems: "center", justifyContent: "center", height: "15em"}}>
-				<MySearchBar users={users}/>
-			</Stack>
-			<Stack sx={{alignItems: "center", justifyContent: "center", height: "15em"}}>
-				<Typography variant="h1" style={{fontFamily: "Myriad Pro"}}>ft_transcendance</Typography>
-			</Stack>
-			<Stack sx={{alignItems: "center", justifyContent: "center", height: "35em"}}>
-				<Button sx={{
-					background: 'white',
-					color: '#000000',
-					'&:hover': {
-						backgroundColor: '#D5D5D5',
+			<Stack
+				direction="column"
+				sx={{width: 1, height: 1}}
+				justifyContent="space-evenly"
+			>
+				<Stack sx={{alignItems: "center", justifyContent: "center"}}>
+					<MySearchBar users={users}/>
+				</Stack>
+				<Stack sx={{alignItems: "center", justifyContent: "center"}}>
+					<Typography variant="h2" style={{fontFamily: "Myriad Pro"}}>ft_transcendance</Typography>
+				</Stack>
+				<Stack sx={{alignItems: "center", justifyContent: "center"}}>
+					<Button sx={{
+						background: 'white',
 						color: '#000000',
-					},
-					padding: {xs: 1, sm: 2, md: 3, lg: 4},
-					borderRadius: {xs: 4, sm: 4, md: 4, lg: 4},
-					border: 5,
-				}}
-					onClick={() => handleLaunchGame()}>
-					<Typography variant="h2" style={{fontFamily: "Myriad Pro"}}>Start Game</Typography>
-				</Button>
+						'&:hover': {
+							backgroundColor: '#D5D5D5',
+							color: '#000000',
+						},
+						padding: {xs: 1, sm: 2, md: 3, lg: 4},
+						borderRadius: {xs: 4, sm: 4, md: 4, lg: 4},
+						border: 5,
+					}}
+						onClick={() => handleLaunchGame()}>
+						<Typography variant="h2" style={{fontFamily: "Myriad Pro"}}>Start Game</Typography>
+					</Button>
+				</Stack>
 			</Stack>
 		</Stack>
 	);

@@ -13,7 +13,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../Services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
 import { sxButton } from '../Services/style';
-import { Friends } from '../../../Services/Interface/Interface';
+import { Friends, USER_STATUS } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
 import MessageIcon from '@mui/icons-material/Message';
 import MyFooter from '../../../components/MyFooter';
@@ -169,7 +169,7 @@ const Stats = () => {
 					</IconButton>
 					<p>Send message</p>
 				</MenuItem> : null}
-			{user.login !== me.login && isFriend.length > 0 ?
+			{user.login !== me.login && isFriend.length > 0 && user.status === USER_STATUS.ONLINE?
 				<MenuItem onClick={handleSendDuelGame}>
 					<IconButton>
 						<SportsEsportsIcon />
@@ -186,10 +186,9 @@ const Stats = () => {
 	);
 
 	return (
-		<Stack direction="column" spacing={4}>
-			<MyFooter me={me}/>
-			<div style={{marginTop: 10}} />
-			<Stack direction="row" justifyContent="space-between" alignItems="center">
+		<Stack direction="column" spacing={7} alignItems="center">
+			<Stack sx={{width: 1}}><MyFooter me={me}/></Stack>
+			<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{width: 0.9}}>
 				<MyAvatar user={user}/>
 				<Box>
 					<IconButton
@@ -211,8 +210,18 @@ const Stats = () => {
 				<Stack	
 					sx={{width: 0.9, height: 0.8}}
 					direction="column"
-					spacing={4}
+					spacing={7}
 					>
+					<Stack
+						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
+						justifyContent="space-between"
+						sx={{backgroundColor: "green", borderRadius: 5, padding: "15px"}}
+					>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Matchs joués : {user.played}</Typography>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Classement : {user.rank}</Typography>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Victoires : {user.victories}</Typography>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Défaites : {user.defeats}</Typography>
+					</Stack>
 					<Stack
 						sx={{height: 2/12}}
 						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
@@ -221,7 +230,7 @@ const Stats = () => {
 					>
 						<Typography variant="h4" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Historique</Typography>
 						{user.login !== me.login ?
-						<Stack direction={{xs: "column", sm: "column", md: "column", lg: "column"}}>
+						<Stack>
 							{isFriend.length === 0 && isFriendPending.length === 0
 								?
 								<Button
@@ -264,15 +273,7 @@ const Stats = () => {
 						}
 					</Stack>
 					<MyHistory user={user}/>
-					<Stack
-						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
-						justifyContent="space-evenly"
-					>
-						<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Matchs joués : {user.played}</Typography>
-						<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Classement : {user.rank}</Typography>
-						<Typography variant="h5" style={{color: '#079200', fontFamily: "Myriad Pro", textAlign: "center"}}>Victoires : {user.victories}</Typography>
-						<Typography variant="h5" style={{color: '#C70039', fontFamily: "Myriad Pro", textAlign: "center"}}>Défaites : {user.defeats}</Typography>
-					</Stack>
+					
 				</Stack>
 			</Stack>
 			{openAchievements ? <MyAchievements user={user} setOpen={setOpenAchievements}/> : null}

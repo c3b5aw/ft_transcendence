@@ -115,7 +115,7 @@ export default function MyInfosUser() {
 
 		return (
 		<React.Fragment>
-			<TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: 'white' }}>
+			<TableRow sx={{backgroundColor: 'white' }}>
 				<TableCell>
 					<Avatar
 						src={`/api/users/${user.login}/avatar`}
@@ -180,7 +180,7 @@ export default function MyInfosUser() {
 
 		return (
 		<React.Fragment>
-			<TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: 'white' }}>
+			<TableRow sx={{backgroundColor: 'white' }}>
 				<TableCell>
 					<NumbersIcon style={{fontSize: '32px'}}></NumbersIcon>
 				</TableCell>
@@ -207,11 +207,15 @@ export default function MyInfosUser() {
 	if (users === undefined || countMatchs === undefined)
 		return (<MyChargingDataAlert />);
 	return (
-		<Stack sx={{width: 1}} direction="column" spacing={5}>
+		<Stack sx={{width: 1}} direction="column" spacing={5} alignItems="center">
+			<Stack sx={{width: 1, backgroundColor: "green", padding: "15px", borderRadius: 5}} direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
+				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de matchs : {countMatchs}</Typography>
+				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de joueurs : {users.length}</Typography>
+			</Stack>
 			<Stack sx={{backgroundColor: "white", width: 1, height: 0.5, borderRadius: 5}}>
 				<TableContainer sx={{borderRadius: 5}}>
 					<Table aria-label="collapsible table">
-						<TableHead sx={{backgroundColor: "green"}}>
+						<TableHead sx={{backgroundColor: "orange"}}>
 							<TableRow>
 								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Users</p></TableCell>
 								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Id</p></TableCell>
@@ -249,10 +253,6 @@ export default function MyInfosUser() {
 						</TableBody>
 					</Table>
 				</TableContainer>
-			</Stack>
-			<Stack sx={{width: 1}} direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
-				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de matchs : {countMatchs}</Typography>
-				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de joueurs : {users.length}</Typography>
 			</Stack>
 		</Stack>
 	);

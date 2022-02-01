@@ -12,6 +12,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import HomeIcon from '@mui/icons-material/Home';
 
 export default function MyFooter(props : {me: User}) {
 	const { me } = props;
@@ -76,6 +77,12 @@ export default function MyFooter(props : {me: User}) {
 			open={isMobileMenuOpen}
 			onClose={handleMobileMenuClose}
 		>
+		<MenuItem onClick={handleLaunchHome}>
+			<IconButton>
+				<HomeIcon />
+			</IconButton>
+			<p>Home</p>
+		</MenuItem>
 		<MenuItem onClick={handleLaunchStats}>
 			<IconButton>
 				<TimelineIcon />
@@ -189,19 +196,7 @@ export default function MyFooter(props : {me: User}) {
 							</Button> : null
 						}
 					</Box>
-					<Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "flex", md: "none", lg: "none" }, justifyContent: 'space-between'}}>
-						<Button
-							variant="contained"
-							disableElevation
-							onClick={() => handleLaunchChat()}>
-							<Typography
-								variant="h6"
-								style={{fontFamily: "Myriad Pro"}}
-							>
-								Home
-							</Typography>
-						</Button>
-					</Box>
+					<Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "flex", md: "none", lg: "none" }, justifyContent: 'space-between'}}></Box>
 					<Box sx={{ display: { xs: 'flex', md: 'none' } }}>
 						<IconButton
 							size="large"
