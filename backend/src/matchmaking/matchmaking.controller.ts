@@ -11,7 +11,7 @@ import { MatchmakingService } from './matchmaking.service';
 export class MatchmakingController {
 	constructor(private readonly matchmakingServie: MatchmakingService) {}
 
-	@Get('rooms')
+	@Get('normal')
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get all rooms' })
 	async getRooms() {
