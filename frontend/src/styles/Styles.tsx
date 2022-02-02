@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@mui/styles";
 
 export const StyleH1 = makeStyles({
 	root: {
@@ -64,7 +64,7 @@ export const avatarStyleIconList = {
 	height: "32px",
 };
 
-export const styleTextField = makeStyles(theme => ({
+export const styleTextField = makeStyles({
 	styleTextField: {
 		width: "12.%",
 		margin: "0 0 0 0",
@@ -83,4 +83,4 @@ export const styleTextField = makeStyles(theme => ({
 		}
 	}
 }
-}))
+})

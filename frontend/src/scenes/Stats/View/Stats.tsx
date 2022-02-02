@@ -188,6 +188,7 @@ const Stats = () => {
 		</Menu>
 	);
 
+	console.log(user);
 	return (
 		<Stack direction="column" spacing={7} alignItems="center">
 			<Stack sx={{width: 1}}><MyFooter me={me}/></Stack>

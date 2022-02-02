@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core/styles';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
@@ -24,6 +23,7 @@ import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/s
 import MenuGame from './scenes/Game/Components/MenuGame';
 import Game from './scenes/Game/Game';
 import RoomsView from './scenes/Game/Components/RoomsView';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
 	theme: {

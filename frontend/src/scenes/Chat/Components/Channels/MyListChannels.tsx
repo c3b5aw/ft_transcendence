@@ -94,7 +94,7 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 											direction="row"
 										>
 											<Tooltip title={`${channel.name}`}>
-												{channel.private ? <LockIcon color="warning"/> : <LockOpenIcon color="warning"/>}
+												{channel.private ? <LockIcon color="error"/> : <LockOpenIcon color="success"/>}
 											</Tooltip>
 											<Box sx={{display: { xs: 'none', sm: "flex" } }}>
 												<h4 style={{color: "white"}}>{channel.name}</h4>
@@ -107,7 +107,7 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 								</ListItem>
 							</div>
 						))}
-					</List> : <div style={{color: "grey", textAlign: "center", marginTop: "40%", fontFamily: "Myriad Pro", fontSize: "25px"}}>No channel</div>
+					</List> : <div style={{color: "grey", textAlign: "center", fontFamily: "Myriad Pro", fontSize: "25px"}}>No channel</div>
 					}
 				</Paper>
 			</Stack>

@@ -8,8 +8,11 @@ import { useSnackbar } from 'notistack'
 import MySearchBarChat from "../MySearchBarChat";
 import useFriends from "../../Services/Hooks/useFriends";
 
-function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, setOpen: Dispatch<SetStateAction<boolean>>}) {
-	const { reload, setReload, setOpen } = props;
+function MyDialogCreateChannel(props: {reload: boolean,
+		setReload: Dispatch<SetStateAction<boolean>>,
+		setOpen: Dispatch<SetStateAction<boolean>>,
+		setNameChannelChat: Dispatch<SetStateAction<string>>}) {
+	const { reload, setReload, setOpen, setNameChannelChat } = props;
     const [openDM, setOpenDM] = React.useState(false);
 	const [friend, setFriend] = useState<User>();
 	const friends = useFriends();
@@ -58,6 +61,7 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 					autoHideDuration: 2000,
 				});
 				handleClose();
+				setNameChannelChat(nameChannel);
 				setReload(!reload);
 			}
 			catch (err) {

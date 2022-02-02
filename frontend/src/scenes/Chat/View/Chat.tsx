@@ -135,6 +135,10 @@ function Chat() {
 			try {
 				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
 				setChannels(response_channels_joined.data);
+				if (response_channels_joined.data.length > 0 && nameChannel === "") {
+					setNameChannel(response_channels_joined.data[0].name);
+					handleJoinChannel(response_channels_joined.data[0].name);
+				}
 			}
 			catch (err: any) {
 				enqueueSnackbar(`Error : ${err.response.data.error}`, { 
@@ -144,7 +148,7 @@ function Chat() {
 			}
 		}
 		fetchChannels();
-	}, [enqueueSnackbar, uploadChannels, reload])
+	}, [enqueueSnackbar, uploadChannels, reload, nameChannel])
 
 	useEffect(() => {
 		const fetchChat = async () => {
@@ -380,8 +384,8 @@ function Chat() {
 					<MyListUser myList={myListUsersChannel}/>
 					<MyListUser myList={myListFriends}/>
 				</Box>
-				{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} setOpen={setOpen}/> : null}
-				{openJoin ? <JoinChannel setOpen={setOpenJoin}/> : null}
+				{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} setOpen={setOpen} setNameChannelChat={setNameChannel}/> : null}
+				{openJoin ? <JoinChannel setOpen={setOpenJoin} setNameChannelChat={setNameChannel}/> : null}
 				{openUserChannel ? <MyDialogListUser setOpen={setOpenUserChannel} myListUsersChannel={myListUsersChannel}/> : null}
 				{openFriend ? <MyDialogListFriend setOpen={setOpenFriend} myListFriends={myListFriends}/> : null}
 			</Box>

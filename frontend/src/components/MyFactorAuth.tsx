@@ -18,7 +18,7 @@ function MyFactorAuth(props: {setOpenQrcode: Dispatch<SetStateAction<boolean>>, 
 
 	const handleTurnOn = async () => {
 		try {
-			const response = await axios.post(`${api}${api2fa}/turn-on`, { 
+			await axios.post(`${api}${api2fa}/turn-on`, { 
 				twoFactorAuthenticationCode: password,
 			})
 		}
