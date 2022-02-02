@@ -1,4 +1,4 @@
-// import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Paper, Grid } from "@mui/material";
 
 import GameCanvas from './GameCanvas';
@@ -704,8 +704,17 @@ class	Ball {
 // 	// document.getElementById('player')!.style.top = game.player.y + 'px';
 // }, 1000 / 60)
 // }, []);
-export default function	launch() {
-	let game = new Game();
+export default function	Launch() {
+	// document.addEventListener('DOMContentLoaded', function() {
+	let game: any = null;
+	const gameRef = useRef(null);
+
+	useEffect(() => {
+		// gameRef.current.focus();
+		game = new Game();
+		gameRef.current = game;
+	}, [gameRef]);
+
 	console.log("START");
 	console.log(game);
 	console.log(game.is_play);
@@ -714,11 +723,11 @@ export default function	launch() {
 	const	handleBackground = () => {
 		game.random = !game.random;
 		getCanvas().style.background = game.random ? RandomBG() : 'black';
-	}
+	} 
 
 	return (
 		<Grid container
-		direction="column" alignItems="center" justifyContent="center"
+		ref={gameRef} direction="column" alignItems="center" justifyContent="center"
 		style={{ minHeight: '100vh' }}
 	>
 		<Grid item xs={3}>
