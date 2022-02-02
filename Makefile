@@ -26,6 +26,10 @@ clean:
 fclean:	clean
 	@	-docker volume rm $(docker volume ls -q)
 	@	docker-compose rm -f
+	@	docker image prune --force
+	@	docker volume prune --force
+	@	docker network prune --force
+	@	-docker rmi -f $(docker images -aq)
 
 .PHONY: state
 state:
