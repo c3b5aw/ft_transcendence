@@ -9,6 +9,7 @@ export enum MATCHTYPE {
 
 export interface Room {
 	name: string;
+	type: MATCHTYPE;
 }
 
 export interface RoomV {

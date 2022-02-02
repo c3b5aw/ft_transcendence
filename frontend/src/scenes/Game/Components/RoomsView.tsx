@@ -2,7 +2,7 @@ import { Button, Dialog, DialogContent, IconButton, Stack, Table, TableBody, Tab
 import axios from "axios";
 import { useEffect, useState } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
-import { api, apiMatchmaking, apiRooms } from "../../../Services/Api/Api";
+import { api, apiGame, apiMatchmaking, apiRooms } from "../../../Services/Api/Api";
 import { MATCHTYPE, RoomV } from "../Services/utils";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CreateRoom from "./CreateRoom";
@@ -11,6 +11,7 @@ import useMe from "../../../Services/Hooks/useMe";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import { matchJoinNormal, matchLeave } from "../Services/wsGame";
 import { useNavigate } from "react-router-dom";
+import { socketMatchmaking } from "../../../Services/ws/utils";
 
 function RoomsView() {
 	const [rooms, setRooms] = useState<RoomV[]>([]);
@@ -39,8 +40,18 @@ function RoomsView() {
 		return () => clearInterval(interval);
 	}, [])
 
+	useEffect(() => {
+		socketMatchmaking.on("matchmaking::onMatch", (data) => {
+			navigate(`${apiGame}/${data.match.hash}`);
+		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
 	const handleJoinRoom = (room: RoomV) => {
-		matchJoinNormal(MATCHTYPE.MATCH_NORMAL, room.room.name);
+		if (room.room.type === MATCHTYPE.MATCH_DUEL)
+			matchJoinNormal(MATCHTYPE.MATCH_DUEL, room.room.name);
+		else
+			matchJoinNormal(MATCHTYPE.MATCH_NORMAL, room.room.name);
 	}
 
 	const handleDeleteRoom = () => {
@@ -91,6 +102,9 @@ function RoomsView() {
 										<Typography style={{fontFamily: "Myriad Pro"}}>Login</Typography>
 									</TableCell>
 									<TableCell align="center">
+										<Typography style={{fontFamily: "Myriad Pro"}}>Type</Typography>
+									</TableCell>
+									<TableCell align="center">
 										<Typography style={{fontFamily: "Myriad Pro"}}>Action</Typography>
 									</TableCell>
 								</TableRow>
@@ -102,7 +116,10 @@ function RoomsView() {
 											<Typography>{room.room.name}</Typography>
 										</TableCell>
 										<TableCell align="center">
-										<Typography>{room.owner.login}</Typography>
+											<Typography>{room.owner.login}</Typography>
+										</TableCell>
+										<TableCell align="center">
+											<Typography>{room.room.type}</Typography>
 										</TableCell>
 										<TableCell align="center">
 											{room.owner.id !== me.id ?
