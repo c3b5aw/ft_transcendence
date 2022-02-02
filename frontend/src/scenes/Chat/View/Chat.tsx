@@ -347,7 +347,7 @@ function Chat() {
 									placeholder="Message"
 									variant="outlined"
 									fullWidth
-									multiline
+									// multiline
 									maxRows={2}
 									value={messageTmp}
 									onChange={handleTextInputChange}
@@ -355,6 +355,11 @@ function Chat() {
 										style: {
 											backgroundColor: "#737373",
 											color: "white",
+										}
+									}}
+									onKeyPress= {(e) => {
+										if (e.key === 'Enter') {
+											handleSendMessage();
 										}
 									}}
 								/>
