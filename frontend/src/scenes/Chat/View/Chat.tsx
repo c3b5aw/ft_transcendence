@@ -347,7 +347,6 @@ function Chat() {
 									placeholder="Message"
 									variant="outlined"
 									fullWidth
-									// multiline
 									maxRows={2}
 									value={messageTmp}
 									onChange={handleTextInputChange}
