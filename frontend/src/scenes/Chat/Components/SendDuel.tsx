@@ -1,8 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, Stack } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
-import MyAppBarClose from "../../../components/MyAppBarClose";
-import { apiGame, apiLadder, apiStats } from "../../../Services/Api/Api";
+import { apiGame, apiStats } from "../../../Services/Api/Api";
 import { MATCHTYPE } from "../../Game/Services/utils";
 import { matchJoinDuel } from "../../Game/Services/wsGame";
 
