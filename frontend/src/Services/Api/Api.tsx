@@ -7,12 +7,12 @@ export const apiFriends = "/friends"
 export const apiStats = "/stats"
 export const apiMessages = "/messages"
 export const apiAchievements = "/achievements"
-export const apiConnection = "http://localhost/api/auth/login"
 export const apiAdmin = "/admin"
 export const apiBan = "/ban"
 export const apiModos = "/moderators"
 export const api2fa = "/2fa"
 export const apiAuth = "/auth"
+export const apiConnection = `${api}${apiAuth}/login`
 
 /*
 ** CHAT
