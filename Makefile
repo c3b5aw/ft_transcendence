@@ -20,11 +20,19 @@ stop:
 .PHONY: clean
 clean:
 	@	docker-compose down --remove-orphans -t 1
+	@	-docker rm -f $(docker ps -a -q)
+
+.PHONY: fclean
+fclean:	clean
+	@	-docker volume rm $(docker volume ls -q)
 	@	docker-compose rm -f
 
 .PHONY: state
 state:
 	@	docker-compose ps --all
+
+.PHONY: re
+re:	fclean all
 
 .PHONY: dev-back
 dev-back: clean
