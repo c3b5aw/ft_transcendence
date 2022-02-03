@@ -145,6 +145,9 @@ function Chat() {
 		})
 	}, [])
 
+	/*
+	** This function is called when users roles change
+	*/
 	useEffect(() => {
 		socket.on("channel::onRoleUpdate", (data) => {
 			setUploadUsersChannel(data);
