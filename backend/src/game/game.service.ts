@@ -159,7 +159,7 @@ export class GameService {
 		if (!match) {
 			match = await this.matchsService.findPendingMatch(client.user.id);
 			if (match)
-				await this.startGame(match);	
+				await this.startGame(match);
 		}
 		if (!match) {
 			client.emit('onError', { error: '`findRunningGame`: no match found' });
