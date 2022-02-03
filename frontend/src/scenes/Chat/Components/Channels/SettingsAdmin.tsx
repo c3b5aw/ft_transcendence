@@ -19,7 +19,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
 
 	const printError = (err: any) => {
-		enqueueSnackbar(`Error : ${err.response.data.message}`, { 
+		enqueueSnackbar(`Error : ${err}`, { 
 			variant: 'error',
 			autoHideDuration: 3000,
 		});

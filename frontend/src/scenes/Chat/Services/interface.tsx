@@ -21,6 +21,7 @@ export interface Channel {
 
 export interface IChannel {
 	channels: Channel[],
+	setNameChannel: (nameChannel: string) => void,
 	handleQuitChannel: (channel: Channel) => void,
 	updateListChannels: () => void,
 }

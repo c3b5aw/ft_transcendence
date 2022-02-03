@@ -34,6 +34,7 @@ function MyListUser(props : { myList: IListUser }) {
 
 	const checkRoleMe = () => {
 		if (me !== undefined && myList.isListChannel && user.length > 0) {
+			// console.log(user[0]);
 			return (user[0].role === ROLE.ADMIN || user[0].role === ROLE.MODERATOR);
 		}
 		return (false);
@@ -41,14 +42,11 @@ function MyListUser(props : { myList: IListUser }) {
 
 	function DisplayOptionUser(props: {user: User}) {
 		const { user } = props;
-		if (myList.isListChannel) {
-			return (
-				<IconButton onClick={() => handleClickOptionUser(user)}>
-					<MoreVertIcon style={{color: "white"}}/>
-				</IconButton>
-			);
-		}
-		return (null);
+		return (
+			<IconButton onClick={() => handleClickOptionUser(user)}>
+				<MoreVertIcon style={{color: "white"}}/>
+			</IconButton>
+		);
 	}
 
 	return (
