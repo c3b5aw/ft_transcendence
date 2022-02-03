@@ -27,7 +27,16 @@ const GAME_PLAYER_WIDTH: number = 5;
 const GAME_PLAYER_START_Y: number = GAME_CANVAS_HEIGHT / 2 - GAME_PLAYER_HEIGHT / 2;
 const GAME_PLAYER_SPEED: number = 10;
 
+function getFactors(ctx: CanvasRenderingContext2D) {
+	const widthFactor = ctx.canvas.width / GAME_CANVAS_WIDTH;
+	const heightFactor = ctx.canvas.height / GAME_CANVAS_HEIGHT;
+
+	return { widthFactor, heightFactor };
+}
+
 export {
+	getFactors,
+
 	GAME_START_MAX_WAIT,
 	GAME_START_DELAY,
 	GAME_TICKS_PER_SECOND,

@@ -46,18 +46,12 @@ export class Game {
 
 		if (this.pause.paused) return this.streamPause();
 
-		this.updatePlayers();
 		this.updateBall();
-	}
-
-	private updatePlayers() {
-		for (let player of this.players)
-			player.update();
+		this.players.forEach(player => { player.update() });
 	}
 
 	private updateBall() {
-		if (this.ball.y > GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE ||
-				this.ball.y - GAME_BORDER_SIZE < GAME_BORDER_SIZE)
+		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE)
 			this.ball.direction = -this.ball.direction;
 
 		if (this.ball.x < GAME_PLAYER_WIDTH + GAME_BORDER_SIZE)
@@ -79,7 +73,6 @@ export class Game {
 
 			this.socket.emit('game::match::onCollide', { game: this, player: player });
 		}
-
 	}
 	/*
 		GETTERS

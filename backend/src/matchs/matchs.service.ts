@@ -53,6 +53,22 @@ export class MatchsService {
 		`);
 	}
 
+	async findOneByHash(hash: string) : Promise<Match> {
+		return this.matchRepository.query(`
+			SELECT matchs.*, 
+				p1.login AS player1_login,
+				p2.login AS player2_login
+			FROM matchs
+			INNER JOIN users
+				AS p1
+				ON p1.id = matchs.player1
+			INNER JOIN users
+				AS p2
+				ON p2.id = matchs.player2
+			WHERE matchs.hash = '${hash}';
+		`);
+	}
+
 	async findAllByPlayerId(id: number) : Promise<Match[]> {
 		return this.matchRepository.query(`
 			SELECT matchs.*, 
