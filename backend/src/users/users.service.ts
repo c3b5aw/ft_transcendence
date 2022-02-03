@@ -10,6 +10,7 @@ import { User } from './entities/user.entity';
 import { UserInterface } from './interfaces/user.interface';
 import { UserRole } from './entities/roles.enum';
 import { UserStatus } from './entities/status.enum';
+import { StatsService } from 'src/stats/stats.service';
 
 @Injectable()
 export class UsersService {
@@ -18,7 +19,10 @@ export class UsersService {
 	/*
 		view https://docs.nestjs.com/techniques/database#custom-repository
 	*/
-	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
+	constructor(@InjectRepository(User)
+		private readonly userRepository: Repository<User>,
+		
+		private readonly statsService: StatsService) {}
 
 	async createUser(userDetails: UserInterface) : Promise<User> {
 		const writer = createWriteStream( `./public/avatars/${userDetails.id}.jpg` )
@@ -41,7 +45,9 @@ export class UsersService {
 			throw new InternalServerErrorException();
         })
 	
-		return this.userRepository.save(userDetails);
+		const user: User = await this.userRepository.save(userDetails);
+		await this.statsService.createUserStats(user.id);
+		return user;
 	}
 
 	/*
@@ -138,10 +144,11 @@ export class UsersService {
 	async getStatsById(id: number) {
 		const stats = await this.userRepository.query(`
 			SELECT * FROM (
-				SELECT users.login, users.status, stats.*, users.last_login, users.role,
+				SELECT users.id, users.login, users.status, users.last_login, users.role,
+				stats.elo, stats.played, stats.victories, stats.defeats,
 				ROW_NUMBER() over (ORDER BY stats.elo DESC, stats.victories DESC) as rank
 				FROM users
-				INNER JOIN users_stats
+				LEFT JOIN users_stats
 					AS stats
 					ON stats.id = users.id
 				ORDER BY stats.elo DESC, stats.victories DESC
