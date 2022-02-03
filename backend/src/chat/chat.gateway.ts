@@ -147,7 +147,5 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return client.emit('onError', { error: WsError.USER_MUTED });
 
 		await this.chatService.wsSendMessageToChannel(client_id, payload.message, channel);
-	
-		client.emit('onSuccess', { message: 'message sent' });
 	}
 }
