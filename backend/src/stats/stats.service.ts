@@ -59,4 +59,13 @@ export class StatsService {
 			WHERE user = ${id};
 		`);
 	}
+
+	async createUserStats(userID: number) : Promise<UserStats> {
+		const stats = new UserStats();
+		stats.id = userID;
+		stats.played = 0;
+		stats.victories = 0;
+		stats.defeats = 0;
+		return this.statsRepository.save(stats);
+	}
 }

@@ -12,12 +12,14 @@ import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import { matchJoinNormal, matchLeave } from "../Services/wsGame";
 import { useNavigate } from "react-router-dom";
 import { socketMatchmaking } from "../../../Services/ws/utils";
+import { useSnackbar } from "notistack";
 
 function RoomsView() {
 	const [rooms, setRooms] = useState<RoomV[]>([]);
 	const [openCreateRoom, setOpenCreateRoom] = useState<boolean>(false);
 	const me = useMe();
 	const navigate = useNavigate();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const handleClose = () => {
 		navigate(-1);
@@ -30,7 +32,10 @@ function RoomsView() {
 				setRooms(response.data);
 			}
 			catch (err) {
-				console.log(err);
+				enqueueSnackbar(`Error : ${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		const interval = setInterval(() =>{
@@ -38,6 +43,7 @@ function RoomsView() {
 		}, 1000)
 		fetchRooms();
 		return () => clearInterval(interval);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {

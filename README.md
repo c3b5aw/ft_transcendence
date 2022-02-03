@@ -41,6 +41,12 @@ To setup this project
 
 ```
 Register 42APP and edit .env accordingly
+
+APP_PORT
+
+INTRA42_UID
+INTRA42_SECRET
+INTRA42_CALLBACK_URL
 ```
 
 To deploy this project run

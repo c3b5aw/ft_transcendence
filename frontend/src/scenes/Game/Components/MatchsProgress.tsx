@@ -6,11 +6,13 @@ import axios from "axios";
 import { api, apiGame, apiMatch } from "../../../Services/Api/Api";
 import { Match } from "../../../Services/Interface/Interface";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { setOpen } = props;
 	const [matchsProgress, setMatchsProgress] = useState<Match[]>([])
 	const navigate = useNavigate();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const handleClose = () => {
 		setOpen(false);
@@ -22,8 +24,11 @@ function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 				const response = await axios.get(`${api}${apiMatch}/in-progress`);
 				setMatchsProgress(response.data);
 			}
-			catch (err) {
-				console.log(err);
+			catch (err: any) {
+				enqueueSnackbar(`Error : ${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		const interval = setInterval(() => {
@@ -31,6 +36,7 @@ function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 		}, 1000)
 		fetchMatchProgress();
 		return () => clearInterval(interval);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	function HandleTimeMatch(props: {match: Match}) {

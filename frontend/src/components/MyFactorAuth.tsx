@@ -1,5 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, Stack, TextField } from "@mui/material";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 import { Dispatch, SetStateAction, useState } from "react";
 import { sxButton } from "../scenes/Settings/Services/style";
 import { api, api2fa, apiConnection } from "../Services/Api/Api";
@@ -10,6 +11,8 @@ function MyFactorAuth(props: {setOpenQrcode: Dispatch<SetStateAction<boolean>>, 
 	const classes = styleTextField()
 	const [password, setPassword] = useState<string>("");
 	const [open, setOpen] = useState<boolean>(true);
+	const { enqueueSnackbar } = useSnackbar();
+
 
 	const handleClose = () => {
 		setOpen(false);
@@ -23,7 +26,10 @@ function MyFactorAuth(props: {setOpenQrcode: Dispatch<SetStateAction<boolean>>, 
 			})
 		}
 		catch (err) {
-			console.log(err);
+			enqueueSnackbar(`Error : ${err}`, { 
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
 		}
 	}
 

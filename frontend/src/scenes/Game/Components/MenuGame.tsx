@@ -18,14 +18,12 @@ function MenuGame() {
 
 	useEffect(() => {
 		socketMatchmaking.on("matchmaking::onJoin", (data) => {
-			console.log(data);
 			setSuccessJoin(true);
 		})
 	}, [])
 
 	useEffect(() => {
 		socketMatchmaking.on("matchmaking::onLeave", (data) => {
-			console.log(data);
 			setSuccessJoin(false);
 		})
 	}, [])
