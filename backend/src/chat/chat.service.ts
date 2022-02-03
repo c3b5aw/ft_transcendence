@@ -182,12 +182,12 @@ export class ChatService {
 		if (!user)
 			return;
 
-		await this.sendEventToUser(user.id, 'channel::onKick', { channel: { id: channel.id, name: channel.name }});
-		await this.sendEventToChannel(channel, 'channel::onMembersReload');
 
 		await this.userChannelRepository.delete(userChannel);
 
 		await this.wsSendAnnouncementToChannel(channel, `${user.login} has been kicked`);
+		await this.sendEventToChannel(channel, 'channel::onMembersReload');
+		await this.sendEventToUser(user.id, 'channel::onKick', { channel: { id: channel.id, name: channel.name }});		
 	}
 
 	async muteUserInChannel(user: User, channel: Channel, until: Date): Promise<void> {
