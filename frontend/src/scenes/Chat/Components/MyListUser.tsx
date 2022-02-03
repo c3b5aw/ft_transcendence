@@ -33,7 +33,7 @@ function MyListUser(props : { myList: IListUser }) {
 	}
 
 	const checkRoleMe = () => {
-		if (me !== undefined && myList.isListChannel) {
+		if (me !== undefined && myList.isListChannel && user.length > 0) {
 			return (user[0].role === ROLE.ADMIN || user[0].role === ROLE.MODERATOR);
 		}
 		return (false);

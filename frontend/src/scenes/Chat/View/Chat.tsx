@@ -39,7 +39,8 @@ function Chat() {
 	const [openUserChannel, setOpenUserChannel] = useState<boolean>(false);
 	const [openFriend, setOpenFriend] = useState<boolean>(false);
 
-	const [upload, setUpload] = useState(null)
+	const [uploadUsersChannel, setUploadUsersChannel] = useState(null)
+	const [uploadMessagesChannel, setUploadMessagesChannel] = useState(null)
 	const [uploadChannels, setUploadChannels] = useState("")
 
 	const { enqueueSnackbar } = useSnackbar();
@@ -98,6 +99,10 @@ function Chat() {
 		setMessageTmp("");
 	}
 
+	/*
+	** This function will be used when the user join a new channel : in that case, we close
+	** the modal and update the channel name. After that, the channel::onListReload function is launched
+	*/
 	useEffect(() => {
 		socket.on("channel::onJoin", (data) => {
 			setOpenJoin(false);
@@ -105,15 +110,33 @@ function Chat() {
 		})
 	}, [])
 
+	/*
+	** Whenever a user send a message, we relaod the messages list of channel
+	*/
 	useEffect(() => {
-		socket.on("channel::onMembersReload", (data) => {
-			setUpload(data)
+		socket.on("channel::onMessage", (data) => {
+			setUploadMessagesChannel(data)
 		})
 	}, [])
 
+	/*
+	** Here, we reload the list of users -> for example
+	** if a user is banned, or if he leaves a channel, the list of channel users is reloaded
+	*/
+	useEffect(() => {
+		socket.on("channel::onMembersReload", (data) => {
+			setUploadUsersChannel(data)
+		})
+	}, [])
+
+	/*
+	** Here, we reload all channels if a data is not specified
+	** Otherwise, the current user join the channel (name_channel) -> for example
+	** if you create or join a new channel, we reload the channels list
+	*/
 	useEffect(() => {
 		socket.on("channel::onListReload", (data) => {
-			if (data !== undefined && data.channel !== undefined)
+			if (data !== undefined && data.channel !== undefined && data.data === undefined)
 				channelJoin(data.channel.name, "");
 			else {
 				setUploadChannels(data);
@@ -121,18 +144,15 @@ function Chat() {
 		})
 	}, [])
 
+	/*
+	** If a user is kicked of a channel, we reload all channels and reinit the interface chat
+	*/
 	useEffect(() => {
 		socket.on("channel::onKick", (data) => {
-			reinit();
 			setUploadChannels(data)
+			reinit();
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
-
-	useEffect(() => {
-		socket.on("channel::onMessage", (data) => {
-			setUpload(data)
-		})
 	}, [])
 
 	/*
@@ -153,17 +173,13 @@ function Chat() {
 		}
 		fetchChannels();
 	}, [enqueueSnackbar, uploadChannels, reload, nameChannel])
-
+	
 	/*
-	** RELOAD LIST OF USERS IN NAME_CHANNEL
 	** RELOAD LIST OF MESSAGES FROM NAME_CHANNEL
 	*/
 	useEffect(() => {
-		const fetchChat = async () => {
+		const fetchMessageChannel = async () => {
 			try {
-				const response_users_channel = await axios.get(`${api}${apiChannel}/${nameChannel}${apiUsers}`)
-				setUsersChannel(response_users_channel.data);
-
 				const response_message = await axios.get(`${api}${apiChannel}/${nameChannel}${apiMessages}`)
 				setMessages(response_message.data);
 				setNameChannelDisplay(nameChannel);
@@ -176,8 +192,29 @@ function Chat() {
 			}
 		}
 		if (nameChannel !== "")
-			fetchChat();
-	}, [enqueueSnackbar, nameChannel, upload])
+			fetchMessageChannel();
+	}, [enqueueSnackbar, nameChannel, uploadMessagesChannel])
+
+
+	/*
+	** RELOAD LIST OF USERS IN NAME_CHANNEL
+	*/
+	useEffect(() => {
+		const fetchUsersChannel = async () => {
+			try {
+				const response_users_channel = await axios.get(`${api}${apiChannel}/${nameChannel}${apiUsers}`)
+				setUsersChannel(response_users_channel.data);
+			}
+			catch (err: any) {
+				enqueueSnackbar(`Error : ${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+			}
+		}
+		if (nameChannel !== "")
+			fetchUsersChannel();
+	}, [enqueueSnackbar, nameChannel, uploadUsersChannel])
 
 	/*
 	** RELOAD LIST OF FRIENDS
