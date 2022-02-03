@@ -706,40 +706,46 @@ class	Ball {
 // }, []);
 export default function	Launch() {
 	// document.addEventListener('DOMContentLoaded', function() {
-	let game: any = null;
-	const gameRef = useRef(null);
+	const gameRef = useRef<Game | null>(null);
 
 	useEffect(() => {
-		// gameRef.current.focus();
-		game = new Game();
-		gameRef.current = game;
-	}, [gameRef]);
+		gameRef.current = new Game();
+	});
 
-	console.log("START");
-	console.log(game);
-	console.log(game.is_play);
-	const	handleBoost = () => { game.boost = !game.boost; }
+	const	handleBoost = () => { gameRef.current!.boost = !gameRef.current!.boost; }
 
 	const	handleBackground = () => {
-		game.random = !game.random;
-		getCanvas().style.background = game.random ? RandomBG() : 'black';
-	} 
+		gameRef.current!.random = !gameRef.current!.random;
+		getCanvas().style.background = gameRef.current!.random ? RandomBG() : 'black';
+	}
+
+	const startGame = () => {
+		// .... -> useRef.current!. -> ...
+	}
+
+	const stopGame = () => {
+		// .... -> useRef.current!. -> ...
+	}
+
+	const pauseGame = () => {
+		// .... -> useRef.current!. -> ...
+	}
 
 	return (
 		<Grid container
-		ref={gameRef} direction="column" alignItems="center" justifyContent="center"
-		style={{ minHeight: '100vh' }}
-	>
-		<Grid item xs={3}>
-		<Paper elevation={ 4 }
-		sx={{ borderRadius: '0px' }}
-	>
-		<GameScoreBoard />
-		<GameModifiers boostCallback={ handleBoost } backgroundCallback={ handleBackground } />
-		<GameButtons startGame={ game.play } stopGame= { game.stopGame } pauseGame={ game.pause } />
-		<GameCanvas />
-		</Paper>
-		</Grid>
+			direction="column" alignItems="center" justifyContent="center"
+			style={{ minHeight: '100vh' }}
+		>
+			<Grid item xs={3}>
+				<Paper elevation={ 4 }
+					sx={{ borderRadius: '0px' }}
+				>
+					<GameScoreBoard />
+					<GameModifiers boostCallback={ handleBoost } backgroundCallback={ handleBackground } />
+					<GameButtons startGame={ startGame } stopGame= { stopGame } pauseGame={ pauseGame } />
+					<GameCanvas />
+				</Paper>
+			</Grid>
 		</Grid>
 	);
 }
