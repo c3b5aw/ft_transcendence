@@ -14,7 +14,6 @@
 		"**/.eslint*.*": true,
 		"**/.style*": true,
 		"**/.flowconfig": true,
-		"**/.env": true,
 		"**/.git*": true,
 		"**/dist": true,
 	},
