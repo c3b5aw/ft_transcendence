@@ -21,9 +21,7 @@ export interface Channel {
 
 export interface IChannel {
 	channels: Channel[],
-	handleClickChannel: (channel: Channel) => void,
 	handleQuitChannel: (channel: Channel) => void,
-	handleEnterChannel: (channel: Channel, password: string) => void,
 	updateListChannels: () => void,
 }
 
@@ -47,7 +45,6 @@ export interface ISettingM {
 	isAdmin: boolean,
 	closeModal: (open: boolean) => void,
 	handleQuitChannel: (channel: Channel) => void,
-	handleEnterChannel: (channel: Channel, password: string) => void,
 }
 
 export interface ISettingAdmin {

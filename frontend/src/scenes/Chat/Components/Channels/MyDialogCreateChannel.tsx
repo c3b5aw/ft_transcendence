@@ -8,11 +8,8 @@ import { useSnackbar } from 'notistack'
 import MySearchBarChat from "../MySearchBarChat";
 import useFriends from "../../Services/Hooks/useFriends";
 
-function MyDialogCreateChannel(props: {reload: boolean,
-		setReload: Dispatch<SetStateAction<boolean>>,
-		setOpen: Dispatch<SetStateAction<boolean>>,
-		setNameChannelChat: Dispatch<SetStateAction<string>>}) {
-	const { reload, setReload, setOpen, setNameChannelChat } = props;
+function MyDialogCreateChannel(props: {setOpen: Dispatch<SetStateAction<boolean>> }) {
+	const { setOpen } = props;
     const [openDM, setOpenDM] = React.useState(false);
 	const [friend, setFriend] = useState<User>();
 	const friends = useFriends();
@@ -22,7 +19,7 @@ function MyDialogCreateChannel(props: {reload: boolean,
 
 	const { enqueueSnackbar } = useSnackbar();
 
-	const handleRemoveFriend = (user: User) => {
+	const handleRemoveFriend = () => {
 		setFriend(undefined);
 	}
 
@@ -41,7 +38,6 @@ function MyDialogCreateChannel(props: {reload: boolean,
 					login: friend.login,
 				})
 				handleClose();
-				setReload(!reload);
 			}
 			else {
 				enqueueSnackbar(`Veuillez selectionner un ami`, { 
@@ -61,8 +57,6 @@ function MyDialogCreateChannel(props: {reload: boolean,
 					autoHideDuration: 2000,
 				});
 				handleClose();
-				setNameChannelChat(nameChannel);
-				setReload(!reload);
 			}
 			catch (err) {
 				enqueueSnackbar(`Le channel ${nameChannel} n'a pas pu etre crée (${err})`, { 
@@ -149,7 +143,7 @@ function MyDialogCreateChannel(props: {reload: boolean,
 						<div style={{marginTop: 10}}></div>
 						{friend !== undefined ? 
 							<Button 
-								onClick={() => handleRemoveFriend(friend)}
+								onClick={() => handleRemoveFriend()}
 								key={friend.login}
 								size="small"
 								variant="contained"
@@ -161,8 +155,8 @@ function MyDialogCreateChannel(props: {reload: boolean,
 					}
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={handleClose}>Cancel</Button>
-				<Button onClick={handleCreate}>Create</Button>
+				<Button variant="contained" color="error" onClick={handleClose}>Cancel</Button>
+				<Button variant="contained" color="success" onClick={handleCreate}>Create</Button>
 			</DialogActions>
 		</Dialog>
 	);

@@ -7,6 +7,7 @@ import { Channel, IChannel, ISettingAdmin, ISettingM } from '../../Services/inte
 import SettingsM from './SettingsMember';
 import { useState } from 'react';
 import SettingsAdmin from './SettingsAdmin';
+import { channelJoin } from '../../Services/wsChat';
 
 function MyListChannels(props : {myChannel: IChannel, me: User }) {
 	const { myChannel, me } = props;
@@ -15,17 +16,12 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 	const [openAdmin, setOpenAdmin] = useState<boolean>(false);
 	const [openM, setOpenM] = useState<boolean>(false);
 
-	const handleClickChannel = (channel: Channel) => {
-		myChannel.handleClickChannel(channel);
-	}
-
 	function handleClickSettingsChannelM(channel: Channel) {
 		const mySettingsM: ISettingM = {
 			channel: channel,
 			open: true,
 			isAdmin: false,
 			closeModal: setOpenM,
-			handleEnterChannel: myChannel.handleEnterChannel,
 			handleQuitChannel: myChannel.handleQuitChannel,
 		};
 		setOpenAdmin(false);
@@ -87,7 +83,7 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 						{myChannel.channels.map(channel => (
 							<div key={channel.id}>
 								<ListItem component="div">
-									<ListItemButton onClick={() => handleClickChannel(channel)}>
+									<ListItemButton onClick={() => channelJoin(channel.name, "")}>
 										<Stack
 											sx={{ width: "85%", height: 1}}
 											alignItems="center" spacing={2}

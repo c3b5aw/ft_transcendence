@@ -22,7 +22,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 	}
 
 	const printError = (err: any) => {
-		enqueueSnackbar(`Error : ${err.response.data.error}`, { 
+		enqueueSnackbar(`Error : ${err}`, { 
 			variant: 'error',
 			autoHideDuration: 3000,
 		});
