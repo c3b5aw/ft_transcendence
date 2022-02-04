@@ -6,7 +6,7 @@ import MyListChannels from "../Components/Channels/MyListChannels";
 import { Channel, IChannel, IListUser, Message } from "../Services/interface";
 import SendIcon from '@mui/icons-material/Send';
 import MyMessages from "../Components/MyMessages";
-import { User } from "../../../Services/Interface/Interface";
+import { PAGE, User } from "../../../Services/Interface/Interface";
 import MyListUser from "../Components/MyListUser";
 import axios from "axios";
 import { api, apiChannel, apiChannels, apiFriends, apiMessages, apiUsers } from "../../../Services/Api/Api";
@@ -300,7 +300,7 @@ function Chat() {
 			height: "100vh",
 			justifyContent: 'space-between'}}
 		>
-			<MyFooter me={me}/>
+			<MyFooter me={me} currentPage={PAGE.CHAT}/>
 			<Box sx={{
 				flexDirection: "row",
 				height: "90vh",

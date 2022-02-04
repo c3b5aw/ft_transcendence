@@ -5,6 +5,7 @@ import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyFooter from "../../../components/MyFooter";
 import { apiGame } from "../../../Services/Api/Api";
 import useMe from "../../../Services/Hooks/useMe";
+import { PAGE } from "../../../Services/Interface/Interface";
 import { socketMatchmaking } from "../../../Services/ws/utils";
 import MatchMaking from "./MatchMaking";
 import MatchProgress from "./MatchsProgress";
@@ -33,10 +34,9 @@ function MenuGame() {
 			<MyChargingDataAlert />
 		);
 	}
-
 	return (
 		<Stack direction="column">
-			<MyFooter me={me}/>
+			<MyFooter me={me} currentPage={PAGE.GAME}/>
 			<Stack
 				direction="column"
 				alignItems="center"

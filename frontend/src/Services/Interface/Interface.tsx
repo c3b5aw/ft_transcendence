@@ -44,7 +44,7 @@ export interface Achievements {
 	unlocked_at: string
 }
 
-export interface Friends {
+export interface Friend {
 	id: number,
 	connected: boolean,
 	login: string,
@@ -75,4 +75,15 @@ export enum USER_STATUS {
 	OFFLINE = 'OFFLINE',
 	ONLINE = 'ONLINE',
 	IN_GAME = 'IN_GAME',
+}
+
+export enum PAGE {
+	HOME = "HOME",
+	STATS = "STATISTIQUES",
+	CLASSEMENT = "CLASSEMENT",
+	PARAMETRES = "PARAMETRES",
+	CHAT = "CHAT",
+	GAME = "GAME",
+	ADMINVIEW = "ADMIN VIEW",
+	MISSING = "MISSING",
 }

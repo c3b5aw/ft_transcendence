@@ -5,6 +5,7 @@ import useMe from "../../../Services/Hooks/useMe";
 import useUsers from "../../../Services/Hooks/useUsers";
 import useCountMatchs from "../Services/useCountMatchs";
 import MyFooter from "../../../components/MyFooter";
+import { PAGE } from "../../../Services/Interface/Interface";
 
 function Admin() {
 	const me = useMe();
@@ -18,7 +19,7 @@ function Admin() {
 			direction="column"
 			spacing={5}
 		>
-			<MyFooter me={me}/>
+			<MyFooter me={me} currentPage={PAGE.ADMINVIEW}/>
 			<Stack direction="column">
 				<Stack
 					sx={{width: 1, height: 1}}

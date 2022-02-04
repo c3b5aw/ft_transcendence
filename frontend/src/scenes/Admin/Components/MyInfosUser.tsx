@@ -72,7 +72,6 @@ export default function MyInfosUser() {
 			reload: boolean,
 			setReload: Dispatch<SetStateAction<boolean>>,
 			status1: boolean,
-			status2: ROLE,
 		) {
 			if (status1) {
 				try {
@@ -110,7 +109,7 @@ export default function MyInfosUser() {
 			}
 		}
 		const handleBanned = async () => {
-			changeStatus(user, setBanned, reload2, setReload2, banned, ROLE.BANNED);
+			changeStatus(user, setBanned, reload2, setReload2, banned);
 		}
 
 		return (

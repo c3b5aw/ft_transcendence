@@ -33,7 +33,7 @@ export const useStyles = makeStyles({
 		alignItems: 'center',
 	},
 	paper: {
-		width: '50%',
+		width: '90%',
 		borderRadius: 15,
 	},
 	searchBar: {

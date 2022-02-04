@@ -1,6 +1,5 @@
-import { Avatar, Box, Divider, List, ListItem, Paper, Stack, Typography } from "@mui/material"
+import { Avatar, Box, CircularProgress, Divider, List, ListItem, Paper, Stack, Typography } from "@mui/material"
 import { User } from "../../../Services/Interface/Interface";
-import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import useMatchs from "../Services/useMatchs";
 
 const MyHistory = (props: {user: User}) => {
@@ -8,7 +7,10 @@ const MyHistory = (props: {user: User}) => {
 	const matchs = useMatchs(user);
 
 	if (matchs === undefined)
-		return (<MyChargingDataAlert />);
+		return (
+			<Stack alignItems="center">
+				<CircularProgress sx={{color: "white"}} />
+			</Stack>);
 	return (
 		<Stack
 			sx={{width: 1, height: 1}}
@@ -44,7 +46,7 @@ const MyHistory = (props: {user: User}) => {
 													spacing={2}
 												>
 													<Avatar
-														sx={{width: "2.5vmax", height: "2.5vmax"}}
+														sx={{width: {xs: "40px", sm: "56px", md: "64px", lg: "64px"}, height: {xs: "40px", sm: "56px", md: "64px", lg: "64px"}}}
 														src={`/api/users/${match.player1_login}/avatar`}>
 													</Avatar>
 													<Box sx={{display: {xs: "none", sm: "flex", md: "flex"}}}>
@@ -103,7 +105,7 @@ const MyHistory = (props: {user: User}) => {
 														<Typography variant="h6" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{match.player2_login}</Typography>
 													</Box>
 													<Avatar
-														sx={{width: "2.5vmax", height: "2.5vmax"}}
+														sx={{width: {xs: "40px", sm: "56px", md: "64px", lg: "64px"}, height: {xs: "40px", sm: "56px", md: "64px", lg: "64px"}}}
 														src={`/api/users/${match.player2_login}/avatar`}>
 													</Avatar>
 												</Stack>

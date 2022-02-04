@@ -13,7 +13,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../Services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
 import { sxButton } from '../Services/style';
-import { Friends, USER_STATUS } from '../../../Services/Interface/Interface';
+import { Friend, PAGE, USER_STATUS } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
 import MessageIcon from '@mui/icons-material/Message';
 import MyFooter from '../../../components/MyFooter';
@@ -23,6 +23,10 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import React from 'react';
 import { matchJoinDuel } from '../../Game/Services/wsGame';
 import { MATCHTYPE } from '../../Game/Services/utils';
+import PeopleIcon from '@mui/icons-material/People';
+import MyRequestFriends from '../Components/MyRequestFriends';
+import MySearchBar from '../../Home/Components/MySearchBar';
+import useUsers from '../../../Services/Hooks/useUsers';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -30,12 +34,14 @@ const Stats = () => {
 
 	const user = useUserStats(login);
 	const me = useMe();
+	const users = useUsers();
 	const [successAdd, setSuccessAdd] = useState<boolean>(false);
 	const [successDelete, setSuccessDelete] = useState<boolean>(false);
-	const [friends, setFriends] = useState<Friends[]>([]);
-	const [friendsPending, setFriendsPending] = useState<Friends[]>([]);
+	const [friends, setFriends] = useState<Friend[]>([]);
+	const [friendsPending, setFriendsPending] = useState<Friend[]>([]);
 	const navigate = useNavigate();
 	const [openAchievements, setOpenAchievements] = useState<boolean>(false);
+	const [openDemandeAmis, setOpenDemandeAmis] = useState<boolean>(false);
 
 	useEffect(() => {
 		const fetchFriendsMe = async () => {
@@ -135,7 +141,7 @@ const Stats = () => {
 
 	const isAchievementMenuOpen = Boolean(AchievementMoreAnchorEl);
 
-	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined))
+	if ((me === undefined || user === undefined || users === undefined || friends === undefined || friendsPending === undefined))
 		return (<MyChargingDataAlert />);
 	const isFriend = friends.filter(function (friend) {
 		return (friend.login === user.login);
@@ -172,7 +178,7 @@ const Stats = () => {
 					</IconButton>
 					<p>Send message</p>
 				</MenuItem> : null}
-			{user.login !== me.login && isFriend.length > 0 && user.status === USER_STATUS.ONLINE?
+			{user.login !== me.login && isFriend.length > 0 && user.status === USER_STATUS.ONLINE ?
 				<MenuItem onClick={handleSendDuelGame}>
 					<IconButton>
 						<SportsEsportsIcon />
@@ -185,14 +191,24 @@ const Stats = () => {
 				</IconButton>
 				<p>Achievements</p>
 			</MenuItem>
+			{user.login === me.login ?
+				<MenuItem onClick={() => setOpenDemandeAmis(true)}>
+					<IconButton>
+						<PeopleIcon />
+					</IconButton>
+					<p>Demandes d'amis</p>
+				</MenuItem> : null}
 		</Menu>
 	);
 
 	return (
 		<Stack direction="column" spacing={7} alignItems="center">
-			<Stack sx={{width: 1}}><MyFooter me={me}/></Stack>
+			<Stack sx={{width: 1}}><MyFooter me={me} currentPage={PAGE.STATS}/></Stack>
 			<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{width: 0.9}}>
 				<MyAvatar user={user}/>
+				<Stack sx={{width: 0.6, display: {xs: "none", sm: "none", md: "flex", lg: "flex"}}}>
+					<MySearchBar />
+				</Stack>
 				<Box>
 					<IconButton
 						aria-label="show more"
@@ -280,6 +296,7 @@ const Stats = () => {
 				</Stack>
 			</Stack>
 			{openAchievements ? <MyAchievements user={user} setOpen={setOpenAchievements}/> : null}
+			{openDemandeAmis ? <MyRequestFriends setOpen={setOpenDemandeAmis}/> : null}
 			{renderAchievementMenu}
 		</Stack>
 	);
