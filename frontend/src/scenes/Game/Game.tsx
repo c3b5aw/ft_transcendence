@@ -36,6 +36,7 @@ class	Game {
 			console.log("empty canva");
 			return ;
 		}
+		console.log(getCanvas().clientWidth, getCanvas().clientHeight,  "W & H constr");
 		this.context  = getCanvas().getContext("2d");
 		if (!this.context) {
 			console.log("empty context");
@@ -52,7 +53,7 @@ class	Game {
 		console.log("constructor GAME out");
 	}
 
-	resize() {
+	resize = () => {
 		// pause();
 		this.checkWindow();
 	}
@@ -64,7 +65,7 @@ class	Game {
 
 		//CanvasRenderingContext2D
 		//https://developer.mozilla.org/fr/docs/Web/API/CanvasRenderingContext2D
-
+		console.log("position", this.player1.y);
 		//table
 		if (this.random === false) {
 			this.context.fillStyle = 'black';
@@ -115,7 +116,6 @@ class	Game {
 	}
 
 	game_loop() {
-		console.log(this.is_play);
 		if (this.is_play === false)
 			return;
 		this.draw();
@@ -126,7 +126,6 @@ class	Game {
 	}
 
 	play() {
-		console.log(this.is_play);
 		if (this.is_play === false && this.print === 0) {
 			this.is_play = true;
 			console.log(this.is_play);
@@ -172,14 +171,16 @@ class	Game {
 		this.setUpCanvas(width);
 	}
 
-	setUpCanvas(width: number) {
+	setUpCanvas = (width: number) => {
 		// Feed the size back to the canvas.
 		if (!getCanvas())
 			return ;
 		const oldWidth = getCanvas().width;
 		const oldHeight = getCanvas().height;
+		console.log(getCanvas().width, getCanvas().height, this.ball.x, this.ball.y, this.player1.y, this.player2.y,  "SET UP CANVAS FROM bef");
 		getCanvas().width = (width * 1000) / 1100; 
 		getCanvas().height = (width * 600) / 1100;
+		console.log(getCanvas().width, getCanvas().height, this.ball.x, this.ball.y, this.player1.y, this.player2.y,  "SET UP CANVAS FROM mid");
 		if (getCanvas().width > 1400) {
 			getCanvas().width = 1400;
 		}
@@ -209,7 +210,6 @@ class	Game {
 
 function	getCanvas() {
 	const canvas : any =  document.getElementById('game-Canvas');
-	// static const context = canvas.getContext('2d');
 	return canvas;
 }
 
@@ -222,7 +222,7 @@ class	Paddle {
 	public down: boolean = false;
 	public space: boolean = false;
 
-	constructor(width:number, height:number, y:number, x:number) {
+	constructor(width:number, height:number, x:number, y:number) {
 		document.addEventListener("keydown", this.keyDown.bind(this)); 
 		document.addEventListener("keyup", this.keyUp.bind(this));
 		this.width = width;
@@ -262,7 +262,7 @@ class	Paddle {
 		}
 	}
 
-	movements() { // execution every delay milliseconds
+	movements = () => { // execution every delay milliseconds
 		const move:number = 10;
 		// console.log("MOVEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
 		if (this.up && !this.down) {
@@ -281,10 +281,10 @@ class	Paddle {
 		// 	on = 1;
 		// }
 
-		if (this.y < this.x)
-			this.y = this.x;
-		if (this.y + getCanvas().height > getCanvas().height - this.x)
-			this.y = getCanvas().height - this.x - this.height;
+		if (this.y < 20)
+			this.y = 20;
+		if (this.y + this.height > getCanvas().height - 20)
+			this.y = getCanvas().height - 20 - this.height;
 		// document.getElementById('player1')!.style.top = this.y + 'px';
 	}
 }
