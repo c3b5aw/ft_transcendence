@@ -35,7 +35,6 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 			open: true,
 			isAdmin: true,
 			closeModal: setOpenAdmin,
-			updateListChannels: myChannel.updateListChannels,
 		};
 		setOpenM(false);
 		setOpenAdmin(true);

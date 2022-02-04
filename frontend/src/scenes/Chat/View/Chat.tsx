@@ -1,5 +1,5 @@
-import { Avatar, Box, Button, FormControl, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
-import React, { SetStateAction, useEffect, useState } from "react";
+import { Avatar, Box, Button, FormControl, IconButton, Stack, TextField, Typography } from "@mui/material";
+import { SetStateAction, useEffect, useState } from "react";
 import useMe from "../../../Services/Hooks/useMe";
 import { styleTextField } from "../../../styles/Styles";
 import MyListChannels from "../Components/Channels/MyListChannels";
@@ -32,7 +32,6 @@ function Chat() {
 	const [channels, setChannels] = useState<Channel[]>([]);
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [nameChannelDisplay, setNameChannelDisplay] = useState<string>("");
-	const [reload, setReload] = useState<boolean>(false);
 
 	const [open, setOpen] = useState<boolean>(false);
 	const [openJoin, setOpenJoin] = useState<boolean>(false);
@@ -49,7 +48,6 @@ function Chat() {
 		setMessages([]);
 		setUsersChannel([]);
 		setNameChannel("");
-		updateListChannels();
 	}
 
 	const handleQuitChannel = (channel: Channel) => {
@@ -57,15 +55,10 @@ function Chat() {
 		reinit();
 	}
 
-	function updateListChannels() {
-		setReload(!reload);
-	}
-
 	const myChannels: IChannel = {
 		channels: channels,
 		setNameChannel: setNameChannel,
 		handleQuitChannel: handleQuitChannel,
-		updateListChannels: updateListChannels,
 	}
 
 	function HandleCreateChannel() {
@@ -110,19 +103,12 @@ function Chat() {
 		})
 	}, [])
 
-	/*
-	** Whenever a user send a message, we relaod the messages list of channel
-	*/
 	useEffect(() => {
 		socket.on("channel::onMessage", (data) => {
 			setUploadMessagesChannel(data)
 		})
 	}, [])
 
-	/*
-	** Here, we reload the list of users -> for example
-	** if a user is banned, or if he leaves a channel, the list of channel users is reloaded
-	*/
 	useEffect(() => {
 		socket.on("channel::onMembersReload", (data) => {
 			setUploadUsersChannel(data)
@@ -136,10 +122,6 @@ function Chat() {
 	*/
 	useEffect(() => {
 		socket.on("channel::onListReload", (data) => {
-			if (data !== undefined && data.channel !== undefined && data.data === undefined) {
-				channelJoin(data.channel.name, "");
-				setNameChannel(data.channel.name);
-			}
 			setUploadChannels(data);
 		})
 	}, [])
@@ -155,21 +137,12 @@ function Chat() {
 	}, [])
 
 	/*
-	** This function is called when a user is muted
-	*/
-	useEffect(() => {
-		socket.on("channel::onMute", (data) => {
-			setUploadUsersChannel(data);
-		})
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
-
-	/*
-	** If a user is kicked of a channel, we reload all channels
+	** If a user is kicked of a channel, we reload all channels and reinit the interface chat
 	*/
 	useEffect(() => {
 		socket.on("channel::onKick", (data) => {
 			setUploadChannels(data)
+			reinit();
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -191,7 +164,7 @@ function Chat() {
 			}
 		}
 		fetchChannels();
-	}, [enqueueSnackbar, uploadChannels, reload, nameChannel])
+	}, [enqueueSnackbar, uploadChannels])
 	
 	/*
 	** This useEffect will be used to join all channels at the beginning. Ideally,
@@ -201,21 +174,16 @@ function Chat() {
 		const fetchChannels = async () => {
 			try {
 				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
-				setChannels(response_channels_joined.data);
 				response_channels_joined.data.map((channel: { name: string; }) => (
 					channelJoin(channel.name, "")
 				));
-				console.log(socket);
 			}
 			catch (err: any) {
-				enqueueSnackbar(`Error : ${err}`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
+				console.log(err);
 			}
 		}
 		fetchChannels();
-	}, [enqueueSnackbar])
+	}, [])
 
 	/*
 	** RELOAD LIST OF MESSAGES FROM NAME_CHANNEL
@@ -353,44 +321,41 @@ function Chat() {
 					<Stack
 						direction="row"
 						sx={{width: 1, height: 0.075}}
-						spacing={2}
+						spacing={3}
 					>
+						{nameChannel !== "" ?
+							<Stack
+								direction="row"
+								alignItems="center"
+								spacing={3}
+							>
+								<Typography
+									variant="h5"
+									style={{fontFamily: "Myriad Pro", textAlign: "center"}}
+									>
+										{nameChannelDisplay}
+									</Typography>
+								<Button
+									sx={{display: {lg: "flex", xl: "none"}}}
+									variant="contained"
+									onClick={() => setOpenUserChannel(true)}
+								>
+									<Typography
+										variant="subtitle1"
+										style={{fontFamily: "Myriad Pro"}}
+									>
+											Users
+									</Typography>
+								</Button>
+							</Stack> : null
+						}
 						<Stack
 							direction="row"
 							alignItems="center"
-							justifyContent="space-evenly"
-							spacing={2}
-							sx={{maxWidth: 1}}
+							spacing={3}
 						>
-							{nameChannel !== "" ?
-								<React.Fragment>
-									<Box sx={{maxWidth: {xs: 0.4, sm: 0.5, md: 0.6, lg: 0.8, xl: 1}}}>
-										<Tooltip title={nameChannelDisplay}>
-											<Typography
-												noWrap
-												variant="h5"
-												style={{fontFamily: "Myriad Pro", textAlign: "center"}}
-											>
-												{nameChannelDisplay}
-											</Typography>
-										</Tooltip>
-									</Box>
-									<Button
-										sx={{display: {lg: "block", xl: "none"}}}
-										variant="contained"
-										onClick={() => setOpenUserChannel(true)}
-									>
-										<Typography
-											variant="subtitle1"
-											style={{fontFamily: "Myriad Pro"}}
-										>
-												Users
-										</Typography>
-									</Button>
-								</React.Fragment> : null
-							}
 							<Button
-								sx={{display: {lg: 0.4, xl: "none"}}}
+								sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}}
 								variant="contained"
 								onClick={() => setOpenFriend(true)}
 							>

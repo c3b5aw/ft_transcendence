@@ -23,7 +23,6 @@ export interface IChannel {
 	channels: Channel[],
 	setNameChannel: (nameChannel: string) => void,
 	handleQuitChannel: (channel: Channel) => void,
-	updateListChannels: () => void,
 }
 
 export interface IListUser {
@@ -53,5 +52,4 @@ export interface ISettingAdmin {
 	open: boolean,
 	isAdmin: boolean,
 	closeModal: (open: boolean) => void,
-	updateListChannels: () => void,
 }

@@ -253,7 +253,7 @@ export class ChatService {
 	}
 
 	async wsFatalUserNotFound(client: Socket) {
-		client.emit('onError', { error: WsError.USER_NOT_FOUND });
+		// client.emit('onError', { error: WsError.USER_NOT_FOUND });
 		// client.disconnect();
 	}
 
@@ -357,10 +357,6 @@ export class ChatService {
 				accross all instances of chatServices
 		*/
 		const userID = global.clients[client.id];
-		console.log("=============");
-		console.log(userID);
-		console.log("=============");
-		console.log()
 		return userID ? parseInt(userID) : null;
 	}
 
