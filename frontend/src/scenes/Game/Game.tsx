@@ -177,10 +177,8 @@ class	Game {
 			return ;
 		const oldWidth = getCanvas().width;
 		const oldHeight = getCanvas().height;
-		console.log(getCanvas().width, getCanvas().height, this.ball.x, this.ball.y, this.player1.y, this.player2.y,  "SET UP CANVAS FROM bef");
 		getCanvas().width = (width * 1000) / 1100; 
 		getCanvas().height = (width * 600) / 1100;
-		console.log(getCanvas().width, getCanvas().height, this.ball.x, this.ball.y, this.player1.y, this.player2.y,  "SET UP CANVAS FROM mid");
 		if (getCanvas().width > 1400) {
 			getCanvas().width = 1400;
 		}
@@ -190,9 +188,14 @@ class	Game {
 		//mise a jour des positions des joueurs et de la balle
 		this.ball.x = (this.ball.x * getCanvas().width) / oldWidth;
 		this.ball.y = (this.ball.y * getCanvas().height) / oldHeight;
+		this.ball.r = (5 * getCanvas().width) / 1000;
+		this.player1.width = (5 * getCanvas().width) / 1000;
+		this.player1.height = (100 * getCanvas().height) / 1000;
+		this.player2.width = (5 * getCanvas().width) / 1000;
+		this.player2.height = (100 * getCanvas().height) / 1000;
 		this.player1.y = (this.player1.y * getCanvas().height) / oldHeight;
 		this.player2.y = (this.player2.y * getCanvas().height) / oldHeight;
-		console.log(getCanvas().width, getCanvas().height, this.ball.x, this.ball.y, this.player1.y, this.player2.y,  "SET UP CANVAS FROM ");
+		console.log(this.ball.r, this.player1.width, this.player1.height,  "SET UP CANVAS");
 	}
 
 	reset() {
