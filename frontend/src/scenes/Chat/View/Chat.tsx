@@ -165,7 +165,7 @@ function Chat() {
 	}, [])
 
 	/*
-	** If a user is kicked of a channel, we reload all channels and reinit the interface chat
+	** If a user is kicked of a channel, we reload all channels
 	*/
 	useEffect(() => {
 		socket.on("channel::onKick", (data) => {
@@ -182,6 +182,9 @@ function Chat() {
 			try {
 				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
 				setChannels(response_channels_joined.data);
+				response_channels_joined.data.map((channel: { name: string; }) => (
+					channelJoin(channel.name, "")
+				));
 			}
 			catch (err: any) {
 				enqueueSnackbar(`Error : ${err.error}`, { 
@@ -197,24 +200,25 @@ function Chat() {
 	** This useEffect will be used to join all channels at the beginning. Ideally,
 	** we should have dont it in the backend
 	*/
-	useEffect(() => {
-		const fetchChannels = async () => {
-			try {
-				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
-				setChannels(response_channels_joined.data);
-				response_channels_joined.data.map((channel: { name: string; }) => (
-					channelJoin(channel.name, "")
-				));
-			}
-			catch (err: any) {
-				enqueueSnackbar(`Error : ${err}`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
-			}
-		}
-		fetchChannels();
-	}, [enqueueSnackbar])
+	// useEffect(() => {
+	// 	const fetchChannels = async () => {
+	// 		try {
+	// 			const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
+	// 			setChannels(response_channels_joined.data);
+	// 			response_channels_joined.data.map((channel: { name: string; }) => (
+	// 				channelJoin(channel.name, "")
+	// 			));
+	// 			console.log(socket);
+	// 		}
+	// 		catch (err: any) {
+	// 			enqueueSnackbar(`Error : ${err}`, { 
+	// 				variant: 'error',
+	// 				autoHideDuration: 3000,
+	// 			});
+	// 		}
+	// 	}
+	// 	fetchChannels();
+	// }, [])
 
 	/*
 	** RELOAD LIST OF MESSAGES FROM NAME_CHANNEL
