@@ -43,11 +43,11 @@ export default function Home() {
 							color: '#000000',
 						},
 						padding: {xs: 1, sm: 2, md: 3, lg: 4},
-						borderRadius: {xs: 4, sm: 4, md: 4, lg: 4},
-						border: 5,
+						borderRadius: {xs: 4, sm: 4, md: 6, lg: 8},
+						border: 4,
 					}}
 						onClick={() => handleLaunchGame()}>
-						<Typography variant="h2" style={{fontFamily: "Myriad Pro"}}>Start Game</Typography>
+						<Typography variant="h3" style={{fontFamily: "Myriad Pro"}}>Start Game</Typography>
 					</Button>
 				</Stack>
 			</Stack>
