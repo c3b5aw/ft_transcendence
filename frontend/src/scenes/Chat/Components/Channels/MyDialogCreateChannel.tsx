@@ -46,7 +46,7 @@ function MyDialogCreateChannel(props: {setOpen: Dispatch<SetStateAction<boolean>
 				});
 			}
 		}
-		else if (nameChannel.length > 3 && nameChannel.length < 64) {
+		else if (nameChannel.length >= 3 && nameChannel.length <= 64) {
 			try {
 				await axios.post(`${api}${apiChannel}`, {
 					name: nameChannel,
@@ -66,7 +66,7 @@ function MyDialogCreateChannel(props: {setOpen: Dispatch<SetStateAction<boolean>
 			}
 		}
 		else {
-			enqueueSnackbar(`Le nom du channel doit contenir au moins 3 caractères`, { 
+			enqueueSnackbar(`Le nom du channel doit contenir entre 3 et 64 caractères`, { 
 				variant: 'warning',
 				autoHideDuration: 3000,
 			});

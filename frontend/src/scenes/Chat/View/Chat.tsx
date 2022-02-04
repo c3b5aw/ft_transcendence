@@ -1,5 +1,5 @@
-import { Avatar, Box, Button, FormControl, IconButton, Stack, TextField, Typography } from "@mui/material";
-import { SetStateAction, useEffect, useState } from "react";
+import { Avatar, Box, Button, FormControl, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import React, { SetStateAction, useEffect, useState } from "react";
 import useMe from "../../../Services/Hooks/useMe";
 import { styleTextField } from "../../../styles/Styles";
 import MyListChannels from "../Components/Channels/MyListChannels";
@@ -352,41 +352,44 @@ function Chat() {
 					<Stack
 						direction="row"
 						sx={{width: 1, height: 0.075}}
-						spacing={3}
+						spacing={2}
 					>
-						{nameChannel !== "" ?
-							<Stack
-								direction="row"
-								alignItems="center"
-								spacing={3}
-							>
-								<Typography
-									variant="h5"
-									style={{fontFamily: "Myriad Pro", textAlign: "center"}}
-									>
-										{nameChannelDisplay}
-									</Typography>
-								<Button
-									sx={{display: {lg: "flex", xl: "none"}}}
-									variant="contained"
-									onClick={() => setOpenUserChannel(true)}
-								>
-									<Typography
-										variant="subtitle1"
-										style={{fontFamily: "Myriad Pro"}}
-									>
-											Users
-									</Typography>
-								</Button>
-							</Stack> : null
-						}
 						<Stack
 							direction="row"
 							alignItems="center"
-							spacing={3}
+							justifyContent="space-evenly"
+							spacing={2}
+							sx={{maxWidth: 1}}
 						>
+							{nameChannel !== "" ?
+								<React.Fragment>
+									<Box sx={{maxWidth: {xs: 0.4, sm: 0.5, md: 0.6, lg: 0.8, xl: 1}}}>
+										<Tooltip title={nameChannelDisplay}>
+											<Typography
+												noWrap
+												variant="h5"
+												style={{fontFamily: "Myriad Pro", textAlign: "center"}}
+											>
+												{nameChannelDisplay}
+											</Typography>
+										</Tooltip>
+									</Box>
+									<Button
+										sx={{display: {lg: "block", xl: "none"}}}
+										variant="contained"
+										onClick={() => setOpenUserChannel(true)}
+									>
+										<Typography
+											variant="subtitle1"
+											style={{fontFamily: "Myriad Pro"}}
+										>
+												Users
+										</Typography>
+									</Button>
+								</React.Fragment> : null
+							}
 							<Button
-								sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}}
+								sx={{display: {lg: 0.4, xl: "none"}}}
 								variant="contained"
 								onClick={() => setOpenFriend(true)}
 							>

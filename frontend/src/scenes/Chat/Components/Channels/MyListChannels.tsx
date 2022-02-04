@@ -1,4 +1,4 @@
-import { Box, IconButton, List, ListItem, ListItemButton, Paper, Stack, Tooltip } from '@mui/material';
+import { Box, IconButton, List, ListItem, ListItemButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { User } from '../../../../Services/Interface/Interface';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LockIcon from '@mui/icons-material/Lock';
@@ -83,20 +83,29 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 						{myChannel.channels.map(channel => (
 							<div key={channel.id}>
 								<ListItem component="div" sx={{paddingTop: 0, paddingBottom: 0}}>
-									<ListItemButton onClick={() => {
+									<ListItemButton
+										onClick={() => {
 											myChannel.setNameChannel(channel.name);
 											channelJoin(channel.name, "")
-										}}>
+										}}
+										sx={{maxWidth: 0.85}}	
+									>
 										<Stack
-											sx={{ width: "85%", height: 1}}
+											sx={{ width: 0.85, height: 1}}
 											alignItems="center" spacing={2}
 											direction="row"
 										>
 											<Tooltip title={`${channel.name}`}>
 												{channel.private ? <LockIcon color="error"/> : <LockOpenIcon color="success"/>}
 											</Tooltip>
-											<Box sx={{display: { xs: 'none', sm: "flex" } }}>
-												<h4 style={{color: "white"}}>{channel.name}</h4>
+											<Box sx={{display: { xs: 'none', sm: "flex" }, maxWidth: 0.85}}>
+												<Typography
+													noWrap
+													variant="subtitle1"
+													style={{fontFamily: "Myriad Pro", color: "white"}}
+												>
+													{channel.name}
+												</Typography>
 											</Box>
 										</Stack>
 									</ListItemButton>
