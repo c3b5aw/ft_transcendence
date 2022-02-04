@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyInfosUser from "../Components/MyInfosUser";
 import useMe from "../../../Services/Hooks/useMe";
@@ -19,19 +19,21 @@ function Admin() {
 			spacing={5}
 		>
 			<MyFooter me={me}/>
-			<Typography variant="h3" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: 'center'}}>Admin View</Typography>
-			<Stack
-				sx={{width: 1, height: 1}}
-				direction="row"
-				justifyContent="center"
-			>
+			<Stack direction="column">
 				<Stack
-					sx={{ width: 0.9, height: 1 }}
-					direction="column"
-					alignItems="center"
+					sx={{width: 1, height: 1}}
+					direction="row"
 					justifyContent="center"
+					spacing={5}
 				>
-					<MyInfosUser />
+					<Stack
+						sx={{ width: 0.9, height: 1 }}
+						direction="column"
+						alignItems="center"
+						justifyContent="center"
+					>
+						<MyInfosUser />
+					</Stack>
 				</Stack>
 			</Stack>
 		</Stack>

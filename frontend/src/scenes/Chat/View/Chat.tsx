@@ -138,10 +138,9 @@ function Chat() {
 		socket.on("channel::onListReload", (data) => {
 			if (data !== undefined && data.channel !== undefined && data.data === undefined) {
 				channelJoin(data.channel.name, "");
+				setNameChannel(data.channel.name);
 			}
-			else {
-				setUploadChannels(data);
-			}
+			setUploadChannels(data);
 		})
 	}, [])
 
@@ -156,12 +155,21 @@ function Chat() {
 	}, [])
 
 	/*
+	** This function is called when a user is muted
+	*/
+	useEffect(() => {
+		socket.on("channel::onMute", (data) => {
+			setUploadUsersChannel(data);
+		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	/*
 	** If a user is kicked of a channel, we reload all channels and reinit the interface chat
 	*/
 	useEffect(() => {
 		socket.on("channel::onKick", (data) => {
 			setUploadChannels(data)
-			reinit();
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -199,11 +207,14 @@ function Chat() {
 				));
 			}
 			catch (err: any) {
-				console.log(err);
+				enqueueSnackbar(`Error : ${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchChannels();
-	}, [])
+	}, [enqueueSnackbar])
 
 	/*
 	** RELOAD LIST OF MESSAGES FROM NAME_CHANNEL

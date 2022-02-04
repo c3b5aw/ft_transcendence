@@ -82,7 +82,7 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 					<List>
 						{myChannel.channels.map(channel => (
 							<div key={channel.id}>
-								<ListItem component="div">
+								<ListItem component="div" sx={{paddingTop: 0, paddingBottom: 0}}>
 									<ListItemButton onClick={() => {
 											myChannel.setNameChannel(channel.name);
 											channelJoin(channel.name, "")
