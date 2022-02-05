@@ -14,30 +14,6 @@ import { gameSocket } from '../../Services/ws/utils';
 
 
 export default function GameBoard() {
-	// const stopGame = () => {
-	// 	is_play = false;
-	// 	cancelAnimationFrame(anim);
-	// 	anim = null;
-	// 	reset();
-	// 	game.computer.score = 0;
-	// 	game.player.score = 0;
-	// 	document.querySelector('#computer-score')!.textContent = game.computer.score;
-	// 	document.querySelector('#player-score')!.textContent = game.computer.score;
-	// 	draw();
-	// }
-
-	// const reset = () => {
-	// 	game.ball.x = canvas.width / 2;
-	// 	game.ball.y = canvas.height / 2;
-	// 	game.player.y = canvas.height / 2 - PLAYER_HEIGHT / 2;
-	// 	game.computer.y = canvas.height / 2 - PLAYER_HEIGHT / 2;
-
-	// 	on = 0;
-	// 	print = 0;
-	// 	game.ball.speed = 2;
-	// 	game.ball.direction = Math.random() * 160 - 80; //pour que la direction de depart differe
-	// }
-
 	const [ randomBackground, setRandomBackground ] = useState(false);
 	const game = useRef<Game | null>(null);
 
@@ -47,7 +23,7 @@ export default function GameBoard() {
 	useEffect(() => {
 		axios.get('/api/matchs/' + hash).then(res => {
 			if (res.data.length === 0)
-				navigate('/404');
+				navigate('/game');
 			else
 				game.current = new Game(gameSocket, res.data[0]);
 		});
