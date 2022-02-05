@@ -59,6 +59,17 @@
 }
 ```
 
+- channel::onCreate
+```typescript
+/* You have sucessfully created a channel */
+{
+	channel: [2] {
+		id: number,
+		name: string
+	}
+}
+```
+
 ## User Channel events
 
 - channel::onJoin
