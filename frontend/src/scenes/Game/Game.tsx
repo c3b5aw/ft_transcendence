@@ -4,7 +4,7 @@ import GamePlayer from './GamePlayer';
 import GameBall from './GameBall';
 
 import { GAME_CANVAS_HEIGHT, GAME_CANVAS_WIDTH,
-	GAME_BORDER_SIZE, GAME_PLAYER_WIDTH, GAME_TICKS_PER_SECOND } from './GameConstants';
+	GAME_BORDER_SIZE, GAME_PLAYER_WIDTH, GAME_TICKS_PER_SECOND, getFactors } from './GameConstants';
 
 export default class Game {
 	public players: GamePlayer[] = [];
@@ -21,9 +21,10 @@ export default class Game {
 
 		this.players[0] = new GamePlayer(matchData.player1, matchData.player1_login, 0, matchData.player1_score);
 		this.players[1] = new GamePlayer(matchData.player2, matchData.player2_login, 1, matchData.player2_score);
-	
-		this.registerEvents();
 
+		this.ended = matchData.finished;
+
+		this.registerEvents();
 		this.redraw();
 
 		this.intervalId = setInterval(this.onTick.bind(this), 1000 / GAME_TICKS_PER_SECOND);
@@ -45,7 +46,8 @@ export default class Game {
 
 	// EVENTS
 	public onTick() {
-		if (this.ended) return ;
+		if (this.ended) 
+			return ;
 
 		this.updateBall();
 		this.players.forEach(player => { player.update() });
@@ -140,7 +142,10 @@ export default class Game {
 
 	private drawEnd(ctx: CanvasRenderingContext2D) {
 		ctx.fillStyle = '#fff';
-		ctx.font = '48px monospace';
+
+		const { widthFactor } = getFactors(ctx);
+
+		ctx.font = `${Math.floor(48 * widthFactor)}px monospace`;
 		ctx.textAlign = 'center';
 
 		ctx.fillText('Game is Over', ctx.canvas.width / 2, ctx.canvas.height / 2);
