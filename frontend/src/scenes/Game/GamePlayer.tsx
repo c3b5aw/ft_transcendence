@@ -22,8 +22,6 @@ export default class GamePlayer {
 		this.reset();
 
 		this.load();
-		// if (player == myself)
-		// registerEvents
 	}
 
 	private load() {
@@ -32,57 +30,17 @@ export default class GamePlayer {
 		this.updateLogin();
 	}
 
-	private registerEvents() {
-		document.addEventListener("keyup", this.onKeyUp);
-		document.addEventListener("keydown", this.onKeyDown);
-	}
-
-	// ToDo: Add socket usage
-	private onKeyDown(event: KeyboardEvent) {
-		switch (event.key) {
-			case "ArrowUp" || "w":
-				this.move = GameMoves.MOVE_UP;
-				// this.socket.emit("move", GameMoves.MOVE_UP);
-				break;
-
-			case "ArrowDown" || "s":
-				this.move = GameMoves.MOVE_DOWN;
-				// this.socket.emit("move", GameMoves.MOVE_DOWN);
-				break;
-		}
-	}
-
-	// ToDo: Add socket usage
-	private onKeyUp(event: KeyboardEvent) {
-		switch (event.key) {
-			case "ArrowUp" || "w":
-				if (this.move === GameMoves.MOVE_UP)
-					this.move = GameMoves.MOVE_STOP;
-				break;
-
-			case "ArrowDown" || "s":
-				if (this.move === GameMoves.MOVE_DOWN)
-					this.move = GameMoves.MOVE_STOP;
-				break;
-
-			// case "ArrowUp" || "w":
-			// 	if (this.move === GameMoves.MOVE_UP)
-			// 		this.socket.emit("move", GameMoves.MOVE_STOP);
-			// 	break;
-
-			// case "ArrowDown" || "s":
-			// 	if (this.move === GameMoves.MOVE_DOWN)
-			// 		this.socket.emit("move", GameMoves.MOVE_STOP);
-			// 	break;
-		}
-	}
-
-	private reset() {
+	public reset() {
 		this.y = GAME_PLAYER_START_Y;
 	}
 
-	private registerMove(move: GameMoves) {
+	public registerMove(move: GameMoves) {
 		this.move = move;
+	}
+
+	public registerScore() {
+		this.score++;
+		return this.updateScore();
 	}
 
 	private updateLogin() {
@@ -95,7 +53,7 @@ export default class GamePlayer {
 		element!.innerText = this.login;
 	}
 
-	private updateScore() {
+	public updateScore() {
 		if (this.slot === 0)
 			document.getElementById('gamePlayerScoreLeft')!.innerText = this.score.toString();
 		else if (this.slot === 1)
