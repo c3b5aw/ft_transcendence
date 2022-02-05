@@ -25,11 +25,20 @@ export default class GameBall {
 		this.y = GAME_BALL_START_Y;
 
 		this.speed = 2;
-		this.direction = Math.random() * 160 - 80;
 	}
 
 	public speedUp() {
 		this.speed *= GAME_BALL_SPEED_INCREASE;
+	}
+
+	public update(ball: { x: number, y: number, speed: number, direction: number } | null) {
+		if (ball === null)
+			return ;
+
+		this.x = ball.x;
+		this.y = ball.y;
+		this.speed = ball.speed;
+		this.direction = ball.direction;
 	}
 
 	public changeDirection(player: GamePlayer) {
