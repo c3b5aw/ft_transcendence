@@ -125,12 +125,12 @@ export class ChatService {
 
 		await this.sendEventToUser(user.id, 'channel::onListReload', {
 			channel: { id: channel.id, name: channel.name } });
-		await this.sendEventToChannel(channel, 'channel::onMembersReload', {});
+		await this.sendEventToChannel(channel, 'channel::onMembersReload');
 		
 		return userChannel;
 	}
 
-	async sendEventToUser(userID: number, event: string, data: any) {
+	async sendEventToUser(userID: number, event: string, data: any = {}) {
 		/* Find user in global clients, if exists, send event */
 		const userSocketID: string = Object.keys(global.clients).find( 
 			key => global.clients[key] === userID);
@@ -138,7 +138,7 @@ export class ChatService {
 			this.server.to(userSocketID).emit(event, data);
 	}
 
-	async sendEventToChannel(channel: Channel, event: string, data: any) {
+	async sendEventToChannel(channel: Channel, event: string, data: any = {}) {
 		const channelSerialized: any = {
 			id: channel.id,
 			name: channel.name,
@@ -157,7 +157,7 @@ export class ChatService {
 		await this.sendEventToUser(user.id, 'channel::onBan', {
 			channel: { id: channel.id, name: channel.name },
 			banned: bool });
-		await this.sendEventToChannel(channel, 'channel::onMembersReload', {});
+		await this.sendEventToChannel(channel, 'channel::onMembersReload');
 
 		const alert = `${user.login} has been ${bool ? 'banned' : 'unbanned'}`;
 		await this.wsSendAnnouncementToChannel(channel, alert);
@@ -182,12 +182,12 @@ export class ChatService {
 		if (!user)
 			return;
 
-		await this.sendEventToUser(user.id, 'channel::onKick', { channel: { id: channel.id, name: channel.name }});
-		await this.sendEventToChannel(channel, 'channel::onMembersReload', {});
 
 		await this.userChannelRepository.delete(userChannel);
 
 		await this.wsSendAnnouncementToChannel(channel, `${user.login} has been kicked`);
+		await this.sendEventToChannel(channel, 'channel::onMembersReload');
+		await this.sendEventToUser(user.id, 'channel::onKick', { channel: { id: channel.id, name: channel.name }});		
 	}
 
 	async muteUserInChannel(user: User, channel: Channel, until: Date): Promise<void> {
@@ -197,6 +197,8 @@ export class ChatService {
 
 		await this.sendEventToUser(user.id, 'channel::onMute', {
 			channel: { id: channel.id, name: channel.name }, 'until': until });
+
+		await this.sendEventToChannel(channel, 'channel::onMembersReload');
 
 		const dateStart: Date = new Date(0);
 		await this.wsSendAnnouncementToChannel(channel, `${user.login} has been ${ 
@@ -252,7 +254,6 @@ export class ChatService {
 
 	async wsFatalUserNotFound(client: Socket) {
 		client.emit('onError', { error: WsError.USER_NOT_FOUND });
-		client.disconnect();
 	}
 
 	async wsSendMessageToChannel(client_id: number, message: string, channel: Channel) {
@@ -470,7 +471,10 @@ export class ChatService {
 
 	async updateChannelName(channel: Channel, name: string): Promise<Channel> {
 		channel.name = name;
-		return this.channelsRepository.save(channel);
+		const newChannel: Channel = await this.channelsRepository.save(channel);
+
+		await this.sendEventToChannel(newChannel, 'channel::onListReload');
+		return newChannel;
 	}
 
 	/*
@@ -492,8 +496,10 @@ export class ChatService {
 		if (chan.private)
 			chan.password = createHash('md5').update(chan.password).digest('hex');
 
-		await this.channelsRepository.save(chan);
+		chan = await this.channelsRepository.save(chan);
 		await this.addUserToChannel(owner, chan, UserRole.ADMIN);
+
+		await this.sendEventToUser(owner.id, 'channel::onCreate', { channel: { id: chan.id, name: chan.name } });
 
 		delete chan.password;
 		return chan;
@@ -537,7 +543,7 @@ export class ChatService {
 	*/
 
 	async deleteChannel(channel: Channel): Promise<void> {
-		await this.sendEventToChannel(channel, "channel::onKick", {});
+		await this.sendEventToChannel(channel, 'channel::onKick');
 
 		/* Delete messages that match channel.id */
 		await this.messagesRepository.delete({ channel_id: channel.id });
@@ -556,10 +562,12 @@ export class ChatService {
 	async removeUserFromChannel(user: User, channel: Channel): Promise<void> {
 		await this.userChannelRepository.delete({ user_id: user.id, channel_id: channel.id });
 		
-		this.server.to('#' + channel.id).emit('channel:omMembersReload', {
+		this.server.to('#' + channel.id).emit('channel:onMembersReload', {
 			channel: channel,
 			login: user.login,
 		});
+
+		await this.sendEventToUser(user.id, 'channel::onListReload');
 	}
 
 	/*

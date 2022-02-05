@@ -134,6 +134,10 @@ export class ChannelController {
 		if (channel.owner_id !== req.user.id)
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
+		const channelExist: Channel = await this.chatService.findChannelByName(data.name);
+		if (channelExist)
+			return resp.status(409).json({ error: RequestError.CHANNEL_ALREADY_EXIST });
+
 		await this.chatService.updateChannelName(channel, data.name);
 		resp.send({ message: 'channel name updated' });
 	}

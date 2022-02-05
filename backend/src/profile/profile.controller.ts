@@ -69,6 +69,14 @@ export class ProfileController {
 		return this.friendsService.findAllPendingById( req.user.id );
 	}
 
+	@Get('friends/requested')
+	@UseGuards(JwtTwoFactorGuard)
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get your requested friendship' })
+	async getMyselfRequestedFriendsRequest(@Req() req: any) : Promise<Friend[]> {
+		return this.friendsService.findAllRequestedById( req.user.id );
+	}
+
 	@Post('display_name')
 	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
