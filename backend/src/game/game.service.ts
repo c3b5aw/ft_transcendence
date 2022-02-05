@@ -5,12 +5,14 @@ import { Server } from 'socket.io';
 import { WsGuard, WSClient } from 'src/ws';
 
 import { UsersService } from 'src/users/users.service';
+import { UserStatus } from 'src/users/entities/status.enum';
 
 import { MatchsService } from 'src/matchs/matchs.service';
 import { Match } from 'src/matchs/entities/match.entity';
 
-import { Game, GameMoves } from './objects/game';
 import { StatsService } from 'src/stats/stats.service';
+
+import { Game, GameMoves } from './objects/game';
 
 @Injectable()
 export class GameService {
@@ -106,6 +108,9 @@ export class GameService {
 		match = await this.matchsService.update(match);
 		await this.statsService.updateFromMatch(match);
 
+		await this.usersService.updateStatus(match.player1, UserStatus.OFFLINE);
+		await this.usersService.updateStatus(match.player1, UserStatus.OFFLINE);
+
 		delete global.games[game.hash];
 	}
 
@@ -156,7 +161,7 @@ export class GameService {
 		if (!match) {
 			match = await this.matchsService.findPendingMatch(client.user.id);
 			if (match)
-				await this.startGame(match);	
+				await this.startGame(match);
 		}
 		if (!match) {
 			client.emit('onError', { error: '`findRunningGame`: no match found' });

@@ -32,7 +32,25 @@ export class FriendsService {
 	}
 
 	async findAllPendingById(id: number) : Promise<Friend[]> {
-		return this.findAllByStatus(id, FriendStatus.STATUS_PENDING);
+		return this.friendRepository.query(`
+			SELECT users.login, query.user_id, query.status FROM (
+				SELECT *
+				FROM friends
+				WHERE friend_id = ${id} AND status = 'PENDING'
+			) AS query
+			INNER JOIN users on query.user_id = users.id
+		`);
+	}
+
+	async findAllRequestedById(id: number) : Promise<Friend[]> {
+		return this.friendRepository.query(`
+			SELECT users.login, query.friend_id, query.status FROM (
+				SELECT *
+				FROM friends
+				WHERE user_id = ${id} AND status = 'PENDING'
+			) AS query
+			INNER JOIN users on query.friend_id = users.id
+		`);
 	}
 
 	async findOneByBothId(uid: number, fid: number) : Promise<Friend> {

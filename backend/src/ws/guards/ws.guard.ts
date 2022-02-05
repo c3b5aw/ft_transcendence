@@ -25,7 +25,7 @@ export class WsGuard implements CanActivate {
 			client.user = user;
 			return true;
 		} catch (ex) {
-			client.emit('onError', { error: 'invalid authentication token' });
+			client.emit('onError', { error: ex.message });
 			client.disconnect();
 
 			return false;
@@ -40,7 +40,7 @@ export class WsGuard implements CanActivate {
 			client.user = user;
 			return user;
 		} catch (ex) {
-			client.emit('onError', { error: 'invalid authentication token' });
+			client.emit('onError', { error: ex.message });
 			client.disconnect();
 
 			return null;
@@ -73,7 +73,7 @@ export class WsGuard implements CanActivate {
 		if (!headers.hasOwnProperty('cookie') || !headers.cookie)
 			throw new Error('no cookie header found');
 
-		const cookies = headers.cookie.split(';');
+		const cookies = headers.cookie.split('; ');
 		const jwt_cookie: string = cookies.find(cookie => cookie.startsWith('access_token='));
 		if (!jwt_cookie)
 			throw new Error('no access_token cookie found');

@@ -1,5 +1,6 @@
 export enum MatchType {
 	MATCH_BOT = 'BOT',
+	MATCH_DUEL = 'DUEL',
 	MATCH_NORMAL = 'NORMAL',
 	MATCH_RANKED = 'RANKED',
 }
