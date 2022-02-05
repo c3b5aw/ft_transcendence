@@ -42,6 +42,17 @@ export class FriendsService {
 		`);
 	}
 
+	async findAllRequestedById(id: number) : Promise<Friend[]> {
+		return this.friendRepository.query(`
+			SELECT users.login, query.friend_id, query.status FROM (
+				SELECT *
+				FROM friends
+				WHERE user_id = ${id} AND status = 'PENDING'
+			) AS query
+			INNER JOIN users on query.friend_id = users.id
+		`);
+	}
+
 	async findOneByBothId(uid: number, fid: number) : Promise<Friend> {
 		return this.friendRepository.createQueryBuilder()
 			.where('(user_id = :uid OR friend_id = :uid)', { uid })
