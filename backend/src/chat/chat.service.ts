@@ -499,6 +499,8 @@ export class ChatService {
 		await this.channelsRepository.save(chan);
 		await this.addUserToChannel(owner, chan, UserRole.ADMIN);
 
+		await this.sendEventToUser(owner.id, 'channel::onCreate', { channel: { id: chan.id, name: chan.name } });
+
 		delete chan.password;
 		return chan;
 	}
