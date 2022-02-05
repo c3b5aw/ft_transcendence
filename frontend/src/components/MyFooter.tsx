@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, IconButton, Menu, MenuItem, Stack, Toolbar, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ROLE } from "../Services/Api/Role";
 import { PAGE, User } from "../Services/Interface/Interface";
@@ -124,7 +124,7 @@ export default function MyFooter(props : {me: User, currentPage: PAGE}) {
 	);
 
 	return (
-		<Box sx={{ flexGrow: 1 }}>
+		<Stack>
 			<AppBar
 				position="sticky"
 				sx={{ top: '0', bottom: 'auto' }}
@@ -222,6 +222,6 @@ export default function MyFooter(props : {me: User, currentPage: PAGE}) {
 				</Toolbar>
 			</AppBar>
 			{renderMobileMenu}
-		</Box>
+		</Stack>
 	);
 };

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router';
 import { api, apiAdmin, apiBan, apiChannel, apiChannels, apiChat, apiStats, apiUsers } from "../../../Services/Api/Api";
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { User } from '../../../Services/Interface/Interface';
-import { Avatar, IconButton, Stack, Switch, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Paper, Stack, Switch, Typography } from '@mui/material';
 import { ROLE } from '../../../Services/Api/Role';
 import { useSnackbar } from 'notistack'
 import { Channel } from '../../Chat/Services/interface';
@@ -18,6 +18,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import NumbersIcon from '@mui/icons-material/Numbers';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import useCountMatchs from '../Services/useCountMatchs';
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 
 export default function MyInfosUser() {
 
@@ -108,6 +109,7 @@ export default function MyInfosUser() {
 				}
 			}
 		}
+
 		const handleBanned = async () => {
 			changeStatus(user, setBanned, reload2, setReload2, banned);
 		}
@@ -178,81 +180,102 @@ export default function MyInfosUser() {
 		}
 
 		return (
-		<React.Fragment>
-			<TableRow sx={{backgroundColor: 'white' }}>
-				<TableCell>
-					<NumbersIcon style={{fontSize: '32px'}}></NumbersIcon>
-				</TableCell>
-				<TableCell>{channel.owner_login}</TableCell>
-				<TableCell>{channel.private ? "private" : "public"}</TableCell>
-				<TableCell
-					align="center"
-					onClick={() => navigate(`${apiChat}`)}
-				>
-					{channel.name}
-				</TableCell>
-				<TableCell align="center">
-					<IconButton onClick={() => handleDeleteChannel()}>
-						<DeleteIcon style={{color: "#C0392B"}}/>
-					</IconButton>
-				</TableCell>
-			</TableRow>
-		</React.Fragment>
+			<React.Fragment>
+				<TableRow sx={{backgroundColor: 'white' }}>
+					<TableCell>
+						<NumbersIcon style={{fontSize: '32px'}}></NumbersIcon>
+					</TableCell>
+					<TableCell>{channel.owner_login}</TableCell>
+					<TableCell>{channel.private ? "private" : "public"}</TableCell>
+					<TableCell
+						align="center"
+						onClick={() => navigate(`${apiChat}`)}
+					>
+						{channel.name}
+					</TableCell>
+					<TableCell align="center">
+						<IconButton onClick={() => handleDeleteChannel()}>
+							<DeleteIcon style={{color: "#C0392B"}}/>
+						</IconButton>
+					</TableCell>
+				</TableRow>
+			</React.Fragment>
 		);
 	}
+
+	const columns: GridColDef[] = [
+		{ field: 'id', headerName: 'ID', width: 70, align: 'center', flex: 1, headerAlign: 'center', headerClassName: 'super-app-theme--header',},
+		{ field: 'owner_login', headerName: 'Owner', width: 130, align: 'center', flex: 1, headerAlign: 'center',},
+		{ field: 'name', headerName: 'Name', width: 130, align: 'center', flex: 1, headerAlign: 'center', },
+		{ field: 'private', headerName: 'Status', width: 130, align: 'center', flex: 1, headerAlign: 'center', },
+	];
 
 	const countMatchs = useCountMatchs();
 
 	if (users === undefined || countMatchs === undefined)
 		return (<MyChargingDataAlert />);
 	return (
-		<Stack sx={{width: 1, height: 1}} direction="column" spacing={5} alignItems="center">
+		<Stack sx={{width: 1, height: 0.9}} direction="column" spacing={5} alignItems="center">
 			<Stack sx={{width: 1, backgroundColor: "green", padding: "15px", borderRadius: 5}} direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }} justifyContent="space-between">
 				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de matchs : {countMatchs}</Typography>
 				<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Nombre de joueurs : {users.length}</Typography>
 			</Stack>
-			<Stack sx={{backgroundColor: "white", width: 1, height: 0.5, borderRadius: 5}}>
-				<TableContainer sx={{borderRadius: 5}}>
-					<Table aria-label="collapsible table">
-						<TableHead sx={{backgroundColor: "orange"}}>
-							<TableRow>
-								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Users</p></TableCell>
-								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Id</p></TableCell>
-								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Login</TableCell>
-								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Email</TableCell>
-								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Ban</TableCell>
-								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Modérateur</TableCell>
-								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Propriétaire</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{users.map((user) => (
-							<RowUser key={user.id} user={user}/>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</Stack>
-			<Stack sx={{backgroundColor: "white", width: 1, height: 0.5, borderRadius: 5}}>
-				<TableContainer sx={{borderRadius: 5, maxHeight: 0.1}}>
-					<Table aria-label="collapsible table">
-						<TableHead sx={{backgroundColor: "orange"}}>
-							<TableRow>
-								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Channels</p></TableCell>
-								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Owner</p></TableCell>
-								<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Status</p></TableCell>
-								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Name</TableCell>
-								<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Delete</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{channels.map((channel) => (
-							<RowChannel key={channel.id} channel={channel}/>
-							))}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</Stack>
+			<TableContainer sx={{borderRadius: 5}}>
+				<Table aria-label="collapsible table">
+					<TableHead sx={{backgroundColor: "orange"}}>
+						<TableRow>
+							<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Users</p></TableCell>
+							<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Id</p></TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Login</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Email</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Ban</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Modérateur</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Propriétaire</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{users.map((user) => (
+						<RowUser key={user.id} user={user}/>
+						))}
+					</TableBody>
+				</Table>
+			</TableContainer>
+			<TableContainer sx={{borderRadius: 5}} component={Paper}>
+				<Table aria-label="collapsible table">
+					<TableHead sx={{backgroundColor: "orange"}}>
+						<TableRow>
+							<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"21px"}}>Channels</p></TableCell>
+							<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Owner</p></TableCell>
+							<TableCell><p style={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Status</p></TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Name</TableCell>
+							<TableCell align="center" sx={{fontFamily: "Myriad Pro", fontSize:"17px"}}>Delete</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{channels.map((channel) => (
+						<RowChannel key={channel.id} channel={channel}/>
+						))}
+					</TableBody>
+				</Table>
+			</TableContainer>
+			<Box
+				sx={{
+					height: 300,
+					width: 1,
+					'& .super-app-theme--header': {
+					backgroundColor: 'rgba(255, 7, 0, 0.55)',
+					},
+				}}
+				>
+				<DataGrid
+					rows={channels}
+					columns={columns}
+					pageSize={5}
+					rowsPerPageOptions={[5]}
+					checkboxSelection
+					sx={{backgroundColor: 'white'}}
+				/>
+			</Box>
 		</Stack>
 	);
 }

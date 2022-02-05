@@ -29,7 +29,6 @@ const useStyles = makeStyles({
 	theme: {
 		backgroundColor: "#1d3033",
 		minHeight: "100vh",
-		minWidth: "100vw",
 		color: "white",
 	},
 });

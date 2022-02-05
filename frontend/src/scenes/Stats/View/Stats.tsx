@@ -61,7 +61,7 @@ const Stats = () => {
 	useEffect(() => {
 		const fetchFriendsMePending = async () => {
 			try {
-				const url = `/api/profile/friends/pending`;
+				const url = `/api/profile/friends/requested`;
 				const reponse = await axios.get(url);
 				setFriendsPending(reponse.data);
 			} catch (err) {

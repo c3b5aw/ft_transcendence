@@ -253,8 +253,12 @@ export class ChatService {
 	}
 
 	async wsFatalUserNotFound(client: Socket) {
+<<<<<<< HEAD
 		// client.emit('onError', { error: WsError.USER_NOT_FOUND });
 		// client.disconnect();
+=======
+		client.emit('onError', { error: WsError.USER_NOT_FOUND });
+>>>>>>> origin/backend-fix-4
 	}
 
 	async wsSendMessageToChannel(client_id: number, message: string, channel: Channel) {
@@ -499,6 +503,8 @@ export class ChatService {
 
 		await this.channelsRepository.save(chan);
 		await this.addUserToChannel(owner, chan, UserRole.ADMIN);
+
+		await this.sendEventToUser(owner.id, 'channel::onCreate', { channel: { id: chan.id, name: chan.name } });
 
 		delete chan.password;
 		return chan;

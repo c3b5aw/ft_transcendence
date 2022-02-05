@@ -22,10 +22,9 @@ function Admin() {
 			<MyFooter me={me} currentPage={PAGE.ADMINVIEW}/>
 			<Stack direction="column">
 				<Stack
-					sx={{width: 1, height: 1}}
+					sx={{width: 1, height: 0.9}}
 					direction="row"
 					justifyContent="center"
-					spacing={5}
 				>
 					<Stack
 						sx={{ width: 0.9, height: 1 }}
