@@ -121,12 +121,12 @@ export default class Game {
 		this.ball.update(arg.ball);
 		
 		this.players.forEach((player: any) => {
-			if (arg.player[0].id == player.id) {
+			if (arg.player[0].id === player.id) {
 				this.players[player.slot].y = arg.player[0].y;
 				this.players[player.slot].score = arg.player[0].score;
 				this.players[player.slot].updateScore();
 			}
-			else if (arg.player[1].id == player.id) {
+			else if (arg.player[1].id === player.id) {
 				this.players[player.slot].y = arg.player[0].y;
 				this.players[player.slot].score = arg.player[0].score;
 				this.players[player.slot].updateScore();
