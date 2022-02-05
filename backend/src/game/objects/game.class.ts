@@ -71,7 +71,7 @@ export class Game {
 			if (Math.abs(this.ball.speed) < GAME_BALL_MAX_SPEED)
 				this.ball.speedUp();
 
-			this.socket.emit('game::match::onCollide', { game: this, player: player });
+			this.socket.emit('game::match::onCollide', { ball: this.ball });
 		}
 	}
 	/*
@@ -118,19 +118,26 @@ export class Game {
 	}
 
 	private streamPaddleMove(user: User, move: GameMoves) {
+		const player: GamePlayer = this.players.find(p => p.id == user.id);
+		if (player === null) return ;
+
 		switch (move) {
 			case GameMoves.MOVE_UP:
-				this.socket.emit('game::match::onMove::up', { game: this, player: user });
+				this.socket.emit('game::match::onMove::up', { player });
 			case GameMoves.MOVE_DOWN:
-				this.socket.emit('game::match::onMove::down', { game: this, player: user });
+				this.socket.emit('game::match::onMove::down', { player });
 			case GameMoves.MOVE_STOP:
-				this.socket.emit('game::match::onMove::stop', { game: this, player: user });
+				this.socket.emit('game::match::onMove::stop', { player });
 		}
 	}
 
 	/*
 		SPECTATOR
 	*/
+
+	public sendBoard(client: any) {
+		client.emit('game::match::onBoard', { game: this });
+	}
 
 	public spectatorJoin(user: User) {
 		this.socket.emit('game::spectator::onJoin', { game: this, spectator: user });
@@ -141,7 +148,7 @@ export class Game {
 	}
 
 	public playerJoin(user: User) {
-		this.socket.emit('game::match::onJoin', { game: this, player: user });
+		this.socket.emit('game::match::onJoin', { player: user });
 
 		if (this.players.find(p => p.id === user.id) !== null)
 			return this.pause.resume();
@@ -157,9 +164,9 @@ export class Game {
 		if (this.players[1] === null)
 			return ;
 
-		this.pause.Pause(null, GAME_START_DELAY);
 		this.ball.reset();
 
+		this.pause.Pause(null, GAME_START_DELAY);
 		this.socket.emit('game::match::onStart', { game: this });
 	}
 
@@ -172,7 +179,7 @@ export class Game {
 		if (player.score >= GAME_WIN_SCORE)
 			return this.end();
 
-		this.socket.emit('game::match::onScore', { game: this, player: player });
+		this.socket.emit('game::match::onScore', { player });
 		this.reset();
 	}
 
@@ -186,13 +193,13 @@ export class Game {
 		this.players[0].reset();
 		this.players[1].reset();
 
-		this.socket.emit('game::match::onReset', { game: this });
+		this.socket.emit('game::match::onReset', { ball: this.ball });
 	}
 
 	private end() {
 		clearInterval(this.intervalID);
 
-		this.socket.emit('game::match::onEnd', { game: this });
+		this.socket.emit('game::match::onEnd');
 		this.ended = true;
 	}
 };
