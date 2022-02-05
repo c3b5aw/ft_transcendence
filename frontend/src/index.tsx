@@ -1,11 +1,10 @@
-import { makeStyles } from '@material-ui/core/styles';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
 
 import { pageAdmin, pageChat, pageClassement,
 		pageGame, pageGameHash,
-		pageHome, pageSettings, pageStats } from './Services/Routes/RoutePage';
+		pageHome, pageRoomView, pageSettings, pageStats } from './Services/Routes/RoutePage';
 import "./scenes/App.css";
 import PrivateRoute from './Services/Routes/PrivateRoute';
 import Stats from './scenes/Stats/View/Stats';
@@ -21,14 +20,17 @@ import { ROLE } from './Services/Api/Role';
 import { SnackbarProvider } from 'notistack';
 import { socket, SocketContext } from './Services/ws/utils';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
-import MenuGame from './scenes/Game/MenuGame';
+
+import MenuGame from './scenes/Game/Components/MenuGame';
 import GameBoard from './scenes/Game/GameBoard';
+
+import RoomsView from './scenes/Game/Components/RoomsView';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
 	theme: {
 		backgroundColor: "#1d3033",
 		minHeight: "100vh",
-		minWidth: "100vw",
 		color: "white",
 	},
 });
@@ -108,6 +110,22 @@ function ManageRouter() {
 							</PrivateRoute>
 						}
 					/>
+					<Route
+						path={pageRoomView}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<RoomsView />
+							</PrivateRoute>
+						}
+					/>
+					{/* <Route
+						path={pageMatchProgess}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<Game />
+							</PrivateRoute>
+						}
+					/> */}
 				</Routes>
 			</Router>
 		</div>

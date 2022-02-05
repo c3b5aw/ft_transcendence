@@ -1,4 +1,5 @@
 import { Channel } from "../../scenes/Chat/Services/interface";
+import { MATCHTYPE } from "../../scenes/Game/Services/utils";
 import { ROLE } from "../Api/Role";
 
 export interface User {
@@ -23,6 +24,7 @@ export interface User {
 export interface Match {
 	id: number
 	date: string
+	hash: string
 	finished: boolean
 	duration: number
 	player1: number
@@ -31,6 +33,7 @@ export interface Match {
 	player2: number
 	player2_login: string
 	player2_score: number
+	type: MATCHTYPE
 }
 
 export interface Achievements {
@@ -41,7 +44,7 @@ export interface Achievements {
 	unlocked_at: string
 }
 
-export interface Friends {
+export interface Friend {
 	id: number,
 	connected: boolean,
 	login: string,
@@ -72,4 +75,15 @@ export enum USER_STATUS {
 	OFFLINE = 'OFFLINE',
 	ONLINE = 'ONLINE',
 	IN_GAME = 'IN_GAME',
+}
+
+export enum PAGE {
+	HOME = "HOME",
+	STATS = "STATISTIQUES",
+	CLASSEMENT = "CLASSEMENT",
+	PARAMETRES = "PARAMETRES",
+	CHAT = "CHAT",
+	GAME = "GAME",
+	ADMINVIEW = "ADMIN VIEW",
+	MISSING = "MISSING",
 }

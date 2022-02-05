@@ -1,4 +1,4 @@
-import { Box, IconButton, List, ListItem, ListItemButton, Paper, Stack, Tooltip } from '@mui/material';
+import { Box, IconButton, List, ListItem, ListItemButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import { User } from '../../../../Services/Interface/Interface';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LockIcon from '@mui/icons-material/Lock';
@@ -7,27 +7,25 @@ import { Channel, IChannel, ISettingAdmin, ISettingM } from '../../Services/inte
 import SettingsM from './SettingsMember';
 import { useState } from 'react';
 import SettingsAdmin from './SettingsAdmin';
+import { channelJoin } from '../../Services/wsChat';
 
 function MyListChannels(props : {myChannel: IChannel, me: User }) {
 	const { myChannel, me } = props;
 	const [mySettingsM, setMySettingsM] = useState<ISettingM>();
 	const [mySettingsAdmin, setMySettingsAdmin] = useState<ISettingAdmin>();
-	const [open, setOpen] = useState<boolean>(false);
-
-	const handleClickChannel = (channel: Channel) => {
-		myChannel.handleClickChannel(channel);
-	}
+	const [openAdmin, setOpenAdmin] = useState<boolean>(false);
+	const [openM, setOpenM] = useState<boolean>(false);
 
 	function handleClickSettingsChannelM(channel: Channel) {
 		const mySettingsM: ISettingM = {
 			channel: channel,
 			open: true,
 			isAdmin: false,
-			closeModal: setOpen,
-			handleEnterChannel: myChannel.handleEnterChannel,
+			closeModal: setOpenM,
 			handleQuitChannel: myChannel.handleQuitChannel,
 		};
-		setOpen(true);
+		setOpenAdmin(false);
+		setOpenM(true);
 		setMySettingsM(mySettingsM);
 	}
 
@@ -36,10 +34,10 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 			channel: channel,
 			open: true,
 			isAdmin: true,
-			closeModal: setOpen,
-			updateListChannels: myChannel.updateListChannels,
+			closeModal: setOpenAdmin,
 		};
-		setOpen(true);
+		setOpenM(false);
+		setOpenAdmin(true);
 		setMySettingsAdmin(mySettingsAdmin);
 	}
 
@@ -83,18 +81,30 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 					<List>
 						{myChannel.channels.map(channel => (
 							<div key={channel.id}>
-								<ListItem component="div">
-									<ListItemButton onClick={() => handleClickChannel(channel)}>
+								<ListItem component="div" sx={{paddingTop: 0, paddingBottom: 0}}>
+									<ListItemButton
+										onClick={() => {
+											myChannel.setNameChannel(channel.name);
+											channelJoin(channel.name, "")
+										}}
+										sx={{maxWidth: 0.85}}	
+									>
 										<Stack
-											sx={{ width: "85%", height: 1}}
+											sx={{ width: 0.85, height: 1}}
 											alignItems="center" spacing={2}
 											direction="row"
 										>
 											<Tooltip title={`${channel.name}`}>
-												{channel.private ? <LockIcon color="warning"/> : <LockOpenIcon color="warning"/>}
+												{channel.private ? <LockIcon color="error"/> : <LockOpenIcon color="success"/>}
 											</Tooltip>
-											<Box sx={{display: { xs: 'none', sm: "flex" } }}>
-												<h4 style={{color: "white"}}>{channel.name}</h4>
+											<Box sx={{display: { xs: 'none', sm: "flex" }, maxWidth: 0.85}}>
+												<Typography
+													noWrap
+													variant="subtitle1"
+													style={{fontFamily: "Myriad Pro", color: "white"}}
+												>
+													{channel.name}
+												</Typography>
 											</Box>
 										</Stack>
 									</ListItemButton>
@@ -104,12 +114,12 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 								</ListItem>
 							</div>
 						))}
-					</List> : <div style={{color: "grey", textAlign: "center", marginTop: "40%", fontFamily: "Myriad Pro", fontSize: "25px"}}>No channel</div>
+					</List> : <div style={{color: "grey", textAlign: "center", fontFamily: "Myriad Pro", fontSize: "25px"}}>No channel</div>
 					}
 				</Paper>
 			</Stack>
-			{mySettingsM !== undefined && open && !mySettingsM.isAdmin ? <SettingsM mySettingsM={mySettingsM} /> :
-			mySettingsAdmin !== undefined && open && mySettingsAdmin.isAdmin ? <SettingsAdmin mySettingsAdmin={mySettingsAdmin} /> : null
+			{	mySettingsM !== undefined && openM && !mySettingsM.isAdmin ? <SettingsM mySettingsM={mySettingsM} /> :
+				mySettingsAdmin !== undefined && openAdmin && mySettingsAdmin.isAdmin ? <SettingsAdmin mySettingsAdmin={mySettingsAdmin} /> : null
 			}
 		</Stack>
 	);

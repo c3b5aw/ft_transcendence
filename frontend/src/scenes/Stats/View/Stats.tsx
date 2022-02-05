@@ -1,10 +1,10 @@
-import { Box, Button, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Box, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import MyAchievements from '../Components/MyAchievements';
 import MyHistory from '../Components/MyHistory';
-import { api, apiChannel, apiChat, apiDM, apiUsers } from '../../../Services/Api/Api';
+import { api, apiChannel, apiChat, apiDM, apiGame, apiUsers } from '../../../Services/Api/Api';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MyAvatar from '../../../components/MyAvatar';
@@ -12,15 +12,20 @@ import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../Services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
-import { sxButton } from '../Services/style';
-import { Friends } from '../../../Services/Interface/Interface';
+import { Friend, PAGE, USER_STATUS } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
 import MessageIcon from '@mui/icons-material/Message';
 import MyFooter from '../../../components/MyFooter';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import MenuIcon from '@mui/icons-material/Menu';
 import React from 'react';
+import { matchJoinDuel } from '../../Game/Services/wsGame';
+import { MATCHTYPE } from '../../Game/Services/utils';
+import PeopleIcon from '@mui/icons-material/People';
+import MyRequestFriends from '../Components/MyRequestFriends';
+import MySearchBar from '../../Home/Components/MySearchBar';
+import useUsers from '../../../Services/Hooks/useUsers';
 
 const Stats = () => {
 	const { login } = useParams();
@@ -28,12 +33,14 @@ const Stats = () => {
 
 	const user = useUserStats(login);
 	const me = useMe();
+	const users = useUsers();
 	const [successAdd, setSuccessAdd] = useState<boolean>(false);
 	const [successDelete, setSuccessDelete] = useState<boolean>(false);
-	const [friends, setFriends] = useState<Friends[]>([]);
-	const [friendsPending, setFriendsPending] = useState<Friends[]>([]);
+	const [friends, setFriends] = useState<Friend[]>([]);
+	const [friendsPending, setFriendsPending] = useState<Friend[]>([]);
 	const navigate = useNavigate();
 	const [openAchievements, setOpenAchievements] = useState<boolean>(false);
+	const [openDemandeAmis, setOpenDemandeAmis] = useState<boolean>(false);
 
 	useEffect(() => {
 		const fetchFriendsMe = async () => {
@@ -54,7 +61,7 @@ const Stats = () => {
 	useEffect(() => {
 		const fetchFriendsMePending = async () => {
 			try {
-				const url = `/api/profile/friends/pending`;
+				const url = `/api/profile/friends/requested`;
 				const reponse = await axios.get(url);
 				setFriendsPending(reponse.data);
 			} catch (err) {
@@ -120,10 +127,6 @@ const Stats = () => {
 		}
 	}
 
-	const handleSendDuelGame = () => {
-		console.log("send duel game");
-	}
-
 	const handleAchievementMenuClose = () => {
 		setAchievementMoreAnchorEl(null);
 	};
@@ -137,7 +140,7 @@ const Stats = () => {
 
 	const isAchievementMenuOpen = Boolean(AchievementMoreAnchorEl);
 
-	if ((me === undefined || user === undefined || friends === undefined || friendsPending === undefined))
+	if ((me === undefined || user === undefined || users === undefined || friends === undefined || friendsPending === undefined))
 		return (<MyChargingDataAlert />);
 	const isFriend = friends.filter(function (friend) {
 		return (friend.login === user.login);
@@ -145,6 +148,11 @@ const Stats = () => {
 	const isFriendPending = friendsPending.filter(function (friendPending) {
 		return (friendPending.login === user.login);
 	});
+
+	const handleSendDuelGame = () => {
+		matchJoinDuel(MATCHTYPE.MATCH_DUEL, user.login);
+		navigate(`${apiGame}/roomview`)
+	}
 
 	const renderAchievementMenu = (
 		<Menu
@@ -169,7 +177,7 @@ const Stats = () => {
 					</IconButton>
 					<p>Send message</p>
 				</MenuItem> : null}
-			{user.login !== me.login && isFriend.length > 0 ?
+			{user.login !== me.login && isFriend.length > 0 && user.status === USER_STATUS.ONLINE ?
 				<MenuItem onClick={handleSendDuelGame}>
 					<IconButton>
 						<SportsEsportsIcon />
@@ -182,15 +190,39 @@ const Stats = () => {
 				</IconButton>
 				<p>Achievements</p>
 			</MenuItem>
+			{user.login === me.login ?
+				<MenuItem onClick={() => setOpenDemandeAmis(true)}>
+					<IconButton>
+						<PeopleIcon />
+					</IconButton>
+					<p>Demandes d'amis</p>
+				</MenuItem> : null}
+			{user.login !== me.login && isFriend.length === 0 && isFriendPending.length === 0 ? //n'est pas ami et nest pas en pending
+				<MenuItem onClick={() => handleAddFriend()}>
+					<IconButton>
+						<PersonAddIcon />
+					</IconButton>
+					<p>Demander en ami</p>
+				</MenuItem> :
+				<MenuItem onClick={() => handleDeleteFriend()}>
+					<IconButton>
+						{user.login !== me.login && isFriendPending.length !== 0 && isFriend.length === 0 ?
+							<AccessTimeIcon /> : <DeleteIcon />}
+					</IconButton>
+					{user.login !== me.login && isFriendPending.length !== 0 && isFriend.length === 0 ?
+						<p>Demande d'ami envoyée</p> : <p>Supprimer de la liste d'amis</p>}
+				</MenuItem>}
 		</Menu>
 	);
 
 	return (
-		<Stack direction="column" spacing={4}>
-			<MyFooter me={me}/>
-			<div style={{marginTop: 10}} />
-			<Stack direction="row" justifyContent="space-between" alignItems="center">
+		<Stack direction="column" spacing={7} alignItems="center">
+			<Stack sx={{width: 1}}><MyFooter me={me} currentPage={PAGE.STATS}/></Stack>
+			<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{width: 0.9}}>
 				<MyAvatar user={user}/>
+				<Stack sx={{width: 0.6, display: {xs: "none", sm: "none", md: "flex", lg: "flex"}}}>
+					<MySearchBar />
+				</Stack>
 				<Box>
 					<IconButton
 						aria-label="show more"
@@ -199,7 +231,7 @@ const Stats = () => {
 						onClick={handleAchievementMenuOpen}
 						color="inherit"
 					>
-						<MoreIcon sx={{fontSize: "40px"}}/>
+						<MenuIcon sx={{fontSize: "40px"}}/>
 					</IconButton>
 				</Box>
 			</Stack>
@@ -211,71 +243,30 @@ const Stats = () => {
 				<Stack	
 					sx={{width: 0.9, height: 0.8}}
 					direction="column"
-					spacing={4}
+					spacing={7}
 					>
+					<Stack
+						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
+						justifyContent="space-between"
+						sx={{backgroundColor: "green", borderRadius: 5, padding: "15px"}}
+					>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Matchs joués : {user.played}</Typography>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Classement : {user.rank}</Typography>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Victoires : {user.victories}</Typography>
+						<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>Défaites : {user.defeats}</Typography>
+					</Stack>
 					<Stack
 						sx={{height: 2/12}}
 						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
-						alignItems="flex-end"
-						justifyContent="space-between"
 					>
 						<Typography variant="h4" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Historique</Typography>
-						{user.login !== me.login ?
-						<Stack direction={{xs: "column", sm: "column", md: "column", lg: "column"}}>
-							{isFriend.length === 0 && isFriendPending.length === 0
-								?
-								<Button
-									onClick={() => handleAddFriend()}
-									sx={sxButton}
-									variant="contained"
-									startIcon={<PersonAddIcon />}
-								>
-									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Add friend</Typography>
-								</Button>
-								:
-								isFriendPending.length !== 0 && isFriend.length === 0
-								? 
-								<Stack direction={{xs: "column", sm: "column", md: "column", lg: "row"}} spacing={3}>
-									<Button
-										disabled
-										sx={sxButton}
-										variant="contained"
-										startIcon={<AccessTimeIcon />}
-									>
-										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Pending</Typography>
-									</Button> 
-									<Button
-										onClick={() => handleDeleteFriend()}
-										sx={sxButton} variant="contained"
-										startIcon={<DeleteIcon />}
-									>
-										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
-									</Button>
-								</Stack> :
-								<Button
-									onClick={() => handleDeleteFriend()}
-									sx={sxButton} variant="contained"
-									startIcon={<DeleteIcon />}
-								>
-									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
-								</Button>
-							}
-						</Stack> : null
-						}
 					</Stack>
 					<MyHistory user={user}/>
-					<Stack
-						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
-						justifyContent="space-evenly"
-					>
-						<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Matchs joués : {user.played}</Typography>
-						<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>Classement : {user.rank}</Typography>
-						<Typography variant="h5" style={{color: '#079200', fontFamily: "Myriad Pro", textAlign: "center"}}>Victoires : {user.victories}</Typography>
-						<Typography variant="h5" style={{color: '#C70039', fontFamily: "Myriad Pro", textAlign: "center"}}>Défaites : {user.defeats}</Typography>
-					</Stack>
+					
 				</Stack>
 			</Stack>
 			{openAchievements ? <MyAchievements user={user} setOpen={setOpenAchievements}/> : null}
+			{openDemandeAmis ? <MyRequestFriends setOpen={setOpenDemandeAmis}/> : null}
 			{renderAchievementMenu}
 		</Stack>
 	);

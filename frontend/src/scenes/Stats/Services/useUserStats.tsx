@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { User } from "../../../Services/Interface/Interface";
 import { useSnackbar } from 'notistack'
+import { api, apiStats, apiUsers } from "../../../Services/Api/Api";
 
 function useUserStats(login: string | undefined) {
     const [user, setUser] = useState<User>();
@@ -9,8 +10,7 @@ function useUserStats(login: string | undefined) {
     useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				const url = `/api/users/${login}/stats`;
-				const reponse = await axios.get(url);
+				const reponse = await axios.get(`${api}${apiUsers}/${login}${apiStats}`);
 				setUser(reponse.data);
 			} catch (err) {
 				enqueueSnackbar(`Impossible de charger les stats de ${login} (${err})`, { 

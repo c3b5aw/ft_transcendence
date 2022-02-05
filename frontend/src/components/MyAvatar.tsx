@@ -12,12 +12,12 @@ function MyAvatar(props: {user: User}) {
 			spacing={3}
 		>
 			<Avatar
-				sx={{ width: {xs: "64px", sm: "96px", md: "96px", lg: "128px"},height: {xs: "64px", sm: "96px", md: "96px", lg: "128px"} }}
+				sx={{ width: {xs: "96px", sm: "96px", md: "138px", lg: "128px"}, height: {xs: "96px", sm: "96px", md: "128px", lg: "128px"} }}
 				src={`/api/users/${user.login}/avatar`}>
 			</Avatar>
 			<Stack alignItems="center">
 				<Typography 
-					variant="h5"
+					variant="h4"
 					style={{fontFamily: "Myriad Pro", textAlign: "center"}}
 				>
 					{user.login} ({user.role})

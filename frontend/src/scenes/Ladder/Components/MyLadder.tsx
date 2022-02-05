@@ -17,7 +17,6 @@ import { api, apiLadder, apiMatch, apiStats, apiUsers } from "../../../Services/
 import { useEffect, useState } from 'react';
 import { Match, User } from '../../../Services/Interface/Interface';
 import { Stack } from '@mui/material';
-import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import { useSnackbar } from 'notistack'
 
 function Row(props: { user: User, me: User}) {
@@ -48,7 +47,7 @@ function Row(props: { user: User, me: User}) {
 
 	return (
 		<React.Fragment>
-		<TableRow sx={{ '& > *': { borderBottom: 'unset' }, backgroundColor: user.login === me?.login ? 'orange' : 'white' }}>
+		<TableRow sx={{backgroundColor: user.login === me?.login ? 'orange' : 'white' }}>
 			<TableCell>
 			<IconButton
 				aria-label="expand row"
@@ -150,13 +149,11 @@ export default function MyLadder(props: {me: User}) {
 		fetchUsers();
 	}, [enqueueSnackbar]);
 
-	if (users === undefined)
-		return (<MyChargingDataAlert />);
 	return (
 		<Stack sx={{backgroundColor: "white", width: 0.95, minHeight:"auto", borderRadius: 5}} direction="column">
-			<TableContainer>
+			<TableContainer sx={{borderRadius: 5}}>
 				<Table aria-label="collapsible table">
-					<TableHead>
+					<TableHead sx={{backgroundColor: "green"}}>
 						<TableRow>
 							<TableCell />
 							<TableCell>
@@ -178,7 +175,7 @@ export default function MyLadder(props: {me: User}) {
 					</TableHead>
 					<TableBody>
 						{users.map((user) => (
-						<Row key={user.id} user={user} me={me}/>
+							<Row key={user.id} user={user} me={me}/>
 						))}
 					</TableBody>
 				</Table>

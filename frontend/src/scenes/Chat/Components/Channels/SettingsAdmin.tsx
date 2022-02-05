@@ -19,7 +19,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
 
 	const printError = (err: any) => {
-		enqueueSnackbar(`Error : ${err.response.data.error}`, { 
+		enqueueSnackbar(`Error : ${err}`, { 
 			variant: 'error',
 			autoHideDuration: 3000,
 		});
@@ -80,7 +80,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 
 	const handleClose = () => {
 		mySettingsAdmin.closeModal(!mySettingsAdmin.open);
-		mySettingsAdmin.updateListChannels();
+		// mySettingsAdmin.updateListChannels();
 	};
 
 	const handleDeleteChannel = async () => {
@@ -162,12 +162,12 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 					<Grid
 						container
 						rowSpacing={1}
-						columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+						columnSpacing={{ xs: 1, sm: 4, md: 3 }}
 					>
 						{modos.map((modo) => (
 						<Grid
 							item
-							xs={3.5}
+							xs={5.5}
 							key={modo.id}
 						>
 							<Button
@@ -207,7 +207,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 				<MySearchBarChat users={usersChannel} fSearchBar={fSearchBar} nameBar="Search moderateurs..."/>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={handleDeleteChannel} variant="contained" color="error">Delete channel</Button>
+				<Button onClick={handleDeleteChannel} variant="contained" color="error">Delete</Button>
 				<Button onClick={handleClose} variant="contained" color="warning">Cancel</Button>
 				<Button onClick={handleUpdate} variant="contained" color="success">Update</Button>
 			</DialogActions>

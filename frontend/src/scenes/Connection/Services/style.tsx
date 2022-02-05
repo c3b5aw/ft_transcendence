@@ -7,7 +7,7 @@ export const sxBox = {
 }
 
 export const sxAvatar = {
-	width: 64,
-	height: 64,
-	bgcolor: "green"
+	width: {xs: "40px", sm: "48px", md: "64px", lg: "64px"},
+	height: {xs: "40px", sm: "48px", md: "64px", lg: "64px"},
+	bgcolor: "green",
 }

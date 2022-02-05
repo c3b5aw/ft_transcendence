@@ -1,15 +1,18 @@
 import { Avatar, List, ListItem, Paper, Stack } from "@mui/material";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Message } from "../Services/interface";
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { apiStats } from "../../../Services/Api/Api";
+import SendDuel from "./SendDuel";
+import useMe from "../../../Services/Hooks/useMe";
+import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 
 function MyMessages(props: { messages: Message[]}) {
 	const { messages } = props;
 	const messageEl = useRef<HTMLDivElement>(null);
-	const navigate = useNavigate();
+	const [openSendDuel, setOpenSendDuel] = useState<boolean>(false);
+	const [login, setLogin] = useState<string>("");
+	const me = useMe();
 
 	useEffect(() => {
 		const node = messageEl.current;
@@ -22,9 +25,14 @@ function MyMessages(props: { messages: Message[]}) {
 	}, [messages])
 
 	const handleClick = (login: string) => {
-		navigate(`${apiStats}/${login}`)
+		setLogin(login)
+		setOpenSendDuel(true);
 	}
-
+	if (me === undefined) {
+		return (
+			<MyChargingDataAlert />
+		);
+	}
 	return (
 		<Stack
 			direction="column"
@@ -69,7 +77,7 @@ function MyMessages(props: { messages: Message[]}) {
 													sx={{width: 0.9, maxWidth: 0.9}}
 													spacing={1}
 												>
-													<div style={{fontSize: "18px", fontFamily: "Myriad Pro", color: "white"}}>{message.login}</div>
+													<div style={{fontSize: "18px", fontFamily: "Myriad Pro", color: "white"}} onClick={() => handleClick(message.login)}>{message.login}</div>
 													<div style={{color: "white"}}>{message.content}</div>
 												</Stack>
 											</React.Fragment>
@@ -78,10 +86,11 @@ function MyMessages(props: { messages: Message[]}) {
 								</div>
 							))}
 						</List>
-					</div> : <div style={{color: "grey", textAlign: "center", marginTop: "10%", fontFamily: "Myriad Pro", fontSize: "45px"}}>No message</div>
+					</div> : <div style={{color: "grey", textAlign: "center", marginTop: "10%", fontFamily: "Myriad Pro", fontSize: "45px"}}>Select a channel</div>
 					}
 				</Paper>
 			</Stack>
+			{openSendDuel && login !== me.login ? <SendDuel setOpen={setOpenSendDuel} login={login} /> : null}
 		</Stack>
 	);
 }

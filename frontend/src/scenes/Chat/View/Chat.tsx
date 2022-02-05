@@ -6,7 +6,7 @@ import MyListChannels from "../Components/Channels/MyListChannels";
 import { Channel, IChannel, IListUser, Message } from "../Services/interface";
 import SendIcon from '@mui/icons-material/Send';
 import MyMessages from "../Components/MyMessages";
-import { User } from "../../../Services/Interface/Interface";
+import { PAGE, User } from "../../../Services/Interface/Interface";
 import MyListUser from "../Components/MyListUser";
 import axios from "axios";
 import { api, apiChannel, apiChannels, apiFriends, apiMessages, apiUsers } from "../../../Services/Api/Api";
@@ -32,50 +32,33 @@ function Chat() {
 	const [channels, setChannels] = useState<Channel[]>([]);
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [nameChannelDisplay, setNameChannelDisplay] = useState<string>("");
-	const [reload, setReload] = useState<boolean>(false);
 
 	const [open, setOpen] = useState<boolean>(false);
 	const [openJoin, setOpenJoin] = useState<boolean>(false);
 	const [openUserChannel, setOpenUserChannel] = useState<boolean>(false);
 	const [openFriend, setOpenFriend] = useState<boolean>(false);
 
-	const [upload, setUpload] = useState(null)
-	const [uploadChannels, setUploadChannels] = useState(null)
+	const [uploadUsersChannel, setUploadUsersChannel] = useState(null)
+	const [uploadMessagesChannel, setUploadMessagesChannel] = useState(null)
+	const [uploadChannels, setUploadChannels] = useState("")
 
 	const { enqueueSnackbar } = useSnackbar();
 
-	const handleJoinChannel = (nameChannel: string) => {
-		channelJoin(nameChannel, "");
-	}
-
-	const handleClickChannel = (channel: Channel) => {
-		setNameChannel(channel.name);
-		handleJoinChannel(channel.name);
+	const reinit = () => {
+		setMessages([]);
+		setUsersChannel([]);
+		setNameChannel("");
 	}
 
 	const handleQuitChannel = (channel: Channel) => {
 		channelLeave(channel);
-		updateListChannels();
-	}
-
-	const handleEnterChannel = (channel: Channel, password: string) => {
-		channelJoin(channel.name, password);
-	}
-
-	function updateListChannels() {
-		setReload(!reload);
+		reinit();
 	}
 
 	const myChannels: IChannel = {
 		channels: channels,
-		handleClickChannel: handleClickChannel,
-		handleEnterChannel: handleEnterChannel,
+		setNameChannel: setNameChannel,
 		handleQuitChannel: handleQuitChannel,
-		updateListChannels: updateListChannels,
-	}
-
-	const handleLaunchParametres = () => {
-		console.log("GO TO PARAMS");
 	}
 
 	function HandleCreateChannel() {
@@ -110,67 +93,147 @@ function Chat() {
 		setMessageTmp("");
 	}
 
+	/*
+	** This function will be used when the user try to change channel and
+	** to close the modal after join or create a new channel
+	*/
 	useEffect(() => {
 		socket.on("channel::onJoin", (data) => {
-			setUploadChannels(data)
-		})
-	}, [])
-
-	useEffect(() => {
-		socket.on("channel::onMembersReload", (data) => {
-			setUpload(data)
+			setOpenJoin(false);
 		})
 	}, [])
 
 	useEffect(() => {
 		socket.on("channel::onMessage", (data) => {
-			setUpload(data)
+			setUploadMessagesChannel(data)
 		})
 	}, [])
 
 	useEffect(() => {
-		socket.on("channel::onListReload", (data) => {
-			setUploadChannels(data)
+		socket.on("channel::onMembersReload", (data) => {
+			setUploadUsersChannel(data)
 		})
 	}, [])
 
+	/*
+	** Here, we reload all channels if a data is not specified
+	** Otherwise, the current user join the channel (name_channel) -> for example
+	** if you create or join a new channel, we reload the channels list
+	*/
+	useEffect(() => {
+		socket.on("channel::onListReload", (data) => {
+			setUploadChannels(data);
+		})
+	}, [])
+
+	/*
+	** This function is called when users roles change
+	*/
+	useEffect(() => {
+		socket.on("channel::onRoleUpdate", (data) => {
+			setUploadUsersChannel(data);
+		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	/*
+	** If a user is kicked of a channel, we reload all channels and reinit the interface chat
+	*/
+	useEffect(() => {
+		socket.on("channel::onKick", (data) => {
+			setUploadChannels(data)
+			reinit();
+		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	/*
+	** RELOAD LIST OF CHANNELS
+	*/
 	useEffect(() => {
 		const fetchChannels = async () => {
 			try {
 				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
-				setChannels(response_channels_joined.data);
+				setChannels(response_channels_joined.data.sort(function(c1: any) {
+					if (c1.private === true)
+						return (-1);
+					return (1);
+				}));
 			}
 			catch (err: any) {
-				enqueueSnackbar(`Error : ${err.response.data.error}`, { 
+				enqueueSnackbar(`Error : ${err.error}`, { 
 					variant: 'error',
 					autoHideDuration: 3000,
 				});
 			}
 		}
 		fetchChannels();
-	}, [enqueueSnackbar, uploadChannels, reload])
-
+	}, [enqueueSnackbar, uploadChannels])
+	
+	/*
+	** This useEffect will be used to join all channels at the beginning. Ideally,
+	** we should have dont it in the backend
+	*/
 	useEffect(() => {
-		const fetchChat = async () => {
+		const fetchChannels = async () => {
 			try {
-				const response_users_channel = await axios.get(`${api}${apiChannel}/${nameChannel}${apiUsers}`)
-				setUsersChannel(response_users_channel.data);
+				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
+				response_channels_joined.data.map((channel: { name: string; }) => (
+					channelJoin(channel.name, "")
+				));
+			}
+			catch (err: any) {
+				console.log(err);
+			}
+		}
+		fetchChannels();
+	}, [])
 
+	/*
+	** RELOAD LIST OF MESSAGES FROM NAME_CHANNEL
+	*/
+	useEffect(() => {
+		const fetchMessageChannel = async () => {
+			try {
 				const response_message = await axios.get(`${api}${apiChannel}/${nameChannel}${apiMessages}`)
 				setMessages(response_message.data);
 				setNameChannelDisplay(nameChannel);
 			}
 			catch (err: any) {
-				enqueueSnackbar(`Error : ${err.response.data.error}`, { 
+				enqueueSnackbar(`Error : ${err}`, { 
 					variant: 'error',
 					autoHideDuration: 3000,
 				});
 			}
 		}
 		if (nameChannel !== "")
-			fetchChat();
-	}, [enqueueSnackbar, nameChannel, upload])
+			fetchMessageChannel();
+	}, [enqueueSnackbar, nameChannel, uploadMessagesChannel])
 
+
+	/*
+	** RELOAD LIST OF USERS IN NAME_CHANNEL
+	*/
+	useEffect(() => {
+		const fetchUsersChannel = async () => {
+			try {
+				const response_users_channel = await axios.get(`${api}${apiChannel}/${nameChannel}${apiUsers}`)
+				setUsersChannel(response_users_channel.data);
+			}
+			catch (err: any) {
+				enqueueSnackbar(`Error : ${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+			}
+		}
+		if (nameChannel !== "")
+			fetchUsersChannel();
+	}, [enqueueSnackbar, nameChannel, uploadUsersChannel])
+
+	/*
+	** RELOAD LIST OF FRIENDS
+	*/
 	useEffect(() => {
 		const fetchFriends = async () => {
 			try {
@@ -178,7 +241,7 @@ function Chat() {
 				setFriends(response_friends.data);
 			}
 			catch (err: any) {
-				enqueueSnackbar(`Error : ${err.response.data.error}`, { 
+				enqueueSnackbar(`Error : ${err}`, { 
 					variant: 'error',
 					autoHideDuration: 3000,
 				});
@@ -210,7 +273,7 @@ function Chat() {
 			height: "100vh",
 			justifyContent: 'space-between'}}
 		>
-			<MyFooter me={me}/>
+			<MyFooter me={me} currentPage={PAGE.CHAT}/>
 			<Box sx={{
 				flexDirection: "row",
 				height: "90vh",
@@ -229,7 +292,6 @@ function Chat() {
 						<Stack
 							direction="row"
 							alignItems="center"
-							onClick={() => handleLaunchParametres()}
 						>
 							<Avatar
 								src={`/api/profile/avatar`}
@@ -348,7 +410,6 @@ function Chat() {
 									placeholder="Message"
 									variant="outlined"
 									fullWidth
-									multiline
 									maxRows={2}
 									value={messageTmp}
 									onChange={handleTextInputChange}
@@ -356,6 +417,11 @@ function Chat() {
 										style: {
 											backgroundColor: "#737373",
 											color: "white",
+										}
+									}}
+									onKeyPress= {(e) => {
+										if (e.key === 'Enter') {
+											handleSendMessage();
 										}
 									}}
 								/>
@@ -385,8 +451,8 @@ function Chat() {
 					<MyListUser myList={myListUsersChannel}/>
 					<MyListUser myList={myListFriends}/>
 				</Box>
-				{open ? <MyDialogCreateChannel reload={reload} setReload={setReload} setOpen={setOpen}/> : null}
-				{openJoin ? <JoinChannel setOpen={setOpenJoin}/> : null}
+				{open ? <MyDialogCreateChannel setOpen={setOpen} /> : null}
+				{openJoin ? <JoinChannel setOpen={setOpenJoin} /> : null}
 				{openUserChannel ? <MyDialogListUser setOpen={setOpenUserChannel} myListUsersChannel={myListUsersChannel}/> : null}
 				{openFriend ? <MyDialogListFriend setOpen={setOpenFriend} myListFriends={myListFriends}/> : null}
 			</Box>
