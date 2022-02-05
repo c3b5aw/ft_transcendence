@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Box, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,14 +12,13 @@ import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import useMe from '../../../Services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
-import { sxButton } from '../Services/style';
 import { Friend, PAGE, USER_STATUS } from '../../../Services/Interface/Interface';
 import { useSnackbar } from 'notistack'
 import MessageIcon from '@mui/icons-material/Message';
 import MyFooter from '../../../components/MyFooter';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import MenuIcon from '@mui/icons-material/Menu';
 import React from 'react';
 import { matchJoinDuel } from '../../Game/Services/wsGame';
 import { MATCHTYPE } from '../../Game/Services/utils';
@@ -198,6 +197,21 @@ const Stats = () => {
 					</IconButton>
 					<p>Demandes d'amis</p>
 				</MenuItem> : null}
+			{user.login !== me.login && isFriend.length === 0 && isFriendPending.length === 0 ? //n'est pas ami et nest pas en pending
+				<MenuItem onClick={() => handleAddFriend()}>
+					<IconButton>
+						<PersonAddIcon />
+					</IconButton>
+					<p>Demander en ami</p>
+				</MenuItem> :
+				<MenuItem onClick={() => handleDeleteFriend()}>
+					<IconButton>
+						{user.login !== me.login && isFriendPending.length !== 0 && isFriend.length === 0 ?
+							<AccessTimeIcon /> : <DeleteIcon />}
+					</IconButton>
+					{user.login !== me.login && isFriendPending.length !== 0 && isFriend.length === 0 ?
+						<p>Demande d'ami envoyée</p> : <p>Supprimer de la liste d'amis</p>}
+				</MenuItem>}
 		</Menu>
 	);
 
@@ -217,7 +231,7 @@ const Stats = () => {
 						onClick={handleAchievementMenuOpen}
 						color="inherit"
 					>
-						<MoreIcon sx={{fontSize: "40px"}}/>
+						<MenuIcon sx={{fontSize: "40px"}}/>
 					</IconButton>
 				</Box>
 			</Stack>
@@ -244,52 +258,8 @@ const Stats = () => {
 					<Stack
 						sx={{height: 2/12}}
 						direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
-						alignItems="flex-end"
-						justifyContent="space-between"
 					>
 						<Typography variant="h4" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Historique</Typography>
-						{user.login !== me.login ?
-						<Stack>
-							{isFriend.length === 0 && isFriendPending.length === 0
-								?
-								<Button
-									onClick={() => handleAddFriend()}
-									sx={sxButton}
-									variant="contained"
-									startIcon={<PersonAddIcon />}
-								>
-									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Add friend</Typography>
-								</Button>
-								:
-								isFriendPending.length !== 0 && isFriend.length === 0
-								? 
-								<Stack direction={{xs: "column", sm: "column", md: "column", lg: "row"}} spacing={3}>
-									<Button
-										disabled
-										sx={sxButton}
-										variant="contained"
-										startIcon={<AccessTimeIcon />}
-									>
-										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Pending</Typography>
-									</Button> 
-									<Button
-										onClick={() => handleDeleteFriend()}
-										sx={sxButton} variant="contained"
-										startIcon={<DeleteIcon />}
-									>
-										<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
-									</Button>
-								</Stack> :
-								<Button
-									onClick={() => handleDeleteFriend()}
-									sx={sxButton} variant="contained"
-									startIcon={<DeleteIcon />}
-								>
-									<Typography variant="h5" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Delete friend</Typography>
-								</Button>
-							}
-						</Stack> : null
-						}
 					</Stack>
 					<MyHistory user={user}/>
 					
