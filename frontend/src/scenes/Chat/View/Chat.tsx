@@ -154,7 +154,11 @@ function Chat() {
 		const fetchChannels = async () => {
 			try {
 				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
-				setChannels(response_channels_joined.data);
+				setChannels(response_channels_joined.data.sort(function(c1: any) {
+					if (c1.private === true)
+						return (-1);
+					return (1);
+				}));
 			}
 			catch (err: any) {
 				enqueueSnackbar(`Error : ${err.error}`, { 
