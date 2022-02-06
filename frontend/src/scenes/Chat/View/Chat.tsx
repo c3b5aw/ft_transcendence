@@ -9,7 +9,7 @@ import MyMessages from "../Components/MyMessages";
 import { PAGE, User } from "../../../Services/Interface/Interface";
 import MyListUser from "../Components/MyListUser";
 import axios from "axios";
-import { api, apiChannel, apiChannels, apiFriends, apiMessages, apiUsers } from "../../../Services/Api/Api";
+import { api, apiChannel, apiChannels, apiMessages, apiUsers } from "../../../Services/Api/Api";
 import { useSnackbar } from 'notistack'
 import { channelJoin, channelLeave, channelSend } from "../Services/wsChat";
 import { socket } from "../../../Services/ws/utils";
@@ -20,7 +20,7 @@ import { isMuteSendMessage } from "../Services/utils";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyFooter from "../../../components/MyFooter";
 import MyDialogListUser from "../Components/MyDialogListUser";
-import MyDialogListFriend from "../Components/MyDialogListFriend";
+import React from "react";
 
 function Chat() {
 	const me = useMe();
@@ -28,7 +28,6 @@ function Chat() {
 	const [messageTmp, setMessageTmp] = useState<string>("");
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [usersChannel, setUsersChannel] = useState<User[]>([]);
-	const [friends, setFriends] = useState<User[]>([]);
 	const [channels, setChannels] = useState<Channel[]>([]);
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [nameChannelDisplay, setNameChannelDisplay] = useState<string>("");
@@ -36,7 +35,6 @@ function Chat() {
 	const [open, setOpen] = useState<boolean>(false);
 	const [openJoin, setOpenJoin] = useState<boolean>(false);
 	const [openUserChannel, setOpenUserChannel] = useState<boolean>(false);
-	const [openFriend, setOpenFriend] = useState<boolean>(false);
 
 	const [uploadUsersChannel, setUploadUsersChannel] = useState(null)
 	const [uploadMessagesChannel, setUploadMessagesChannel] = useState(null)
@@ -202,33 +200,6 @@ function Chat() {
 			fetchUsersChannel();
 	}, [enqueueSnackbar, nameChannel, uploadUsersChannel])
 
-	/*
-	** RELOAD LIST OF FRIENDS
-	*/
-	useEffect(() => {
-		const fetchFriends = async () => {
-			try {
-				const response_friends = await axios.get(`${api}${apiUsers}/${me?.login}${apiFriends}`)
-				setFriends(response_friends.data);
-			}
-			catch (err: any) {
-				enqueueSnackbar(`Error : ${err}`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
-			}
-		}
-		if (me !== undefined)
-			fetchFriends();
-	}, [enqueueSnackbar, me])
-
-	var myListFriends: IListUser = {
-		users: friends,
-		name_list: "List Friends",
-		isListChannel: false,
-		name_channel: nameChannel,
-	}
-
 	var myListUsersChannel: IListUser = {
 		users: usersChannel,
 		name_list: "List Users Channel",
@@ -245,14 +216,14 @@ function Chat() {
 			justifyContent: 'space-between'}}
 		>
 			<MyFooter me={me} currentPage={PAGE.CHAT}/>
-			<Box sx={{
+			<Stack direction="row" sx={{
 				flexDirection: "row",
-				height: "90vh",
-				display: "flex"}}
+				height: 0.93,
+				justifyCotent: "space-between"}}
 			>
 				<Stack sx={{
 					height: 1,
-					width: 0.25,
+					width: {xs: 0.3, sm: 0.3, md: 0.15, lg: 0.15, xl: 0.15},
 					alignItems: "center"}}
 				>
 					<Stack
@@ -269,7 +240,7 @@ function Chat() {
 								sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
 							</Avatar>
 							<Box sx={{display: { xs: 'none', sm: 'flex'}}}>
-								<h3 style={{color: "white"}}>{me?.login}</h3>
+								<h3 style={{color: "white"}}>{me.login}</h3>
 							</Box>
 						</Stack>
 					</Stack>
@@ -291,25 +262,25 @@ function Chat() {
 				</Stack>
 				<Stack
 					direction="column"
+					flexGrow={1}
 					sx={{minWidth: 0.7, maxWidth: 0.7, height: 1}}
 				>
 					<Stack
 						direction="row"
-						sx={{width: 1, height: 0.075}}
-						spacing={3}
+						justifyContent="space-between"
+						alignItems="center"
+						spacing={2}
+						sx={{width: 0.95, height: 0.075}}
 					>
 						{nameChannel !== "" ?
-							<Stack
-								direction="row"
-								alignItems="center"
-								spacing={3}
-							>
+							<React.Fragment>
 								<Typography
 									variant="h5"
+									noWrap
 									style={{fontFamily: "Myriad Pro", textAlign: "center"}}
 									>
 										{nameChannelDisplay}
-									</Typography>
+								</Typography>
 								<Button
 									sx={{display: {lg: "flex", xl: "none"}}}
 									variant="contained"
@@ -322,26 +293,8 @@ function Chat() {
 											Users
 									</Typography>
 								</Button>
-							</Stack> : null
+							</React.Fragment> : null
 						}
-						<Stack
-							direction="row"
-							alignItems="center"
-							spacing={3}
-						>
-							<Button
-								sx={{display: {xs: "flex", sm: "flex", md: "flex", lg: "flex", xl: "none"}}}
-								variant="contained"
-								onClick={() => setOpenFriend(true)}
-							>
-								<Typography
-									variant="subtitle1"
-									style={{fontFamily: "Myriad Pro"}}
-								>
-									Friends
-								</Typography>
-							</Button>
-						</Stack>
 					</Stack>
 					<Stack
 						direction="row"
@@ -409,24 +362,22 @@ function Chat() {
 					</Stack>
 				</Stack>
 				<Box
-					display={{xs: "none", sm: "none", md: "none", lg: "none", xl: "flex"}}
+					display={{xs: "none", sm: "none", md: "flex", lg: "flex", xl: "flex"}}
 					mb={2}
 					flexDirection="column"
 					height="90vh"
-					width="15vw"
+					minWidth={0.15}
 					style={{
 						overflow: "hidden",
 						overflowY: "scroll"
 					}}
 				>
 					<MyListUser myList={myListUsersChannel}/>
-					<MyListUser myList={myListFriends}/>
 				</Box>
 				{open ? <MyDialogCreateChannel setOpen={setOpen} /> : null}
 				{openJoin ? <JoinChannel setOpen={setOpenJoin} /> : null}
 				{openUserChannel ? <MyDialogListUser setOpen={setOpenUserChannel} myListUsersChannel={myListUsersChannel}/> : null}
-				{openFriend ? <MyDialogListFriend setOpen={setOpenFriend} myListFriends={myListFriends}/> : null}
-			</Box>
+			</Stack>
 		</Box>
 	);
 }

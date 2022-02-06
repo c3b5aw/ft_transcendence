@@ -80,39 +80,39 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 					{myChannel.channels.length > 0 ?
 					<List>
 						{myChannel.channels.map(channel => (
-							<div key={channel.id}>
-								<ListItem component="div" sx={{paddingTop: 0, paddingBottom: 0}}>
-									<ListItemButton
-										onClick={() => {
-											myChannel.setNameChannel(channel.name);
-											channelJoin(channel.name, "")
-										}}
-										sx={{maxWidth: 0.85}}	
+							<ListItem key={channel.id} style={{paddingTop: 0, paddingBottom: 0, justifyContent: 'space-between'}}>
+								<ListItemButton
+									onClick={() => {
+										myChannel.setNameChannel(channel.name);
+										channelJoin(channel.name, "")
+									}}
+									sx={{minWidth: 0.85, maxWidth: 0.85}}	
+								>
+									<Stack
+										sx={{ width: 0.85, height: 1}}
+										alignItems="center"
+										justifyContent={{xs: "center", sm: "flex-start"}}
+										spacing={1}
+										direction="row"
 									>
-										<Stack
-											sx={{ width: 0.85, height: 1}}
-											alignItems="center" spacing={2}
-											direction="row"
-										>
-											<Tooltip title={`${channel.name}`}>
-												{channel.private ? <LockIcon color="error"/> : <LockOpenIcon color="success"/>}
-											</Tooltip>
-											<Box sx={{display: { xs: 'none', sm: "flex" }, maxWidth: 0.85}}>
-												<Typography
-													noWrap
-													variant="subtitle1"
-													style={{fontFamily: "Myriad Pro", color: "white"}}
-												>
-													{channel.name}
-												</Typography>
-											</Box>
-										</Stack>
-									</ListItemButton>
-									<Box sx={{display: { xs: 'none', md: 'none', lg: "flex"}}}>
-										<DisplaySettings channel={channel}/>
-									</Box>
-								</ListItem>
-							</div>
+										<Tooltip title={`${channel.name}`}>
+											{channel.private ? <LockIcon color="error"/> : <LockOpenIcon color="success"/>}
+										</Tooltip>
+										<Box sx={{display: { xs: 'none', sm: "flex" }, maxWidth: 0.85}}>
+											<Typography
+												noWrap
+												variant="subtitle1"
+												style={{fontFamily: "Myriad Pro", color: "white"}}
+											>
+												{channel.name}
+											</Typography>
+										</Box>
+									</Stack>
+								</ListItemButton>
+								<Box sx={{display: { xs: 'none', md: 'none', lg: "flex"}}}>
+									<DisplaySettings channel={channel}/>
+								</Box>
+							</ListItem>
 						))}
 					</List> : <div style={{color: "grey", textAlign: "center", fontFamily: "Myriad Pro", fontSize: "25px"}}>No channel</div>
 					}
