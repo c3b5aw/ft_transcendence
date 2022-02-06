@@ -16,6 +16,14 @@ export class GameBall {
 		this.direction = 0;
 	}
 
+	public __repr__() {
+		return {
+			x: this.x, y: this.y,
+			radius: this.radius,
+			speed: this.speed, direction: this.direction
+		}
+	}
+
 	public reset() {
 		this.x = GAME_BALL_START_X;
 		this.y = GAME_BALL_START_Y;
