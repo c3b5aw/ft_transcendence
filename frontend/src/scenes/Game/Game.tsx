@@ -188,6 +188,6 @@ export class	Game {
 		this.on = 0;
 		this.print = 0;
 		this.ball.speed = 2;
-		this.ball.direction = Math.random() * 160 - 80; //pour que la direction de depart differe
+		this.ball.direction = -(Math.random() * 160 + 10); //pour que la direction de depart differe
 	}
 }

@@ -19,13 +19,15 @@ export class	Ball {
 		this.r = r;
 		this.speed = 2;
 
-		this.direction = Math.random() * 160 - 80; //pour que la direction de depart differe
+		this.direction = -(Math.random() * 160 + 10); //pour que la direction de depart differe
 	}
 
 	ballMove(game:Game) {
 		// on fait en sorte que la balle rebondisse en haut et en bas
-		if (this.y >= getCanvas().height - 20 || this.y <= 20)
-			this.direction *= -1;
+		if (this.y >= getCanvas().height - 20 || this.y <= 20) {
+			this.direction = ((this.direction + 90 ) * -1 ) -90;;
+		console.log(" got this direction " , this.direction);
+		}
 
 		// le rebond quand la balle touche un joueur
 		if (this.x > getCanvas().width - game.player1.width - 20)
@@ -33,8 +35,8 @@ export class	Ball {
 		else if (this.x < game.player1.width + 20)
 			this.collide(game.player1, game);
 
-		this.x += this.speed * Math.cos(this.direction * Math.PI / 180);
-		this.y += this.speed * Math.sin(this.direction * Math.PI / 180);
+		this.x += this.speed * Math.sin(this.direction * Math.PI / 180);
+		this.y -= this.speed * Math.cos(this.direction * Math.PI / 180);
 	}
 
 	collide(player:Paddle, game:Game) {
@@ -98,9 +100,9 @@ export class	Ball {
 		//a une valeur entre -10 et 10 en fonction du point d impact
 		const num: number = Math.round(impact * ratio / 10);
 		if (player === game.player2)
-			this.direction = 180 + num * 8;
+			this.direction = -(90 + num * 8);
 		else
-			this.direction = num * 8;
+			this.direction = 90 + num * 8;
 
 		console.log(" Ball touch at ", num, " got this direction " , this.direction);
 	}
