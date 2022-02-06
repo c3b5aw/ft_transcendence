@@ -106,9 +106,9 @@ export class GameService {
 
 		match.finished = true;
 
-		const date_start: number = (new Date(match.date)).getTime();
-		const date_end: number = (new Date()).getTime();
-		match.duration =  Math.ceil( date_end - date_start / (1000 * 60 * 60 * 24));
+		const date_start = (new Date(match.date)).getTime();
+		const date_end = (new Date()).getTime();
+		match.duration =  Math.ceil( (date_end - date_start) / (1000 * 60 * 60 * 24));
 
 		match.player1_score = game.players[0].score;
 		match.player2_score = game.players[1].score;
