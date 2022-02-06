@@ -12,12 +12,12 @@ export class Game {
 	public hash: string;
 	private socket: any;
 
-	public players: GamePlayer[];
-	private ball: GameBall;
-	public pause: GamePause;
+	public players: GamePlayer[] = [];
+	private ball: GameBall = new GameBall();
+	public pause: GamePause = new GamePause();
 
-	public ended: boolean;
-	public inTreatment: boolean;
+	public ended: boolean = false;
+	public inTreatment: boolean = false;
 
 	private intervalID: any;
 
@@ -25,12 +25,7 @@ export class Game {
 		this.hash = hash;
 		this.id = id;
 
-		this.ended = false;
-		this.inTreatment = false;
-
 		this.socket = socket;
-		this.players[0] = null;
-		this.players[1] = null;
 
 		this.init();
 	}
@@ -38,7 +33,7 @@ export class Game {
 	private async init() {
 		this.pause.Pause(null, GAME_START_MAX_WAIT);
 
-		this.intervalID = setInterval(this.onTick, 1000 / GAME_TICKS_PER_SECOND);
+		this.intervalID = setInterval(this.onTick.bind(this), 1000 / GAME_TICKS_PER_SECOND);
 	}
 
 	private onTick() {
@@ -71,7 +66,7 @@ export class Game {
 			if (Math.abs(this.ball.speed) < GAME_BALL_MAX_SPEED)
 				this.ball.speedUp();
 
-			this.socket.emit('game::match::onCollide', { ball: this.ball });
+			this.emit('game::match::onCollide', { ball: this.ball });
 		}
 	}
 	/*
@@ -79,7 +74,10 @@ export class Game {
 	*/
 
 	public isPlayer(userId: number) {
-		return this.players.find(p => p.id == userId) != null;
+		if (this.players[0] === null)
+			return false;
+
+		return this.players.find(p => p.id === userId) !== null;
 	}
 
 	/*
@@ -114,7 +112,7 @@ export class Game {
 			return;
 
 		this.pause.nextUpdate = new Date(Date.now() + 100);
-		this.socket.emit('game::match::onPause', this.pause);
+		this.emit('game::match::onPause', this.pause);
 	}
 
 	private streamPaddleMove(user: User, move: GameMoves) {
@@ -123,11 +121,11 @@ export class Game {
 
 		switch (move) {
 			case GameMoves.MOVE_UP:
-				this.socket.emit('game::match::onMove::up', { player });
+				this.emit('game::match::onMove::up', player.__repr__() );
 			case GameMoves.MOVE_DOWN:
-				this.socket.emit('game::match::onMove::down', { player });
+				this.emit('game::match::onMove::down', player.__repr__() );
 			case GameMoves.MOVE_STOP:
-				this.socket.emit('game::match::onMove::stop', { player });
+				this.emit('game::match::onMove::stop', player.__repr__() );
 		}
 	}
 
@@ -136,28 +134,29 @@ export class Game {
 	*/
 
 	public sendBoard(client: any) {
-		client.emit('game::match::onBoard', { game: this });
+		client.emit('game::match::onBoard', { game: this.__repr__() });
 	}
 
 	public spectatorJoin(user: User) {
-		this.socket.emit('game::spectator::onJoin', { game: this, spectator: user });
+		this.emit('game::spectator::onJoin', { game: this.__repr__(), spectator: { id: user.id, login: user.login } });
 	}
 
 	public spectatorLeave(user: User) {
-		this.socket.emit('game::spectator::onLeave', { game: this, spectator: user });
+		this.emit('game::spectator::onLeave', { game: this.__repr__(), spectator: { id: user.id, login: user.login } });
 	}
 
 	public playerJoin(user: User) {
-		this.socket.emit('game::match::onJoin', { player: user });
+		this.emit('game::match::onJoin', { player: { id: user.id, login: user.login } });
 
-		if (this.players.find(p => p.id === user.id) !== null)
+		if (this.players.find(p => p.id === user.id) !== null) {
 			return this.pause.resume();
-		else if (this.players[0] == null)
+		} else if (this.players[0] == null) {
 			this.players[0] = new GamePlayer(user.id, user.login, 0);
-		else if (this.players[1] == null)
+			return ;
+		} else if (this.players[1] == null) {
 			this.players[1] = new GamePlayer(user.id, user.login, 1);
-
-		this.start();
+			this.start();
+		}
 	}
 
 	private start() {
@@ -167,7 +166,11 @@ export class Game {
 		this.ball.reset();
 
 		this.pause.Pause(null, GAME_START_DELAY);
-		this.socket.emit('game::match::onStart', { game: this });
+		this.emit('game::match::onStart', { game: this.__repr__() });
+	}
+
+	private emit(event: string, data: any = {}) {
+		this.socket.to(`#GAME-${ this.hash }`).emit(event, data);
 	}
 
 	/*
@@ -179,7 +182,7 @@ export class Game {
 		if (player.score >= GAME_WIN_SCORE)
 			return this.end();
 
-		this.socket.emit('game::match::onScore', { player });
+		this.emit('game::match::onScore', { player });
 		this.reset();
 	}
 
@@ -193,13 +196,25 @@ export class Game {
 		this.players[0].reset();
 		this.players[1].reset();
 
-		this.socket.emit('game::match::onReset', { ball: this.ball });
+		this.emit('game::match::onReset', { ball: this.ball });
 	}
 
 	private end() {
 		clearInterval(this.intervalID);
 
-		this.socket.emit('game::match::onEnd');
+		this.emit('game::match::onEnd');
 		this.ended = true;
+	}
+
+	private __repr__() {
+		return {
+			id: this.id, hash: this.hash,
+			players: [
+				this.players[0] ? this.players[0].__repr__() : null,
+				this.players[1] ? this.players[1].__repr__() : null
+			], ball: this.ball.__repr__(),
+			pause: this.pause.__repr__(),
+			ended: this.ended,
+		}
 	}
 };
