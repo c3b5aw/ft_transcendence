@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { ConsoleLogger, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Server } from 'socket.io';
 
@@ -42,22 +42,21 @@ export class GameService {
 		CONNECTION
 	*/
 
-	public connectToGame(client: WSClient, gameHash: string){
-		const game: Game = this.findOnGoinMatchByHash(gameHash);
-		if (!game)
+	public connectToGame(client: WSClient, hash: string){
+		const game: Game = this.findOnGoingMatchByHash(hash);
+		if (!game || game === undefined)
 			return client.emit('onError', { error: 'game not found' });
 
-		// ToDo: Check if user has joined a room already.
-		console.log(`game.service.ts: 'connectToGame': client.rooms: `, client.rooms);
+		const room_name = `#GAME-${ hash }`;
+		if (!client.rooms.has(room_name)) {
+			client.join('#GAME-' + hash);
 
-		client.join('#GAME-' + gameHash);
-		if (game.isPlayer(client.user.id))
-			game.playerJoin(client.user);
-		else
-			game.spectatorJoin(client.user);
-
+			if (game.isPlayer(client.user.id))
+				game.playerJoin(client.user);
+			else
+				game.spectatorJoin(client.user);
+		}
 		game.sendBoard(client);
-	
 		return true;
 	}
 
@@ -144,7 +143,7 @@ export class GameService {
 		FINDER
 	*/
 
-	private findOnGoinMatchByHash(gameHash: string): Game {
+	private findOnGoingMatchByHash(gameHash: string): Game {
 		return global.games[gameHash];
 	}
 
@@ -160,7 +159,7 @@ export class GameService {
 		let match: Match = this.findOnGoingMatch(client);
 		if (!match) {
 			match = await this.matchsService.findPendingMatch(client.user.id);
-			if (match)
+			if (match && !global.games[match.hash])				
 				await this.startGame(match);
 		}
 		if (!match) {
