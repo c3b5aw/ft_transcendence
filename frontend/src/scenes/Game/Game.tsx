@@ -17,6 +17,7 @@ export default class Game {
 
 	private hash: string = "";
 	public ended: boolean = false;
+	private joined: boolean = false;
 
 	private intervalId: NodeJS.Timer | null = null;
 	private socket: Socket | null = null;
@@ -36,8 +37,6 @@ export default class Game {
 
 		this.registerEvents();
 		this.redraw();
-
-		this.intervalId = setInterval(this.onTick.bind(this), 1000 / GAME_TICKS_PER_SECOND);
 	}
 
 	private registerEvents() {
@@ -65,7 +64,8 @@ export default class Game {
 			window.addEventListener('keydown', this.onKeyDown.bind(this));
 		}
 
-		this.socket.emit('game::join', { hash: this.hash });
+		// if (!this.joined)
+		this.socket.emit('game::join', JSON.stringify({ hash: this.hash }));
 	}
 
 	// EVENTS
@@ -75,11 +75,11 @@ export default class Game {
 
 		switch (event.key) {
 			case "ArrowUp" || "w":
-				this.socket.emit("move", GameMoves.MOVE_UP);
+				this.socket.emit('game::paddle::move::up');
 				break;
 
 			case "ArrowDown" || "s":
-				this.socket.emit("move", GameMoves.MOVE_DOWN);
+				this.socket.emit('game::paddle::move::down');
 				break;
 		}
 	}
@@ -95,12 +95,12 @@ export default class Game {
 		switch (event.key) {
 			case "ArrowUp" || "w":
 				if (player.move === GameMoves.MOVE_UP)
-					this.socket.emit("move", GameMoves.MOVE_STOP);
+					this.socket.emit('game::paddle::move::stop');
 				break;
 
 			case "ArrowDown" || "s":
 				if (player.move === GameMoves.MOVE_DOWN)
-					this.socket.emit("move", GameMoves.MOVE_STOP);
+					this.socket.emit('game::paddle::move::stop');
 				break;
 		}
 	}
@@ -121,17 +121,13 @@ export default class Game {
 		this.ball.update(arg.ball);
 		
 		this.players.forEach((player: any) => {
-			if (arg.player[0].id === player.id) {
-				this.players[player.slot].y = arg.player[0].y;
-				this.players[player.slot].score = arg.player[0].score;
-				this.players[player.slot].updateScore();
-			}
-			else if (arg.player[1].id === player.id) {
-				this.players[player.slot].y = arg.player[0].y;
-				this.players[player.slot].score = arg.player[0].score;
-				this.players[player.slot].updateScore();
-			}
+			if (arg.player[0].id === player.id)
+				this.players[player.slot].load(arg.player[0]);
+			else if (arg.player[1].id === player.id)
+				this.players[player.slot].load(arg.player[0]);
 		});
+
+		this.intervalId = setInterval(this.onTick.bind(this), 1000 / GAME_TICKS_PER_SECOND);
 	}
 
 	private updateBall() {
@@ -161,9 +157,8 @@ export default class Game {
 	}
 
 	// GAME EVENTS
-
 	private onJoin(arg: any) {
-		console.log(`Game.onJoin:`, arg);
+		this.joined = true;
 
 		const player: GamePlayer | undefined = this.players.find(
 					player => player.id === arg.id);

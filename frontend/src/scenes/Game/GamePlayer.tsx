@@ -21,13 +21,19 @@ export default class GamePlayer {
 
 		this.reset();
 
-		this.load();
-	}
-
-	private load() {
 		this.updateScore();
 		this.updateAvatar();
 		this.updateLogin();
+	}
+
+	public load(arg: any) {
+		this.id = arg.id;
+		this.login = arg.login;
+		this.y = arg.y;
+		this.move = arg.move;
+		this.score = arg.score;
+
+		this.updateScore();
 	}
 
 	public reset() {
@@ -53,7 +59,7 @@ export default class GamePlayer {
 		element!.innerText = this.login;
 	}
 
-	public updateScore() {
+	private updateScore() {
 		if (this.slot === 0)
 			document.getElementById('gamePlayerScoreLeft')!.innerText = this.score.toString();
 		else if (this.slot === 1)
