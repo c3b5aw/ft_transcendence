@@ -21,7 +21,7 @@ export default class GamePlayer {
 
 		this.reset();
 
-		this.updateScore();
+		this.updateScore(this.score);
 		this.updateAvatar();
 		this.updateLogin();
 	}
@@ -33,7 +33,7 @@ export default class GamePlayer {
 		this.move = arg.move;
 		this.score = arg.score;
 
-		this.updateScore();
+		this.updateScore(this.score);
 	}
 
 	public reset() {
@@ -42,11 +42,6 @@ export default class GamePlayer {
 
 	public registerMove(move: GameMoves) {
 		this.move = move;
-	}
-
-	public registerScore() {
-		this.score++;
-		return this.updateScore();
 	}
 
 	private updateLogin() {
@@ -59,7 +54,8 @@ export default class GamePlayer {
 		element!.innerText = this.login;
 	}
 
-	private updateScore() {
+	public updateScore(score: number) {
+		this.score = score;
 		if (this.slot === 0)
 			document.getElementById('gamePlayerScoreLeft')!.innerText = this.score.toString();
 		else if (this.slot === 1)

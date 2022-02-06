@@ -11,6 +11,8 @@ export default class GameBall {
 	public speed: number;
 	public direction: number;
 
+	private lastSpeedUp: Date = new Date(0);
+
 	constructor() {
 		this.reset();
 
@@ -28,11 +30,14 @@ export default class GameBall {
 	}
 
 	public speedUp() {
-		this.speed *= GAME_BALL_SPEED_INCREASE;
+		if (this.lastSpeedUp.getTime() + 2000 > new Date().getTime()) {
+			this.lastSpeedUp = new Date();
+			this.speed *= GAME_BALL_SPEED_INCREASE;
+		}
 	}
 
 	public update(ball: { x: number, y: number, speed: number, direction: number } | null) {
-		if (ball === null)
+		if (ball === null || ball === undefined)
 			return ;
 
 		this.x = ball.x;
@@ -48,9 +53,9 @@ export default class GameBall {
 		const ratio: number = 100 / (GAME_PLAYER_HEIGHT / 2);
 		const num: number = Math.round(impact * ratio / 10);
 		if (player.slot === 1)
-			this.direction = num * 8;
+			this.direction = 180 + num * 8
 		else
-			this.direction = 180 + num * 8;
+			this.direction = num * 8;
 	}
 
 	public draw(ctx: CanvasRenderingContext2D) {

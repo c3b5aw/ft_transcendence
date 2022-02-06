@@ -9,6 +9,8 @@ export class GameBall {
 	public speed: number;
 	public direction: number;
 
+	private lastSpeedUp: Date = new Date(0);
+
 	constructor() {
 		this.reset();
 		
@@ -33,7 +35,10 @@ export class GameBall {
 	}
 
 	public speedUp() {
-		this.speed *= GAME_BALL_SPEED_INCREASE;
+		if (this.lastSpeedUp.getTime() + 2000 > new Date().getTime()) {
+			this.lastSpeedUp = new Date();
+			this.speed *= GAME_BALL_SPEED_INCREASE;
+		}
 	}
 
 	public changeDirection(player: GamePlayer) {
@@ -43,8 +48,8 @@ export class GameBall {
 		const ratio: number = 100 / (GAME_PLAYER_HEIGHT / 2);
 		const num: number = Math.round(impact * ratio / 10);
 		if (player.slot === 1)
-			this.direction = num * 8;
-		else
 			this.direction = 180 + num * 8;
+		else
+			this.direction = num * 8;
 	}
 }

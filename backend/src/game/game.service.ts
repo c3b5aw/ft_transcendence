@@ -65,9 +65,14 @@ export class GameService {
 		if (!game)
 			return;
 
-		if (game.isPlayer(client.user.id))
+		if (game.isPlayer(client.user.id)) {
 			game.requestPause(client.user);
-		else
+	
+			const player = game.players.find(player => player.id === client.user.id);
+			if (player && player !== undefined) {
+				game.players[player.slot].ingame = false;
+			}
+		} else
 			game.spectatorLeave(client.user);
 	}
 
@@ -84,8 +89,7 @@ export class GameService {
 	*/
 
 	private async startGame(match: Match) {
-		const game: Game = new Game(match.id, match.hash, this.server.to('#GAME-' + match.hash));
-		global.games[match.hash] = game;
+		global.games[match.hash] = new Game(match, this.server);
 		this.logger.log('Game started: ' + match.hash);
 	}
 
@@ -99,12 +103,20 @@ export class GameService {
 		let match: Match = await this.matchsService.findOneById(game.id);
 		if (!match)
 			return this.logger.error(`Game ended: match not found: ${game.hash}`);
+
 		match.finished = true;
-		match.duration = new Date().getTime() - match.date.getTime();
-		match.player1_score = game.players.find(p => p.id == match.player1).score;
-		match.player2_score = game.players.find(p => p.id == match.player2).score;
+
+		const date_start: number = (new Date(match.date)).getTime();
+		const date_end: number = (new Date()).getTime();
+		match.duration =  Math.ceil( date_end - date_start / (1000 * 60 * 60 * 24));
+
+		match.player1_score = game.players[0].score;
+		match.player2_score = game.players[1].score;
 
 		match = await this.matchsService.update(match);
+
+		// move this to matchs service
+		// add post processing for achievements
 		await this.statsService.updateFromMatch(match);
 
 		await this.usersService.updateStatus(match.player1, UserStatus.OFFLINE);

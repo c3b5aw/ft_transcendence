@@ -25,7 +25,7 @@ const GAME_BALL_SPEED_INCREASE = 1.1;
 const GAME_PLAYER_HEIGHT: number = 100;
 const GAME_PLAYER_WIDTH: number = 5;
 const GAME_PLAYER_START_Y: number = GAME_CANVAS_HEIGHT / 2 - GAME_PLAYER_HEIGHT / 2;
-const GAME_PLAYER_SPEED: number = 10;
+const GAME_PLAYER_SPEED: number = 5;
 
 function getFactors(ctx: CanvasRenderingContext2D) {
 	const widthFactor = ctx.canvas.width / GAME_CANVAS_WIDTH;

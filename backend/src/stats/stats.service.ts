@@ -44,7 +44,9 @@ export class StatsService {
 			}
 		}
 
+		console.log(`save p1`, p1);
 		await this.statsRepository.save(p1);
+		console.log(`save p2`, p2);
 		await this.statsRepository.save(p2);
 	}
 
@@ -55,8 +57,8 @@ export class StatsService {
 	async findOneByID(id: number) : Promise<UserStats> {
 		return this.statsRepository.query(`
 			SELECT *
-			FROM user_stats
-			WHERE user = ${id};
+			FROM users_stats
+			WHERE id = ${id};
 		`);
 	}
 

@@ -74,11 +74,13 @@ export default class Game {
 			return ;
 
 		switch (event.key) {
-			case "ArrowUp" || "w":
+			case "ArrowUp":
+			case "w":
 				this.socket.emit('game::paddle::move::up');
 				break;
 
-			case "ArrowDown" || "s":
+			case "ArrowDown":
+			case "s":
 				this.socket.emit('game::paddle::move::down');
 				break;
 		}
@@ -93,12 +95,14 @@ export default class Game {
 		if (player === undefined) return;
 	
 		switch (event.key) {
-			case "ArrowUp" || "w":
+			case "ArrowUp":
+			case "w":
 				if (player.move === GameMoves.MOVE_UP)
 					this.socket.emit('game::paddle::move::stop');
 				break;
 
-			case "ArrowDown" || "s":
+			case "ArrowDown":
+			case "s":
 				if (player.move === GameMoves.MOVE_DOWN)
 					this.socket.emit('game::paddle::move::stop');
 				break;
@@ -117,27 +121,14 @@ export default class Game {
 	}
 
 	// OBJECTS
-	private onBoard(arg: any) {
-		this.ball.update(arg.ball);
-		
-		this.players.forEach((player: any) => {
-			if (arg.player[0].id === player.id)
-				this.players[player.slot].load(arg.player[0]);
-			else if (arg.player[1].id === player.id)
-				this.players[player.slot].load(arg.player[0]);
-		});
-
-		this.intervalId = setInterval(this.onTick.bind(this), 1000 / GAME_TICKS_PER_SECOND);
-	}
-
 	private updateBall() {
 		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE)
 			this.ball.direction = -this.ball.direction;
 
-		if (this.ball.x < GAME_PLAYER_WIDTH + GAME_BORDER_SIZE)
-			this.collidePlayer(this.players[0]);
-		if (this.ball.x > GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE)
-			this.collidePlayer(this.players[1]);
+		// if (this.ball.x > GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE)
+		// 	this.collidePlayer(this.players[1]);
+		// else if (this.ball.x < GAME_PLAYER_WIDTH + GAME_BORDER_SIZE)
+		// 	this.collidePlayer(this.players[0]);
 
 		this.ball.x += this.ball.speed * Math.cos(this.ball.direction * Math.PI / 180);
 		this.ball.y += this.ball.speed * Math.sin(this.ball.direction * Math.PI / 180);
@@ -145,9 +136,7 @@ export default class Game {
 
 	private collidePlayer(player: GamePlayer) {
 		if (this.ball.y + this.ball.radius < player.y || this.ball.y - this.ball.radius > player.y + GAME_PLAYER_HEIGHT) {
-			this.pause.Pause('Client', 3);
-			this.ball.reset();
-			this.players.forEach(player => { player.reset() });
+			return ;
 		} else {
 			this.ball.changeDirection(player);
 			if (Math.abs(this.ball.speed) < GAME_BALL_MAX_SPEED)
@@ -157,6 +146,25 @@ export default class Game {
 	}
 
 	// GAME EVENTS
+	private onBoard(arg: any) {
+		try {
+			const { ball, players, pause } = arg.game;
+
+			this.ball.update(ball);
+			this.pause.update(pause);
+
+			players.forEach((player: any) => {
+				if (this.players[player.slot].id === player.id)
+					this.players[player.slot].load(player);
+			});
+		} catch (e) {
+			console.log(`Unable to load board: ${e}`);
+			return ;
+		}
+
+		this.intervalId = setInterval(this.onTick.bind(this), 1000 / GAME_TICKS_PER_SECOND);
+	}
+
 	private onJoin(arg: any) {
 		this.joined = true;
 
@@ -169,32 +177,61 @@ export default class Game {
 		player.score = arg.score;
 	}
 
-	private onCollide(arg: any) { this.ball.update(arg.ball) }
+	private onCollide(arg: any) {
+		try {
+			const { ball } = arg;
+			this.ball.update(ball);
+		} catch (e) {
+			console.log(`unpack: on_collide: error: ${e}`);
+		}
+	}
 
 	private onEnd() {
+		this.pause.paused = false;
 		this.ended = true;
 
 		if (this.intervalId !== null)
 			clearInterval(this.intervalId);
+
+		this.redraw();
 	}
 
 	private onPause(arg: any) { this.pause.update(arg) }
 
 	private onReset(arg: any) {
-		this.ball.reset();
-		this.ball.direction = arg.ball.direction;
+		try {
+			const { ball } = arg;
+
+			this.ball.reset();
+			this.ball.direction = ball.direction;
+		} catch (e) {
+			console.log(`unpack: on_reset: error: ${e}`)
+		}
 	}
 
 	private onScore(arg: any) {
-		this.ball.reset();
-		this.players.find(player => player.id === arg.player_id)!.registerScore();
+		try {
+			const { player } = arg;
+
+			this.ball.reset();
+
+			this.players[player.slot].updateScore(player.score);
+		} catch (e) {
+			console.log(`unpack: on_score: error: ${e}`);
+		}
 	}
 
 	private onStart(arg: any) {
-		this.ball.reset();
-		this.ball.direction = arg.ball.direction;
+		try {
+			const { ball, pause } = arg.game;
 
-		this.pause.paused = false;
+			this.ball.reset();
+			this.ball.direction = ball.direction;
+
+			this.pause.update(pause);
+		} catch (e) {
+			console.log(`unpack: on_start: error: ${e}`);
+		}
 	}
 
 	private onMove(arg: any, move: GameMoves) {

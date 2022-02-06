@@ -14,7 +14,7 @@ export default class GamePause {
 	public update(arg: any) {
 		this.paused = arg.paused;
 		this.pausedBy = arg.pausedBy;
-		this.pausedUntil = arg.pausedUntil;
+		this.pausedUntil = new Date(arg.pausedUntil);
 	}
 
 	public draw(ctx: CanvasRenderingContext2D) {
