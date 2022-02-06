@@ -16,8 +16,8 @@ import axios from "axios";
 import MenuIcon from '@mui/icons-material/Menu';
 import { api, apiBlock, apiChannel, apiChat, apiDM, apiGame, apiUsers } from "../../../Services/Api/Api";
 import { useNavigate } from "react-router-dom";
-import MyAchievements from "../Components/MyAchievements";
-import MyRequestFriends from "../Components/MyRequestFriends";
+import MyAchievements from "./MyAchievements";
+import MyRequestFriends from "./MyRequestFriends";
 import { MATCHTYPE } from "../../Game/Services/utils";
 import { matchJoinDuel } from "../../Game/Services/wsGame";
 
