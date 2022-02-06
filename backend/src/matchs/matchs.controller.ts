@@ -39,9 +39,6 @@ export class MatchsController {
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get match details' })
 	async getMatchByHash(@Param('hash') hash: string, @Res() resp: Response) {
-
-		console.log(hash);
-
 		const match: Match = await this.matchsService.findOneByHash( hash );
 		if (!match)
 			return resp.status(404).json({ error: 'match not found' });
