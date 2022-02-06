@@ -81,7 +81,7 @@ const MyAchievements = (props: {user: User, setOpen: Dispatch<SetStateAction<boo
 										<Divider />
 									</div>
 								))}
-							</List> : null
+							</List> : <div style={{background: "#1d3033", color: "grey", textAlign: "center", fontFamily: "Myriad Pro", fontSize: "45px"}}>Aucune achievement</div>
 						}
 					</Paper>
 				</Stack>

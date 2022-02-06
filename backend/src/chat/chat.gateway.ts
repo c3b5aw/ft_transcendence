@@ -61,9 +61,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			return;
 
 		const client_id = await this.chatService.getUserIdBySocket(client);
-		if (!client_id || client_id === null) {
-			return this.chatService.wsFatalUserNotFound(client);			
-		}
+		if (!client_id || client_id === null)
+			return ;
 
 		if (!payload.channel)
 			return client.emit('onError', { error: WsError.CHANNEL_NOT_SPECIFIED });

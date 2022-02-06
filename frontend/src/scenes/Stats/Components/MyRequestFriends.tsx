@@ -103,7 +103,7 @@ const MyRequestFriends = (props: {setOpen: Dispatch<SetStateAction<boolean>>}) =
 						{ friendsPending.length > 0 ?
 							<List>
 								{friendsPending.map(friendPending => (
-									<div key={friendPending.id}>
+									<div key={friendPending.id + 1}>
 										<ListItem
 											component="div"
 											disablePadding
@@ -149,7 +149,7 @@ const MyRequestFriends = (props: {setOpen: Dispatch<SetStateAction<boolean>>}) =
 										<Divider />
 									</div>
 								))}
-							</List> : null
+							</List> : <div style={{background: "#1d3033", color: "grey", textAlign: "center", fontFamily: "Myriad Pro", fontSize: "45px"}}>Aucune demande d'amis</div>
 						}
 					</Paper>
 				</Stack>

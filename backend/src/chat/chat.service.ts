@@ -253,12 +253,7 @@ export class ChatService {
 	}
 
 	async wsFatalUserNotFound(client: Socket) {
-<<<<<<< HEAD
-		// client.emit('onError', { error: WsError.USER_NOT_FOUND });
-		// client.disconnect();
-=======
 		client.emit('onError', { error: WsError.USER_NOT_FOUND });
->>>>>>> origin/backend-fix-4
 	}
 
 	async wsSendMessageToChannel(client_id: number, message: string, channel: Channel) {
