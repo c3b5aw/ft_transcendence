@@ -22,6 +22,17 @@ export class GamePlayer {
 		this.reset();
 	}
 
+	public __repr__() {
+		return {
+			id: this.id,
+			login: this.login,
+			slot: this.slot,
+			y: this.y,
+			move: this.move,
+			score: this.score
+		}
+	}
+
 	public reset() {
 		this.y = GAME_PLAYER_START_Y;
 	}
