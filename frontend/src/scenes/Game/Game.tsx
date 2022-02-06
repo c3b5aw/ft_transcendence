@@ -64,8 +64,8 @@ export default class Game {
 			window.addEventListener('keydown', this.onKeyDown.bind(this));
 		}
 
-		// if (!this.joined)
-		this.socket.emit('game::join', JSON.stringify({ hash: this.hash }));
+		if (!this.joined)
+			this.socket.emit('game::join', JSON.stringify({ hash: this.hash }));
 	}
 
 	// EVENTS
