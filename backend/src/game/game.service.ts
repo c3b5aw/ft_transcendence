@@ -55,6 +55,8 @@ export class GameService {
 			game.playerJoin(client.user);
 		else
 			game.spectatorJoin(client.user);
+
+		game.sendBoard(client);
 	
 		return true;
 	}

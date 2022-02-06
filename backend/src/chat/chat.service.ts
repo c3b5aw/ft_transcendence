@@ -496,7 +496,7 @@ export class ChatService {
 		if (chan.private)
 			chan.password = createHash('md5').update(chan.password).digest('hex');
 
-		await this.channelsRepository.save(chan);
+		chan = await this.channelsRepository.save(chan);
 		await this.addUserToChannel(owner, chan, UserRole.ADMIN);
 
 		await this.sendEventToUser(owner.id, 'channel::onCreate', { channel: { id: chan.id, name: chan.name } });

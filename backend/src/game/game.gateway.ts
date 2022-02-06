@@ -46,8 +46,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (!json)
 			return client.emit('onError', { error: 'invalid body' });
 
-		const { game_hash } = json;
-		this.gameService.connectToGame(client, game_hash);
+		const { hash } = json;
+		this.gameService.connectToGame(client, hash);
 	}
 
 	@SubscribeMessage('game::pause')

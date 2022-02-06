@@ -31,9 +31,9 @@ export class GamePlayer {
 	}
 
 	public update() {
-		if (this.move == GameMoves.MOVE_UP)
+		if (this.move === GameMoves.MOVE_UP)
 			this.y -= GAME_PLAYER_SPEED;
-		else if (this.move == GameMoves.MOVE_DOWN)
+		else if (this.move === GameMoves.MOVE_DOWN)
 			this.y += GAME_PLAYER_SPEED;
 
 		if (this.y < GAME_BORDER_SIZE)

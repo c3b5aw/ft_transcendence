@@ -19,7 +19,7 @@ export class GamePause {
 		this.pausedUntil = new Date(Date.now() + duration * 1000);
 		this.nextUpdate = new Date();
 
-		setTimeout(() => { this.paused = false; }, duration * 1000);
+		setTimeout(this.resume.bind(this), duration * 1000);
 
 		if (user)
 			this.pausedBy = user.login;
@@ -33,8 +33,6 @@ export class GamePause {
 	}
 
 	public resume() {
-		if (!this.paused)
-			return ;
 		this.paused = false;
 		this.pausedBy = null;
 		this.pausedUntil = new Date(0);

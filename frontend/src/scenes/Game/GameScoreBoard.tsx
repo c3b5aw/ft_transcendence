@@ -1,28 +1,29 @@
 import { Grid, Typography, Paper, Avatar } from '@mui/material';
 
-function GameAvatar() {
+function GameAvatar(props: { position: string }) {
 	return (
-		<Grid item>
-			<Avatar src="/api/users/sbeaujar/avatar" />
+		<Grid item display={{ xs: 'none', sm: 'flex' }}>
+			<Avatar id={ `gamePlayerAvatar` + props.position }
+				src="https://better-default-discord.netlify.app/Icons/Pastel-Blue.png"
+			/>
 		</Grid>
 	)
 }
 
-function GamePlayer(props: any) {
+function GamePlayer(props: { position: string }) {
 	return (
 		<Grid container 
 			direction="row" justifyContent="flex-start" alignItems="center"
 			spacing={ 3 }
 		>
 			<Grid item />
-			{ props.position === "left" && <GameAvatar /> }
-			{ /* ToDo: Breakpoint do not show player username */ }
+			{ props.position === "Left" && <GameAvatar position={ props.position }/> }
 			<Grid item>
-				<Typography variant="h5">
-					Player 1
+				<Typography variant="h5" id={ `gamePlayer` + props.position }>
+					...
 				</Typography>
 			</Grid>
-			{ props.position === "right" && <GameAvatar /> }
+			{ props.position === "Right" && <GameAvatar position={ props.position }/> }
 			<Grid item />
 		</Grid>
 	)
@@ -35,8 +36,8 @@ function GameScores() {
 			spacing={ 3 }
 		>
 			<Grid item>
-				<Typography variant="h5">
-					1
+				<Typography variant="h5" id="gamePlayerScoreLeft">
+					0
 				</Typography>
 			</Grid>
 			<Grid item>
@@ -45,7 +46,7 @@ function GameScores() {
 				</Typography>
 			</Grid>
 			<Grid item>
-				<Typography variant="h5">
+				<Typography variant="h5" id="gamePlayerScoreRight">
 					0
 				</Typography>
 			</Grid>
@@ -63,13 +64,13 @@ export default function GameScoreBoard() {
 				justifyContent="space-between" alignItems="center"
 			>
 				<Grid item>
-					<GamePlayer position="left" />
+					<GamePlayer position="Left" />
 				</Grid>
 				<Grid item>
 					<GameScores />
 				</Grid>
 				<Grid item>
-					<GamePlayer position="right" />
+					<GamePlayer position="Right" />
 				</Grid>
 			</Grid>
 		</Paper>

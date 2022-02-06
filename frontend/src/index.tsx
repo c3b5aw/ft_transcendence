@@ -20,8 +20,10 @@ import { ROLE } from './Services/Api/Role';
 import { SnackbarProvider } from 'notistack';
 import { socket, SocketContext } from './Services/ws/utils';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
+
 import MenuGame from './scenes/Game/Components/MenuGame';
-import Game from './scenes/Game/Game';
+import GameBoard from './scenes/Game/GameBoard';
+
 import RoomsView from './scenes/Game/Components/RoomsView';
 import { makeStyles } from '@mui/styles';
 
@@ -104,7 +106,7 @@ function ManageRouter() {
 						path={pageGameHash}
 						element={
 							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-								<Game />
+								<GameBoard />
 							</PrivateRoute>
 						}
 					/>
