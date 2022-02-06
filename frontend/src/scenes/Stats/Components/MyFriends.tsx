@@ -32,27 +32,27 @@ const MyFriends = (props: {user: User, setOpen: Dispatch<SetStateAction<boolean>
 		>
 			<MyAppBarClose setOpen={setOpen}/>
 			<DialogContent sx={{alignItems: "center"}}>
-				<Stack sx={{
-					width: "auto",
-					backgroundColor: 'white',
-					borderRadius: {xs: 1, sm: 2, md: 3, lg: 4},
-				}}
-					direction="column"
-				>
-					<Box sx={{backgroundColor: "green", borderTopLeftRadius: 3, borderTopRightRadius: 3}}>
-						<Typography
-							variant="h5"
-							style={{fontFamily: "Myriad Pro", color:'white', margin: "1%"}}
-						>
-							Amis
-						</Typography>
-					</Box>
-					<Divider />
-					<Paper
-						style={{minHeight: 1, minWidth: 0.9, overflow: 'auto'}}
-						elevation={0}
+				{friends.length > 0 ?
+					<Stack sx={{
+						width: "auto",
+						backgroundColor: 'white',
+						borderRadius: {xs: 1, sm: 2, md: 3, lg: 4},
+					}}
+						direction="column"
 					>
-						{ friends.length > 0 ?
+						<Box sx={{backgroundColor: "green", borderTopLeftRadius: 3, borderTopRightRadius: 3}}>
+							<Typography
+								variant="h5"
+								style={{fontFamily: "Myriad Pro", color:'white', margin: "1%"}}
+							>
+								Amis
+							</Typography>
+						</Box>
+						<Divider />
+						<Paper
+							style={{minHeight: 1, minWidth: 0.9, overflow: 'auto'}}
+							elevation={0}
+						>
 							<List>
 								{friends.map(friend => (
 									<div key={friend.id}>
@@ -82,10 +82,10 @@ const MyFriends = (props: {user: User, setOpen: Dispatch<SetStateAction<boolean>
 										<Divider />
 									</div>
 								))}
-							</List> : <div style={{background: "#1d3033", color: "grey", textAlign: "center", fontFamily: "Myriad Pro", fontSize: "45px"}}>Aucun ami</div>
-						}
-					</Paper>
-				</Stack>
+							</List>
+						</Paper>
+					</Stack> : <Typography variant="h3" style={{fontFamily: "Myriad Pro", color: "grey", textAlign: "center"}}>Aucun ami</Typography>
+				}
 			</DialogContent>
 		</Dialog>
 	);

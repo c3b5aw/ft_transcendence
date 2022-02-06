@@ -1,4 +1,4 @@
-import { AppBar, Button, IconButton, Toolbar } from "@mui/material";
+import { AppBar, IconButton, Toolbar } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
 function MyAppBarClose(props: {setOpen: Function}) {
@@ -19,9 +19,6 @@ function MyAppBarClose(props: {setOpen: Function}) {
 				>
 					<CloseIcon />
 				</IconButton>
-				<Button autoFocus color="inherit" onClick={handleClose}>
-					Close
-				</Button>
 			</Toolbar>
 		</AppBar>
 	);

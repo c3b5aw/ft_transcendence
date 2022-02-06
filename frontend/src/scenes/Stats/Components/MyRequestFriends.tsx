@@ -80,27 +80,26 @@ const MyRequestFriends = (props: {setOpen: Dispatch<SetStateAction<boolean>>}) =
 		>
 			<MyAppBarClose setOpen={setOpen}/>
 			<DialogContent sx={{alignItems: "center"}}>
-				<Stack sx={{
-					width: "auto",
-					backgroundColor: 'white',
-					borderRadius: {xs: 1, sm: 2, md: 3, lg: 4},
-				}}
-					direction="column"
-				>
-					<Box sx={{backgroundColor: "orange", borderTopLeftRadius: 3, borderTopRightRadius: 3}}>
-						<Typography
-							variant="h5"
-							style={{fontFamily: "Myriad Pro", color:'black', margin: "1%"}}
-						>
-							Demandes d'amis
-						</Typography>
-					</Box>
-					<Divider />
-					<Paper
-						style={{minHeight: 1, minWidth: 0.9, overflow: 'auto'}}
-						elevation={0}
+				{friendsPending.length > 0 ?
+					<Stack sx={{
+						width: "auto",
+						borderRadius: {xs: 1, sm: 2, md: 3, lg: 4},
+					}}
+						direction="column"
 					>
-						{ friendsPending.length > 0 ?
+						<Box sx={{backgroundColor: "orange", borderTopLeftRadius: 3, borderTopRightRadius: 3}}>
+							<Typography
+								variant="h5"
+								style={{fontFamily: "Myriad Pro", color:'black', margin: "1%"}}
+							>
+								Demandes d'amis
+							</Typography>
+						</Box>
+						<Divider />
+						<Paper
+							style={{minHeight: 1, minWidth: 0.9, overflow: 'auto'}}
+							elevation={0}
+						>
 							<List>
 								{friendsPending.map(friendPending => (
 									<div key={friendPending.id + 1}>
@@ -149,10 +148,10 @@ const MyRequestFriends = (props: {setOpen: Dispatch<SetStateAction<boolean>>}) =
 										<Divider />
 									</div>
 								))}
-							</List> : <div style={{background: "#1d3033", color: "grey", textAlign: "center", fontFamily: "Myriad Pro", fontSize: "45px"}}>Aucune demande d'amis</div>
-						}
-					</Paper>
-				</Stack>
+							</List>
+						</Paper>
+					</Stack> : <Typography variant="h3" style={{fontFamily: "Myriad Pro", color: "grey", textAlign: "center"}}>Aucune demande d'amis</Typography>
+				}
 			</DialogContent>
 		</Dialog>
 	);

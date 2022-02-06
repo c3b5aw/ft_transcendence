@@ -218,7 +218,7 @@ function Chat() {
 			<MyFooter me={me} currentPage={PAGE.CHAT}/>
 			<Stack direction="row" sx={{
 				flexDirection: "row",
-				height: 0.93,
+				height: 0.90,
 				justifyCotent: "space-between"}}
 			>
 				<Stack sx={{
@@ -228,7 +228,7 @@ function Chat() {
 				>
 					<Stack
 						direction="row"
-						sx={{width: 1, height: 0.075}}
+						sx={{width: 1, minHeight: 0.1}}
 						justifyContent={{xs: "center", sm: "flex-start"}}
 					>
 						<Stack
