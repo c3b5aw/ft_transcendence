@@ -169,20 +169,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 					</Stack>
 				</DialogContent>
 				<DialogActions sx={{backgroundColor: "#1d3033"}}>
-					<Button sx={{
-						border: "4px solid black",
-						borderRadius: "15px",
-						color: "black",
-						fontFamily: "Myriad Pro",
-						padding: "15px",
-						backgroundColor: "white",
-						fontSize: "15px",
-						'&:hover': {
-							backgroundColor: '#D5D5D5',
-							color: '#000000',
-						},
-					}}
-					onClick={handleClose}>OK</Button>
+					<Button variant="contained" color="info" onClick={handleClose}>OK</Button>
 				</DialogActions>
 				</Dialog>
 		</div>

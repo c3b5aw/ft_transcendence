@@ -93,69 +93,40 @@ function Chat() {
 		setMessageTmp("");
 	}
 
-	/*
-	** This function will be used when the user try to change channel and
-	** to close the modal after join or create a new channel
-	*/
 	useEffect(() => {
 		socket.on("channel::onJoin", (data) => {
 			setOpenJoin(false);
 		})
-	}, [])
-
-	useEffect(() => {
 		socket.on("channel::onMessage", (data) => {
 			setUploadMessagesChannel(data)
 		})
-	}, [])
-
-	useEffect(() => {
 		socket.on("channel::onMembersReload", (data) => {
 			setUploadUsersChannel(data)
 		})
-	}, [])
-
-	/*
-	** Here, we reload all channels if a data is not specified
-	** Otherwise, the current user join the channel (name_channel) -> for example
-	** if you create or join a new channel, we reload the channels list
-	*/
-	useEffect(() => {
+		socket.on("channel::onCreate", (data) => {
+			setNameChannel(data.channel.name);
+			channelJoin(data.channel.name, "");
+		})
 		socket.on("channel::onListReload", (data) => {
 			setUploadChannels(data);
 		})
-	}, [])
-
-	/*
-	** This function is called when users roles change
-	*/
-	useEffect(() => {
 		socket.on("channel::onRoleUpdate", (data) => {
 			setUploadUsersChannel(data);
 		})
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
-
-	/*
-	** If a user is kicked of a channel, we reload all channels and reinit the interface chat
-	*/
-	useEffect(() => {
 		socket.on("channel::onKick", (data) => {
 			setUploadChannels(data)
 			reinit();
 		})
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
-	/*
-	** RELOAD LIST OF CHANNELS
-	*/
 	useEffect(() => {
 		const fetchChannels = async () => {
 			try {
 				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
-				setChannels(response_channels_joined.data.sort(function(c1: any) {
-					if (c1.private === true)
+				setChannels(response_channels_joined.data.sort(function(c1: any, c2: any) {
+					if (c1.tunnel && !c2.tunnel)
+						return (-1);
+					if (c1.private && !c2.private)
 						return (-1);
 					return (1);
 				}));

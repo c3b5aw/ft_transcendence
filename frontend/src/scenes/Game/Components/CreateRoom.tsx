@@ -3,18 +3,18 @@ import React from "react";
 import { Dispatch, SetStateAction, useState } from "react";
 import MySearchBarChat from "../../Chat/Components/MySearchBarChat";
 import CloseIcon from '@mui/icons-material/Close';
-import useFriends from "../../Chat/Services/Hooks/useFriends";
 import { ISearchBar, User } from "../../../Services/Interface/Interface";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import { MATCHTYPE } from "../Services/utils";
 import { matchJoinDuel, matchJoinNormal } from "../Services/wsGame";
 import { useSnackbar } from 'notistack'
+import useMeFriends from "../../Chat/Services/Hooks/useMeFriends";
 
 function CreateRoom(props: {me: User, setOpen: Dispatch<SetStateAction<boolean>>}) {
 	const { me, setOpen } = props;
 	const [isDuel, setIsDuel] = useState<boolean>(false);
 	const [friend, setFriend] = useState<User>();
-	const friends = useFriends();
+	const friends = useMeFriends();
 	const [nameRoom, setNameRoom] = useState<string>("");
 	const { enqueueSnackbar } = useSnackbar();
 

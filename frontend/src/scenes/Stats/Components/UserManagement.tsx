@@ -8,6 +8,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import PeopleIcon from '@mui/icons-material/People';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import useMe from "../../../Services/Hooks/useMe";
 import { Friend, User, USER_STATUS } from "../../../Services/Interface/Interface";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -20,6 +21,7 @@ import MyAchievements from "./MyAchievements";
 import MyRequestFriends from "./MyRequestFriends";
 import { MATCHTYPE } from "../../Game/Services/utils";
 import { matchJoinDuel } from "../../Game/Services/wsGame";
+import MyFriends from "./MyFriends";
 
 function UserManagement(props: {user: User}) {
 	const { user} = props;
@@ -28,6 +30,7 @@ function UserManagement(props: {user: User}) {
 	const navigate = useNavigate();
 	const [openUserManagement, setOpenUserManagement] = useState<boolean>(false);
 	const [openAchievements, setOpenAchievements] = useState<boolean>(false);
+	const [openListFriends, setOpenListFriends] = useState<boolean>(false);
 	const [openDemandeAmis, setOpenDemandeAmis] = useState<boolean>(false);
 
 	const [friends, setFriends] = useState<Friend[]>([]);
@@ -241,13 +244,22 @@ function UserManagement(props: {user: User}) {
 					</IconButton>
 					<p>Achievements</p>
 				</MenuItem>
+				<MenuItem onClick={() => {
+						setOpenListFriends(true);
+						handleClose();
+					}}>
+					<IconButton>
+						<PeopleIcon />
+					</IconButton>
+					<p>Amis</p>
+				</MenuItem>
 				{user.login === me.login ?
 					<MenuItem onClick={() => {
 							setOpenDemandeAmis(true)
 							handleClose();
 						}}>
 						<IconButton>
-							<PeopleIcon />
+							<GroupAddIcon />
 						</IconButton>
 						<p>Demandes d'amis</p>
 					</MenuItem> : null}
@@ -310,7 +322,8 @@ function UserManagement(props: {user: User}) {
 							<RemoveCircleOutlineIcon />
 						</IconButton>
 						<p>Bloquer</p>
-					</MenuItem> :
+					</MenuItem> : null}
+				{user.login !== me.login ?
 					<MenuItem onClick={() => {
 							handleUnBlockUser(user.login);
 							handleClose();
@@ -319,10 +332,10 @@ function UserManagement(props: {user: User}) {
 							<AddCircleOutlineIcon />
 						</IconButton>
 						<p>Débloquer</p>
-					</MenuItem>
-				}
+					</MenuItem> : null}
 			</Menu> : null}
 			{openAchievements ? <MyAchievements user={user} setOpen={setOpenAchievements}/> : null}
+			{openListFriends ? <MyFriends user={user} setOpen={setOpenListFriends}/> : null}
 			{openDemandeAmis ? <MyRequestFriends setOpen={setOpenDemandeAmis}/> : null}
 		</Stack>
 	);
