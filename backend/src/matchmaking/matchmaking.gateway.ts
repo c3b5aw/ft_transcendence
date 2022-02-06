@@ -46,8 +46,11 @@ export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconn
 		if (!json)
 			return client.emit('onError', { error: 'invalid body' });
 
-		if (client.user.status === UserStatus.IN_GAME)
-			return client.emit('onError', { error: 'already in game' });
+		const pending_match = await this.matchMakingService.getPendingMatch(client.user.id);
+		if (pending_match) {
+			client.emit('onError', { error: 'already in game' });
+			return client.emit('matchmaking::onMatch', { match: pending_match });
+		}
 
 		const { match_type, room, duel_login } = json;
 		if (!match_type)
