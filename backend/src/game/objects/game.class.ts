@@ -72,8 +72,8 @@ export class Game {
 	}
 
 	private collidePlayer(player: GamePlayer) {
-		if (this.ball.y + this.ball.radius < player.y || this.ball.y - this.ball.radius > player.y + GAME_PLAYER_HEIGHT) {
-			return this.score(player);
+		if (this.ball.y + this.ball.radius < player.y || this.ball.y - this.ball.radius > player.y + GAME_PLAYER_HEIGHT) {			
+			this.score(player.slot === 0 ? this.players[1] : this.players[0]);
 		} else {
 			this.ball.changeDirection(player);
 			if (Math.abs(this.ball.speed) < GAME_BALL_MAX_SPEED)
@@ -90,7 +90,7 @@ export class Game {
 		if (this.players[0] === null)
 			return false;
 
-		return this.players.find(p => p.id === userId) !== null;
+		return this.players.find(p => p.id === userId) !== undefined;
 	}
 
 	/*
@@ -164,7 +164,7 @@ export class Game {
 
 	public playerJoin(user: User) {
 		const player: GamePlayer = this.players.find(p => p.id === user.id);
-		if (player === null) return ;
+		if (!player || player === undefined) return ;
 
 		this.players[player.slot].login = user.login;
 		this.players[player.slot].ingame = true;
@@ -199,16 +199,16 @@ export class Game {
 		if (player.score >= GAME_WIN_SCORE)
 			return this.end();
 		
-		this.reset();
+		this.reset(player.slot);
 	}
 
 	/*
 		STATES
 	*/
 
-	private reset() {
+	private reset(player_slot: number = Math.random()) {
 		this.pause.Pause(null, GAME_PAUSE_ON_SCORE_DURATION);
-		this.ball.reset();
+		this.ball.reset(player_slot);
 		this.players[0].reset();
 		this.players[1].reset();
 

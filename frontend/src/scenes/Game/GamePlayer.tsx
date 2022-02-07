@@ -13,6 +13,8 @@ export default class GamePlayer {
 
 	public score: number;
 
+	public myself: boolean = false;
+
 	constructor(id: number, login: string, slot: number, score: number) {
 		this.id = id;
 		this.login = login;
@@ -38,6 +40,7 @@ export default class GamePlayer {
 
 	public reset() {
 		this.y = GAME_PLAYER_START_Y;
+		this.move = GameMoves.MOVE_STOP;
 	}
 
 	public registerMove(move: GameMoves) {
@@ -92,8 +95,9 @@ export default class GamePlayer {
 	public draw(ctx: CanvasRenderingContext2D) {
 		const { widthFactor, heightFactor } = getFactors(ctx);
 
-		const x = this.slot === 0 ? GAME_BORDER_SIZE : (GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE);
-		ctx.fillStyle = '#fff';
+		const x = this.slot === 0 ? GAME_BORDER_SIZE + 1
+				: (GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE - 1);
+		ctx.fillStyle = this.myself ? '#3498db' : '#fff';
 		ctx.fillRect(x * widthFactor,
 					this.y * heightFactor,
 					GAME_PLAYER_WIDTH * widthFactor,

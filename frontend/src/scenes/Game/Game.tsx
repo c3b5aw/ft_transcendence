@@ -59,6 +59,7 @@ export default class Game {
 		const player: GamePlayer | undefined = this.players.find(
 					player => player.id === this.myself.id);
 		if (player !== undefined) {
+			player.myself = true;
 			window.addEventListener('keyup', this.onKeyUp.bind(this));
 			window.addEventListener('keydown', this.onKeyDown.bind(this));
 		}
@@ -199,7 +200,7 @@ export default class Game {
 			this.ball.reset();
 			this.players.forEach(p => {
 				this.players[p.slot].reset();
-			})
+			});
 
 			this.players[player.slot].updateScore(player.score);
 		} catch (e) {
@@ -276,14 +277,14 @@ export default class Game {
 		ctx.strokeStyle = '#fff';
 		ctx.lineWidth = 1;
 		ctx.strokeRect(GAME_BORDER_SIZE * widthFactor, GAME_BORDER_SIZE * heightFactor,
-						ctx.canvas.width - (GAME_BORDER_SIZE * 2),
-						ctx.canvas.height - (GAME_BORDER_SIZE * 2));
+						ctx.canvas.width - ((GAME_BORDER_SIZE * widthFactor) * 2),
+						ctx.canvas.height - ((GAME_BORDER_SIZE * heightFactor) * 2));
 
 		// MIDDLE BORDER
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = '#fff';
-		ctx.moveTo(ctx.canvas.width / 2, 0 + GAME_BORDER_SIZE);
-		ctx.lineTo(ctx.canvas.width / 2, ctx.canvas.height - GAME_BORDER_SIZE);
+		ctx.moveTo(ctx.canvas.width / 2, GAME_BORDER_SIZE * heightFactor);
+		ctx.lineTo(ctx.canvas.width / 2, ctx.canvas.height - (GAME_BORDER_SIZE * heightFactor));
 		ctx.stroke()
 	}
 
