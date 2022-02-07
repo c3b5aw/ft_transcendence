@@ -36,6 +36,7 @@ export class GamePlayer {
 
 	public reset() {
 		this.y = GAME_PLAYER_START_Y;
+		this.move = GameMoves.MOVE_STOP;
 	}
 
 	public registerMove(move: GameMoves) {

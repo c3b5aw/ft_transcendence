@@ -1,22 +1,24 @@
 import { GAME_BALL_RADIUS, GAME_BALL_START_X, GAME_BALL_START_Y,
+		GAME_BALL_DEFAULT_SPEED,
 		GAME_BALL_SPEED_INCREASE, GAME_PLAYER_HEIGHT,
 		GAME_BALL_MIN_ANGLE } from './game.constants';
 import { GamePlayer } from './game.player.class';
+
+function randomValue(min: number, max: number) {
+	return Math.random() * (max - min) + min;
+}
 
 export class GameBall {
 	public x: number = GAME_BALL_START_X;
 	public y: number = GAME_BALL_START_Y;
 	public radius: number = GAME_BALL_RADIUS;
-	public speed: number;
-	public direction: number;
+	public speed: number = GAME_BALL_DEFAULT_SPEED;
+	public direction: number = 0;
 
 	private lastSpeedUp: Date = new Date(0);
 
 	constructor() {
 		this.reset();
-		
-		this.speed = 0;
-		this.direction = 0;
 	}
 
 	public __repr__() {
@@ -31,12 +33,13 @@ export class GameBall {
 		this.x = GAME_BALL_START_X;
 		this.y = GAME_BALL_START_Y;
 
-		this.speed = 2;
+		this.speed = GAME_BALL_DEFAULT_SPEED;
 
+		const angle: number = randomValue(GAME_BALL_MIN_ANGLE, 180 - GAME_BALL_MIN_ANGLE);
 		if (player_slot === 0)
-			this.direction = Math.random() * 160 + GAME_BALL_MIN_ANGLE;
+			this.direction = angle;
 		else
-			this.direction = -(Math.random() * 160 + GAME_BALL_MIN_ANGLE);
+			this.direction = -angle;
 	}
 
 	public speedUp() {
