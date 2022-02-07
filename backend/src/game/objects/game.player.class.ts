@@ -4,8 +4,10 @@ import { GameMoves } from './moves.enums';
 
 export class GamePlayer {
 	public id: number;
-	public login: string;
+	public login: string = 'Offline';
 	public slot: number;
+
+	public ingame: boolean = false;
 
 	public y: number;
 
@@ -13,13 +15,23 @@ export class GamePlayer {
 
 	public score: number;
 
-	constructor(id: number, login: string, slot: number) {
+	constructor(id: number, slot: number) {
 		this.id = id;
-		this.login = login;
 		this.slot = slot;
 		
 		this.score = 0;
 		this.reset();
+	}
+
+	public __repr__() {
+		return {
+			id: this.id,
+			login: this.login,
+			slot: this.slot,
+			y: this.y,
+			move: this.move,
+			score: this.score
+		}
 	}
 
 	public reset() {

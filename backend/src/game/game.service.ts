@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { ConsoleLogger, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Server } from 'socket.io';
 
@@ -42,22 +42,21 @@ export class GameService {
 		CONNECTION
 	*/
 
-	public connectToGame(client: WSClient, gameHash: string){
-		const game: Game = this.findOnGoinMatchByHash(gameHash);
-		if (!game)
+	public connectToGame(client: WSClient, hash: string){
+		const game: Game = this.findOnGoingMatchByHash(hash);
+		if (!game || game === undefined)
 			return client.emit('onError', { error: 'game not found' });
 
-		// ToDo: Check if user has joined a room already.
-		console.log(`game.service.ts: 'connectToGame': client.rooms: `, client.rooms);
+		const room_name = `#GAME-${ hash }`;
+		if (!client.rooms.has(room_name)) {
+			client.join('#GAME-' + hash);
 
-		client.join('#GAME-' + gameHash);
-		if (game.isPlayer(client.user.id))
-			game.playerJoin(client.user);
-		else
-			game.spectatorJoin(client.user);
-
+			if (game.isPlayer(client.user.id))
+				game.playerJoin(client.user);
+			else
+				game.spectatorJoin(client.user);
+		}
 		game.sendBoard(client);
-	
 		return true;
 	}
 
@@ -66,9 +65,14 @@ export class GameService {
 		if (!game)
 			return;
 
-		if (game.isPlayer(client.user.id))
+		if (game.isPlayer(client.user.id)) {
 			game.requestPause(client.user);
-		else
+	
+			const player = game.players.find(player => player.id === client.user.id);
+			if (player && player !== undefined) {
+				game.players[player.slot].ingame = false;
+			}
+		} else
 			game.spectatorLeave(client.user);
 	}
 
@@ -85,8 +89,7 @@ export class GameService {
 	*/
 
 	private async startGame(match: Match) {
-		const game: Game = new Game(match.id, match.hash, this.server.to('#GAME-' + match.hash));
-		global.games[match.hash] = game;
+		global.games[match.hash] = new Game(match, this.server);
 		this.logger.log('Game started: ' + match.hash);
 	}
 
@@ -100,12 +103,20 @@ export class GameService {
 		let match: Match = await this.matchsService.findOneById(game.id);
 		if (!match)
 			return this.logger.error(`Game ended: match not found: ${game.hash}`);
+
 		match.finished = true;
-		match.duration = new Date().getTime() - match.date.getTime();
-		match.player1_score = game.players.find(p => p.id == match.player1).score;
-		match.player2_score = game.players.find(p => p.id == match.player2).score;
+
+		const date_start = (new Date(match.date)).getTime();
+		const date_end = (new Date()).getTime();
+		match.duration =  Math.ceil( (date_end - date_start) / (1000 * 60 * 60 * 24));
+
+		match.player1_score = game.players[0].score;
+		match.player2_score = game.players[1].score;
 
 		match = await this.matchsService.update(match);
+
+		// move this to matchs service
+		// add post processing for achievements
 		await this.statsService.updateFromMatch(match);
 
 		await this.usersService.updateStatus(match.player1, UserStatus.OFFLINE);
@@ -144,7 +155,7 @@ export class GameService {
 		FINDER
 	*/
 
-	private findOnGoinMatchByHash(gameHash: string): Game {
+	private findOnGoingMatchByHash(gameHash: string): Game {
 		return global.games[gameHash];
 	}
 
@@ -160,7 +171,7 @@ export class GameService {
 		let match: Match = this.findOnGoingMatch(client);
 		if (!match) {
 			match = await this.matchsService.findPendingMatch(client.user.id);
-			if (match)
+			if (match && !global.games[match.hash])				
 				await this.startGame(match);
 		}
 		if (!match) {

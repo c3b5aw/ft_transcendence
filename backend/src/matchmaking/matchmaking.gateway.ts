@@ -11,6 +11,7 @@ import { MatchmakingService } from './matchmaking.service';
 import { User } from 'src/users/entities/user.entity';
 import { MatchType } from 'src/matchs/entities/types.enum';
 import { WS_parse } from 'src/ws/parse';
+import { UserStatus } from 'src/users/entities/status.enum';
 
 @UseGuards(WsGuard)
 @WebSocketGateway({ namespace: '/matchmaking', cors: { origin: '*'} })
@@ -45,8 +46,13 @@ export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconn
 		if (!json)
 			return client.emit('onError', { error: 'invalid body' });
 
-		const { match_type, room, duel_login } = json;
+		const pending_match = await this.matchMakingService.getPendingMatch(client.user.id);
+		if (pending_match) {
+			client.emit('onError', { error: 'already in game' });
+			return client.emit('matchmaking::onMatch', { match: pending_match });
+		}
 
+		const { match_type, room, duel_login } = json;
 		if (!match_type)
 			return client.emit('onError', `match_type is required`);
 		if (match_type === MatchType.MATCH_NORMAL && !room)

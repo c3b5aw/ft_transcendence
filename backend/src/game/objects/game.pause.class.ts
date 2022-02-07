@@ -2,11 +2,19 @@ import { GAME_MAX_PAUSES } from './game.constants';
 import { User } from 'src/users/entities/user.entity';
 
 export class GamePause {
-	public paused: boolean;
-	public pausedBy: string;
-	public pausedUntil: Date;
-	private pausesLeft: any;
-	public nextUpdate: Date;
+	public paused: boolean = false;
+	public pausedBy: string = "";
+	public pausedUntil: Date = new Date(0);
+	private pausesLeft: any = {};
+	public nextUpdate: Date = new Date(0);
+
+	public __repr__() {
+		return {
+			paused: this.paused,
+			pausedBy: this.pausedBy,
+			pausedUntil: this.pausedUntil.getTime(),
+		}
+	}
 
 	public pausesLefts(userID: number) {
 		if (userID in this.pausesLeft)
@@ -18,8 +26,6 @@ export class GamePause {
 		this.paused = true;
 		this.pausedUntil = new Date(Date.now() + duration * 1000);
 		this.nextUpdate = new Date();
-
-		setTimeout(this.resume.bind(this), duration * 1000);
 
 		if (user)
 			this.pausedBy = user.login;

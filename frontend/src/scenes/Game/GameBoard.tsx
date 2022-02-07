@@ -43,7 +43,7 @@ export default function GameBoard() {
 			else
 				game.current = new Game(gameSocket.current, res.data[0], me);
 		});
-	}, [ hash, navigate, gameSocket ]);
+	}, [ hash, navigate, gameSocket, me ]);
 
 	const onRandomBackground = () => {
 		setRandomBackground(!randomBackground);

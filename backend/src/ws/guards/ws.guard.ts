@@ -63,9 +63,6 @@ export class WsGuard implements CanActivate {
 		if (!(!user.two_factor_auth || payload.is_2fa_valid))
 			throw new Error('2fa is required');
 
-		if (user.status === UserStatus.IN_GAME)
-			throw new Error('user already in-game');
-
 		return user;
 	}
 

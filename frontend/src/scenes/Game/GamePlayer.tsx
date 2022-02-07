@@ -21,13 +21,19 @@ export default class GamePlayer {
 
 		this.reset();
 
-		this.load();
-	}
-
-	private load() {
-		this.updateScore();
+		this.updateScore(this.score);
 		this.updateAvatar();
 		this.updateLogin();
+	}
+
+	public load(arg: any) {
+		this.id = arg.id;
+		this.login = arg.login;
+		this.y = arg.y;
+		this.move = arg.move;
+		this.score = arg.score;
+
+		this.updateScore(this.score);
 	}
 
 	public reset() {
@@ -36,11 +42,6 @@ export default class GamePlayer {
 
 	public registerMove(move: GameMoves) {
 		this.move = move;
-	}
-
-	public registerScore() {
-		this.score++;
-		return this.updateScore();
 	}
 
 	private updateLogin() {
@@ -53,7 +54,8 @@ export default class GamePlayer {
 		element!.innerText = this.login;
 	}
 
-	public updateScore() {
+	public updateScore(score: number) {
+		this.score = score;
 		if (this.slot === 0)
 			document.getElementById('gamePlayerScoreLeft')!.innerText = this.score.toString();
 		else if (this.slot === 1)
@@ -80,19 +82,19 @@ export default class GamePlayer {
 		else if (this.move === GameMoves.MOVE_DOWN)
 			this.y += GAME_PLAYER_SPEED;
 
-		if (this.y < GAME_BORDER_SIZE)
+		if (this.y <= GAME_BORDER_SIZE)
 			this.y = GAME_BORDER_SIZE;
 
-		if (this.y + GAME_PLAYER_HEIGHT > GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE)
+		if (this.y + GAME_PLAYER_HEIGHT >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE)
 			this.y = GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE - GAME_PLAYER_HEIGHT;
 	}
 
 	public draw(ctx: CanvasRenderingContext2D) {
 		const { widthFactor, heightFactor } = getFactors(ctx);
 
-		const x = this.slot === 0 ? GAME_BORDER_SIZE : (GAME_CANVAS_WIDTH * widthFactor) - (GAME_PLAYER_WIDTH * widthFactor) - GAME_BORDER_SIZE;
+		const x = this.slot === 0 ? GAME_BORDER_SIZE : (GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE);
 		ctx.fillStyle = '#fff';
-		ctx.fillRect(x,
+		ctx.fillRect(x * widthFactor,
 					this.y * heightFactor,
 					GAME_PLAYER_WIDTH * widthFactor,
 					GAME_PLAYER_HEIGHT * heightFactor);

@@ -169,4 +169,8 @@ export class MatchmakingService {
 		delete global.mm_clients[user1.user.id];
 		delete global.mm_clients[user2.user.id];
 	}
+
+	async getPendingMatch(userId: number) {
+		return this.matchsService.findPendingMatch(userId);
+	}
 }

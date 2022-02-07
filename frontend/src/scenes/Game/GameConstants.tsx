@@ -3,6 +3,7 @@ const GAME_START_MAX_WAIT: number = 60;
 const GAME_START_DELAY: number = 5;
 const GAME_TICKS_PER_SECOND: number = 60;
 const GAME_WIN_SCORE: number = 10;
+const GAME_PAUSE_INTERVAL = 1000;
 
 // GAME PAUSE
 const GAME_PAUSE_DURATION: number = 30;
@@ -25,7 +26,7 @@ const GAME_BALL_SPEED_INCREASE = 1.1;
 const GAME_PLAYER_HEIGHT: number = 100;
 const GAME_PLAYER_WIDTH: number = 5;
 const GAME_PLAYER_START_Y: number = GAME_CANVAS_HEIGHT / 2 - GAME_PLAYER_HEIGHT / 2;
-const GAME_PLAYER_SPEED: number = 10;
+const GAME_PLAYER_SPEED: number = 5;
 
 function getFactors(ctx: CanvasRenderingContext2D) {
 	const widthFactor = ctx.canvas.width / GAME_CANVAS_WIDTH;
@@ -41,6 +42,7 @@ export {
 	GAME_START_DELAY,
 	GAME_TICKS_PER_SECOND,
 	GAME_WIN_SCORE,
+	GAME_PAUSE_INTERVAL,
 
 	GAME_PAUSE_DURATION,
 	GAME_MAX_PAUSES,
