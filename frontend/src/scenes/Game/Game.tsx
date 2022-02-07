@@ -4,8 +4,7 @@ import GamePlayer from './GamePlayer';
 import GamePause from './GamePause';
 import GameBall from './GameBall';
 
-import { GAME_CANVAS_HEIGHT, GAME_CANVAS_WIDTH,
-	GAME_BORDER_SIZE, GAME_PLAYER_WIDTH, GAME_TICKS_PER_SECOND, getFactors, GAME_PLAYER_HEIGHT, GAME_BALL_MAX_SPEED } from './GameConstants';
+import { GAME_CANVAS_HEIGHT, GAME_BORDER_SIZE, GAME_TICKS_PER_SECOND, getFactors } from './GameConstants';
 import { GameMoves } from "./GameMoves";
 
 export default class Game {
@@ -110,6 +109,8 @@ export default class Game {
 	}
 
 	public onTick() {
+		console.log(this.ball.speed);
+
 		if (this.ended) return ;
 
 		if (!this.pause.paused) {
@@ -123,26 +124,10 @@ export default class Game {
 	// OBJECTS
 	private updateBall() {
 		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE)
-			this.ball.direction = -this.ball.direction;
+			this.ball.direction = -(this.ball.direction + 180);
 
-		// if (this.ball.x > GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE)
-		// 	this.collidePlayer(this.players[1]);
-		// else if (this.ball.x < GAME_PLAYER_WIDTH + GAME_BORDER_SIZE)
-		// 	this.collidePlayer(this.players[0]);
-
-		this.ball.x += this.ball.speed * Math.cos(this.ball.direction * Math.PI / 180);
-		this.ball.y += this.ball.speed * Math.sin(this.ball.direction * Math.PI / 180);
-	}
-
-	private collidePlayer(player: GamePlayer) {
-		if (this.ball.y + this.ball.radius < player.y || this.ball.y - this.ball.radius > player.y + GAME_PLAYER_HEIGHT) {
-			return ;
-		} else {
-			this.ball.changeDirection(player);
-			if (Math.abs(this.ball.speed) < GAME_BALL_MAX_SPEED)
-				this.ball.speedUp();
-		}
-
+		this.ball.x += this.ball.speed * Math.sin(this.ball.direction * Math.PI / 180);
+		this.ball.y -= this.ball.speed * Math.cos(this.ball.direction * Math.PI / 180);
 	}
 
 	// GAME EVENTS
@@ -214,6 +199,9 @@ export default class Game {
 			const { player } = arg;
 
 			this.ball.reset();
+			this.players.forEach(p => {
+				this.players[p.slot].reset();
+			})
 
 			this.players[player.slot].updateScore(player.score);
 		} catch (e) {
@@ -237,19 +225,25 @@ export default class Game {
 	private onMove(arg: any, move: GameMoves) {
 		if (this.ended) return ;
 
-		this.players.find(player => player.id === arg.id)!.move = move;
+		const player: GamePlayer | undefined = this.players.find(
+					player => player.id === arg.id);
+		if (!player || player === undefined)
+			return ;
+
+		this.players[player.slot].move = move;
+		this.players[player.slot].y = arg.y;
 	}
 
 	private onMoveUp(arg: any) {
-		return this.onMove(arg, GameMoves.MOVE_UP)
+		return this.onMove(arg, GameMoves.MOVE_UP);
 	}
 
 	private onMoveDown(arg: any) {
-		return this.onMove(arg, GameMoves.MOVE_DOWN)
+		return this.onMove(arg, GameMoves.MOVE_DOWN);
 	}
 
 	private onMoveStop(arg: any) {
-		return this.onMove(arg, GameMoves.MOVE_STOP)
+		return this.onMove(arg, GameMoves.MOVE_STOP);
 	}
 
 	// DRAWER
@@ -283,10 +277,12 @@ export default class Game {
 	}
 
 	private drawBorders(ctx: CanvasRenderingContext2D) {
+		const { widthFactor, heightFactor } = getFactors(ctx);
+
 		// SIDE BORDERS
 		ctx.strokeStyle = '#fff';
 		ctx.lineWidth = 1;
-		ctx.strokeRect(GAME_BORDER_SIZE, GAME_BORDER_SIZE,
+		ctx.strokeRect(GAME_BORDER_SIZE * widthFactor, GAME_BORDER_SIZE * heightFactor,
 						ctx.canvas.width - (GAME_BORDER_SIZE * 2),
 						ctx.canvas.height - (GAME_BORDER_SIZE * 2));
 

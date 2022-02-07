@@ -43,11 +43,11 @@ export class StatsService {
 				p1.elo -= difference - 3;
 			}
 		}
-
-		console.log(`save p1`, p1);
+		console.log(`update p1:`, p1);
 		await this.statsRepository.save(p1);
-		console.log(`save p2`, p2);
+		console.log(`update p2:`, p2);
 		await this.statsRepository.save(p2);
+
 	}
 
 	async errorPlayerNotFoundForMatch(match: Match, player: number) {
@@ -55,11 +55,12 @@ export class StatsService {
 	}
 
 	async findOneByID(id: number) : Promise<UserStats> {
-		return this.statsRepository.query(`
+		const stats : UserStats[] = await this.statsRepository.query(`
 			SELECT *
 			FROM users_stats
 			WHERE id = ${id};
 		`);
+		return stats.length > 0 ? stats[0] : null;
 	}
 
 	async createUserStats(userID: number) : Promise<UserStats> {

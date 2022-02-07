@@ -38,8 +38,9 @@ export class Game {
 	}
 
 	private onTick() {
-		if (this.ended)
-			return ;
+		console.log(this.ball.speed)
+
+		if (this.ended) return ;
 
 		if (this.pause.paused) {
 			const now = new Date().getTime();
@@ -61,15 +62,15 @@ export class Game {
 
 	private updateBall() {
 		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE)
-			this.ball.direction = -this.ball.direction;
+			this.ball.direction = -(this.ball.direction + 180);
 
 		if (this.ball.x > GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE)
 			this.collidePlayer(this.players[1]);
 		else if (this.ball.x < GAME_PLAYER_WIDTH + GAME_BORDER_SIZE)
 			this.collidePlayer(this.players[0]);
 
-		this.ball.x += this.ball.speed * Math.cos(this.ball.direction * Math.PI / 180);
-		this.ball.y += this.ball.speed * Math.sin(this.ball.direction * Math.PI / 180);
+		this.ball.x += this.ball.speed * Math.sin(this.ball.direction * Math.PI / 180);
+		this.ball.y -= this.ball.speed * Math.cos(this.ball.direction * Math.PI / 180);
 	}
 
 	private collidePlayer(player: GamePlayer) {

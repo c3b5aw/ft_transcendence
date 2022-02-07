@@ -82,10 +82,10 @@ export default class GamePlayer {
 		else if (this.move === GameMoves.MOVE_DOWN)
 			this.y += GAME_PLAYER_SPEED;
 
-		if (this.y < GAME_BORDER_SIZE)
+		if (this.y <= GAME_BORDER_SIZE)
 			this.y = GAME_BORDER_SIZE;
 
-		if (this.y + GAME_PLAYER_HEIGHT > GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE)
+		if (this.y + GAME_PLAYER_HEIGHT >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE)
 			this.y = GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE - GAME_PLAYER_HEIGHT;
 	}
 
