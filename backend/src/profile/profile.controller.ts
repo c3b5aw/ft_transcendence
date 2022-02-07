@@ -72,7 +72,7 @@ export class ProfileController {
 	@Get('friends/blocked')
 	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
-	@ApiOperation({ summary: 'Get your pending friendship' })
+	@ApiOperation({ summary: 'Get your blocked friendship' })
 	async getMyselfBlockedFriendsRequest(@Req() req: any) : Promise<Friend[]> {
 		return this.friendsService.findAllBlockedById( req.user.id );
 	}
