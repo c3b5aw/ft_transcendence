@@ -1,31 +1,28 @@
-import { Avatar, Box, Button, FormControl, IconButton, Stack, TextField, Typography } from "@mui/material";
-import { SetStateAction, useEffect, useState } from "react";
+import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import useMe from "../../../Services/Hooks/useMe";
-import { styleTextField } from "../../../styles/Styles";
 import MyListChannels from "../Components/Channels/MyListChannels";
 import { Channel, IChannel, IListUser, Message } from "../Services/interface";
-import SendIcon from '@mui/icons-material/Send';
 import MyMessages from "../Components/MyMessages";
 import { PAGE, User } from "../../../Services/Interface/Interface";
 import MyListUser from "../Components/MyListUser";
 import axios from "axios";
 import { api, apiChannel, apiChannels, apiMessages, apiUsers } from "../../../Services/Api/Api";
 import { useSnackbar } from 'notistack'
-import { channelJoin, channelLeave, channelSend } from "../Services/wsChat";
+import { channelJoin, channelLeave } from "../Services/wsChat";
 import { socket } from "../../../Services/ws/utils";
 import MyDialogCreateChannel from "../Components/Channels/MyDialogCreateChannel";
 import JoinChannel from "../Components/Channels/JoinChannel";
 import { ROLE } from "../../../Services/Api/Role";
-import { isMuteSendMessage } from "../Services/utils";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyFooter from "../../../components/MyFooter";
 import MyDialogListUser from "../Components/MyDialogListUser";
 import React from "react";
+import MyBarSendMessage from "../Components/MyBarSendMessage";
+import MyInterfaceMessagesSx from "../Components/MyInterfaceMessageXs";
 
 function Chat() {
 	const me = useMe();
-	const classes = styleTextField();
-	const [messageTmp, setMessageTmp] = useState<string>("");
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [usersChannel, setUsersChannel] = useState<User[]>([]);
 	const [channels, setChannels] = useState<Channel[]>([]);
@@ -35,6 +32,7 @@ function Chat() {
 	const [open, setOpen] = useState<boolean>(false);
 	const [openJoin, setOpenJoin] = useState<boolean>(false);
 	const [openUserChannel, setOpenUserChannel] = useState<boolean>(false);
+	const [openMessageInterface, setOpenMessageInterface] = useState<boolean>(false);
 
 	const [uploadUsersChannel, setUploadUsersChannel] = useState(null)
 	const [uploadMessagesChannel, setUploadMessagesChannel] = useState(null)
@@ -82,15 +80,6 @@ function Chat() {
 		);
 	}
 
-	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
-		setMessageTmp(event.target.value);
-	};
-
-	function handleSendMessage() {
-		channelSend(nameChannel, messageTmp);
-		setMessageTmp("");
-	}
-
 	useEffect(() => {
 		socket.on("channel::onJoin", (data) => {
 			setOpenJoin(false);
@@ -122,9 +111,17 @@ function Chat() {
 			try {
 				const response_channels_joined = await axios.get(`${api}${apiChannels}/joined`)
 				setChannels(response_channels_joined.data.sort(function(c1: any, c2: any) {
+					if (c1.tunnel && c2.tunnel)
+						return (-1);
 					if (c1.tunnel && !c2.tunnel)
 						return (-1);
+					if (!c1.tunnel && c2.tunnel)
+						return (1);
 					if (c1.private && !c2.private)
+						return (-1);
+					if (!c1.private && c2.private)
+						return (1);
+					if (c1.private && c2.private)
 						return (-1);
 					return (1);
 				}));
@@ -218,12 +215,12 @@ function Chat() {
 			<MyFooter me={me} currentPage={PAGE.CHAT}/>
 			<Stack direction="row" sx={{
 				flexDirection: "row",
-				height: 0.90,
+				height: 0.9,
 				justifyCotent: "space-between"}}
 			>
 				<Stack sx={{
 					height: 1,
-					width: {xs: 0.3, sm: 0.3, md: 0.15, lg: 0.15, xl: 0.15},
+					width: {xs: 1, sm: 0.30, md: 0.30, lg: 0.20, xl: 0.20},
 					alignItems: "center"}}
 				>
 					<Stack
@@ -237,21 +234,30 @@ function Chat() {
 						>
 							<Avatar
 								src={`/api/profile/avatar`}
-								sx={{marginLeft: "10px", marginRight: "10px", width: "40px", height: "40px"}}>
+								sx={{
+									marginLeft: "10px",
+									marginRight: "10px",
+									width: "40px",
+									height: "40px"}}
+								>
 							</Avatar>
-							<Box sx={{display: { xs: 'none', sm: 'flex'}}}>
-								<h3 style={{color: "white"}}>{me.login}</h3>
-							</Box>
+							<Typography variant="h5" style={{fontFamily: "Myriad Pro", color: "white"}}>{me.login}</Typography>
 						</Stack>
 					</Stack>
 					<Stack
 						direction="column"
-						sx={{width: 1, height: 0.73}}
+						sx={{width: 1, height: 0.8}}
 					>
-						{me !== undefined ? <MyListChannels myChannel={myChannels} me={me}/> : null}
+						{me !== undefined ?
+							<MyListChannels
+								myChannel={myChannels}
+								me={me}
+								setOpen={setOpenMessageInterface}
+							/> : null
+						}
 					</Stack>
 					<Stack
-						direction={{ xs: 'column', sm: 'column', md: 'column', lg: 'row' }}
+						direction="row"
 						sx={{width: 1, height: 0.125 }}
 						alignItems="center"
 						justifyContent="space-around"
@@ -263,7 +269,8 @@ function Chat() {
 				<Stack
 					direction="column"
 					flexGrow={1}
-					sx={{minWidth: 0.7, maxWidth: 0.7, height: 1}}
+					sx={{minWidth: 0.65, maxWidth: 0.65, height: 1}}
+					display={{xs: "none", sm: "flex"}}
 				>
 					<Stack
 						direction="row"
@@ -298,7 +305,7 @@ function Chat() {
 					</Stack>
 					<Stack
 						direction="row"
-						sx={{width: 1, height: 0.73, backgroundColor: "#304649"}}
+						sx={{width: 1, height: 0.9, backgroundColor: "#304649"}}
 						spacing={2}
 						alignItems="flex-start"
 						justifyContent="space-between"
@@ -316,53 +323,10 @@ function Chat() {
 							</div>
 						}
 					</Stack>
-					<Stack
-						direction="row"
-						sx={{width: 1, height: 0.125, backgroundColor: "#304649"}}
-						spacing={2}
-						alignItems="center"
-						justifyContent="space-between"
-					>
-						<Stack
-							direction="row"
-							sx={{width: 1, marginTop: 3}}
-						>
-							<FormControl sx={{ width: 0.95, marginLeft: 4}}>
-								<TextField
-									disabled={me !== undefined && isMuteSendMessage(usersChannel, me, messageTmp) ? true : false}
-									className={classes.styleTextField}
-									placeholder="Message"
-									variant="outlined"
-									fullWidth
-									maxRows={2}
-									value={messageTmp}
-									onChange={handleTextInputChange}
-									InputProps={{
-										style: {
-											backgroundColor: "#737373",
-											color: "white",
-										}
-									}}
-									onKeyPress= {(e) => {
-										if (e.key === 'Enter') {
-											handleSendMessage();
-										}
-									}}
-								/>
-							</FormControl>
-							<IconButton
-								aria-label="send"
-								size="large"
-								sx={{color: "white"}}
-								onClick={() => handleSendMessage()}
-							>
-								<SendIcon fontSize="large" />
-							</IconButton>
-						</Stack>
-					</Stack>
+					<MyBarSendMessage nameChannel={nameChannel} me={me} usersChannel={usersChannel} />
 				</Stack>
 				<Box
-					display={{xs: "none", sm: "none", md: "flex", lg: "flex", xl: "flex"}}
+					display={{xs: "none", sm: "none", md: "none", lg: "flex", xl: "flex"}}
 					mb={2}
 					flexDirection="column"
 					height="90vh"
@@ -377,6 +341,16 @@ function Chat() {
 				{open ? <MyDialogCreateChannel setOpen={setOpen} /> : null}
 				{openJoin ? <JoinChannel setOpen={setOpenJoin} /> : null}
 				{openUserChannel ? <MyDialogListUser setOpen={setOpenUserChannel} myListUsersChannel={myListUsersChannel}/> : null}
+				{openMessageInterface ?
+					<MyInterfaceMessagesSx
+						setOpen={setOpenMessageInterface}
+						setOpenUser={setOpenUserChannel}
+						me={me}
+						messages={messages}
+						nameChannel={nameChannel}
+						usersChannel={usersChannel}
+					/> : null
+				}
 			</Stack>
 		</Box>
 	);

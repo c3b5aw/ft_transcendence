@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Dialog, DialogContent, Divider, List, ListItem, Paper, Stack, Typography } from "@mui/material";
-import { Friend } from "../../../Services/Interface/Interface";
+import { Friend, PAGE } from "../../../Services/Interface/Interface";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 import axios from "axios";
@@ -78,7 +78,7 @@ const MyRequestFriends = (props: {setOpen: Dispatch<SetStateAction<boolean>>}) =
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-			<MyAppBarClose setOpen={setOpen}/>
+			<MyAppBarClose setOpen={setOpen} name={PAGE.REQUESTED}/>
 			<DialogContent sx={{alignItems: "center"}}>
 				{friendsPending.length > 0 ?
 					<Stack sx={{

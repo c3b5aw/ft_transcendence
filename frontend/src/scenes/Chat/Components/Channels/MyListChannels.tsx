@@ -5,12 +5,12 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Channel, IChannel, ISettingAdmin, ISettingM } from '../../Services/interface';
 import SettingsM from './SettingsMember';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import SettingsAdmin from './SettingsAdmin';
 import { channelJoin } from '../../Services/wsChat';
 
-function MyListChannels(props : {myChannel: IChannel, me: User }) {
-	const { myChannel, me } = props;
+function MyListChannels(props : {myChannel: IChannel, me: User, setOpen: Dispatch<SetStateAction<boolean>> }) {
+	const { myChannel, me, setOpen } = props;
 	const [mySettingsM, setMySettingsM] = useState<ISettingM>();
 	const [mySettingsAdmin, setMySettingsAdmin] = useState<ISettingAdmin>();
 	const [openAdmin, setOpenAdmin] = useState<boolean>(false);
@@ -76,32 +76,33 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 				direction="column"
 				sx={{width: 1, height: 1, boxShadow: 3}}
 			>
-				<Paper style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#1d3033"}}>
+				<Paper elevation={0} style={{minHeight: 1, minWidth: 1, overflow: 'auto', backgroundColor: "#1d3033"}}>
 					{myChannel.channels.length > 0 ?
 					<List>
 						{myChannel.channels.map(channel => (
-							<ListItem key={channel.id} style={{paddingTop: 0, paddingBottom: 0, justifyContent: 'space-between'}}>
+							<ListItem key={channel.id} style={{paddingTop: 5, paddingBottom: 5, justifyContent: 'space-between'}}>
 								<ListItemButton
 									onClick={() => {
+										if (window.innerWidth < 600)
+											setOpen(true);
 										myChannel.setNameChannel(channel.name);
-										channelJoin(channel.name, "")
+										channelJoin(channel.name, "");
 									}}
 									sx={{minWidth: 0.85, maxWidth: 0.85}}	
 								>
 									<Stack
 										sx={{ width: 0.85, height: 1}}
 										alignItems="center"
-										justifyContent={{xs: "center", sm: "flex-start"}}
 										spacing={1}
 										direction="row"
 									>
 										<Tooltip title={`${channel.name}`}>
 											{channel.private ? <LockIcon color="error"/> : <LockOpenIcon color="success"/>}
 										</Tooltip>
-										<Box sx={{display: { xs: 'none', sm: "flex" }, maxWidth: 0.85}}>
+										<Box sx={{maxWidth: 0.85}}>
 											<Typography
 												noWrap
-												variant="subtitle1"
+												variant="h6"
 												style={{fontFamily: "Myriad Pro", color: "white"}}
 											>
 												{channel.name}
@@ -109,9 +110,7 @@ function MyListChannels(props : {myChannel: IChannel, me: User }) {
 										</Box>
 									</Stack>
 								</ListItemButton>
-								<Box sx={{display: { xs: 'none', md: 'none', lg: "flex"}}}>
-									<DisplaySettings channel={channel}/>
-								</Box>
+								<DisplaySettings channel={channel}/>
 							</ListItem>
 						))}
 					</List> : <div style={{color: "grey", textAlign: "center", fontFamily: "Myriad Pro", fontSize: "25px"}}>No channel</div>

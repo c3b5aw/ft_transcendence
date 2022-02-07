@@ -45,7 +45,7 @@ const Stats = () => {
 				sx={{height: 0.1}}
 				direction={{ xs: 'column', sm: 'column', md: 'row', lg: 'row' }}
 			>
-				<Typography variant="h4" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Historique</Typography>
+				<Typography variant="h3" style={{color: 'white', fontFamily: "Myriad Pro", textAlign: "center"}}>Historique</Typography>
 			</Stack>
 			<Stack	
 				sx={{width: 0.9, height: "40vh", backgroundColor: "ffffff"}}

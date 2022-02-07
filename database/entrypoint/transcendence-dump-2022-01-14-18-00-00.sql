@@ -674,7 +674,7 @@ SELECT pg_catalog.setval('public.chat_messages_id_seq', 14, true);
 -- Name: friends_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ft_root
 --
 
-SELECT pg_catalog.setval('public.friends_id_seq', 5, true);
+SELECT pg_catalog.setval('public.friends_id_seq', 4, true);
 
 
 --

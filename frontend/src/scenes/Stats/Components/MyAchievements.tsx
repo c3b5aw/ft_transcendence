@@ -2,7 +2,7 @@ import { Avatar, Box, Dialog, DialogContent, Divider, List, ListItem, Paper, Sta
 import { avatarStyle } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import useAchievements from "../Services/useAchievements";
-import { User } from "../../../Services/Interface/Interface";
+import { PAGE, User } from "../../../Services/Interface/Interface";
 import { Dispatch, SetStateAction } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 
@@ -30,7 +30,7 @@ const MyAchievements = (props: {user: User, setOpen: Dispatch<SetStateAction<boo
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-			<MyAppBarClose setOpen={setOpen}/>
+			<MyAppBarClose setOpen={setOpen} name={PAGE.ACHIEVEMENTS}/>
 			<DialogContent sx={{alignItems: "center"}}>
 				{achievements.length > 0 ?
 					<Stack sx={{

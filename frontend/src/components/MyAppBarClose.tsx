@@ -1,8 +1,8 @@
-import { AppBar, IconButton, Toolbar } from "@mui/material";
+import { AppBar, IconButton, Stack, Toolbar, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
-function MyAppBarClose(props: {setOpen: Function}) {
-	const { setOpen } = props;
+function MyAppBarClose(props: {setOpen: Function, name: string}) {
+	const { setOpen, name } = props;
 
 	const handleClose = () => {
 		setOpen(false);
@@ -11,14 +11,17 @@ function MyAppBarClose(props: {setOpen: Function}) {
 	return (
 		<AppBar sx={{ position: 'relative' }}>
 			<Toolbar>
-				<IconButton
-					edge="end"
-					color="inherit"
-					onClick={handleClose}
-					aria-label="close"
-				>
-					<CloseIcon />
-				</IconButton>
+				<Stack direction="row" alignItems="center" spacing={2}>
+					<IconButton
+						edge="end"
+						color="inherit"
+						onClick={handleClose}
+						aria-label="close"
+					>
+						<CloseIcon sx={{fontSize: "24px"}}/>
+					</IconButton>
+					<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>{name}</Typography>
+				</Stack>
 			</Toolbar>
 		</AppBar>
 	);

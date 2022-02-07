@@ -1,7 +1,7 @@
 import { Avatar, Box, Dialog, DialogContent, Divider, List, ListItem, Paper, Stack, Typography } from "@mui/material";
 import { avatarStyle } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
-import { User } from "../../../Services/Interface/Interface";
+import { PAGE, User } from "../../../Services/Interface/Interface";
 import { Dispatch, SetStateAction } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 import useFriends from "../Services/useFriends";
@@ -30,7 +30,7 @@ const MyFriends = (props: {user: User, setOpen: Dispatch<SetStateAction<boolean>
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-			<MyAppBarClose setOpen={setOpen}/>
+			<MyAppBarClose setOpen={setOpen} name={PAGE.FRIENDS}/>
 			<DialogContent sx={{alignItems: "center"}}>
 				{friends.length > 0 ?
 					<Stack sx={{

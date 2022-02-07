@@ -13,6 +13,7 @@ import { matchJoinNormal, matchLeave } from "../Services/wsGame";
 import { useNavigate } from "react-router-dom";
 import { socketMatchmaking } from "../../../Services/ws/utils";
 import { useSnackbar } from "notistack";
+import { PAGE } from "../../../Services/Interface/Interface";
 
 function RoomsView() {
 	const [rooms, setRooms] = useState<RoomV[]>([]);
@@ -83,15 +84,14 @@ function RoomsView() {
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-            <MyAppBarClose setOpen={handleClose} />
+            <MyAppBarClose setOpen={handleClose} name={PAGE.ROOMS}/>
 			<DialogContent>
 				<Stack
 					direction="row"
 					sx={{width: 1, marginBottom: "15px"}}
-					justifyContent="space-between"
+					justifyContent="flex-end"
 					alignItems="center"
 				>
-					<Typography variant="h4" style={{fontFamily: "Myriad Pro", color: "white"}}>Rooms</Typography>
 					<Button variant="contained" onClick={() => setOpenCreateRoom(true)}>
 						<Typography variant="h6" style={{fontFamily: "Myriad Pro", color: "white"}}>Create new room</Typography>
 					</Button>
