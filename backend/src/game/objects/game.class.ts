@@ -38,8 +38,6 @@ export class Game {
 	}
 
 	private onTick() {
-		console.log(this.ball.speed)
-
 		if (this.ended) return ;
 
 		if (this.pause.paused) {

@@ -92,9 +92,9 @@ export default class GamePlayer {
 	public draw(ctx: CanvasRenderingContext2D) {
 		const { widthFactor, heightFactor } = getFactors(ctx);
 
-		const x = this.slot === 0 ? GAME_BORDER_SIZE : (GAME_CANVAS_WIDTH * widthFactor) - (GAME_PLAYER_WIDTH * widthFactor) - GAME_BORDER_SIZE;
+		const x = this.slot === 0 ? GAME_BORDER_SIZE : (GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE);
 		ctx.fillStyle = '#fff';
-		ctx.fillRect(x,
+		ctx.fillRect(x * widthFactor,
 					this.y * heightFactor,
 					GAME_PLAYER_WIDTH * widthFactor,
 					GAME_PLAYER_HEIGHT * heightFactor);

@@ -109,8 +109,6 @@ export default class Game {
 	}
 
 	public onTick() {
-		console.log(this.ball.speed);
-
 		if (this.ended) return ;
 
 		if (!this.pause.paused) {
@@ -225,13 +223,8 @@ export default class Game {
 	private onMove(arg: any, move: GameMoves) {
 		if (this.ended) return ;
 
-		const player: GamePlayer | undefined = this.players.find(
-					player => player.id === arg.id);
-		if (!player || player === undefined)
-			return ;
-
-		this.players[player.slot].move = move;
-		this.players[player.slot].y = arg.y;
+		this.players[arg.slot].move = move;
+		this.players[arg.slot].y = arg.y;
 	}
 
 	private onMoveUp(arg: any) {
