@@ -146,7 +146,8 @@ export default class Game {
 			return ;
 		}
 
-		this.intervalId = setInterval(this.onTick.bind(this), 1000 / GAME_TICKS_PER_SECOND);
+		if (this.intervalId === null)
+			this.intervalId = setInterval(this.onTick.bind(this), 1000 / GAME_TICKS_PER_SECOND);
 	}
 
 	private onJoin(arg: any) {
