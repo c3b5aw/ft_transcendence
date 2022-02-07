@@ -80,7 +80,7 @@ export class ChannelController {
 		if (!channel)
 			return resp.status(404).json({ error: RequestError.CHANNEL_NOT_FOUND });
 
-		if (channel.owner_id !== req.user.id)
+		if ((channel.owner_id !== req.user.id && req.user.role !== UserRole.ADMIN))
 			return resp.status(403).json({ error: RequestError.NOT_ENOUGH_PERMISSIONS });
 
 		await this.chatService.deleteChannel( channel );
