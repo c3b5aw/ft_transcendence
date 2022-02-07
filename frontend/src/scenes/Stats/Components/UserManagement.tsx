@@ -1,4 +1,4 @@
-import { Box, IconButton, Menu, MenuItem, Stack } from "@mui/material";
+import { Badge, Box, IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -36,6 +36,7 @@ function UserManagement(props: {user: User}) {
 	const [friends, setFriends] = useState<Friend[]>([]);
 	const [friendsPending, setFriendsPending] = useState<Friend[]>([]);
 	const [requested, setRequested] = useState<Friend[]>([]);
+	const [blocked, setBlocked] = useState<Friend[]>([]);
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -84,9 +85,22 @@ function UserManagement(props: {user: User}) {
 				});
 			}
 		}
+		const fetchBlocked = async () => {
+			try {
+				const response = await axios.get(`/api/profile/friends/blocked`);
+				setBlocked(response.data);
+			}
+			catch (err) {
+				enqueueSnackbar(`${err}`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+			}
+		}
 		fetchFriendsMe();
 		fetchFriendsMePending();
 		fetchInvitation();
+		fetchBlocked();
 	}, [enqueueSnackbar, openUserManagement])
 
 	async function handleAddFriend(login: string) {
@@ -159,7 +173,7 @@ function UserManagement(props: {user: User}) {
 	async function handleUnBlockUser(login: string) {
 		if (login !== undefined) {
 			try {
-				await axios.put(`${api}${apiUsers}/${login}${apiBlock}`);
+				await axios.delete(`${api}${apiUsers}/${login}${apiBlock}`);
 				enqueueSnackbar(`${login} a été débloqué`, { 
 					variant: 'success',
 					autoHideDuration: 3000,
@@ -178,16 +192,22 @@ function UserManagement(props: {user: User}) {
 		return (null);
 	}
 
-	const isFriend = friends.filter(function (friend) {
-		return (friend.login === user.login);
-	});
-	const isFriendPending = friendsPending.filter(function (friendPending) {
-		return (friendPending.login === user.login);
-	});
-	const isRequested = requested.filter(function (request) {
-		return (request.login === user.login);
-	});
-
+	// const isFriend = friends.filter(function (friend) {
+	// 	return (friend.login === user.login);
+	// });
+	// const isFriendPending = friendsPending.filter(function (friendPending) {
+	// 	return (friendPending.login === user.login);
+	// });
+	// const isRequested = requested.filter(function (request) {
+	// 	return (request.login === user.login);
+	// });
+	// const isBlocked = blocked.filter(function (friend) {
+	// 	return (friend.login === user.login);
+	// });
+	const isFriend = friends.find(friend => friend.login === user.login);
+	const isFriendPending = friendsPending.find(friendPending => friendPending.login === user.login);
+	const isRequested = requested.find(request => request.login === user.login);
+	const isBlocked = blocked.find(blocked => blocked.login === user.login);
 	return (
 		<Stack direction="column">
 			<Box>
@@ -225,7 +245,7 @@ function UserManagement(props: {user: User}) {
 						</IconButton>
 						<p>Send message</p>
 					</MenuItem> : null}
-				{user.login !== me.login && isFriend.length > 0 && user.status === USER_STATUS.ONLINE ?
+				{user.login !== me.login && isFriend !== undefined && user.status === USER_STATUS.ONLINE ?
 					<MenuItem onClick={() => {
 						matchJoinDuel(MATCHTYPE.MATCH_DUEL, user.login);
 						navigate(`${apiGame}/roomview`)
@@ -259,11 +279,20 @@ function UserManagement(props: {user: User}) {
 							handleClose();
 						}}>
 						<IconButton>
-							<GroupAddIcon />
+							<Badge
+								badgeContent={friendsPending.length > 0 ? friendsPending.length : null}
+								color="primary"
+								anchorOrigin={{
+									vertical: 'top',
+									horizontal: 'left',
+								}}
+							>
+								<GroupAddIcon />
+							</Badge>
 						</IconButton>
 						<p>Demandes d'amis</p>
 					</MenuItem> : null}
-				{user.login !== me.login && isFriendPending.length !== 0 ?
+				{user.login !== me.login && isFriendPending !== undefined ?
 					<MenuItem onClick={() => {
 							setOpenDemandeAmis(true);
 							handleClose();
@@ -274,7 +303,7 @@ function UserManagement(props: {user: User}) {
 						<p>Voir invitations</p>
 					</MenuItem> : null}
 					{/* l'user n'est pas mon profile + pas de demande recu de l'user + l'user nest pas mon ami + pas de demande d'ami envers l'user */}
-				{user.login !== me.login && isFriendPending.length === 0 && isFriend.length === 0 && isRequested.length === 0 ?
+				{user.login !== me.login && isFriendPending === undefined && isFriend === undefined && isRequested === undefined && isBlocked === undefined ?
 					<MenuItem onClick={() => {
 							handleAddFriend(user.login);
 							handleClose();
@@ -285,14 +314,15 @@ function UserManagement(props: {user: User}) {
 						<p>Demander en ami</p>
 					</MenuItem> : null}
 				{/* l'user n'est pas mon profile + pas de demande recu de l'user + l'user nest pas mon ami + demande d'ami envers l'user */}
-				{user.login !== me.login && isFriendPending.length === 0 && isRequested.length !== 0 && isFriend.length === 0 ?
+				{user.login !== me.login && isFriendPending === undefined && isRequested !== undefined && isFriend === undefined ?
 					<MenuItem>
 						<IconButton>
 							<AccessTimeIcon />
 						</IconButton>
 						<p>Demande d'ami envoyée</p>
 					</MenuItem> : null}
-				{/* l'user n'est pas mon profile + pas de demande recu de l'user + l'user nest pas mon ami + demande d'ami envers l'user */}			{user.login !== me.login && isFriendPending.length === 0 && isRequested.length !== 0 && isFriend.length === 0 ?
+				{/* l'user n'est pas mon profile + pas de demande recu de l'user + l'user nest pas mon ami + demande d'ami envers l'user */}
+				{user.login !== me.login && isFriendPending === undefined && isRequested !== undefined && isFriend === undefined ?
 					<MenuItem onClick={() => {
 							handleDeleteFriend(user.login);
 							handleClose();
@@ -303,7 +333,7 @@ function UserManagement(props: {user: User}) {
 						<p>Supprimer la demande</p>
 					</MenuItem> : null}
 				{/* l'user n'est pas mon profile + l'user est mon ami */}
-				{user.login !== me.login && isFriend.length !== 0 ?
+				{user.login !== me.login && isFriend !== undefined ?
 					<MenuItem onClick={() => {
 							handleDeleteFriend(user.login);
 							handleClose();
@@ -313,7 +343,7 @@ function UserManagement(props: {user: User}) {
 						</IconButton>
 						<p>Supprimer de la liste d'amis</p>
 					</MenuItem> : null}
-				{user.login !== me.login ?
+				{user.login !== me.login && isBlocked === undefined ?
 					<MenuItem onClick={() => {
 							handleBlockUser(user.login);
 							handleClose();
@@ -323,7 +353,7 @@ function UserManagement(props: {user: User}) {
 						</IconButton>
 						<p>Bloquer</p>
 					</MenuItem> : null}
-				{user.login !== me.login ?
+				{user.login !== me.login && isBlocked !== undefined ?
 					<MenuItem onClick={() => {
 							handleUnBlockUser(user.login);
 							handleClose();

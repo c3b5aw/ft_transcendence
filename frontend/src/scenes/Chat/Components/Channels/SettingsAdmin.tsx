@@ -80,7 +80,6 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 
 	const handleClose = () => {
 		mySettingsAdmin.closeModal(!mySettingsAdmin.open);
-		// mySettingsAdmin.updateListChannels();
 	};
 
 	const handleDeleteChannel = async () => {

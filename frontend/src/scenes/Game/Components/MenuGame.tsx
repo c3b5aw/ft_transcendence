@@ -18,12 +18,6 @@ function MenuGame() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		socketMatchmaking.on("matchmaking::onJoin", (data) => {
-			setSuccessJoin(true);
-		})
-	}, [])
-
-	useEffect(() => {
 		socketMatchmaking.on("matchmaking::onLeave", (data) => {
 			setSuccessJoin(false);
 		})
@@ -48,7 +42,10 @@ function MenuGame() {
 				<Button
 					variant="contained"
 					disabled={successJoin ? true : false}
-					onClick={() => setOpenMatchMaking(true)}
+					onClick={() => {
+						setSuccessJoin(true);
+						setOpenMatchMaking(true);
+					}}
 					sx={{padding: 4, borderRadius: 4}}
 				>
 					<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Rechercher une partie classée</Typography>

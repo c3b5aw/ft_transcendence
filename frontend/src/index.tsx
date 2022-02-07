@@ -118,14 +118,6 @@ function ManageRouter() {
 							</PrivateRoute>
 						}
 					/>
-					{/* <Route
-						path={pageMatchProgess}
-						element={
-							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
-								<Game />
-							</PrivateRoute>
-						}
-					/> */}
 				</Routes>
 			</Router>
 		</div>

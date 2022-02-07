@@ -1,32 +1,5 @@
 import { makeStyles } from "@mui/styles";
 
-export const StyleH1 = makeStyles({
-	root: {
-		fontSize: "12vw",
-		fontFamily: "Myriad Pro",
-		textAlign: "center",
-	},
-});
-
-export const boxStyle = {
-	display: "flex",
-};
-
-export const buttonStyle = {
-	background: 'white',
-	color: '#000000',
-	'&:hover': {
-		backgroundColor: '#D5D5D5',
-		color: '#000000',
-	},
-	"&:disabled": {
-		backgroundColor: "grey"
-	},
-	borderRadius: {xs: 1, sm: 2, md: 3, lg: 4},
-	border: {xs: 1, sm: 2, md: 3, lg: 4},
-	marginRight: {xs: 2, sm: 5, md: 10, lg: 21},
-};
-
 export const useStyles = makeStyles({
 	stack: {
 		justifyContent: 'center',
@@ -56,12 +29,6 @@ export const avatarStyle = {
 	marginLeft: "10px",
 	width: {xs: "48px", sm: "48px", md: "48px", lg: "64px"},
 	height: {xs: "48px", sm: "48px", md: "48px", lg: "64px"},
-};
-
-export const avatarStyleIconList = {
-	marginLeft: "10px",
-	width: "32px",
-	height: "32px",
 };
 
 export const styleTextField = makeStyles({
