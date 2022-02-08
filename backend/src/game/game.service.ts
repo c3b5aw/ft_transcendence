@@ -89,7 +89,7 @@ export class GameService {
 	*/
 
 	private async startGame(match: Match) {
-		global.games[match.hash] = new Game(match, this.server);
+		global.games[match.hash] = new Game(match, this.server, this.postGame.bind(this));
 		this.logger.log('Game started: ' + match.hash);
 	}
 
@@ -108,26 +108,39 @@ export class GameService {
 
 		const date_start = (new Date(match.date)).getTime();
 		const date_end = (new Date()).getTime();
-		match.duration =  Math.ceil( (date_end - date_start) / (1000 * 60 * 60 * 24));
+		match.duration =  Math.ceil((date_end - date_start) / 1000);
 
 		match.player1_score = game.players[0].score;
 		match.player2_score = game.players[1].score;
+		match.winner = game.winner;
 
+		// update match
 		match = await this.matchsService.update(match);
 
-		// move this to matchs service
-		// add post processing for achievements
 		await this.statsService.updateFromMatch(match);
 
+		// update user status
 		await this.usersService.updateStatus(match.player1, UserStatus.OFFLINE);
 		await this.usersService.updateStatus(match.player1, UserStatus.OFFLINE);
 
+		// remove game from global
 		delete global.games[game.hash];
 	}
 
 	/*
 		GAME HANDLERS
 	*/
+
+	public async handleGameSurrender(client: WSClient) {
+		const game: Game = await this.findRunningGame(client);
+		if (!game)
+			return ;
+
+		if (game.isPlayer(client.user.id))
+			game.requestSurrender(client.user);
+		else
+			return client.emit('onError', { error: '`game_pause`: not a player' });
+	}
 	
 	public async handleGamePause(client: WSClient) {
 		const game: Game = await this.findRunningGame(client);
