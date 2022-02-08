@@ -18,6 +18,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import NumbersIcon from '@mui/icons-material/Numbers';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import useCountMatchs from '../Services/useCountMatchs';
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 
 export default function MyInfosUser() {
 
@@ -201,6 +202,13 @@ export default function MyInfosUser() {
 			</React.Fragment>
 		);
 	}
+
+	const columns: GridColDef[] = [
+		{ field: 'id', headerName: 'ID', width: 70, align: 'center', flex: 1, headerAlign: 'center', headerClassName: 'super-app-theme--header',},
+		{ field: 'owner_login', headerName: 'Owner', width: 130, align: 'center', flex: 1, headerAlign: 'center',},
+		{ field: 'name', headerName: 'Name', width: 130, align: 'center', flex: 1, headerAlign: 'center', },
+		{ field: 'private', headerName: 'Status', width: 130, align: 'center', flex: 1, headerAlign: 'center', },
+	];
 
 	const countMatchs = useCountMatchs();
 

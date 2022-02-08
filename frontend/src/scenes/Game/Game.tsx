@@ -13,16 +13,23 @@ export default class Game {
 
 	private pause: GamePause = new GamePause();
 	private myself: any = null;
-	private handleFinished: any = null;
 
 	private hash: string = "";
-	public ended: boolean = false;
 	private joined: boolean = false;
+	public handleFinished: any = null;
+
+	public ended: boolean = false;
 
 	private intervalId: NodeJS.Timer | null = null;
-	public socket: Socket | null = null;
+	private socket: Socket | null = null;
 
-	constructor(socket: Socket | null, matchData: any, myself: any, handleFinished: any) {
+	private lastMove: GameMoves = GameMoves.MOVE_STOP;
+
+	private playCollideSound: Function;
+
+	constructor(socket: Socket | null, matchData: any, myself: any, handleFinished: any, playCollideSound: Function) {
+		this.playCollideSound = playCollideSound;
+		
 		if (socket === null)
 			return ;
 
@@ -78,18 +85,27 @@ export default class Game {
 		switch (event.key) {
 			case "ArrowUp":
 			case "w":
-				this.socket.emit('game::paddle::move::up');
+				if (this.lastMove !== GameMoves.MOVE_UP) {
+					this.socket.emit('game::paddle::move::up');
+					this.lastMove = GameMoves.MOVE_UP;
+				}
 				break;
 
 			case "ArrowDown":
 			case "s":
-				this.socket.emit('game::paddle::move::down');
+				if (this.lastMove !== GameMoves.MOVE_DOWN) {
+					this.socket.emit('game::paddle::move::down');
+					this.lastMove = GameMoves.MOVE_DOWN;
+				}
 				break;
 		}
 	}
 
 	private onKeyUp(event: KeyboardEvent) {
 		if (this.ended || this.socket === null || this.pause.paused)
+			return ;
+		
+		if (this.lastMove === GameMoves.MOVE_STOP)
 			return ;
 
 		const player: GamePlayer | undefined = this.players.find(
@@ -101,12 +117,14 @@ export default class Game {
 			case "w":
 				if (player.move === GameMoves.MOVE_UP)
 					this.socket.emit('game::paddle::move::stop');
+				this.lastMove = GameMoves.MOVE_STOP;
 				break;
 
 			case "ArrowDown":
 			case "s":
 				if (player.move === GameMoves.MOVE_DOWN)
 					this.socket.emit('game::paddle::move::stop');
+				this.lastMove = GameMoves.MOVE_STOP;
 				break;
 		}
 	}
@@ -124,9 +142,6 @@ export default class Game {
 
 	// OBJECTS
 	private updateBall() {
-		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE)
-			this.ball.direction = -(this.ball.direction + 180);
-
 		this.ball.x += this.ball.speed * Math.sin(this.ball.direction * Math.PI / 180);
 		this.ball.y -= this.ball.speed * Math.cos(this.ball.direction * Math.PI / 180);
 	}
@@ -166,8 +181,11 @@ export default class Game {
 
 	private onCollide(arg: any) {
 		try {
-			const { ball } = arg;
+			const { ball, obstacle } = arg;
 			this.ball.update(ball);
+
+			if (obstacle === 'player')
+				this.playCollideSound();
 		} catch (e) {
 			console.log(`unpack: on_collide: error: ${e}`);
 		}
@@ -179,10 +197,11 @@ export default class Game {
 
 		if (this.intervalId !== null)
 			clearInterval(this.intervalId);
+
 		this.redraw();
 	}
 
-	public onPause(arg: any) { this.pause.update(arg) }
+	private onPause(arg: any) { this.pause.update(arg) }
 
 	private onReset(arg: any) {
 		try {

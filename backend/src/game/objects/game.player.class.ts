@@ -4,7 +4,11 @@ import { GameMoves } from './moves.enums';
 
 export class GamePlayer {
 	public id: number;
+<<<<<<< HEAD
 	public login: string = 'Offline';
+=======
+	public login: string = "";
+>>>>>>> origin/main
 	public slot: number;
 
 	public ingame: boolean = false;

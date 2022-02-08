@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import useSound from 'use-sound';
 import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
 
@@ -10,17 +11,23 @@ import useMe from '../../Services/Hooks/useMe';
 import GameCanvas from './GameCanvas';
 import GameButtons from './GameButtons';
 import GameScoreBoard from './GameScoreBoard';
+import GameModifiers from './GameModifiers';
 import Game from './Game';
 import { RandomBG } from './GameUtils';
+import GamePlayer from './GamePlayer';
 import MyChargingDataAlert from '../../components/MyChargingDataAlert';
 import GameEnd from './GameEnd';
-import GamePlayer from './GamePlayer';
-
 
 export default function GameBoard() {
 	const [ randomBackground, setRandomBackground ] = useState(false);
 	const [isFinished, setIsFinished] = useState<boolean>(false);
 	const [players, setPlayers] = useState<GamePlayer[]>([]);
+	
+	const [ playSound, setPlaySound ] = useState(true);
+	const [ play ] = useSound('/sounds/onCollide.mp3', { interrupt: true });
+
+	const playCollideSound = useCallback(() => { if (playSound) play() }, [ play, playSound ]);
+
 	const game = useRef<Game | null>(null);
 
 	const { hash } = useParams();
@@ -54,7 +61,7 @@ export default function GameBoard() {
 			if (res.data.length === 0)
 				navigate('/game');
 			else
-				game.current = new Game(gameSocket.current, res.data[0], me, handleFinished);
+				game.current = new Game(gameSocket.current, res.data[0], me, handleFinished, playCollideSound);
 		});
 	}, [ hash, navigate, gameSocket, me ]);
 

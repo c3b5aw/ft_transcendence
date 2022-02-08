@@ -104,8 +104,12 @@ function Chat() {
 			setUploadChannels(data)
 			reinit();
 		})
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
+	/*
+	** RELOAD LIST OF CHANNELS
+	*/
 	useEffect(() => {
 		const fetchChannels = async () => {
 			try {

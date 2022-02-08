@@ -25,6 +25,7 @@ export class MatchsService {
 		match.player1 = player1;
 		match.player2 = player2;
 		match.date = new Date();
+		match.winner = -1;
 		match.type = type;
 		match.finished = false;
 

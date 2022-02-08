@@ -40,6 +40,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		await this.gameService.disconnectFromGame(client);
 	}
 
+	// GAME EVENTS
 	@SubscribeMessage('game::join')
 	async gameJoin(client: WSClient, body: string) {
 		const json = await WS_parse(body);
@@ -51,10 +52,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('game::pause')
-	async gamePause(client: WSClient,) {
+	async gamePause(client: WSClient) {
 		await this.gameService.handleGamePause(client);
 	}
 
+	@SubscribeMessage('game::surrender')
+	async gameSurrender(client: WSClient) {
+		await this.gameService.handleGameSurrender(client);
+	}
+
+	// PADDLE
 	@SubscribeMessage('game::paddle::move::up')
 	async gamePaddleMoveUp(client: WSClient) {
 		await this.gameService.handlePaddleMove(client, GameMoves.MOVE_UP);

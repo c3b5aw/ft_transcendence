@@ -18,6 +18,9 @@ import { UsersService } from 'src/users/users.service';
 import { Friend } from 'src/friends/entities/friend.entity';
 import { FriendsService } from 'src/friends/friends.service';
 
+import { UserAchievement } from 'src/achievements/entities/achievement.entity';
+import { AchievementsService } from 'src/achievements/achievements.service';
+
 @ApiTags('profile')
 @ApiCookieAuth()
 @Controller('profile')
@@ -25,7 +28,8 @@ export class ProfileController {
 	private logger: Logger = new Logger('ProfileController');
 
 	constructor(private readonly usersService: UsersService,
-		private readonly friendsService: FriendsService) {}
+		private readonly friendsService: FriendsService,
+		private readonly achievementsService: AchievementsService) {}
 
 	@Get()
 	@UseGuards(JwtGuard)
@@ -39,9 +43,17 @@ export class ProfileController {
 	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'image/jpg')
 	@ApiOperation({ summary: 'Get your avatar as jpg' })
-	async getAvatar(@Req() req: any, 
-					@Param('id') id: number, @Res() resp: Response) {
+	async getAvatar(@Req() req: any, @Res() resp: Response) {
 		return await this.usersService.sendAvatar( req.user.id, resp );
+	}
+
+	@Get('achievements/recents')
+	@UseGuards(JwtTwoFactorGuard)
+	@Header('Content-Type', 'application/json')
+	@ApiOperation({ summary: 'Get your recent achievements' })
+	async getRecentsAchievements(@Req() req: any, @Res() resp: Response) {
+		const achievements: UserAchievement[] = await this.achievementsService.recentlyUnlocked(req.user.id);
+		resp.send(achievements);
 	}
 
 	@Get('stats')

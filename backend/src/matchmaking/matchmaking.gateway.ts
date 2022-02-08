@@ -76,4 +76,9 @@ export class MatchmakingGateway implements OnGatewayConnection, OnGatewayDisconn
 	async matchmakingLeave(client: WSClient) {
 		await this.matchMakingService.leaveQueue(client);
 	}
+
+	@SubscribeMessage('matchmaking::status')
+	async matchmakingStatus(client: WSClient) {
+		await this.matchMakingService.queueStatus(client);
+	}
 }

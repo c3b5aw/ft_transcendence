@@ -20,15 +20,31 @@ export class Game {
 
 	public ended: boolean = false;
 	public inTreatment: boolean = false;
+<<<<<<< HEAD
+=======
+	public winner: number = -1;
+>>>>>>> origin/main
 
 	private intervalID: any;
+	private postGameCallbak: Function = () => {};
 
+<<<<<<< HEAD
 	constructor(match: Match, socket: any) {
 		this.socket = socket;
 
 		this.id = match.id;
 		this.hash = match.hash;
 
+=======
+	constructor(match: Match, socket: any, postGameCallback: Function) {
+		this.socket = socket;
+
+		this.id = match.id;
+		this.hash = match.hash;
+
+		this.postGameCallbak = postGameCallback;
+
+>>>>>>> origin/main
 		this.players[0] = new GamePlayer(match.player1, 0);
 		this.players[1] = new GamePlayer(match.player2, 1);
 
@@ -59,8 +75,15 @@ export class Game {
 	}
 
 	private updateBall() {
+<<<<<<< HEAD
 		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE)
 			this.ball.direction = -(this.ball.direction + 180);
+=======
+		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE) {
+			this.ball.direction = -(this.ball.direction + 180);
+			this.emit('game::match::onCollide', { ball: this.ball.__repr__(), obstacle: 'wall' });
+		}
+>>>>>>> origin/main
 
 		if (this.ball.x > GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE)
 			this.collidePlayer(this.players[1]);
@@ -79,7 +102,11 @@ export class Game {
 			if (Math.abs(this.ball.speed) < GAME_BALL_MAX_SPEED)
 				this.ball.speedUp();
 
+<<<<<<< HEAD
 			this.emit('game::match::onCollide', { ball: this.ball.__repr__() });
+=======
+			this.emit('game::match::onCollide', { ball: this.ball.__repr__(), obstacle: 'player' });
+>>>>>>> origin/main
 		}
 	}
 	/*
@@ -96,6 +123,17 @@ export class Game {
 	/*
 		REQUESTS
 	*/
+
+	public requestSurrender(user: User) {
+		const winner: GamePlayer = this.players.find(p => p.id !== user.id);
+		if (!winner || winner === undefined)
+			return ;
+
+		this.emit('game::match::onSurrender', { winner: winner.__repr__() });
+
+		this.winner = user.id;
+		this.end(winner.id);
+	}
 
 	public requestPause(user: User) {
 		if (this.pause.paused || this.pause.pausesLefts(user.id) <= 0)
@@ -197,7 +235,11 @@ export class Game {
 		player.score++;
 		this.emit('game::match::onScore', { player });
 		if (player.score >= GAME_WIN_SCORE)
+<<<<<<< HEAD
 			return this.end();
+=======
+			return this.end(player.id);
+>>>>>>> origin/main
 		
 		this.reset(player.slot);
 	}
@@ -215,11 +257,34 @@ export class Game {
 		this.emit('game::match::onReset', { ball: this.ball.__repr__() });
 	}
 
-	private end() {
+	private end(winnerId: number) {
+		if (this.winner === -1)
+			this.winner = winnerId;
+
 		clearInterval(this.intervalID);
 
+<<<<<<< HEAD
 		this.emit('game::match::onEnd');
+=======
+		const winner: GamePlayer = this.players.find(p => p.id === this.winner);
+
+		this.emit('game::match::onEnd', winner !== undefined ? { winner: winner.__repr__() } : { winner: null });
+>>>>>>> origin/main
 		this.ended = true;
+
+		this.postGameCallbak(this);
+	}
+
+	private __repr__() {
+		return {
+			id: this.id, hash: this.hash,
+			players: [
+				this.players[0].__repr__(),
+				this.players[1].__repr__()
+			], ball: this.ball.__repr__(),
+			pause: this.pause.__repr__(),
+			ended: this.ended,
+		}
 	}
 
 	private __repr__() {
