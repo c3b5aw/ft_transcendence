@@ -173,8 +173,6 @@ export class MatchmakingService {
 	async getPendingMatch(userId: number) {
 		return this.matchsService.findPendingMatch(userId);
 	}
-<<<<<<< HEAD
-=======
 
 	async queueStatus(client: WSClient) {
 		if (client.user.status === UserStatus.IN_GAME)
@@ -188,5 +186,4 @@ export class MatchmakingService {
 		return client.emit('matchmaking::onStatus', {
 			message: `not in a queue` });
 	}
->>>>>>> origin/main
 }

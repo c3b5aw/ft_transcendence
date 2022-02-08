@@ -30,32 +30,6 @@ export class StatsService {
 		await this.updateMatchPlayer(match, winner, elo_diff, true);
 	}
 
-<<<<<<< HEAD
-		if (match.player1_score > match.player2_score) {
-			p1.victories++;
-			// regarder si le winner a unlock un achievement
-			p2.defeats++;
-			if (match.type === MatchType.MATCH_RANKED) {
-				const difference = Math.ceil((match.player1_score - match.player2_score) / 100);
-				p1.elo += difference + 2;
-				p2.elo -= difference - 1;
-			}
-		}
-		else if (match.player1_score < match.player2_score) {
-			p2.victories++;
-			// regarder si le winner a unlock un achievement
-			p1.defeats++;
-			if (match.type === MatchType.MATCH_RANKED) {
-				const difference = Math.ceil((match.player2_score - match.player1_score) / 100);
-				p2.elo += difference + 2;
-				p1.elo -= difference - 1;
-			}
-		}
-		await this.statsRepository.save(p1);
-		await this.statsRepository.save(p2);
-
-		// gerer les achievements
-=======
 	async updateMatchPlayer(match: Match, player: UserStats, elo_diff: number, winner: boolean) {
 		player.played++;
 		
@@ -74,7 +48,6 @@ export class StatsService {
 		}
 
 		return this.statsRepository.save(player);
->>>>>>> origin/main
 	}
 
 	async errorPlayerNotFoundForMatch(match: Match, player: number) {

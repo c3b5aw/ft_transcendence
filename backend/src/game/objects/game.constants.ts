@@ -1,11 +1,7 @@
 // GAME INSTANCE
 const GAME_START_MAX_WAIT: number = 60;
 const GAME_START_DELAY: number = 5;
-<<<<<<< HEAD
 const GAME_TICKS_PER_SECOND: number = 60;
-=======
-const GAME_TICKS_PER_SECOND: number = 30;
->>>>>>> origin/main
 const GAME_WIN_SCORE: number = 1;
 const GAME_PAUSE_INTERVAL = 1000;
 
@@ -25,22 +21,14 @@ const GAME_BALL_START_Y: number = GAME_CANVAS_HEIGHT / 2;
 const GAME_BALL_RADIUS: number = 5;
 const GAME_BALL_DEFAULT_SPEED: number = 6;
 const GAME_BALL_MAX_SPEED: number = GAME_BALL_DEFAULT_SPEED * 4;
-<<<<<<< HEAD
-const GAME_BALL_SPEED_INCREASE = 1.3;
-=======
 const GAME_BALL_SPEED_INCREASE = 1.2;
->>>>>>> origin/main
 const GAME_BALL_MIN_ANGLE = 40;
 
 // GAME PLAYER
 const GAME_PLAYER_HEIGHT: number = 100;
 const GAME_PLAYER_WIDTH: number = 5;
 const GAME_PLAYER_START_Y: number = GAME_CANVAS_HEIGHT / 2 - GAME_PLAYER_HEIGHT / 2;
-<<<<<<< HEAD
-const GAME_PLAYER_SPEED: number = 25;
-=======
 const GAME_PLAYER_SPEED: number = 12;
->>>>>>> origin/main
 
 export {
 	GAME_START_MAX_WAIT,
