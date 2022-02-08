@@ -1,35 +1,41 @@
 import { Grid, Typography, Paper, Avatar } from '@mui/material';
+import GamePlayer from './GamePlayer';
 
-function GameAvatar(props: { position: string }) {
+function GameAvatar(props: { position: string, login: string }) {
 	return (
 		<Grid item display={{ xs: 'none', sm: 'flex' }}>
 			<Avatar id={ `gamePlayerAvatar` + props.position }
-				src="https://better-default-discord.netlify.app/Icons/Pastel-Blue.png"
+				src={props.login === "" ? "https://better-default-discord.netlify.app/Icons/Pastel-Blue.png" : `/api/users/${props.login}/avatar`}
 			/>
 		</Grid>
 	)
 }
 
-function GamePlayer(props: { position: string }) {
+function GamePlayerHeader(props: { position: string, players: GamePlayer[] }) {
 	return (
 		<Grid container 
 			direction="row" justifyContent="flex-start" alignItems="center"
 			spacing={ 3 }
 		>
 			<Grid item />
-			{ props.position === "Left" && <GameAvatar position={ props.position }/> }
+			{ props.position === "Left" && <GameAvatar position={ props.position } login={props.players.length === 0 ? "" : props.players[0].login}/> }
 			<Grid item>
-				<Typography variant="h5" id={ `gamePlayer` + props.position }>
-					...
-				</Typography>
+				{ props.position === "Left" ?
+					<Typography variant="h5" id={ `gamePlayer` + props.position }>
+						{props.players.length === 0 ? "..." : props.players[0].login}
+					</Typography> : props.position === "Right" ?
+					<Typography variant="h5" id={ `gamePlayer` + props.position }>
+						{props.players.length === 0 ? "..." : props.players[1].login}
+					</Typography> : null
+				}
 			</Grid>
-			{ props.position === "Right" && <GameAvatar position={ props.position }/> }
+			{ props.position === "Right" && <GameAvatar position={ props.position } login={props.players.length === 0 ? "" : props.players[1].login}/> }
 			<Grid item />
 		</Grid>
 	)
 }
 
-function GameScores() {
+function GameScores(props: {players: GamePlayer[]}) {
 	return (
 		<Grid container
 			direction="row" justifyContent="center" alignItems="center"
@@ -37,7 +43,7 @@ function GameScores() {
 		>
 			<Grid item>
 				<Typography variant="h5" id="gamePlayerScoreLeft">
-					0
+					{props.players.length === 0 ? "0" : `${props.players[0].score}`}
 				</Typography>
 			</Grid>
 			<Grid item>
@@ -47,30 +53,31 @@ function GameScores() {
 			</Grid>
 			<Grid item>
 				<Typography variant="h5" id="gamePlayerScoreRight">
-					0
+					{props.players.length === 0 ? "0" : `${props.players[1].score}`}
 				</Typography>
 			</Grid>
 		</Grid>
 	)
 }
 
-export default function GameScoreBoard() {
+export default function GameScoreBoard(props: {players: GamePlayer[]}) {
 	return (
 		<Paper elevation={ 4 } sx={{
 			borderRadius: '0px',
+			padding: 2
 		}}>
 			<Grid container
 				direction={{ xs: 'column', sm: 'row' }}
 				justifyContent="space-between" alignItems="center"
 			>
 				<Grid item>
-					<GamePlayer position="Left" />
+					<GamePlayerHeader position="Left" players={props.players}/>
 				</Grid>
 				<Grid item>
-					<GameScores />
+					<GameScores players={props.players}/>
 				</Grid>
 				<Grid item>
-					<GamePlayer position="Right" />
+					<GamePlayerHeader position="Right" players={props.players}/>
 				</Grid>
 			</Grid>
 		</Paper>

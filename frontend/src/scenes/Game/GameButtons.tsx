@@ -1,11 +1,35 @@
-import { Grid, Button } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 
 export default function GameButtons(props: any) {
+
+	const handlePause = () => {
+		if (props.game !== null) {
+			props.game.current.socket.emit('game::pause');
+		}
+	}
+
 	return (
-		<Grid container direction="row" justifyContent="center" alignItems="center">
-			<Button variant="contained" color="success" onClick = { props.startGame }> Start</Button>
-			<Button variant="contained" color="success" onClick = { props.stopGame }> Stop</Button>
-			<Button variant="contained" color="primary" onClick = { props.pauseGame }> Pause</Button>
-		</Grid>
+		<Stack direction="row" justifyContent="center" alignItems="center" spacing={{xs: 1, sm: 5}}>
+			<Button
+				variant="contained"
+				color="success"
+				onClick={props.backgroundCallback}
+			>
+				<Typography>Color</Typography>
+			</Button>
+			<Button
+				variant="contained"
+				color="warning"
+				onClick = {handlePause}
+			>
+				<Typography>Pause</Typography>
+			</Button>
+			<Button
+				variant="contained"
+				color="error"
+			>
+				<Typography>Quitter</Typography>
+			</Button>
+		</Stack>
 	)
 }

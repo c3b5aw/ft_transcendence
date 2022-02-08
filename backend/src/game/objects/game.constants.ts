@@ -1,8 +1,8 @@
 // GAME INSTANCE
 const GAME_START_MAX_WAIT: number = 60;
 const GAME_START_DELAY: number = 5;
-const GAME_TICKS_PER_SECOND: number = 30;
-const GAME_WIN_SCORE: number = 10;
+const GAME_TICKS_PER_SECOND: number = 60;
+const GAME_WIN_SCORE: number = 1;
 const GAME_PAUSE_INTERVAL = 1000;
 
 // GAME PAUSE

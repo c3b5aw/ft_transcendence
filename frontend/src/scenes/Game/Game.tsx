@@ -8,26 +8,28 @@ import { GAME_CANVAS_HEIGHT, GAME_BORDER_SIZE, GAME_TICKS_PER_SECOND, getFactors
 import { GameMoves } from "./GameMoves";
 
 export default class Game {
-	private players: GamePlayer[] = [];
+	public players: GamePlayer[] = [];
 	private ball: GameBall = new GameBall();
 
 	private pause: GamePause = new GamePause();
 	private myself: any = null;
+	private handleFinished: any = null;
 
 	private hash: string = "";
 	public ended: boolean = false;
 	private joined: boolean = false;
 
 	private intervalId: NodeJS.Timer | null = null;
-	private socket: Socket | null = null;
+	public socket: Socket | null = null;
 
-	constructor(socket: Socket | null, matchData: any, myself: any) {
+	constructor(socket: Socket | null, matchData: any, myself: any, handleFinished: any) {
 		if (socket === null)
 			return ;
 
 		this.socket = socket;
 		this.myself = myself;
 		this.hash = matchData.hash;
+		this.handleFinished = handleFinished;
 
 		this.players[0] = new GamePlayer(matchData.player1, matchData.player1_login, 0, matchData.player1_score);
 		this.players[1] = new GamePlayer(matchData.player2, matchData.player2_login, 1, matchData.player2_score);
@@ -177,11 +179,10 @@ export default class Game {
 
 		if (this.intervalId !== null)
 			clearInterval(this.intervalId);
-
 		this.redraw();
 	}
 
-	private onPause(arg: any) { this.pause.update(arg) }
+	public onPause(arg: any) { this.pause.update(arg) }
 
 	private onReset(arg: any) {
 		try {
@@ -298,5 +299,6 @@ export default class Game {
 		ctx.textAlign = 'center';
 
 		ctx.fillText('Game is Over', ctx.canvas.width / 2, ctx.canvas.height / 2);
+		this.handleFinished(this.players);
 	}
 }
