@@ -31,6 +31,17 @@ export class FriendsService {
 		return this.findAllByStatus(id, FriendStatus.STATUS_ACCEPTED);
 	}
 
+	async findAllBlockedById(id: number) : Promise<Friend[]> {
+		return this.friendRepository.query(`
+			SELECT users.login, query.friend_id, query.status FROM (
+				SELECT *
+				FROM friends
+				WHERE user_id = ${id} AND status = 'BLOCKED'
+			) AS query
+			INNER JOIN users on query.friend_id = users.id
+		`);
+	}
+
 	async findAllPendingById(id: number) : Promise<Friend[]> {
 		return this.friendRepository.query(`
 			SELECT users.login, query.user_id, query.status FROM (
