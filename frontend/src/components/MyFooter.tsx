@@ -1,7 +1,7 @@
-import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, IconButton, Menu, MenuItem, Stack, Toolbar, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ROLE } from "../Services/Api/Role";
-import { User } from "../Services/Interface/Interface";
+import { PAGE, User } from "../Services/Interface/Interface";
 import { pageAdmin, pageChat, pageClassement, pageGame, pageHome, pageSettings, pageStat } from "../Services/Routes/RoutePage";
 import MoreIcon from '@mui/icons-material/MoreVert';
 import React from "react";
@@ -12,9 +12,11 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import HomeIcon from '@mui/icons-material/Home';
+import MySearchBar from "../scenes/Home/Components/MySearchBar";
 
-export default function MyFooter(props : {me: User}) {
-	const { me } = props;
+export default function MyFooter(props : {me: User, currentPage: PAGE}) {
+	const { me, currentPage } = props;
 	const navigate = useNavigate();
 
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -76,11 +78,17 @@ export default function MyFooter(props : {me: User}) {
 			open={isMobileMenuOpen}
 			onClose={handleMobileMenuClose}
 		>
+		<MenuItem onClick={handleLaunchHome}>
+			<IconButton>
+				<HomeIcon />
+			</IconButton>
+			<p>Home</p>
+		</MenuItem>
 		<MenuItem onClick={handleLaunchStats}>
 			<IconButton>
 				<TimelineIcon />
 			</IconButton>
-			<p>Statistiques</p>
+			<p>Profile</p>
 		</MenuItem>
 		<MenuItem onClick={handleLaunchClassement}>
 			<IconButton>
@@ -116,7 +124,7 @@ export default function MyFooter(props : {me: User}) {
 	);
 
 	return (
-		<Box sx={{ flexGrow: 1 }}>
+		<Stack>
 			<AppBar
 				position="sticky"
 				sx={{ top: '0', bottom: 'auto' }}
@@ -124,7 +132,8 @@ export default function MyFooter(props : {me: User}) {
 				<Toolbar sx={{justifyContent: 'space-between'}}>
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex'}, justifyContent: 'space-between'}}>
 						<Button variant="contained" disableElevation
-							onClick={() => handleLaunchHome()}>
+							onClick={() => handleLaunchHome()}
+							sx={{backgroundColor: currentPage === PAGE.HOME ? "#0169B0" : null}}>
 							<Typography
 								variant="h6"
 								style={{fontFamily: "Myriad Pro"}}
@@ -133,16 +142,18 @@ export default function MyFooter(props : {me: User}) {
 							</Typography>
 						</Button>
 						<Button variant="contained" disableElevation
-							onClick={() => handleLaunchStats()}>
+							onClick={() => handleLaunchStats()}
+							sx={{backgroundColor: currentPage === PAGE.STATS ? "#0169B0" : null}}>
 							<Typography
 								variant="h6"
 								style={{fontFamily: "Myriad Pro"}}
 							>
-								Statistiques
+								Profile
 							</Typography>
 						</Button>
 						<Button variant="contained" disableElevation
-							onClick={() => handleLaunchClassement()}>
+							onClick={() => handleLaunchClassement()}
+							sx={{backgroundColor: currentPage === PAGE.CLASSEMENT ? "#0169B0" : null}}>
 							<Typography
 								variant="h6"
 								style={{fontFamily: "Myriad Pro"}}
@@ -151,7 +162,8 @@ export default function MyFooter(props : {me: User}) {
 							</Typography>
 						</Button>
 						<Button variant="contained" disableElevation
-							onClick={() => handleLaunchParametres()}>
+							onClick={() => handleLaunchParametres()}
+							sx={{backgroundColor: currentPage === PAGE.PARAMETRES ? "#0169B0" : null}}>
 							<Typography
 								variant="h6"
 								style={{fontFamily: "Myriad Pro"}}
@@ -160,7 +172,8 @@ export default function MyFooter(props : {me: User}) {
 							</Typography>
 						</Button>
 						<Button variant="contained" disableElevation
-							onClick={() => handleLaunchChat()}>
+							onClick={() => handleLaunchChat()}
+							sx={{backgroundColor: currentPage === PAGE.CHAT ? "#0169B0" : null}}>
 							<Typography
 								variant="h6"
 								style={{fontFamily: "Myriad Pro"}}
@@ -169,7 +182,8 @@ export default function MyFooter(props : {me: User}) {
 							</Typography>
 						</Button>
 						<Button variant="contained" disableElevation
-							onClick={() => handleLaunchMenuGame()}>
+							onClick={() => handleLaunchMenuGame()}
+							sx={{backgroundColor: currentPage === PAGE.GAME ? "#0169B0" : null}}>
 							<Typography
 								variant="h6"
 								style={{fontFamily: "Myriad Pro"}}
@@ -179,7 +193,8 @@ export default function MyFooter(props : {me: User}) {
 						</Button>
 						{me?.role === ROLE.ADMIN ?
 							<Button variant="contained" disableElevation
-								onClick={() => handleLaunchAdminView()}>
+								onClick={() => handleLaunchAdminView()}
+								sx={{backgroundColor: currentPage === PAGE.ADMINVIEW ? "#0169B0" : null}}>
 							<Typography
 								variant="h6"
 								style={{fontFamily: "Myriad Pro"}}
@@ -190,17 +205,7 @@ export default function MyFooter(props : {me: User}) {
 						}
 					</Box>
 					<Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "flex", md: "none", lg: "none" }, justifyContent: 'space-between'}}>
-						<Button
-							variant="contained"
-							disableElevation
-							onClick={() => handleLaunchChat()}>
-							<Typography
-								variant="h6"
-								style={{fontFamily: "Myriad Pro"}}
-							>
-								Home
-							</Typography>
-						</Button>
+						{currentPage === PAGE.STATS ? <MySearchBar /> : null}
 					</Box>
 					<Box sx={{ display: { xs: 'flex', md: 'none' } }}>
 						<IconButton
@@ -217,6 +222,6 @@ export default function MyFooter(props : {me: User}) {
 				</Toolbar>
 			</AppBar>
 			{renderMobileMenu}
-		</Box>
+		</Stack>
 	);
 };

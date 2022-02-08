@@ -27,25 +27,28 @@ export class StatsService {
 
 		if (match.player1_score > match.player2_score) {
 			p1.victories++;
+			// regarder si le winner a unlock un achievement
 			p2.defeats++;
 			if (match.type === MatchType.MATCH_RANKED) {
-				const difference = (match.player1_score - match.player2_score) / 100;
-				p1.elo += difference + 5;
-				p2.elo -= difference - 3;
+				const difference = Math.ceil((match.player1_score - match.player2_score) / 100);
+				p1.elo += difference + 2;
+				p2.elo -= difference - 1;
 			}
 		}
 		else if (match.player1_score < match.player2_score) {
 			p2.victories++;
+			// regarder si le winner a unlock un achievement
 			p1.defeats++;
 			if (match.type === MatchType.MATCH_RANKED) {
-				const difference = (match.player2_score - match.player1_score) / 100;
-				p2.elo += difference + 5;
-				p1.elo -= difference - 3;
+				const difference = Math.ceil((match.player2_score - match.player1_score) / 100);
+				p2.elo += difference + 2;
+				p1.elo -= difference - 1;
 			}
 		}
-
 		await this.statsRepository.save(p1);
 		await this.statsRepository.save(p2);
+
+		// gerer les achievements
 	}
 
 	async errorPlayerNotFoundForMatch(match: Match, player: number) {
@@ -53,11 +56,12 @@ export class StatsService {
 	}
 
 	async findOneByID(id: number) : Promise<UserStats> {
-		return this.statsRepository.query(`
+		const stats : UserStats[] = await this.statsRepository.query(`
 			SELECT *
-			FROM user_stats
-			WHERE user = ${id};
+			FROM users_stats
+			WHERE id = ${id};
 		`);
+		return stats.length > 0 ? stats[0] : null;
 	}
 
 	async createUserStats(userID: number) : Promise<UserStats> {

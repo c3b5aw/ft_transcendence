@@ -11,7 +11,8 @@ import { MatchType } from './entities/types.enum';
 @Injectable()
 export class MatchsService {
 
-	constructor(@InjectRepository(Match) private readonly matchRepository: Repository<Match>) {}
+	constructor(@InjectRepository(Match)
+				private readonly matchRepository: Repository<Match>) {}
 
 	/*
 		CREATER
@@ -38,7 +39,7 @@ export class MatchsService {
 	*/
 
 	async findOneById(id: number) : Promise<Match> {
-		return this.matchRepository.query(`
+		const match: Match[] = await this.matchRepository.query(`
 			SELECT matchs.*, 
 				p1.login AS player1_login,
 				p2.login AS player2_login
@@ -50,6 +51,24 @@ export class MatchsService {
 				AS p2
 				ON p2.id = matchs.player2
 			WHERE matchs.id = ${id};
+		`);
+
+		return match.length > 0 ? match[0] : null;
+	}
+
+	async findOneByHash(hash: string) : Promise<Match> {
+		return this.matchRepository.query(`
+			SELECT matchs.*, 
+				p1.login AS player1_login,
+				p2.login AS player2_login
+			FROM matchs
+			INNER JOIN users
+				AS p1
+				ON p1.id = matchs.player1
+			INNER JOIN users
+				AS p2
+				ON p2.id = matchs.player2
+			WHERE matchs.hash = '${hash}';
 		`);
 	}
 

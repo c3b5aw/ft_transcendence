@@ -9,7 +9,10 @@ export const isMute = (user: User) => {
 export const isMuteSendMessage = (users: User[], me: User, text: string) => {
 	if (users.length > 0 && text === "") {
 		const user: User[] = users.filter(item => item.login === me.login)
-		return (isMute(user[0]));
+		if (user.length > 0)
+			return (isMute(user[0]));
+		else
+			return (true);
 	}
 	else if (users.length === 0)
 		return (true);

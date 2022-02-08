@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MatchsModule } from 'src/matchs/matchs.module';
 import { StatsModule } from 'src/stats/stats.module';
 import { UsersModule } from 'src/users/users.module';
+import { GameGateway } from './game.gateway';
 
 import { GameService } from './game.service';
 
@@ -18,7 +19,7 @@ import { GameService } from './game.service';
 		UsersModule, MatchsModule, StatsModule
 	],
 	controllers: [],
-	providers: [ GameService ],
+	providers: [ GameGateway, GameService ],
 	exports: [],
 })
 

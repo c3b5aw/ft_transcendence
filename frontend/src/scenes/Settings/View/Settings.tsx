@@ -2,7 +2,7 @@ import { Avatar, Box, Button, createTheme, FormControlLabel, responsiveFontSizes
 import axios from "axios";
 import React, { SetStateAction, useEffect, useState } from "react";
 import { api, api2fa, apiAuth, apiMe } from "../../../Services/Api/Api";
-import { User } from "../../../Services/Interface/Interface";
+import { PAGE, User } from "../../../Services/Interface/Interface";
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import EditIcon from '@mui/icons-material/Edit';
 import KeyIcon from '@mui/icons-material/Key';
@@ -126,7 +126,7 @@ const Settings = () => {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<MyFooter me={me}/>
+			<MyFooter me={me} currentPage={PAGE.PARAMETRES}/>
 			<Stack
 				direction="row"
 				sx={{width: "100%", height: "100%"}}

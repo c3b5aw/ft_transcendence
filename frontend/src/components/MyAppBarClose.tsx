@@ -1,8 +1,7 @@
 import { AppBar, Button, IconButton, Toolbar } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import { Dispatch, SetStateAction } from "react";
 
-function MyAppBarClose(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
+function MyAppBarClose(props: {setOpen: Function}) {
 	const { setOpen } = props;
 
 	const handleClose = () => {

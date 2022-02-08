@@ -8,8 +8,8 @@ import { useSnackbar } from 'notistack'
 import MySearchBarChat from "../MySearchBarChat";
 import useFriends from "../../Services/Hooks/useFriends";
 
-function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetStateAction<boolean>>, setOpen: Dispatch<SetStateAction<boolean>>}) {
-	const { reload, setReload, setOpen } = props;
+function MyDialogCreateChannel(props: {setOpen: Dispatch<SetStateAction<boolean>> }) {
+	const { setOpen } = props;
     const [openDM, setOpenDM] = React.useState(false);
 	const [friend, setFriend] = useState<User>();
 	const friends = useFriends();
@@ -19,7 +19,7 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 
 	const { enqueueSnackbar } = useSnackbar();
 
-	const handleRemoveFriend = (user: User) => {
+	const handleRemoveFriend = () => {
 		setFriend(undefined);
 	}
 
@@ -38,7 +38,6 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 					login: friend.login,
 				})
 				handleClose();
-				setReload(!reload);
 			}
 			else {
 				enqueueSnackbar(`Veuillez selectionner un ami`, { 
@@ -47,7 +46,7 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 				});
 			}
 		}
-		else if (nameChannel.length > 3 && nameChannel.length < 64) {
+		else if (nameChannel.length >= 3 && nameChannel.length <= 64) {
 			try {
 				await axios.post(`${api}${apiChannel}`, {
 					name: nameChannel,
@@ -58,7 +57,6 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 					autoHideDuration: 2000,
 				});
 				handleClose();
-				setReload(!reload);
 			}
 			catch (err) {
 				enqueueSnackbar(`Le channel ${nameChannel} n'a pas pu etre crée (${err})`, { 
@@ -68,7 +66,7 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 			}
 		}
 		else {
-			enqueueSnackbar(`Le nom du channel doit contenir au moins 3 caractères`, { 
+			enqueueSnackbar(`Le nom du channel doit contenir entre 3 et 64 caractères`, { 
 				variant: 'warning',
 				autoHideDuration: 3000,
 			});
@@ -107,27 +105,27 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 			<DialogContent>
 				{!openDM ?
 					<TextField
-					autoFocus
-					margin="dense"
-					id="name"
-					label="Channel name"
-					type="text"
-					fullWidth
-					variant="standard"
-					onChange={handleTextChangeName}
-				/> : null
+						autoFocus
+						margin="dense"
+						id="name"
+						label="Channel name"
+						type="text"
+						fullWidth
+						variant="standard"
+						onChange={handleTextChangeName}
+					/> : null
 				}
 				{!openDM ?
 					<TextField
-					autoFocus
-					margin="dense"
-					id="password"
-					label="Channel password"
-					type="password"
-					fullWidth
-					variant="standard"
-					onChange={handleTextChangePassword}
-				/> : null
+						autoFocus
+						margin="dense"
+						id="password"
+						label="Channel password"
+						type="password"
+						fullWidth
+						variant="standard"
+						onChange={handleTextChangePassword}
+					/> : null
 				}
 				<div style={{marginTop: 10}}></div>
 				<FormControlLabel
@@ -145,7 +143,7 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 						<div style={{marginTop: 10}}></div>
 						{friend !== undefined ? 
 							<Button 
-								onClick={() => handleRemoveFriend(friend)}
+								onClick={() => handleRemoveFriend()}
 								key={friend.login}
 								size="small"
 								variant="contained"
@@ -157,8 +155,8 @@ function MyDialogCreateChannel(props: {reload: boolean, setReload: Dispatch<SetS
 					}
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={handleClose}>Cancel</Button>
-				<Button onClick={handleCreate}>Create</Button>
+				<Button variant="contained" color="error" onClick={handleClose}>Cancel</Button>
+				<Button variant="contained" color="success" onClick={handleCreate}>Create</Button>
 			</DialogActions>
 		</Dialog>
 	);

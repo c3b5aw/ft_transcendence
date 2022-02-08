@@ -1,47 +1,51 @@
 import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
-import Button from '../Components/MyButton';
 import { apiConnection } from '../../../Services/Api/Api';
-import { sxAvatar, sxBox } from '../Services/style';
-import { Typography } from '@mui/material';
+import { sxAvatar } from '../Services/style';
+import { Button, Tooltip, Typography } from '@mui/material';
 
-function Connection()
-{
+function Connection() {
 	return (
-		<Stack>
-			<Box sx={sxBox}>
-				<Typography variant="h1" style={{textAlign: "center", fontFamily: "Myriad Pro"}}>ft_transcendence</Typography>
-			</Box>
-			<Box sx={sxBox}>
-				<Button 
-					border="none"
-					borderRadius={20}
-					color="white"
-					height = "100px"
-					onClick={() => {
-						window.location.href = `${apiConnection}`
-					}}
-					width = "350px"
-					children = "OAuth 42"
-				/>
-			</Box>
-			<Box sx={sxBox}>
-				<Stack direction="row" spacing={3}>
-					<Avatar
-						src="./avatars/77460.jpg"
-						sx={sxAvatar}/>
-					<Avatar
-						src="./avatars/73316.jpg"
-						sx={sxAvatar}/>
-					<Avatar
-						src="./avatars/77558.jpg"
-						sx={sxAvatar}/>
+		<Stack direction="column"
+			justifyContent="space-evenly"
+			alignItems="center"
+			sx={{height: "100vh", width: 1}}
+		>
+			<Typography variant="h2" style={{fontFamily: "Myriad Pro"}}>ft_transcendance</Typography>
+			<Button sx={{
+				background: 'white',
+				color: '#000000',
+				'&:hover': {
+					backgroundColor: '#D5D5D5',
+					color: '#000000',
+				},
+				padding: {xs: 1, sm: 2, md: 3, lg: 4},
+				borderRadius: {xs: 4, sm: 6, md: 8},
+				border: 4,
+			}}
+				onClick={() => window.location.href = `${apiConnection}`}>
+				<Typography variant="h4" style={{fontFamily: "Myriad Pro"}}>OAuth 42</Typography>
+			</Button>
+			<Stack direction="row" spacing={5}>
+				<Tooltip title="sbeaujar">
 					<Avatar
 						src="./avatars/83781.jpg"
-						sx={sxAvatar}/>
-				</Stack>
-			</Box>
+						sx={sxAvatar}
+					/>
+				</Tooltip>
+				<Tooltip title="eoliveir">
+					<Avatar
+						src="./avatars/77558.jpg"
+						sx={sxAvatar}
+					/>
+				</Tooltip>
+				<Tooltip title="jtrauque">
+					<Avatar
+						src="./avatars/77460.jpg"
+						sx={sxAvatar}
+					/>
+				</Tooltip>
+			</Stack>
 		</Stack>
 	);
 }

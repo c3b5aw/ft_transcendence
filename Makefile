@@ -51,3 +51,8 @@ dev-front: clean
 	@	docker-compose -f .docker-compose.dev.front.yml up -d --build
 	@	printf	"Shell into frontend_container:"
 	@	docker exec -it transcendence_frontend bash
+
+.PHONY: dev-both
+dev-both: clean
+	@	printf "Rebuilding containers...\n"
+	@	docker-compose -f .docker-compose.dev.both.yml up -d --build

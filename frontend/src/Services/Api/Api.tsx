@@ -12,6 +12,9 @@ export const apiBan = "/ban"
 export const apiModos = "/moderators"
 export const api2fa = "/2fa"
 export const apiAuth = "/auth"
+export const apiGame = "/game"
+export const apiMatchmaking = "/matchmaking"
+export const apiRooms = "/rooms"
 export const apiConnection = `${api}${apiAuth}/login`
 
 /*

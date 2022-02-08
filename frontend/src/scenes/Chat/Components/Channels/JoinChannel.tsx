@@ -20,7 +20,6 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 	const [joinChannel, setJoinChannel] = useState<Channel>();
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
 
-
 	const handleClose = () => {
 		setOpen(false);
 		setOpen2(false);
@@ -29,16 +28,15 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 	const handleJoinChannel = () => {
 		if (joinChannel !== undefined) {
 			if (!joinChannel.private) {
-				console.log(joinChannel);
 				channelJoin(joinChannel.name, "");
 			}
-			else
+			else {
 				channelJoin(joinChannel.name, passwordChannel);
-			handleClose();
+			}
 		}
 	}
 
-	function handleAddChannel(channel: Channel) {
+	const handleAddChannel = (channel: Channel) => {
 		if (!joinChannels.some(item => item.name === channel.name))
 			setJoinChannel(channel);
 		else {
@@ -49,7 +47,7 @@ function JoinChannel(props: { setOpen: Dispatch<SetStateAction<boolean>> }) {
 		}
 	}
 
-	function handleRemoveChannel(channel: Channel) {
+	const handleRemoveChannel = (channel: Channel) => {
 		setJoinChannel(undefined);
 	}
 	const ISearchBarChannel: ISearchBarChannel = {

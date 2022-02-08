@@ -491,7 +491,7 @@ ALTER TABLE ONLY public.users_achievements ALTER COLUMN id SET DEFAULT nextval('
 COPY public.achievements (id, name, description, points) FROM stdin;
 1	Première Victoire	Vous avez gagné votre premier match. Bravo!	10
 2	Dixième Victoire	Vous avez gagné votre dixième match. Bravo!	50
-3	3-0\tUne victoire écrasante !	Une victoire écrasante !	100
+3	10-0\tUne victoire écrasante !	Une victoire écrasante !	100
 \.
 
 

@@ -25,7 +25,7 @@ export class MatchsController {
 		resp.send({ total });
 	}
 
-	@Get('in-progress')
+	@Get('/in-progress')
 	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get all in progress matchs' })
@@ -34,12 +34,12 @@ export class MatchsController {
 		resp.send(matchs);
 	}
 
-	@Get(':id')
+	@Get('/:hash')
 	@UseGuards(JwtTwoFactorGuard)
 	@Header('Content-Type', 'application/json')
 	@ApiOperation({ summary: 'Get match details' })
-	async getMatch(@Param('id') id: number, @Res() resp: Response) {
-		const match: Match = await this.matchsService.findOneById( id );
+	async getMatchByHash(@Param('hash') hash: string, @Res() resp: Response) {
+		const match: Match = await this.matchsService.findOneByHash( hash );
 		if (!match)
 			return resp.status(404).json({ error: 'match not found' });
 		resp.send(match);

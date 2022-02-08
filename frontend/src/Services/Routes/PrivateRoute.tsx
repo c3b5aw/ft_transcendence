@@ -34,7 +34,6 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 						autoHideDuration: 2000,
 					});
 					socket.connect();
-					console.log(body);
 	
 					socket.on("onError", (data) => {
 						enqueueSnackbar(`${data.error}`, { 
@@ -45,13 +44,6 @@ const PrivateRoute = ({ children, roles }: { children: JSX.Element; roles: Array
 	
 					socket.on("onSuccess", (data) => {
 						enqueueSnackbar(`${data.message}`, { 
-							variant: 'success',
-							autoHideDuration: 2000,
-						});
-					});
-
-					socket.on("channel::onJoin", (data) => {
-						enqueueSnackbar(`Join ${data.name}`, { 
 							variant: 'success',
 							autoHideDuration: 2000,
 						});

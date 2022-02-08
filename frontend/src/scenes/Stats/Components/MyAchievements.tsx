@@ -56,8 +56,16 @@ const MyAchievements = (props: {user: User, setOpen: Dispatch<SetStateAction<boo
 							<List>
 								{achievements.map(achievement => (
 									<div key={achievement.achievement_id}>
-										<ListItem component="div" disablePadding sx={{marginBottom: "10px", marginTop: "10px"}}>
-											<Stack sx={{ width: "100%", height: 1}} alignItems="center" direction="row">
+										<ListItem
+											component="div"
+											disablePadding
+											sx={{marginBottom: "10px", marginTop: "10px"}}
+										>
+											<Stack
+												sx={{ width: "100%", height: 1}}
+												alignItems="center"
+												direction="row"
+											>
 												<Stack sx={{ width: "100%", height: 1}}
 													alignItems="center"
 													spacing={2}
