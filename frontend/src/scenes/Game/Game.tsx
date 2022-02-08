@@ -4,7 +4,7 @@ import GamePlayer from './GamePlayer';
 import GamePause from './GamePause';
 import GameBall from './GameBall';
 
-import { GAME_CANVAS_HEIGHT, GAME_BORDER_SIZE, GAME_TICKS_PER_SECOND, getFactors } from './GameConstants';
+import { GAME_BORDER_SIZE, GAME_TICKS_PER_SECOND, getFactors } from './GameConstants';
 import { GameMoves } from "./GameMoves";
 
 export default class Game {
@@ -63,7 +63,7 @@ export default class Game {
 		this.socket.on('game::match::onMove::down', (arg) => { this.onMoveDown(arg) });
 		this.socket.on('game::match::onMove::stop', (arg) => { this.onMoveStop(arg) });
 		this.socket.on('game::match::onCollide', (arg) => { this.onCollide(arg) });
-		this.socket.on('game::match::onEnd', (arg) => { this.onEnd() });
+		this.socket.on('game::match::onEnd', (arg) => { this.onEnd(arg) });
 
 		const player: GamePlayer | undefined = this.players.find(
 					player => player.id === this.myself.id);
@@ -78,6 +78,12 @@ export default class Game {
 	}
 
 	// EVENTS
+	public onSurrender() {
+		if (this.socket === null)
+			return ;
+		this.socket.emit('game::surrender');
+	}
+
 	private onKeyDown(event: KeyboardEvent) {
 		if (this.ended || this.socket === null || this.pause.paused)
 			return ;
@@ -191,7 +197,7 @@ export default class Game {
 		}
 	}
 
-	private onEnd() {
+	private onEnd(arg: any) {
 		this.pause.paused = false;
 		this.ended = true;
 
@@ -199,6 +205,7 @@ export default class Game {
 			clearInterval(this.intervalId);
 
 		this.redraw();
+		this.handleFinished(this.players, arg);
 	}
 
 	private onPause(arg: any) { this.pause.update(arg) }
@@ -318,6 +325,5 @@ export default class Game {
 		ctx.textAlign = 'center';
 
 		ctx.fillText('Game is Over', ctx.canvas.width / 2, ctx.canvas.height / 2);
-		this.handleFinished(this.players);
 	}
 }

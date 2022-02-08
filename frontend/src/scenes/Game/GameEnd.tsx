@@ -1,7 +1,10 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
+import { User } from "../../Services/Interface/Interface";
+import GameAchievementsRecent from "./GameAchievementsRecent";
+import GamePlayer from "./GamePlayer";
 import GameScoreBoard from "./GameScoreBoard";
 
-function GameEnd(props: any) {
+function GameEnd(props: {me: User, handleQuit: any, players: GamePlayer[], winner: any}) {
 
 	const handleClose = () => {
 		props.handleQuit();
@@ -24,11 +27,18 @@ function GameEnd(props: any) {
 			}}
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description">
-			<DialogTitle sx={{backgroundColor: "green", marginBottom: 2}}>
-				<Typography style={{fontFamily: "Myriad Pro", fontSize:"24px", color: "white"}}>Game is Over</Typography>
+			<DialogTitle sx={{
+					backgroundColor: props.winner.login === props.me.login ? "green" : "#C63627",
+					marginBottom: 2
+				}}
+			>
+				<Typography style={{fontFamily: "Myriad Pro", fontSize:"24px", color: "white"}}>{props.winner.login === props.me.login ? "Victoire !" : "Défaite !"}</Typography>
 			</DialogTitle>
 			<DialogContent>
-				<GameScoreBoard players={props.players} />
+				<Stack direction="column" spacing={2}>
+					<GameScoreBoard players={props.players} />
+					<GameAchievementsRecent />
+				</Stack>
 			</DialogContent>
 			<DialogActions>
 				<Button

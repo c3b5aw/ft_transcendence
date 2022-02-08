@@ -11,7 +11,6 @@ import useMe from '../../Services/Hooks/useMe';
 import GameCanvas from './GameCanvas';
 import GameButtons from './GameButtons';
 import GameScoreBoard from './GameScoreBoard';
-import GameModifiers from './GameModifiers';
 import Game from './Game';
 import { RandomBG } from './GameUtils';
 import GamePlayer from './GamePlayer';
@@ -22,6 +21,8 @@ export default function GameBoard() {
 	const [ randomBackground, setRandomBackground ] = useState(false);
 	const [isFinished, setIsFinished] = useState<boolean>(false);
 	const [players, setPlayers] = useState<GamePlayer[]>([]);
+	const [isSpectator, setIsSpectator] = useState<boolean>(false);
+	const [winner, setWinner] = useState(null);
 	
 	const [ playSound, setPlaySound ] = useState(true);
 	const [ play ] = useSound('/sounds/onCollide.mp3', { interrupt: true });
@@ -37,8 +38,10 @@ export default function GameBoard() {
 
 	const me = useMe();
 
-	const handleFinished = (players: GamePlayer[]) => {
+	const handleFinished = (players: GamePlayer[], arg: any) => {
 		setPlayers(players)
+		setWinner(arg.winner);
+		console.log(arg);
 		setIsFinished(true);
 	}
 
@@ -62,8 +65,12 @@ export default function GameBoard() {
 				navigate('/game');
 			else
 				game.current = new Game(gameSocket.current, res.data[0], me, handleFinished, playCollideSound);
+			
+			if (me.id !== res.data[0].player1 && me.id !== res.data[0].player2)
+				setIsSpectator(true);
 		});
-	}, [ hash, navigate, gameSocket, me ]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [hash, navigate, gameSocket, me]);
 
 	const onRandomBackground = () => {
 		setRandomBackground(!randomBackground);
@@ -79,9 +86,16 @@ export default function GameBoard() {
 			<Paper>
 				<Stack direction="column" spacing={2}>
 					<GameScoreBoard players={players}/>
-					<GameButtons me={me} game={game} backgroundCallback={ onRandomBackground }/>
+					<GameButtons
+						me={me}
+						game={game}
+						backgroundCallback={onRandomBackground}
+						setPlaySound={setPlaySound}
+						playSound={playSound}
+						isSpectator={isSpectator}
+					/>
 					<GameCanvas />
-					{isFinished ? <GameEnd handleQuit={handleQuit} players={players}/> : null}
+					{isFinished ? <GameEnd me={me} handleQuit={handleQuit} players={players} winner={winner}/> : null}
 				</Stack>
 			</Paper>
 		</Container>
