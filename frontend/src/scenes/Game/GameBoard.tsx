@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import useSound from 'use-sound';
 import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
 
@@ -14,9 +15,14 @@ import GameModifiers from './GameModifiers';
 import Game from './Game';
 import { RandomBG } from './GameUtils';
 
-
 export default function GameBoard() {
 	const [ randomBackground, setRandomBackground ] = useState(false);
+	
+	const [ playSound, setPlaySound ] = useState(true);
+	const [ play ] = useSound('/sounds/onCollide.mp3', { interrupt: true });
+
+	const playCollideSound = useCallback(() => { if (playSound) play() }, [ play, playSound ]);
+
 	const game = useRef<Game | null>(null);
 
 	const { hash } = useParams();
@@ -41,9 +47,9 @@ export default function GameBoard() {
 			if (res.data.length === 0)
 				navigate('/game');
 			else
-				game.current = new Game(gameSocket.current, res.data[0], me);
+				game.current = new Game(gameSocket.current, res.data[0], me, playCollideSound);
 		});
-	}, [ hash, navigate, gameSocket, me ]);
+	}, [ hash, navigate, gameSocket, me, playCollideSound ]);
 
 	const onRandomBackground = () => {
 		setRandomBackground(!randomBackground);

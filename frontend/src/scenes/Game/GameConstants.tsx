@@ -21,14 +21,14 @@ const GAME_BALL_START_Y: number = GAME_CANVAS_HEIGHT / 2;
 const GAME_BALL_RADIUS: number = 5;
 const GAME_BALL_DEFAULT_SPEED: number = 6;
 const GAME_BALL_MAX_SPEED: number = GAME_BALL_DEFAULT_SPEED * 4;
-const GAME_BALL_SPEED_INCREASE = 1.3;
+const GAME_BALL_SPEED_INCREASE = 1.2;
 const GAME_BALL_MIN_ANGLE = 40;
 
 // GAME PLAYER
 const GAME_PLAYER_HEIGHT: number = 100;
 const GAME_PLAYER_WIDTH: number = 5;
 const GAME_PLAYER_START_Y: number = GAME_CANVAS_HEIGHT / 2 - GAME_PLAYER_HEIGHT / 2;
-const GAME_PLAYER_SPEED: number = 25;
+const GAME_PLAYER_SPEED: number = 12;
 
 function getFactors(ctx: CanvasRenderingContext2D) {
 	const widthFactor = ctx.canvas.width / GAME_CANVAS_WIDTH;
