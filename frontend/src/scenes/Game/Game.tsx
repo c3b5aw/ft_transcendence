@@ -139,9 +139,6 @@ export default class Game {
 
 	// OBJECTS
 	private updateBall() {
-		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE)
-			this.ball.direction = -(this.ball.direction + 180);
-
 		this.ball.x += this.ball.speed * Math.sin(this.ball.direction * Math.PI / 180);
 		this.ball.y -= this.ball.speed * Math.cos(this.ball.direction * Math.PI / 180);
 	}
@@ -181,10 +178,11 @@ export default class Game {
 
 	private onCollide(arg: any) {
 		try {
-			const { ball } = arg;
+			const { ball, obstacle } = arg;
 			this.ball.update(ball);
 
-			this.playCollideSound();
+			if (obstacle === 'player')
+				this.playCollideSound();
 		} catch (e) {
 			console.log(`unpack: on_collide: error: ${e}`);
 		}

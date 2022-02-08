@@ -59,8 +59,10 @@ export class Game {
 	}
 
 	private updateBall() {
-		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE)
+		if (this.ball.y >= GAME_CANVAS_HEIGHT - GAME_BORDER_SIZE || this.ball.y <= GAME_BORDER_SIZE) {
 			this.ball.direction = -(this.ball.direction + 180);
+			this.emit('game::match::onCollide', { ball: this.ball.__repr__(), obstacle: 'wall' });
+		}
 
 		if (this.ball.x > GAME_CANVAS_WIDTH - GAME_PLAYER_WIDTH - GAME_BORDER_SIZE)
 			this.collidePlayer(this.players[1]);
@@ -79,7 +81,7 @@ export class Game {
 			if (Math.abs(this.ball.speed) < GAME_BALL_MAX_SPEED)
 				this.ball.speedUp();
 
-			this.emit('game::match::onCollide', { ball: this.ball.__repr__() });
+			this.emit('game::match::onCollide', { ball: this.ball.__repr__(), obstacle: 'player' });
 		}
 	}
 	/*
