@@ -4,7 +4,7 @@ import GamePlayer from './GamePlayer';
 import GamePause from './GamePause';
 import GameBall from './GameBall';
 
-import { GAME_CANVAS_HEIGHT, GAME_BORDER_SIZE, GAME_TICKS_PER_SECOND, getFactors } from './GameConstants';
+import { GAME_BORDER_SIZE, GAME_TICKS_PER_SECOND, getFactors } from './GameConstants';
 import { GameMoves } from "./GameMoves";
 
 export default class Game {
@@ -15,8 +15,9 @@ export default class Game {
 	private myself: any = null;
 
 	private hash: string = "";
-	public ended: boolean = false;
 	private joined: boolean = false;
+
+	public ended: boolean = false;
 
 	private intervalId: NodeJS.Timer | null = null;
 	private socket: Socket | null = null;

@@ -33,6 +33,10 @@ export class Match {
 	@ApiProperty({ description: "match type", example: MatchType.MATCH_BOT })
 	type: MatchType;
 
+	@Column({ type: 'int', default: -1, nullable: false })
+	@ApiProperty({ description: "winner id", example: 0 })
+	winner: number;
+
 	/*
 		PLAYER 1
 	*/

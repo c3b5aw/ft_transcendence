@@ -19,11 +19,11 @@ import { ChatModule } from './chat/chat.module';
 import { ChatMessage } from './chat/entities/message.entity';
 import { Channel, ChannelUser } from './chat/entities/channel.entity';
 import { Friend } from './friends/entities/friend.entity';
+import { GameModule } from './game/game.module';
 import { Match } from './matchs/entities/match.entity';
+import { TwoAuthFactorModule } from './2fa/2fa.module';
 import { UserStats } from './stats/entities/stats.entity';
 import { User } from './users/entities/user.entity';
-import { TwoAuthFactorModule } from './2fa/2fa.module';
-import { GameModule } from './game/game.module';
 
 @Module({
 	imports: [
@@ -48,8 +48,8 @@ import { GameModule } from './game/game.module';
 		MatchmakingModule, MatchsModule,
 		ProfileModule,
 		StatsModule,
-		UsersModule,
 		TwoAuthFactorModule,
+		UsersModule,
 	],
 	controllers: [AppController],
 	providers: [],

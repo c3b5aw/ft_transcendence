@@ -4,6 +4,14 @@ import { Repository, getManager } from 'typeorm';
 import { Response } from 'express';
 
 import { Achievement, UserAchievement } from './entities/achievement.entity';
+import { Match } from 'src/matchs/entities/match.entity';
+import { GAME_WIN_SCORE } from 'src/game/objects/game.constants';
+
+const ACHIVEMENTS_ID = {
+	'FIRST_WIN': 1,
+	'TENTH_WIN': 2,
+	'WON_EVERY_ROUND': 3
+}
 
 @Injectable()
 export class AchievementsService {
@@ -40,5 +48,52 @@ export class AchievementsService {
 				});
 			}
 		});
+	}
+
+	async ownAchievements(user_id: number, achievement_id: number) : Promise<boolean> {
+		const achievement: UserAchievement[] = await this.achievementRepository.query(`
+			SELECT *
+			FROM users_achievements
+			WHERE user_id = ${user_id}
+			AND achievement_id = ${achievement_id};
+		`);
+
+		return achievement.length > 0;
+	}
+
+	async unlockAchievement(user_id: number, achievement_id: number) : Promise<boolean> {
+		return this.achievementRepository.query(`
+			INSERT INTO users_achievements (user_id, achievement_id, unlocked_at)
+			VALUES (${user_id}, ${achievement_id}, NOW());
+		`);
+	}
+
+	async recentlyUnlocked(user_id: number) : Promise<UserAchievement[]> {
+		return this.achievementRepository.query(`
+			SELECT *
+			FROM users_achievements
+			WHERE user_id = ${user_id}
+			AND unlocked_at > NOW() - INTERVAL 1 MINUTE;
+		`);
+	}
+
+	async giveAchievement(user_id: number, achievement_id: number) {
+		const owned = await this.ownAchievements(user_id, achievement_id);
+		if (!owned)
+			await this.unlockAchievement(user_id, achievement_id);
+	}
+
+	async updateAchievements(player: { id: number, played: number, victories: number }, match: Match) {
+		const player_score = match.player1 === player.id ? match.player1_score : match.player2_score;
+		const opponent_score = match.player1 === player.id ? match.player2_score : match.player1_score;
+
+		if (player_score === GAME_WIN_SCORE && opponent_score === 0)
+			await this.giveAchievement(player.id, ACHIVEMENTS_ID.WON_EVERY_ROUND);
+
+		if (player.victories === 1)
+			await this.giveAchievement(player.id, ACHIVEMENTS_ID.FIRST_WIN);
+
+		if (player.victories === 10)
+			await this.giveAchievement(player.id, ACHIVEMENTS_ID.TENTH_WIN);
 	}
 }
