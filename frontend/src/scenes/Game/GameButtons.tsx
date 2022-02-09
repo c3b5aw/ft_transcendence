@@ -53,11 +53,11 @@ export default function GameButtons(props: any) {
 				</Button>
 			</Stack>
 			<Stack direction="row" spacing={3}>
-				{!props.playSound ?
-					<IconButton onClick={() => props.setPlaySound(true)}>
+				{props.playSound ?
+					<IconButton onClick={() => props.setPlaySound(false)}>
 						<VolumeUpIcon />
 					</IconButton> : 
-					<IconButton onClick={() => props.setPlaySound(false)}>
+					<IconButton onClick={() => props.setPlaySound(true)}>
 						<VolumeMuteIcon />
 					</IconButton>
 				}
