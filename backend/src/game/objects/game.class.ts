@@ -109,8 +109,6 @@ export class Game {
 			return ;
 
 		this.emit('game::match::onSurrender', { winner: winner.__repr__() });
-
-		this.winner = user.id;
 		this.end(winner.id);
 	}
 
@@ -239,7 +237,6 @@ export class Game {
 		clearInterval(this.intervalID);
 
 		const winner: GamePlayer = this.players.find(p => p.id === this.winner);
-
 		this.emit('game::match::onEnd', winner !== undefined ? { winner: winner.__repr__() } : { winner: null });
 		this.ended = true;
 
