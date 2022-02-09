@@ -77,7 +77,7 @@ export class AchievementsService {
 			FROM users_achievements AS ua
 			INNER JOIN achievements AS a on ua.achievement_id = a.id
 			WHERE user_id = ${user_id}
-			AND unlocked_at > NOW() - INTERVAL '1 minute';
+      AND unlocked_at > NOW() - INTERVAL '10 seconds';
 		`);
 	}
 
