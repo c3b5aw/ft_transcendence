@@ -6,13 +6,13 @@ import axios from "axios";
 import { api, apiChannel, apiDM } from "../../../../Services/Api/Api";
 import { useSnackbar } from 'notistack'
 import MySearchBarChat from "../MySearchBarChat";
-import useFriends from "../../Services/Hooks/useFriends";
+import useMeFriends from "../../Services/Hooks/useMeFriends";
 
 function MyDialogCreateChannel(props: {setOpen: Dispatch<SetStateAction<boolean>> }) {
 	const { setOpen } = props;
     const [openDM, setOpenDM] = React.useState(false);
 	const [friend, setFriend] = useState<User>();
-	const friends = useFriends();
+	const friends = useMeFriends();
 
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [passwordChannel, setPasswordChannel] = useState<string>("");

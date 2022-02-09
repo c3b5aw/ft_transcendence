@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
@@ -13,6 +13,7 @@ import { matchJoinNormal, matchLeave } from "../Services/wsGame";
 import { useNavigate } from "react-router-dom";
 import { socketMatchmaking } from "../../../Services/ws/utils";
 import { useSnackbar } from "notistack";
+import { PAGE } from "../../../Services/Interface/Interface";
 
 function RoomsView() {
 	const [rooms, setRooms] = useState<RoomV[]>([]);
@@ -22,11 +23,11 @@ function RoomsView() {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const handleClose = () => {
-		navigate(-1);
+		navigate(`${apiGame}`);
 	}
 
 	useEffect(() => {
-		const fetchRooms = async () => {
+		const interval = setInterval(async () => {
 			try {
 				const response = await axios.get(`${api}${apiMatchmaking}${apiRooms}`)
 				setRooms(response.data);
@@ -37,11 +38,7 @@ function RoomsView() {
 					autoHideDuration: 3000,
 				});
 			}
-		}
-		const interval = setInterval(() =>{
-			fetchRooms();
-		}, 1000)
-		fetchRooms();
+		}, 2000)
 		return () => clearInterval(interval);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -69,6 +66,13 @@ function RoomsView() {
 			<MyChargingDataAlert />
 		);
 	}
+
+	const disabledButton = () => {
+		if (rooms.length > 0 && rooms.find(room => room.owner.id === me.id) !== undefined)
+			return (true);
+		return (false);
+	}
+
 	return (
 		<Dialog
 			open={true}
@@ -83,20 +87,9 @@ function RoomsView() {
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-            <MyAppBarClose setOpen={handleClose} />
+            <MyAppBarClose setOpen={handleClose} name={PAGE.MENU_PARTIE}/>
 			<DialogContent>
-				<Stack
-					direction="row"
-					sx={{width: 1, marginBottom: "15px"}}
-					justifyContent="space-between"
-					alignItems="center"
-				>
-					<Typography variant="h4" style={{fontFamily: "Myriad Pro", color: "white"}}>Rooms</Typography>
-					<Button variant="contained" onClick={() => setOpenCreateRoom(true)}>
-						<Typography variant="h6" style={{fontFamily: "Myriad Pro", color: "white"}}>Create new room</Typography>
-					</Button>
-				</Stack>
-				<Stack sx={{backgroundColor: 'white', height: 0.9, width: 1, borderRadius: 5}}>
+				<Stack sx={{backgroundColor: 'white', height: 1, width: 1, borderRadius: 5}}>
 					<TableContainer sx={{borderRadius: 5}}>
 						<Table>
 							<TableHead sx={{backgroundColor: "orange"}}>
@@ -130,6 +123,7 @@ function RoomsView() {
 										<TableCell align="center">
 											{room.owner.id !== me.id ?
 												<IconButton
+													disabled={disabledButton()}
 													onClick={() => handleJoinRoom(room)}
 												>
 													<ArrowForwardIcon />
@@ -149,6 +143,42 @@ function RoomsView() {
 					</TableContainer>
 				</Stack>
 			</DialogContent>
+			<DialogActions>
+				<Stack
+					direction="row"
+					sx={{width: 1, marginBottom: "15px"}}
+					justifyContent="space-around"
+					alignItems="center"
+					spacing={2}
+				>
+					<Button
+						variant="contained"
+						color="success"
+						disabled={disabledButton()}
+						onClick={() => setOpenCreateRoom(true)}
+					>
+						<Typography
+							variant="h6"
+							style={{fontFamily: "Myriad Pro", color: disabledButton() ? "grey" : "white"}}
+						>
+							Create new room
+						</Typography>
+					</Button>
+					<Button
+						variant="contained"
+						color="success"
+						disabled={disabledButton()}
+						onClick={() => navigate(`${apiGame}${apiMatchmaking}`)}
+					>
+						<Typography
+							variant="h6"
+							style={{fontFamily: "Myriad Pro", color: disabledButton() ? "grey" : "white"}}
+						>
+							Rechercher une partie classée
+						</Typography>
+					</Button>
+				</Stack>
+			</DialogActions>
 			{openCreateRoom ? <CreateRoom me={me} setOpen={setOpenCreateRoom} /> : null}
 		</Dialog>
 	);

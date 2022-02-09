@@ -8,7 +8,7 @@ import { GAME_BORDER_SIZE, GAME_TICKS_PER_SECOND, getFactors } from './GameConst
 import { GameMoves } from "./GameMoves";
 
 export default class Game {
-	private players: GamePlayer[] = [];
+	public players: GamePlayer[] = [];
 	private ball: GameBall = new GameBall();
 
 	private pause: GamePause = new GamePause();
@@ -16,6 +16,7 @@ export default class Game {
 
 	private hash: string = "";
 	private joined: boolean = false;
+	public handleFinished: any = null;
 
 	public ended: boolean = false;
 
@@ -24,17 +25,16 @@ export default class Game {
 
 	private lastMove: GameMoves = GameMoves.MOVE_STOP;
 
-	private playCollideSound: Function;
+	public playCollideSound: Function | null = null;
 
-	constructor(socket: Socket | null, matchData: any, myself: any, playCollideSound: Function) {
-		this.playCollideSound = playCollideSound;
-		
+	constructor(socket: Socket | null, matchData: any, myself: any, handleFinished: any) {
 		if (socket === null)
 			return ;
 
 		this.socket = socket;
 		this.myself = myself;
 		this.hash = matchData.hash;
+		this.handleFinished = handleFinished;
 
 		this.players[0] = new GamePlayer(matchData.player1, matchData.player1_login, 0, matchData.player1_score);
 		this.players[1] = new GamePlayer(matchData.player2, matchData.player2_login, 1, matchData.player2_score);
@@ -61,7 +61,7 @@ export default class Game {
 		this.socket.on('game::match::onMove::down', (arg) => { this.onMoveDown(arg) });
 		this.socket.on('game::match::onMove::stop', (arg) => { this.onMoveStop(arg) });
 		this.socket.on('game::match::onCollide', (arg) => { this.onCollide(arg) });
-		this.socket.on('game::match::onEnd', (arg) => { this.onEnd() });
+		this.socket.on('game::match::onEnd', (arg) => { this.onEnd(arg) });
 
 		const player: GamePlayer | undefined = this.players.find(
 					player => player.id === this.myself.id);
@@ -76,6 +76,12 @@ export default class Game {
 	}
 
 	// EVENTS
+	public onSurrender() {
+		if (this.socket === null)
+			return ;
+		this.socket.emit('game::surrender');
+	}
+
 	private onKeyDown(event: KeyboardEvent) {
 		if (this.ended || this.socket === null || this.pause.paused)
 			return ;
@@ -182,14 +188,14 @@ export default class Game {
 			const { ball, obstacle } = arg;
 			this.ball.update(ball);
 
-			if (obstacle === 'player')
+			if (obstacle === 'player' && this.playCollideSound)
 				this.playCollideSound();
 		} catch (e) {
 			console.log(`unpack: on_collide: error: ${e}`);
 		}
 	}
 
-	private onEnd() {
+	private onEnd(arg: any) {
 		this.pause.paused = false;
 		this.ended = true;
 
@@ -197,6 +203,7 @@ export default class Game {
 			clearInterval(this.intervalId);
 
 		this.redraw();
+		this.handleFinished(this.players, arg);
 	}
 
 	private onPause(arg: any) { this.pause.update(arg) }

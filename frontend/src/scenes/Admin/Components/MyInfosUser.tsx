@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router';
 import { api, apiAdmin, apiBan, apiChannel, apiChannels, apiChat, apiStats, apiUsers } from "../../../Services/Api/Api";
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { User } from '../../../Services/Interface/Interface';
-import { Avatar, Box, IconButton, Paper, Stack, Switch, Typography } from '@mui/material';
+import { Avatar, IconButton, Paper, Stack, Switch, Typography } from '@mui/material';
 import { ROLE } from '../../../Services/Api/Role';
 import { useSnackbar } from 'notistack'
 import { Channel } from '../../Chat/Services/interface';
@@ -18,7 +18,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import NumbersIcon from '@mui/icons-material/Numbers';
 import MyChargingDataAlert from '../../../components/MyChargingDataAlert';
 import useCountMatchs from '../Services/useCountMatchs';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 
 export default function MyInfosUser() {
 
@@ -203,13 +202,6 @@ export default function MyInfosUser() {
 		);
 	}
 
-	const columns: GridColDef[] = [
-		{ field: 'id', headerName: 'ID', width: 70, align: 'center', flex: 1, headerAlign: 'center', headerClassName: 'super-app-theme--header',},
-		{ field: 'owner_login', headerName: 'Owner', width: 130, align: 'center', flex: 1, headerAlign: 'center',},
-		{ field: 'name', headerName: 'Name', width: 130, align: 'center', flex: 1, headerAlign: 'center', },
-		{ field: 'private', headerName: 'Status', width: 130, align: 'center', flex: 1, headerAlign: 'center', },
-	];
-
 	const countMatchs = useCountMatchs();
 
 	if (users === undefined || countMatchs === undefined)
@@ -258,24 +250,6 @@ export default function MyInfosUser() {
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<Box
-				sx={{
-					height: 300,
-					width: 1,
-					'& .super-app-theme--header': {
-					backgroundColor: 'rgba(255, 7, 0, 0.55)',
-					},
-				}}
-				>
-				<DataGrid
-					rows={channels}
-					columns={columns}
-					pageSize={5}
-					rowsPerPageOptions={[5]}
-					checkboxSelection
-					sx={{backgroundColor: 'white'}}
-				/>
-			</Box>
 		</Stack>
 	);
 }

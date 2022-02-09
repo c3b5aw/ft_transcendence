@@ -1,19 +1,19 @@
 import { Dialog, DialogContent, Stack, Typography } from "@mui/material";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MyAppBarClose from "../../../components/MyAppBarClose";
-import { apiGame } from "../../../Services/Api/Api";
+import { apiGame, apiRoomsView } from "../../../Services/Api/Api";
+import { PAGE } from "../../../Services/Interface/Interface";
 import { socketMatchmaking } from "../../../Services/ws/utils";
 import { MATCHTYPE } from "../Services/utils";
 import { matchJoinRanked, matchLeave } from "../Services/wsGame";
 
-function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
-	const { setOpen } = props;
+function MatchMaking() {
 	const navigate = useNavigate();
 
 	const handleClose = () => {
 		matchLeave();
-		setOpen(false);
+		navigate(`${apiGame}${apiRoomsView}`);
 	}
 
 	useEffect(() => {
@@ -41,7 +41,7 @@ function MatchMaking(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-            <MyAppBarClose setOpen={handleClose} />
+            <MyAppBarClose setOpen={handleClose} name={PAGE.MATCHMAKING}/>
 			<DialogContent>
 				<Stack sx={{height: 1, alignItems: "center", justifyContent: "center"}}>
 					<Typography

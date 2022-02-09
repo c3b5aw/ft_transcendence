@@ -11,17 +11,24 @@ import useMe from '../../Services/Hooks/useMe';
 import GameCanvas from './GameCanvas';
 import GameButtons from './GameButtons';
 import GameScoreBoard from './GameScoreBoard';
-import GameModifiers from './GameModifiers';
 import Game from './Game';
 import { RandomBG } from './GameUtils';
+import GamePlayer from './GamePlayer';
+import MyChargingDataAlert from '../../components/MyChargingDataAlert';
+import GameEnd from './GameEnd';
+import { matchLeave } from './Services/wsGame';
 
 export default function GameBoard() {
-	const [ randomBackground, setRandomBackground ] = useState(false);
+	const [randomBackground, setRandomBackground] = useState(false);
+	const [isFinished, setIsFinished] = useState<boolean>(false);
+	const [players, setPlayers] = useState<GamePlayer[]>([]);
+	const [isSpectator, setIsSpectator] = useState<boolean>(false);
+	const [winner, setWinner] = useState(null);
 	
 	const [ playSound, setPlaySound ] = useState(true);
 	const [ play ] = useSound('/sounds/onCollide.mp3', { interrupt: true });
 
-	const playCollideSound = useCallback(() => { if (playSound) play() }, [ play, playSound ]);
+	const playCollideSound = useCallback(() => { console.log(playSound); if (playSound) play() }, [ play, playSound ]);
 
 	const game = useRef<Game | null>(null);
 
@@ -32,10 +39,27 @@ export default function GameBoard() {
 
 	const me = useMe();
 
+	const handleFinished = (players: GamePlayer[], arg: any) => {
+		setPlayers(players)
+		setWinner(arg.winner);
+		setIsFinished(true);
+	}
+
+	const handleQuit = () => {
+		setIsFinished(false);
+		matchLeave();
+		navigate('/game/roomview');
+	}
+
+	useEffect(() => {
+		if (game.current) {
+			game.current.playCollideSound = playCollideSound;
+		}
+	}, [playCollideSound]);
+
 	useEffect(() => {
 		if (me === undefined || me === null)
 			return ;
-
 		gameSocket.current = io('/game', {
 			withCredentials: true
 		})
@@ -47,23 +71,36 @@ export default function GameBoard() {
 			if (res.data.length === 0)
 				navigate('/game');
 			else
-				game.current = new Game(gameSocket.current, res.data[0], me, playCollideSound);
+				game.current = new Game(gameSocket.current, res.data[0], me, handleFinished);
+			
+			if (me.id !== res.data[0].player1 && me.id !== res.data[0].player2)
+				setIsSpectator(true);
 		});
-	}, [ hash, navigate, gameSocket, me, playCollideSound ]);
+	}, [hash, navigate, gameSocket, me]);
 
 	const onRandomBackground = () => {
 		setRandomBackground(!randomBackground);
-
 		document.getElementById('game-canvas')!.style.background = randomBackground ? RandomBG() : 'black';
 	}
-
+	if (me === undefined) {
+		return (
+			<MyChargingDataAlert />
+		);
+	}
 	return (
 		<Container maxWidth="xl">
 			<Paper>
-				<GameScoreBoard />
-				<GameModifiers backgroundCallback={ onRandomBackground } />
-				{/* <GameButtons startGame={ play } stopGame= { stopGame } pauseGame={ pause } /> */}
+				<GameScoreBoard players={ players}/>
+				<GameButtons
+					me={me}
+					game={game}
+					backgroundCallback={onRandomBackground}
+					setPlaySound={setPlaySound}
+					playSound={playSound}
+					isSpectator={isSpectator}
+				/>
 				<GameCanvas />
+				{isFinished ? <GameEnd me={me} handleQuit={handleQuit} players={players} winner={winner}/> : null}
 			</Paper>
 		</Container>
 	);

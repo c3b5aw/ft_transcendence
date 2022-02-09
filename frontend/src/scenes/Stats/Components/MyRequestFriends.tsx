@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Dialog, DialogContent, Divider, List, ListItem, Paper, Stack, Typography } from "@mui/material";
-import { Friend } from "../../../Services/Interface/Interface";
+import { Friend, PAGE } from "../../../Services/Interface/Interface";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 import axios from "axios";
@@ -78,32 +78,31 @@ const MyRequestFriends = (props: {setOpen: Dispatch<SetStateAction<boolean>>}) =
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-			<MyAppBarClose setOpen={setOpen}/>
+			<MyAppBarClose setOpen={setOpen} name={PAGE.REQUESTED}/>
 			<DialogContent sx={{alignItems: "center"}}>
-				<Stack sx={{
-					width: "auto",
-					backgroundColor: 'white',
-					borderRadius: {xs: 1, sm: 2, md: 3, lg: 4},
-				}}
-					direction="column"
-				>
-					<Box sx={{backgroundColor: "orange", borderTopLeftRadius: 3, borderTopRightRadius: 3}}>
-						<Typography
-							variant="h5"
-							style={{fontFamily: "Myriad Pro", color:'black', margin: "1%"}}
-						>
-							Demandes d'amis
-						</Typography>
-					</Box>
-					<Divider />
-					<Paper
-						style={{minHeight: 1, minWidth: 0.9, overflow: 'auto'}}
-						elevation={0}
+				{friendsPending.length > 0 ?
+					<Stack sx={{
+						width: "auto",
+						borderRadius: {xs: 1, sm: 2, md: 3, lg: 4},
+					}}
+						direction="column"
 					>
-						{ friendsPending.length > 0 ?
+						<Box sx={{backgroundColor: "orange", borderTopLeftRadius: 3, borderTopRightRadius: 3}}>
+							<Typography
+								variant="h5"
+								style={{fontFamily: "Myriad Pro", color:'black', margin: "1%"}}
+							>
+								Demandes d'amis
+							</Typography>
+						</Box>
+						<Divider />
+						<Paper
+							style={{minHeight: 1, minWidth: 0.9, overflow: 'auto'}}
+							elevation={0}
+						>
 							<List>
 								{friendsPending.map(friendPending => (
-									<div key={friendPending.id}>
+									<div key={friendPending.id + 1}>
 										<ListItem
 											component="div"
 											disablePadding
@@ -149,10 +148,10 @@ const MyRequestFriends = (props: {setOpen: Dispatch<SetStateAction<boolean>>}) =
 										<Divider />
 									</div>
 								))}
-							</List> : null
-						}
-					</Paper>
-				</Stack>
+							</List>
+						</Paper>
+					</Stack> : <Typography variant="h3" style={{fontFamily: "Myriad Pro", color: "grey", textAlign: "center"}}>Aucune demande d'amis</Typography>
+				}
 			</DialogContent>
 		</Dialog>
 	);

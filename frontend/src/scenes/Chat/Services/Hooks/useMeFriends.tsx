@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack'
 import { User } from "../../../../Services/Interface/Interface";
 import { api, apiFriends, apiMe } from "../../../../Services/Api/Api";
 
-function useFriends() {
+function useMeFriends() {
 	const { enqueueSnackbar } = useSnackbar();
 	const [friends, setFriends] = useState<User[]>([]);
 
@@ -26,4 +26,4 @@ function useFriends() {
 	return (friends);
 }
 
-export default useFriends;
+export default useMeFriends;

@@ -4,7 +4,7 @@ import MyAppBarClose from "../../../components/MyAppBarClose";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import axios from "axios";
 import { api, apiGame, apiMatch } from "../../../Services/Api/Api";
-import { Match } from "../../../Services/Interface/Interface";
+import { Match, PAGE } from "../../../Services/Interface/Interface";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
@@ -92,9 +92,8 @@ function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-			<MyAppBarClose setOpen={setOpen} />
+			<MyAppBarClose setOpen={setOpen} name={PAGE.MATCHS} />
 			<DialogContent>
-				<Typography variant="h4" style={{fontFamily: "Myriad Pro", color: "white"}}>Matchs en cours :</Typography>
 				<Stack sx={{backgroundColor: 'white', height: 0.9, width: 1, borderRadius: 5}}>
 					<TableContainer sx={{borderRadius: 5}}>
 						<Table>
