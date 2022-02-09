@@ -41,7 +41,6 @@ export default function GameBoard() {
 	const handleFinished = (players: GamePlayer[], arg: any) => {
 		setPlayers(players)
 		setWinner(arg.winner);
-		console.log(arg);
 		setIsFinished(true);
 	}
 
