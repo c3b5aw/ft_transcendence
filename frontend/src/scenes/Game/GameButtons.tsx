@@ -24,7 +24,7 @@ export default function GameButtons(props: any) {
 	}
 
 	return (
-		<Stack direction="row" justifyContent="space-around" sx={{width: 1}}>
+		<Stack direction="row" justifyContent="space-around" sx={{width: 1, padding: 1}}>
 			<Stack direction="row" justifyContent="center" alignItems="center" spacing={{xs: 1, sm: 5}}>
 				{!props.isSpectator ? 
 					<React.Fragment>

@@ -68,8 +68,7 @@ export default function GameBoard() {
 			if (me.id !== res.data[0].player1 && me.id !== res.data[0].player2)
 				setIsSpectator(true);
 		});
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [hash, navigate, gameSocket, me]);
+	}, [hash, navigate, gameSocket, me, playCollideSound]);
 
 	const onRandomBackground = () => {
 		setRandomBackground(!randomBackground);
@@ -83,19 +82,17 @@ export default function GameBoard() {
 	return (
 		<Container maxWidth="xl">
 			<Paper>
-				<Stack direction="column" spacing={2}>
-					<GameScoreBoard players={players}/>
-					<GameButtons
-						me={me}
-						game={game}
-						backgroundCallback={onRandomBackground}
-						setPlaySound={setPlaySound}
-						playSound={playSound}
-						isSpectator={isSpectator}
-					/>
-					<GameCanvas />
-					{isFinished ? <GameEnd me={me} handleQuit={handleQuit} players={players} winner={winner}/> : null}
-				</Stack>
+				<GameScoreBoard players={players}/>
+				<GameButtons
+					me={me}
+					game={game}
+					backgroundCallback={onRandomBackground}
+					setPlaySound={setPlaySound}
+					playSound={playSound}
+					isSpectator={isSpectator}
+				/>
+				<GameCanvas />
+				{isFinished ? <GameEnd me={me} handleQuit={handleQuit} players={players} winner={winner}/> : null}
 			</Paper>
 		</Container>
 	);
