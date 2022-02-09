@@ -32,7 +32,7 @@ export class AchievementsService {
 			SELECT ua.achievement_id, ua.unlocked_at,
 				a.name as achievement_name,
 				a.description as achievement_description,
-			CONCAT('/api/achievements/', a.id, '/avatar') as achievement_avatar
+				CONCAT('/api/achievements/', a.id, '/avatar') as achievement_avatar
 			FROM users_achievements AS ua
 			INNER JOIN achievements AS a on ua.achievement_id = a.id
 			WHERE ua.user_id = ${id};
@@ -70,8 +70,12 @@ export class AchievementsService {
 
 	async recentlyUnlocked(user_id: number) : Promise<UserAchievement[]> {
 		return this.achievementRepository.query(`
-			SELECT *
-			FROM users_achievements
+			SELECT ua.achievement_id, ua.unlocked_at,
+				a.name as achievement_name,
+				a.description as achievement_description,
+				CONCAT('/api/achievements/', a.id, '/avatar') as achievement_avatar
+			FROM users_achievements AS ua
+			INNER JOIN achievements AS a on ua.achievement_id = a.id
 			WHERE user_id = ${user_id}
 			AND unlocked_at > NOW() - INTERVAL '1 minute';
 		`);
