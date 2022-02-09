@@ -16,6 +16,7 @@ import { RandomBG } from './GameUtils';
 import GamePlayer from './GamePlayer';
 import MyChargingDataAlert from '../../components/MyChargingDataAlert';
 import GameEnd from './GameEnd';
+import { matchLeave } from './Services/wsGame';
 
 export default function GameBoard() {
 	const [ randomBackground, setRandomBackground ] = useState(false);
@@ -46,6 +47,7 @@ export default function GameBoard() {
 
 	const handleQuit = () => {
 		setIsFinished(false);
+		matchLeave();
 		navigate('/game/roomview');
 	}
 

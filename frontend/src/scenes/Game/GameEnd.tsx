@@ -3,21 +3,25 @@ import { User } from "../../Services/Interface/Interface";
 import GameAchievementsRecent from "./GameAchievementsRecent";
 import GamePlayer from "./GamePlayer";
 import GameScoreBoard from "./GameScoreBoard";
+import { MATCHTYPE } from "./Services/utils";
+import { matchJoinNormal, matchLeave } from "./Services/wsGame";
 
 function GameEnd(props: {me: User, handleQuit: any, players: GamePlayer[], winner: any}) {
 
-	const handleClose = () => {
+	const handleQuit = () => {
 		props.handleQuit();
 	};
 
 	const handleLaunchGame = () => {
-		handleClose();
+		matchLeave();
+		matchJoinNormal(MATCHTYPE.MATCH_NORMAL, props.me.login);
+		handleQuit();
 	}
 
 	return (
 		<Dialog
 			open={true}
-			onClose={handleClose}
+			onClose={handleQuit}
 			PaperProps={{
 				style: {
 				  backgroundColor: '#FFFFFF',
@@ -49,7 +53,7 @@ function GameEnd(props: {me: User, handleQuit: any, players: GamePlayer[], winne
 					Relancer une partie
 				</Button>
 				<Button
-					onClick={handleClose}
+					onClick={handleQuit}
 					variant="contained"
 					color="error"
 				>
