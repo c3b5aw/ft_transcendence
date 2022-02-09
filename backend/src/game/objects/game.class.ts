@@ -25,7 +25,7 @@ export class Game {
 	private intervalID: any;
 	private postGameCallbak: Function = () => {};
 
-	constructor(match: Match, socket: any, postGameCallback: Function) {
+	constructor(match: any, socket: any, postGameCallback: Function) {
 		this.socket = socket;
 
 		this.id = match.id;
@@ -33,8 +33,8 @@ export class Game {
 
 		this.postGameCallbak = postGameCallback;
 
-		this.players[0] = new GamePlayer(match.player1, 0);
-		this.players[1] = new GamePlayer(match.player2, 1);
+		this.players[0] = new GamePlayer(match.player1, match.player1_login, 0);
+		this.players[1] = new GamePlayer(match.player2, match.player2_login, 1);
 
 		this.pause.Pause(null, GAME_START_MAX_WAIT);
 
@@ -109,8 +109,6 @@ export class Game {
 			return ;
 
 		this.emit('game::match::onSurrender', { winner: winner.__repr__() });
-
-		this.winner = user.id;
 		this.end(winner.id);
 	}
 
@@ -239,7 +237,6 @@ export class Game {
 		clearInterval(this.intervalID);
 
 		const winner: GamePlayer = this.players.find(p => p.id === this.winner);
-
 		this.emit('game::match::onEnd', winner !== undefined ? { winner: winner.__repr__() } : { winner: null });
 		this.ended = true;
 
