@@ -33,9 +33,9 @@ export class Game {
 
 		this.postGameCallbak = postGameCallback;
 
-		this.players[0] = new GamePlayer(match.player1, match.player1_login, 0);
-		this.players[1] = new GamePlayer(match.player2, match.player2_login, 1);
-
+		this.players[0] = new GamePlayer(match.player1, 0);
+		this.players[1] = new GamePlayer(match.player2, 1);
+	
 		this.pause.Pause(null, GAME_START_MAX_WAIT);
 
 		this.intervalID = setInterval(this.onTick.bind(this), 1000 / GAME_TICKS_PER_SECOND);
