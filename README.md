@@ -11,7 +11,7 @@
 
 - [@eoliveir](https://github.com/Razgouls) - Frontend
 - [@jtrauque](https://github.com/jtrauque) - Game logic
-- [@c3b5aw](https://www.github.com/c3b5aw) - Docker/Backend
+- [@c3b5aw](https://www.github.com/c3b5aw) - Docker/Backend - Game frontend
 
 ## Tech Stack
 
@@ -28,7 +28,7 @@
 
 - OAuth 42 intra
 - 2FA
-- Pong Game         -   (In progress)
+- Pong Game
 - Friends
 - Chat
 - Achievements

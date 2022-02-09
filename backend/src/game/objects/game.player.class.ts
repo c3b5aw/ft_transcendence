@@ -15,8 +15,9 @@ export class GamePlayer {
 
 	public score: number;
 
-	constructor(id: number, slot: number) {
+	constructor(id: number, login: string, slot: number) {
 		this.id = id;
+		this.login = login;
 		this.slot = slot;
 		
 		this.score = 0;
