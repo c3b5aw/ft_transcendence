@@ -4,7 +4,7 @@ import useSound from 'use-sound';
 import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
 
-import { Paper, Container, Stack } from "@mui/material";
+import { Paper, Container } from "@mui/material";
 
 import useMe from '../../Services/Hooks/useMe';
 
