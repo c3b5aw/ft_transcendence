@@ -73,7 +73,7 @@ export class AchievementsService {
 			SELECT *
 			FROM users_achievements
 			WHERE user_id = ${user_id}
-			AND unlocked_at > NOW() - INTERVAL 1 MINUTE;
+			AND unlocked_at > NOW() - INTERVAL '1 minute';
 		`);
 	}
 
