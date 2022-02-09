@@ -19,7 +19,7 @@ import GameEnd from './GameEnd';
 import { matchLeave } from './Services/wsGame';
 
 export default function GameBoard() {
-	const [ randomBackground, setRandomBackground ] = useState(false);
+	const [randomBackground, setRandomBackground] = useState(false);
 	const [isFinished, setIsFinished] = useState<boolean>(false);
 	const [players, setPlayers] = useState<GamePlayer[]>([]);
 	const [isSpectator, setIsSpectator] = useState<boolean>(false);
@@ -28,7 +28,7 @@ export default function GameBoard() {
 	const [ playSound, setPlaySound ] = useState(true);
 	const [ play ] = useSound('/sounds/onCollide.mp3', { interrupt: true });
 
-	const playCollideSound = useCallback(() => { if (playSound) play() }, [ play, playSound ]);
+	const playCollideSound = useCallback(() => { console.log(playSound); if (playSound) play() }, [ play, playSound ]);
 
 	const game = useRef<Game | null>(null);
 
@@ -52,6 +52,12 @@ export default function GameBoard() {
 	}
 
 	useEffect(() => {
+		if (game.current) {
+			game.current.playCollideSound = playCollideSound;
+		}
+	}, [playCollideSound]);
+
+	useEffect(() => {
 		if (me === undefined || me === null)
 			return ;
 		gameSocket.current = io('/game', {
@@ -65,12 +71,12 @@ export default function GameBoard() {
 			if (res.data.length === 0)
 				navigate('/game');
 			else
-				game.current = new Game(gameSocket.current, res.data[0], me, handleFinished, playCollideSound);
+				game.current = new Game(gameSocket.current, res.data[0], me, handleFinished);
 			
 			if (me.id !== res.data[0].player1 && me.id !== res.data[0].player2)
 				setIsSpectator(true);
 		});
-	}, [hash, navigate, gameSocket, me, playCollideSound]);
+	}, [hash, navigate, gameSocket, me]);
 
 	const onRandomBackground = () => {
 		setRandomBackground(!randomBackground);
@@ -84,7 +90,7 @@ export default function GameBoard() {
 	return (
 		<Container maxWidth="xl">
 			<Paper>
-				<GameScoreBoard players={players}/>
+				<GameScoreBoard players={ players}/>
 				<GameButtons
 					me={me}
 					game={game}

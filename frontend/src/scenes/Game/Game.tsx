@@ -25,11 +25,9 @@ export default class Game {
 
 	private lastMove: GameMoves = GameMoves.MOVE_STOP;
 
-	private playCollideSound: Function;
+	public playCollideSound: Function | null = null;
 
-	constructor(socket: Socket | null, matchData: any, myself: any, handleFinished: any, playCollideSound: Function) {
-		this.playCollideSound = playCollideSound;
-		
+	constructor(socket: Socket | null, matchData: any, myself: any, handleFinished: any) {
 		if (socket === null)
 			return ;
 
@@ -190,7 +188,7 @@ export default class Game {
 			const { ball, obstacle } = arg;
 			this.ball.update(ball);
 
-			if (obstacle === 'player')
+			if (obstacle === 'player' && this.playCollideSound)
 				this.playCollideSound();
 		} catch (e) {
 			console.log(`unpack: on_collide: error: ${e}`);

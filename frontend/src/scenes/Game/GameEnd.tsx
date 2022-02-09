@@ -4,7 +4,7 @@ import GameAchievementsRecent from "./GameAchievementsRecent";
 import GamePlayer from "./GamePlayer";
 import GameScoreBoard from "./GameScoreBoard";
 import { MATCHTYPE } from "./Services/utils";
-import { matchJoinNormal, matchLeave } from "./Services/wsGame";
+import { matchJoinRanked, matchLeave } from "./Services/wsGame";
 
 function GameEnd(props: {me: User, handleQuit: any, players: GamePlayer[], winner: any}) {
 
@@ -14,7 +14,7 @@ function GameEnd(props: {me: User, handleQuit: any, players: GamePlayer[], winne
 
 	const handleLaunchGame = () => {
 		matchLeave();
-		matchJoinNormal(MATCHTYPE.MATCH_NORMAL, props.me.login);
+		matchJoinRanked(MATCHTYPE.MATCH_RANKED);
 		handleQuit();
 	}
 
