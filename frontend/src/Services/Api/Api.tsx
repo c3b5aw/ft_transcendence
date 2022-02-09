@@ -15,6 +15,7 @@ export const apiAuth = "/auth"
 export const apiGame = "/game"
 export const apiMatchmaking = "/matchmaking"
 export const apiRooms = "/rooms"
+export const apiRoomsView = "/roomview"
 export const apiConnection = `${api}${apiAuth}/login`
 export const apiBlock = "/block";
 

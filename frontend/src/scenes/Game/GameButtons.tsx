@@ -3,6 +3,7 @@ import VolumeMuteIcon from '@mui/icons-material/VolumeMute';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import { apiGame, apiRoomsView } from '../../Services/Api/Api';
 
 export default function GameButtons(props: any) {
 	const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function GameButtons(props: any) {
 
 	const handleQuit = () => {
 		if (props.isSpectator)
-			navigate(-1);
+			navigate(`${apiGame}${apiRoomsView}`);
 		else {
 			if (props.game !== null) {
 				props.game.current.onSurrender();
@@ -49,7 +50,7 @@ export default function GameButtons(props: any) {
 					color="error"
 					onClick={handleQuit}
 				>
-					<Typography>Quitter</Typography>
+					<Typography>{props.isSpectator ? "Quitter" : "Abandonner"}</Typography>
 				</Button>
 			</Stack>
 			<Stack direction="row" spacing={3}>

@@ -1,21 +1,22 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { apiGame, apiMatchmaking } from "../../Services/Api/Api";
 import { User } from "../../Services/Interface/Interface";
 import GameAchievementsRecent from "./GameAchievementsRecent";
 import GamePlayer from "./GamePlayer";
 import GameScoreBoard from "./GameScoreBoard";
-import { MATCHTYPE } from "./Services/utils";
-import { matchJoinRanked, matchLeave } from "./Services/wsGame";
+import { matchLeave } from "./Services/wsGame";
 
 function GameEnd(props: {me: User, handleQuit: any, players: GamePlayer[], winner: any}) {
-
+	const navigate = useNavigate();
 	const handleQuit = () => {
 		props.handleQuit();
 	};
 
 	const handleLaunchGame = () => {
 		matchLeave();
-		matchJoinRanked(MATCHTYPE.MATCH_RANKED);
 		handleQuit();
+		navigate(`${apiGame}${apiMatchmaking}`);
 	}
 
 	return (
@@ -50,7 +51,7 @@ function GameEnd(props: {me: User, handleQuit: any, players: GamePlayer[], winne
 					variant="contained"
 					color="success"
 				>
-					Relancer une partie
+					Lancer une partie classée
 				</Button>
 				<Button
 					onClick={handleQuit}

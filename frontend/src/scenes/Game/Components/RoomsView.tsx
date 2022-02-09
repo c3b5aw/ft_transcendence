@@ -14,12 +14,10 @@ import { useNavigate } from "react-router-dom";
 import { socketMatchmaking } from "../../../Services/ws/utils";
 import { useSnackbar } from "notistack";
 import { PAGE } from "../../../Services/Interface/Interface";
-import MatchMaking from "./MatchMaking";
 
 function RoomsView() {
 	const [rooms, setRooms] = useState<RoomV[]>([]);
 	const [openCreateRoom, setOpenCreateRoom] = useState<boolean>(false);
-	const [openMatchMaking, setOpenMatchMaking] = useState<boolean>(false);
 	const me = useMe();
 	const navigate = useNavigate();
 	const { enqueueSnackbar } = useSnackbar();
@@ -170,7 +168,7 @@ function RoomsView() {
 						variant="contained"
 						color="success"
 						disabled={disabledButton()}
-						onClick={() => setOpenMatchMaking(true)}
+						onClick={() => navigate(`${apiGame}${apiMatchmaking}`)}
 					>
 						<Typography
 							variant="h6"
@@ -182,7 +180,6 @@ function RoomsView() {
 				</Stack>
 			</DialogActions>
 			{openCreateRoom ? <CreateRoom me={me} setOpen={setOpenCreateRoom} /> : null}
-			{openMatchMaking ? <MatchMaking setOpen={setOpenMatchMaking} /> : null}
 		</Dialog>
 	);
 }

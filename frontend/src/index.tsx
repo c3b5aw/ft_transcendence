@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { pageAdmin, pageChat, pageClassement,
 		pageGame, pageGameHash,
-		pageHome, pageRoomView, pageSettings, pageStats } from './Services/Routes/RoutePage';
+		pageHome, pageMatchmaking, pageRoomView, pageSettings, pageStats } from './Services/Routes/RoutePage';
 import "./scenes/App.css";
 import PrivateRoute from './Services/Routes/PrivateRoute';
 import Stats from './scenes/Stats/View/Stats';
@@ -26,6 +26,7 @@ import GameBoard from './scenes/Game/GameBoard';
 
 import RoomsView from './scenes/Game/Components/RoomsView';
 import { makeStyles } from '@mui/styles';
+import MatchMaking from './scenes/Game/Components/MatchMaking';
 
 const useStyles = makeStyles({
 	theme: {
@@ -115,6 +116,14 @@ function ManageRouter() {
 						element={
 							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
 								<RoomsView />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path={pageMatchmaking}
+						element={
+							<PrivateRoute roles={[ROLE.MEMBER, ROLE.MODERATOR, ROLE.ADMIN]}>
+								<MatchMaking />
 							</PrivateRoute>
 						}
 					/>
