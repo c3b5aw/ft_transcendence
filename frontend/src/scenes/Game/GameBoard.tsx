@@ -28,7 +28,7 @@ export default function GameBoard() {
 	const [ playSound, setPlaySound ] = useState(true);
 	const [ play ] = useSound('/sounds/onCollide.mp3', { interrupt: true });
 
-	const playCollideSound = useCallback(() => { console.log(playSound); if (playSound) play() }, [ play, playSound ]);
+	const playCollideSound = useCallback(() => { if (playSound) play() }, [ play, playSound ]);
 
 	const game = useRef<Game | null>(null);
 
