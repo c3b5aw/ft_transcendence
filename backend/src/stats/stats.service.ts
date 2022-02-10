@@ -22,8 +22,8 @@ export class StatsService {
 		const players: UserStats[] = [ await this.findOneByID(match.player1),
 				await this.findOneByID(match.player2) ];
 
-		const loser: UserStats = match.winner === players[0].id ? players[0] : players[1];
-		const winner: UserStats = match.winner === players[0].id ? players[1] : players[0];
+		const loser: UserStats = match.winner === players[0].id ? players[1] : players[0];
+		const winner: UserStats = match.winner === players[0].id ? players[0] : players[1];
 
 		const elo_diff = Math.ceil((winner.elo - loser.elo) / 10);
 		await this.updateMatchPlayer(match, loser, elo_diff, false);
