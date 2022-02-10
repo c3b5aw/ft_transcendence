@@ -104,13 +104,13 @@ function Row(props: { user: User, me: User}) {
 							<Typography variant="h6">{match.player1_login}</Typography>
 						</TableCell>
 						<TableCell align="center">
-							<Typography variant="h6" style={{color: match.player1_score > match.player2_score ? "green" : match.player1_score < match.player2_score ? "#C70039" : "black"}}>{match.player1_score}</Typography>
+							<Typography variant="h6" style={{color: match.winner === me.id ? "green" : "#C70039", fontFamily: 'Myriad Pro'}}>{match.player1_score}</Typography>
 						</TableCell>
 						<TableCell align="center">
-							<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>-</Typography>
+							<Typography variant="h5" style={{fontFamily: "Myriad Pro"}}>-</Typography>
 						</TableCell>
 						<TableCell align="center">
-							<Typography variant="h6" style={{color: match.player2_score > match.player1_score ? "green" : match.player2_score < match.player1_score ? "#C70039" : "black", fontFamily: "Myriad Pro"}}>{match.player2_score}</Typography>
+							<Typography variant="h6" style={{color: match.winner !== me.id ? "green" : "#C70039", fontFamily: "Myriad Pro"}}>{match.player2_score}</Typography>
 						</TableCell>
 						<TableCell align="center">
 							<Typography variant="h6">{match.player2_login}</Typography>

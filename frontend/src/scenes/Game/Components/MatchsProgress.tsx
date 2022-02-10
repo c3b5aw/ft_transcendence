@@ -33,7 +33,7 @@ function MatchProgress(props: {setOpen: Dispatch<SetStateAction<boolean>>}) {
 		}
 		const interval = setInterval(() => {
 			fetchMatchProgress();
-		}, 1000)
+		}, 2000)
 		fetchMatchProgress();
 		return () => clearInterval(interval);
 	// eslint-disable-next-line react-hooks/exhaustive-deps

@@ -2,9 +2,16 @@ import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import { apiConnection } from '../../../Services/Api/Api';
 import { sxAvatar } from '../Services/style';
-import { Button, Tooltip, Typography } from '@mui/material';
+import { Backdrop, Button, CircularProgress, Tooltip, Typography } from '@mui/material';
+import { useState } from 'react';
 
 function Connection() {
+	const [open, setOpen] = useState(false);
+
+	const handleToggle = () => {
+		setOpen(!open);
+	};
+
 	return (
 		<Stack direction="column"
 			justifyContent="space-evenly"
@@ -23,7 +30,10 @@ function Connection() {
 				borderRadius: {xs: 4, sm: 6, md: 8},
 				border: 4,
 			}}
-				onClick={() => window.location.href = `${apiConnection}`}>
+				onClick={() => {
+					handleToggle();
+					window.location.href = `${apiConnection}`;
+				}}>
 				<Typography variant="h4" style={{fontFamily: "Myriad Pro"}}>OAuth 42</Typography>
 			</Button>
 			<Stack direction="row" spacing={5}>
@@ -46,6 +56,12 @@ function Connection() {
 					/>
 				</Tooltip>
 			</Stack>
+			<Backdrop
+				sx={{color: '#fff'}}
+				open={open}
+			>
+				<CircularProgress color="inherit" />
+			</Backdrop>
 		</Stack>
 	);
 }

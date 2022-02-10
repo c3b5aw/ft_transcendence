@@ -1,11 +1,13 @@
 import { Avatar, Box, Divider, List, ListItem, Paper, Stack, Typography } from "@mui/material";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { api, apiAchievements, apiMe } from "../../Services/Api/Api";
 import { Achievements } from "../../Services/Interface/Interface";
 
 function GameAchievementsRecent() {
 	const [achievements, setAchievements] = useState<Achievements[]>([]);
+	const { enqueueSnackbar } = useSnackbar();
 
 	useEffect(() => {
 		const fetchAchievementRecent = async () => {
@@ -14,11 +16,14 @@ function GameAchievementsRecent() {
 				setAchievements(response.data);
 			}
 			catch (err) {
-				console.log(err);
+				enqueueSnackbar(`Impossible de charger les nouveaux achievements (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
 			}
 		}
 		fetchAchievementRecent();
-	}, [])
+	}, [enqueueSnackbar])
 
 	return (
 		<React.Fragment>
