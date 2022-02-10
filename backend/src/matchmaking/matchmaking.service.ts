@@ -132,7 +132,7 @@ export class MatchmakingService {
 		if (!elo)
 			return client.emit('onError', { error: `unable to fetch elo` });
 
-		const roundedElo = Math.round(elo / 100) * 100;
+		const roundedElo = Math.floor(elo / 100) * 100;
 		const roomElo = (roundedElo / 100) % 2 === 0 ? roundedElo - 100 : roundedElo;
 
 		const room = `#MM-RANKED-${roomElo}`;
