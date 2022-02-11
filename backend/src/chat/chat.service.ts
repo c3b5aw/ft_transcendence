@@ -132,10 +132,10 @@ export class ChatService {
 
 	async sendEventToUser(userID: number, event: string, data: any = {}) {
 		/* Find user in global clients, if exists, send event */
-		const userSocketID: string = Object.keys(global.clients).find( 
+		const userSockets: string[] = Object.keys(global.clients).filter( 
 			key => global.clients[key] === userID);
-		if (userSocketID)
-			this.server.to(userSocketID).emit(event, data);
+		if (userSockets)
+			userSockets.map(userSocket => this.server.to(userSocket).emit(event, data));
 	}
 
 	async sendEventToChannel(channel: Channel, event: string, data: any = {}) {

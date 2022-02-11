@@ -80,32 +80,6 @@ function Chat() {
 		);
 	}
 
-	useEffect(() => {
-		socket.on("channel::onJoin", (data) => {
-			setOpenJoin(false);
-		})
-		socket.on("channel::onMessage", (data) => {
-			setUploadMessagesChannel(data)
-		})
-		socket.on("channel::onMembersReload", (data) => {
-			setUploadUsersChannel(data)
-		})
-		socket.on("channel::onCreate", (data) => {
-			setNameChannel(data.channel.name);
-			channelJoin(data.channel.name, "");
-		})
-		socket.on("channel::onListReload", (data) => {
-			setUploadChannels(data);
-		})
-		socket.on("channel::onRoleUpdate", (data) => {
-			setUploadUsersChannel(data);
-		})
-		socket.on("channel::onKick", (data) => {
-			setUploadChannels(data)
-			reinit();
-		})
-	}, [])
-
 	/*
 	** RELOAD LIST OF CHANNELS
 	*/
@@ -199,6 +173,41 @@ function Chat() {
 		if (nameChannel !== "")
 			fetchUsersChannel();
 	}, [enqueueSnackbar, nameChannel, uploadUsersChannel])
+
+	useEffect(() => {
+		socket.on("channel::onJoin", (data) => {
+			setOpenJoin(false);
+		})
+		socket.on("channel::onMessage", (data) => {
+			setUploadMessagesChannel(data)
+		})
+		socket.on("channel::onMembersReload", (data) => {
+			setUploadUsersChannel(data)
+		})
+		socket.on("channel::onCreate", (data) => {
+			setNameChannel(data.channel.name);
+			channelJoin(data.channel.name, "");
+		})
+		socket.on("channel::onListReload", (data) => {
+			setUploadChannels(data);
+		})
+		socket.on("channel::onRoleUpdate", (data) => {
+			setUploadUsersChannel(data);
+		})
+		socket.on("channel::onKick", (data) => {
+			setUploadChannels(data)
+			reinit();
+		})
+		return () => {
+			socket.off("channel::onJoin")
+			socket.off("channel::onMessage")
+			socket.off("channel::onMembersReload")
+			socket.off("channel::onCreate")
+			socket.off("channel::onListReload")
+			socket.off("channel::onRoleUpdate")
+			socket.off("channel::onKick")
+		}
+	}, [])
 
 	var myListUsersChannel: IListUser = {
 		users: usersChannel,
