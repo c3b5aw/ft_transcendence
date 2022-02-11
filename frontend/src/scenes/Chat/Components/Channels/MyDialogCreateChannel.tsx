@@ -46,7 +46,7 @@ function MyDialogCreateChannel(props: {setOpen: Dispatch<SetStateAction<boolean>
 				});
 			}
 		}
-		else if (nameChannel.length >= 3 && nameChannel.length <= 64) {
+		else if (nameChannel.length >= 3 && nameChannel.length <= 32) {
 			try {
 				await axios.post(`${api}${apiChannel}`, {
 					name: nameChannel,

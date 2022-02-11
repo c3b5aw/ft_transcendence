@@ -1,7 +1,7 @@
 import { Avatar, Box, Dialog, DialogContent, Divider, List, ListItem, Paper, Stack, Typography } from "@mui/material";
 import { avatarStyle } from "../../../styles/Styles";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
-import { PAGE, User } from "../../../Services/Interface/Interface";
+import { PAGE, User, USER_STATUS } from "../../../Services/Interface/Interface";
 import { Dispatch, SetStateAction } from "react";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 import useFriends from "../Services/useFriends";
@@ -66,16 +66,32 @@ const MyFriends = (props: {user: User, setOpen: Dispatch<SetStateAction<boolean>
 												alignItems="center"
 												direction="row"
 											>
-												<Stack sx={{ width: "100%", height: 1}}
-													alignItems="center"
-													spacing={2}
+												<Stack
 													direction="row"
+													alignItems="center"
+													sx={{ width: "95%", height: 1}}
 												>
-													<Avatar
-														src={`/api/users/${friend.login}/avatar`}
-														sx={avatarStyle}>
-													</Avatar>
-													<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{friend.login}</Typography>
+													<Stack sx={{width: "100%"}}
+														alignItems="center"
+														spacing={2}
+														direction="row"
+													>
+														<Avatar
+															src={`/api/users/${friend.login}/avatar`}
+															sx={avatarStyle}>
+														</Avatar>
+														<Typography variant="h5" style={{fontFamily: "Myriad Pro", textAlign: "center"}}>{friend.login}</Typography>
+													</Stack>
+													<Typography
+														variant="h5"
+														style={{
+															fontFamily: "Myriad Pro",
+															textAlign: "center",
+															color: friend.status === USER_STATUS.ONLINE ? "green" : USER_STATUS.IN_GAME ? "orange" : "red"
+														}}
+													>
+														{friend.status}
+													</Typography>
 												</Stack>
 											</Stack>
 										</ListItem>

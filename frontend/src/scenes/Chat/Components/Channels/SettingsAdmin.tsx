@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from "@mui/material";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Stack, TextField } from "@mui/material";
 import { SetStateAction, useEffect, useState } from "react";
 import { ISearchBar, User } from "../../../../Services/Interface/Interface";
 import { api, apiChannel, apiModos } from "../../../../Services/Api/Api";
@@ -17,6 +17,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 
 	const [nameChannel, setNameChannel] = useState<string>("");
 	const [passwordChannel, setPasswordChannel] = useState<string>("");
+	const [noPassword, setNoPassword] = useState<boolean>(false);
 
 	const printError = (err: any) => {
 		enqueueSnackbar(`Error : ${err}`, { 
@@ -97,7 +98,7 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 	}
 
 	const handleUpdate = async () => {
-		if (passwordChannel.length > 0) {
+		if (passwordChannel.length > 0 || noPassword) {
 			try {
 				await axios.post(`${api}${apiChannel}/${mySettingsAdmin.channel.name}/password`, {
 					password: passwordChannel
@@ -142,6 +143,10 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 	const fSearchBar: ISearchBar = {
 		handleClickCell: handleAddModo
 	};
+
+	const handleChange = () => {
+		setNoPassword(true);
+	}
 
 	return (
 		<Dialog
@@ -192,16 +197,19 @@ function SettingsAdmin(props: { mySettingsAdmin: ISettingAdmin }) {
 					variant="standard"
 					onChange={handleTextChangeName}
 				/>
-				<TextField
-					autoFocus
-					margin="dense"
-					id="password_channel"
-					label="New password"
-					type="password"
-					fullWidth
-					variant="standard"
-					onChange={handleTextChangePassword}
-				/>
+				<Stack direction="row">
+					<TextField
+						autoFocus
+						margin="dense"
+						id="password_channel"
+						label="New password"
+						type="password"
+						fullWidth
+						variant="standard"
+						onChange={handleTextChangePassword}
+					/>
+					<FormControlLabel control={<Checkbox onChange={handleChange}/>} label="No password" />
+				</Stack>
 				<div style={{marginTop: 10}}></div>
 				<MySearchBarChat users={usersChannel} fSearchBar={fSearchBar} nameBar="Search moderateurs..."/>
 			</DialogContent>
