@@ -466,7 +466,10 @@ export class ChatService {
 			channel.private = true;
 			channel.password = createHash('md5').update(channel.password).digest('hex');
 		}
-		return this.channelsRepository.save(channel);
+		const chan: Channel = await this.channelsRepository.save(channel);
+
+		await this.sendEventToChannel(chan, 'channel::onListReload');
+		return chan;
 	}
 
 	async updateChannelName(channel: Channel, name: string): Promise<Channel> {
@@ -557,6 +560,8 @@ export class ChatService {
 
 	async deleteChannelPassword(channel: Channel): Promise<void> {
 		await this.channelsRepository.update(channel.id, { password: null, private: false });
+	
+		await this.sendEventToChannel(channel, 'channel::onListReload');
 	}
 
 	async removeUserFromChannel(user: User, channel: Channel): Promise<void> {
