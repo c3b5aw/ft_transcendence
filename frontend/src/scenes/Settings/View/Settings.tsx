@@ -129,11 +129,11 @@ const Settings = () => {
 			<MyFooter me={me} currentPage={PAGE.PARAMETRES}/>
 			<Stack
 				direction="row"
-				sx={{width: "100%", height: "100%"}}
+				sx={{width: "100%", height: "93%"}}
 			>
 				<Stack
 					direction="column"
-					sx={{width: 0.97, height: 1}}
+					sx={{width: 1, height: 1}}
 					justifyContent="center"
 					alignItems="center"
 				>

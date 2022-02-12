@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MyAppBarClose from "../../../components/MyAppBarClose";
 import { apiGame, apiRoomsView } from "../../../Services/Api/Api";
@@ -10,6 +10,9 @@ import { matchJoinRanked, matchLeave } from "../Services/wsGame";
 
 function MatchMaking() {
 	const navigate = useNavigate();
+	const [title, setTitle] = useState<string>("Veuillez patienter, nous recherchons un joueur...")
+	const [subtitle1, setSubtitle1] = useState<string>("")
+	const [subtitle2, setSubtitle2] = useState<string>("")
 
 	const handleClose = () => {
 		matchLeave();
@@ -19,6 +22,11 @@ function MatchMaking() {
 	useEffect(() => {
 		socketMatchmaking.on("matchmaking::onMatch", (data) => {
 			navigate(`${apiGame}/${data.match.hash}`);
+		});
+		socketMatchmaking.on("matchmaking::onJoin", (data) => {
+			setTitle(`Veuillez patienter, nous recherchons un joueur...\r`);
+			setSubtitle1(`ROOM : ${data.match_type}`);
+			setSubtitle2(`NAME : ${data.room}`);
 		})
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -48,7 +56,13 @@ function MatchMaking() {
 						variant="h3"
 						style={{color: 'grey', fontFamily: "Myriad Pro"}}
 					>
-						Veuillez patienter, nous recherchons un joueur...
+						{title}
+						<br />
+						<br />
+						{subtitle1}
+						<br />
+						<br />
+						{subtitle2}
 					</Typography>
 				</Stack>
 			</DialogContent>

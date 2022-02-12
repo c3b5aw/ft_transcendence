@@ -144,9 +144,17 @@ export class UsersService {
 	async getStatsById(id: number) {
 		const stats = await this.userRepository.query(`
 			SELECT * FROM (
-				SELECT users.id, users.login, users.status, users.last_login, users.role,
-				stats.elo, stats.played, stats.victories, stats.defeats,
-				ROW_NUMBER() over (ORDER BY stats.elo DESC, stats.victories DESC) as rank
+				SELECT	users.id,
+					users.login,
+					users.display_name,
+					users.status,
+					users.last_login,
+					users.role,
+					stats.elo,
+					stats.played,
+					stats.victories,
+					stats.defeats,
+					ROW_NUMBER() over (ORDER BY stats.elo DESC, stats.victories DESC) as rank
 				FROM users
 				LEFT JOIN users_stats
 					AS stats

@@ -28,6 +28,12 @@ function MyAvatar(props: {user: User}) {
 				>
 					{event?.toDateString()}
 				</Typography>
+				<Typography
+					variant="h5"
+					style={{color: 'grey'}}
+				>
+					{user.display_name}
+				</Typography>
 			</Stack>
 		</Stack>
 	);

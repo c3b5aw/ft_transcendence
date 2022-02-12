@@ -26,19 +26,24 @@ function RoomsView() {
 		navigate(`${apiGame}`);
 	}
 
+	const fetchRooms = async () => {
+		try {
+			const response = await axios.get(`${api}${apiMatchmaking}${apiRooms}`)
+			setRooms(response.data);
+		}
+		catch (err) {
+			enqueueSnackbar(`Error : ${err}`, { 
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
+		}
+	}
+
 	useEffect(() => {
 		const interval = setInterval(async () => {
-			try {
-				const response = await axios.get(`${api}${apiMatchmaking}${apiRooms}`)
-				setRooms(response.data);
-			}
-			catch (err) {
-				enqueueSnackbar(`Error : ${err}`, { 
-					variant: 'error',
-					autoHideDuration: 3000,
-				});
-			}
+			fetchRooms();
 		}, 2000)
+		fetchRooms();
 		return () => clearInterval(interval);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -59,6 +64,7 @@ function RoomsView() {
 
 	const handleDeleteRoom = () => {
 		matchLeave();
+		fetchRooms();
 	}
 
 	if (me === undefined) {

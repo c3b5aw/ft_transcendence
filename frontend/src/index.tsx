@@ -8,7 +8,6 @@ import { pageAdmin, pageChat, pageClassement,
 import "./scenes/App.css";
 import PrivateRoute from './Services/Routes/PrivateRoute';
 import Stats from './scenes/Stats/View/Stats';
-// import MeProvider from './MeProvider';
 import MyMissing from './components/MyMissing';
 import Home from './scenes/Home/View/Home';
 import Settings from './scenes/Settings/View/Settings';
@@ -31,7 +30,7 @@ import MatchMaking from './scenes/Game/Components/MatchMaking';
 const useStyles = makeStyles({
 	theme: {
 		backgroundColor: "#1d3033",
-		minHeight: "100vh",
+		height: "100vh",
 		color: "white",
 	},
 });

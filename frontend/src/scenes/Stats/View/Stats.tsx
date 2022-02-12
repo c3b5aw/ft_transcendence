@@ -7,7 +7,6 @@ import useMe from '../../../Services/Hooks/useMe';
 import useUserStats from '../Services/useUserStats';
 import MyFooter from '../../../components/MyFooter';
 import React from 'react';
-import MySearchBar from '../../Home/Components/MySearchBar';
 import useUsers from '../../../Services/Hooks/useUsers';
 import UserManagement from '../Components/UserManagement';
 import { PAGE } from '../../../Services/Interface/Interface';
@@ -26,9 +25,6 @@ const Stats = () => {
 			<Stack sx={{width: 1}}><MyFooter me={me} currentPage={PAGE.STATS}/></Stack>
 			<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{width: 0.9, height: 0.2}}>
 				<MyAvatar user={user}/>
-				<Stack sx={{width: 0.6, display: {xs: "none", sm: "none", md: "flex", lg: "flex"}}}>
-					<MySearchBar />
-				</Stack>
 				<UserManagement user={user}/>
 			</Stack>
 			<Stack

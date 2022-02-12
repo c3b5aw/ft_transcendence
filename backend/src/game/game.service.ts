@@ -120,8 +120,8 @@ export class GameService {
 		await this.statsService.updateFromMatch(match);
 
 		// update user status
-		await this.usersService.updateStatus(match.player1, UserStatus.OFFLINE);
-		await this.usersService.updateStatus(match.player2, UserStatus.OFFLINE);
+		await this.usersService.updateStatus(match.player1, UserStatus.ONLINE);
+		await this.usersService.updateStatus(match.player2, UserStatus.ONLINE);
 
 		// remove game from global
 		delete global.games[game.hash];

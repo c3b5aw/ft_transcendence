@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MyChargingDataAlert from "../../../components/MyChargingDataAlert";
 import MyFooter from "../../../components/MyFooter";
-import { apiGame } from "../../../Services/Api/Api";
+import { apiGame, apiRoomsView } from "../../../Services/Api/Api";
 import useMe from "../../../Services/Hooks/useMe";
 import { PAGE } from "../../../Services/Interface/Interface";
 import MatchProgress from "./MatchsProgress";
@@ -31,7 +31,7 @@ function MenuGame() {
 				<Typography variant="h2" style={{fontFamily: "Myriad Pro", color: "white"}}>Menu</Typography>
 				<Button
 					variant="contained"
-					onClick={() => navigate(`${apiGame}/roomview`)}
+					onClick={() => navigate(`${apiGame}${apiRoomsView}`)}
 					sx={{padding: 4, borderRadius: 4}}
 				>
 					<Typography variant="h6" style={{fontFamily: "Myriad Pro"}}>Faire une partie</Typography>

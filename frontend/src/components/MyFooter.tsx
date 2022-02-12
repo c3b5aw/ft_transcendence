@@ -13,7 +13,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import HomeIcon from '@mui/icons-material/Home';
-import MySearchBar from "../scenes/Home/Components/MySearchBar";
 
 export default function MyFooter(props : {me: User, currentPage: PAGE}) {
 	const { me, currentPage } = props;
@@ -205,7 +204,7 @@ export default function MyFooter(props : {me: User, currentPage: PAGE}) {
 						}
 					</Box>
 					<Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "flex", md: "none", lg: "none" }, justifyContent: 'space-between'}}>
-						{currentPage === PAGE.STATS ? <MySearchBar /> : <Typography style={{fontFamily: "Myriad Pro"}}>{currentPage}</Typography>}
+						<Typography style={{fontFamily: "Myriad Pro"}}>{currentPage}</Typography>
 					</Box>
 					<Box sx={{ display: { xs: 'flex', md: 'none' } }}>
 						<IconButton

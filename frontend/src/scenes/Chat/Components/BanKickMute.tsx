@@ -2,7 +2,7 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import { DialogActions, DialogContent, Stack, Typography } from '@mui/material';
+import { DialogActions, DialogContent, Stack, TextField, Typography } from '@mui/material';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -12,14 +12,20 @@ import { useSnackbar } from 'notistack'
 import { ROLE } from '../../../Services/Api/Role';
 import { IBanKickMute } from '../Services/interface';
 import { isMute } from '../Services/utils';
+import { SetStateAction, useState } from 'react';
 
 export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 	const { myBanKickMute } = props;
 	const { enqueueSnackbar } = useSnackbar();
+	const [valueMute, setValueMute] = useState<string>("100");
 
 	const handleClose = () => {
 		myBanKickMute.closeModal(!myBanKickMute.open);
 	}
+
+	const  handleTextInputChange = async (event: { target: { value: SetStateAction<string>; }; }) => {
+		setValueMute(event.target.value);
+	};
 
 	const printError = (err: any) => {
 		enqueueSnackbar(`Error : ${err}`, { 
@@ -58,7 +64,7 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 
 	const handleMuteUser = async () => {
 		try {
-			await axios.put(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiMute}/${myBanKickMute.user.login}/100`);
+			await axios.put(`${api}${apiChannel}/${myBanKickMute.name_channel}${apiMute}/${myBanKickMute.user.login}/${valueMute}`);
 			enqueueSnackbar(`${myBanKickMute.user.login} a ete mute du channel ${myBanKickMute.name_channel}`, { 
 				variant: 'success',
 				autoHideDuration: 2000,
@@ -109,12 +115,33 @@ export default function BanKickMute(props: {myBanKickMute : IBanKickMute}) {
 			);
 		}
 		return (
-			<Button
-				variant="contained"
-				onClick={handleMuteUser}
-			>
-				<Typography>Mute {myBanKickMute.user.login}</Typography>
-			</Button>
+			<Stack direction="row" spacing={2}>
+				<Button
+					variant="contained"
+					onClick={handleMuteUser}
+				>
+					<Typography>Mute {myBanKickMute.user.login}</Typography>
+				</Button>
+				<TextField
+					id="standard-number"
+					label="Second"
+					type="number"
+					defaultValue={valueMute}
+					InputLabelProps={{
+						shrink: true,
+					}}
+					variant="standard"
+					style={{
+						backgroundColor: "white"
+					}}
+					InputProps={{
+						style: {
+							color: "black"
+						}
+					}}
+					onChange={handleTextInputChange}
+				/>
+			</Stack>
 		);
 	}
 

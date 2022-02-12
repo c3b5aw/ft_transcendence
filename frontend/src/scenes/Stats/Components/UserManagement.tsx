@@ -192,18 +192,6 @@ function UserManagement(props: {user: User}) {
 		return (null);
 	}
 
-	// const isFriend = friends.filter(function (friend) {
-	// 	return (friend.login === user.login);
-	// });
-	// const isFriendPending = friendsPending.filter(function (friendPending) {
-	// 	return (friendPending.login === user.login);
-	// });
-	// const isRequested = requested.filter(function (request) {
-	// 	return (request.login === user.login);
-	// });
-	// const isBlocked = blocked.filter(function (friend) {
-	// 	return (friend.login === user.login);
-	// });
 	const isFriend = friends.find(friend => friend.login === user.login);
 	const isFriendPending = friendsPending.find(friendPending => friendPending.login === user.login);
 	const isRequested = requested.find(request => request.login === user.login);

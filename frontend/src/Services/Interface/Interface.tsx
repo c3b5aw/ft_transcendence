@@ -34,6 +34,7 @@ export interface Match {
 	player2_login: string
 	player2_score: number
 	type: MATCHTYPE
+	winner: number
 }
 
 export interface Achievements {

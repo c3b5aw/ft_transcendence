@@ -1,17 +1,32 @@
-import { Avatar, Box, CircularProgress, Divider, List, ListItem, Paper, Stack, Tooltip, Typography } from "@mui/material"
-import { User } from "../../../Services/Interface/Interface";
-import useMatchs from "../Services/useMatchs";
+import { Avatar, Box, Divider, List, ListItem, Paper, Stack, Tooltip, Typography } from "@mui/material"
+import axios from "axios";
+import { useSnackbar } from "notistack";
+import { useEffect, useState } from "react";
+import { api, apiMatch, apiUsers } from "../../../Services/Api/Api";
+import { Match, User } from "../../../Services/Interface/Interface";
+import { avatarStyle } from "../../../styles/Styles";
 
 const MyHistory = (props: {user: User}) => {
 	const { user } = props;
-	const matchs = useMatchs(user);
+	const [matchs, setMatchs] = useState<Match[]>([]);
+	const { enqueueSnackbar } = useSnackbar();
 
+    useEffect(() => {
+		const fetchMatchs = async () => {
+			try {
+				const response = await axios.get(`${api}${apiUsers}/${user.login}${apiMatch}`);
+				setMatchs(response.data);
+			}
+			catch (err) {
+				enqueueSnackbar(`Impossible de charger les matchs de ${user.login} (${err})`, { 
+					variant: 'error',
+					autoHideDuration: 3000,
+				});
+			}
+		}
+		fetchMatchs();
+	}, [enqueueSnackbar, user.login]);
 
-	if (matchs === undefined)
-		return (
-			<Stack alignItems="center">
-				<CircularProgress sx={{color: "white"}} />
-			</Stack>);
 	return (
 		<Stack
 			direction="column"
@@ -55,6 +70,12 @@ const MyHistory = (props: {user: User}) => {
 													<Typography variant="h6" style={{fontFamily: "Myriad Pro", textAlign: "center", color: "black"}}>{match.player1_login}</Typography>
 												</Box>
 											</Stack>
+											{match.winner === match.player1 ?
+												<Avatar
+													src={`/api/achievements/1/avatar`}
+													sx={avatarStyle}>
+												</Avatar> : null
+											}
 											<Stack
 												direction="row"
 												sx={{width: 1/2}}
@@ -63,7 +84,7 @@ const MyHistory = (props: {user: User}) => {
 												<Typography variant="h4" style={{
 													fontFamily: "Myriad Pro",
 													textAlign: "center",
-													color: match.player1_score > match.player2_score ? "green" : match.player1_score < match.player2_score ? "#C70039" : "black",
+													color: match.winner === match.player1 ? "green" : match.winner === -1 ? "black" : "#C70039"
 												}}>
 													{match.player1_score}
 												</Typography>
@@ -91,11 +112,17 @@ const MyHistory = (props: {user: User}) => {
 												<Typography variant="h4" style={{
 													fontFamily: "Myriad Pro",
 													textAlign: "center",
-													color: match.player2_score > match.player1_score ? "green" : match.player2_score < match.player1_score ? "#C70039" : "black",
+													color: match.winner === match.player2 ? "green" : match.winner === -1 ? "black" : "#C70039"
 												}}>
 													{match.player2_score}
 												</Typography>
 											</Stack>
+											{match.winner === match.player2 ?
+												<Avatar
+													src={`/api/achievements/1/avatar`}
+													sx={avatarStyle}>
+												</Avatar> : null
+											}
 											<Stack
 												direction="row"
 												sx={{width: 1/2}}
