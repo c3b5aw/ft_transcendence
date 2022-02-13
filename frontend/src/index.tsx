@@ -30,7 +30,7 @@ import MatchMaking from './scenes/Game/Components/MatchMaking';
 const useStyles = makeStyles({
 	theme: {
 		backgroundColor: "#1d3033",
-		height: "100vh",
+		minHeight: "100vh",
 		color: "white",
 	},
 });

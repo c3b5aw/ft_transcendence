@@ -28,9 +28,7 @@ export default function Home() {
 				justifyContent="space-evenly"
 				alignItems="center"
 			>
-				{/* <Stack sx={{alignItems: "center", justifyContent: "center", width: 0.5}}> */}
-					<MySearchBar />
-				{/* </Stack> */}
+				<MySearchBar />
 				<Stack sx={{alignItems: "center", justifyContent: "center"}}>
 					<Typography variant="h2" style={{fontFamily: "Myriad Pro"}}>ft_transcendance</Typography>
 				</Stack>
