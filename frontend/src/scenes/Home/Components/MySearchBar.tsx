@@ -42,7 +42,7 @@ export default function MySearchBar() {
 	return (
 		<Paper sx={{width: "50%"}}>
 			<SearchBar
-				// style={{width: "100%"}}
+				style={{minHeight: "10vh"}}
 				placeholder="Search users..."
 				value={searched}
 				onChange={(searchVal) => requestSearch(searchVal)}
