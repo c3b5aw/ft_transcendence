@@ -1,5 +1,6 @@
 .PHONY: all
-all: up
+all:
+	@	docker-compose up --build
 
 .PHONY: up
 up:
