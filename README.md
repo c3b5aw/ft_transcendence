@@ -3,9 +3,9 @@
 
 42 School Project - Build a pong game
 
-**Score:** In progress
+**Score:** 100/100
 
-**Time elapsed:** ...
+**Time elapsed:** 5 weeks
 
 ## Authors
 
